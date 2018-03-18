@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="HuKlM4kUBb"/>
+  <meta name="keywords" contect="博客,个人博客,JAVA,宋水阳个人博客,宋水阳" />
+  <meta name="description" contect="宋水阳个人博客"/>
+  <meta name="author" contect="songshuiyang"/>
+  
+  
+  
+  
+  <title>宋水阳个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="宋水阳个人博客">
+<meta property="og:url" content="http://www.songshuiyang.site/page/3/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="宋水阳个人博客">
+  
+    <link rel="alternative" href="/atom.xml" title="宋水阳个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+    
+    
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: true,
+          isPost: false,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">songshuiyang</a></h1>
+        </hgroup>
+        
+        
+            <form>
+                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
+            </form>
+            <div id="local-search-result"></div>
+        
+        
+            <script type="text/javascript">
+                (function() {
+                    'use strict';
+                    function getMatchData(keyword, data) {
+                        var matchData = [];
+                        for(var i =0;i<data.length;i++){
+                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
+                                matchData.push(data[i])
+                        }
+                        return matchData;
+                    }
+                    var $input = $('#local-search-input');
+                    var $resultContent = $('#local-search-result');
+                    $input.keyup(function(){
+                        $.ajax({
+                            url: '/search.json',
+                            dataType: "json",
+                            success: function( json ) {
+                                var str='<ul class=\"search-result-list\">';                
+                                var keyword = $input.val().trim().toLowerCase();
+                                $resultContent.innerHTML = "";
+                                if ($input.val().trim().length <= 0) {
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                }
+                                var results = getMatchData(keyword, json);
+                                if(results.length === 0){
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                } 
+                                for(var i =0; i<results.length; i++){
+                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
+                                }
+                                str += "</ul>";
+                                $resultContent.empty();
+                                $resultContent.append(str);
+                                $('#switch-area').hide();
+                            }
+                        });
+                    });
+                })();
+            </script>
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/client/">Web前端</a></li>
+                        
+                            <li><a  href="/categories/server/">Web后端</a></li>
+                        
+                            <li><a  href="/categories/技术/">技术</a></li>
+                        
+                            <li><a  href="/categories/随笔/">随笔</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
+                            
+                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
+                            
+                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 11.25px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net">csdn</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.zhihu.com">知乎</a>
+                    
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一只默默充电的小码农</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">songshuiyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">songshuiyang</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/client/">Web前端</a></li>
+                
+                    <li><a href="/categories/server/">Web后端</a></li>
+                
+                    <li><a href="/categories/技术/">技术</a></li>
+                
+                    <li><a href="/categories/随笔/">随笔</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap">
+  
+    <article id="post-Web前端/npm/npm scripts" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web前端/npm/npm scripts/" class="article-date">
+      <time datetime="2018-01-14T03:48:12.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web前端/npm/npm scripts/">npm scripts</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="一、什么是-npm-脚本"><a href="#一、什么是-npm-脚本" class="headerlink" title="一、什么是 npm 脚本"></a>一、什么是 npm 脚本</h3><p>npm 允许在package.json文件里面，使用scripts字段定义脚本命令。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  // ...</div><div class="line">  "scripts": &#123;</div><div class="line">    "build": "node build.js"</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面代码是package.json文件的一个片段，里面的scripts字段是一个对象。它的每一个属性，对应一段脚本。比如，build命令对应的脚本是node build.js。<br>命令行下使用npm run命令，就可以执行这段脚本。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm run build</div><div class="line"># 等同于执行</div><div class="line">$ node build.js</div></pre></td></tr></table></figure></p>
+<p>这些定义在package.json里面的脚本，就称为 npm 脚本。它的优点很多</p>
+<ol>
+<li>项目的相关脚本，可以集中在一个地方。</li>
+<li>不同项目的脚本命令，只要功能相同，就可以有同样的对外接口。用户不需要知道怎么测试你的项目，只要运行npm run test即可。</li>
+<li>可以利用 npm 提供的很多辅助功能。</li>
+</ol>
+<p>查看当前项目的所有 npm 脚本命令，可以使用不带任何参数的npm run命令。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm run</div></pre></td></tr></table></figure></p>
+<h3 id="二：执行顺序"><a href="#二：执行顺序" class="headerlink" title="二：执行顺序"></a>二：执行顺序</h3><p>如果 npm 脚本里面需要执行多个任务，那么需要明确它们的执行顺序。<br>如果是并行执行（即同时的平行执行），可以使用&amp;符号。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm run script1.js &amp; npm run script2.js</div></pre></td></tr></table></figure></p>
+<p>如果是继发执行（即只有前一个任务成功，才执行下一个任务），可以使用&amp;&amp;符号<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm run script1.js &amp;&amp; npm run script2.js</div></pre></td></tr></table></figure></p>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>在 <code>package.json</code> 添加以下代码执行<code>npm run gg</code> 可以连续执行（hexo g）（hexo d）俩个命令，这样就不用每次执行俩个命令<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">"scripts": &#123;</div><div class="line">   "gg": "hexo g &amp;&amp; hexo d"</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>详见:<a href="http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/client/">client</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/npm/">npm</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/支付/接入银联支付接口" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/11/Web后台/支付/接入银联支付接口/" class="article-date">
+      <time datetime="2018-01-11T14:24:12.000Z" itemprop="datePublished">2018-01-11</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/11/Web后台/支付/接入银联支付接口/">接入银联支付接口</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p>吐槽一下：</p>
+<blockquote>
+<p>1.银联支付SDK是没有提供独立的jar包的，高大上的银联把示例demo和sdk整合在一起了，支付流程和支付宝支付相似，支付需要到银联的支付页面</p>
+<p>2.证书说明：其实我们只需要一个邮件上的签名证书文件，官网上文档说的开发者调用接口前需要的其他证书在开发包中目录assets下都有，每个人都一样，没错，每个人都一样</p>
+<p>3.银联开发平台常常在下午6点发版本，遇到过俩次，第一次感到惊讶:银联网站挂了？不可能呀，过了十多分钟又恢复正常，晕</p>
+<p>4.代码不够规范，用代码检测工具一片黄色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * <span class="doctag">@ClassName</span> AcpService</span></div><div class="line"><span class="comment"> * <span class="doctag">@Description</span> acpsdk接口服务类，接入商户集成请可以直接参考使用本类中的方法</span></div><div class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-7-22 下午2:44:37</span></div><div class="line"><span class="comment"> * 声明：以下代码只是为了方便接入方测试而提供的样例代码，商户可以根据自己需要，按照技术文档编写。该代码仅供参考，不提供编码，性能，规范性等方面的保障</span></div><div class="line"><span class="comment"> */</span></div></pre></td></tr></table></figure></p>
+</blockquote>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/11/Web后台/支付/接入银联支付接口/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/支付/接入微信支付接口" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/11/Web后台/支付/接入微信支付接口/" class="article-date">
+      <time datetime="2018-01-11T13:24:12.000Z" itemprop="datePublished">2018-01-11</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/11/Web后台/支付/接入微信支付接口/">接入微信扫码支付接口</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h4 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h4><h5 id="开始之前先看一下微信的几个平台"><a href="#开始之前先看一下微信的几个平台" class="headerlink" title="开始之前先看一下微信的几个平台:"></a>开始之前先看一下微信的几个平台:</h5><ol>
+<li>微信公众平台:<br>是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。<br>平台入口：<a href="http://mp.weixin.qq.com。" target="_blank" rel="external">http://mp.weixin.qq.com。</a></li>
+<li>微信开放平台:<br>微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。<br>平台入口：<a href="http://open.weixin.qq.com。" target="_blank" rel="external">http://open.weixin.qq.com。</a></li>
+<li>微信商户平台:<br>微信商户平台是微信支付相关的商户功能集合，包括参数配置、支付数据查询与统计、在线退款、代金券或立减优惠运营等功能。<br>平台入口：<a href="http://pay.weixin.qq.com" target="_blank" rel="external">http://pay.weixin.qq.com</a></li>
+</ol>
+<p>刚开始接入的时候有点昏，各种参数需要到不同的平台找, 不像支付宝一样只有一个开发平台，如果是接入微信扫码支付设及到微信公众平台和微信商户平台，如果是手机app微信支付，设及到微信开放平台和微信商户平台</p>
+<h5 id="开通支付功能"><a href="#开通支付功能" class="headerlink" title="开通支付功能:"></a>开通支付功能:</h5><p>有了平台账号之后，然后就是开通支付功能，等待审核通过，当然审核过程有可能被退回，大多是描述信息或者经营类别与营业执照描述不一致<br></p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/11/Web后台/支付/接入微信支付接口/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/支付/PC网站上如何接入支付宝网关支付功能" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/" class="article-date">
+      <time datetime="2018-01-10T02:24:12.000Z" itemprop="datePublished">2018-01-10</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/">PC网站上如何接入支付宝网关支付功能</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="一-应用场景"><a href="#一-应用场景" class="headerlink" title="一: 应用场景"></a>一: 应用场景</h3><ol>
+<li><p>主要应用于一些交易平台商品订单支付，账户充值，线上收费这些有支付需求的交易</p>
+</li>
+<li><p>用户通过支付宝PC收银台完成支付，交易款项即时给到商户支付宝账户</p>
+</li>
+</ol>
+<p><img src="/images/server/支付/taobao.png" alt="logo"></p>
+<p><img src="/images/server/支付/12306.png" alt="logo"> </p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Java/ASCII 160 空格" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/09/Web后台/Java/ASCII 160 空格/" class="article-date">
+      <time datetime="2018-01-09T13:24:12.000Z" itemprop="datePublished">2018-01-09</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/09/Web后台/Java/ASCII 160 空格/">Ascii 160空格问题</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><blockquote>
+<p>获取从http传输过来的字符串的时候，碰到解析字符串不能分割字符串的情况<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String str = doc.get(<span class="number">0</span>); <span class="comment">// str = "江西省 赣州市"</span></div><div class="line">String [] area = str.spilt(<span class="string">"\\s+"</span>);</div></pre></td></tr></table></figure></p>
+</blockquote>
+<p>运行上面的代码的时候发现不能截取字符串, 初步怀疑是编码问题，然而经过验证发现并不是,然后就通过字符串截取成 char 字符发现，该char字符ASCII是160,<br>马上查找资料发现是空格分两种编码格式: 1: 普通的空格,ASCII码为32  2:第二种是 网页上的 &amp;nbsp 空格,ASCII为160, 才发现空格也是有多种情况</p>
+<p>解决方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 需要将ASCII为160的空格转成普通的空格</span></div><div class="line">str = str.replaceAll(<span class="string">"[\\s\\u00A0]+"</span>, <span class="string">" "</span>);</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/数据库/Mysql 如何设置字段自动获取当前时间" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/12/17/Web后台/数据库/Mysql 如何设置字段自动获取当前时间/" class="article-date">
+      <time datetime="2017-12-17T03:15:12.000Z" itemprop="datePublished">2017-12-17</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/12/17/Web后台/数据库/Mysql 如何设置字段自动获取当前时间/">Mysql 如何设置字段自动获取当前时间</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>应用场景：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、在数据表中，要记录每条数据是什么时候创建的，不需要应用程序去特意记录，而由数据数据库获取当前时间自动记录创建时间；</div><div class="line"></div><div class="line">2、在数据库中，要记录每条数据是什么时候修改的，不需要应用程序去特意记录，而由数据数据库获取当前时间自动记录修改时间；</div></pre></td></tr></table></figure></p>
+<p>实现方式:<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">--修改CreateTime 设置默认时间 CURRENT_TIMESTAMP </span></div><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="string">`table_name`</span></div><div class="line"><span class="keyword">MODIFY</span> <span class="keyword">COLUMN</span>  <span class="string">`created_date`</span> datetime <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span> ;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">--修改 UpdateTime 设置 默认时间 CURRENT_TIMESTAMP   设置更新时间为 ON UPDATE CURRENT_TIMESTAMP </span></div><div class="line"></div><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="string">`table_name`</span></div><div class="line"><span class="keyword">MODIFY</span> <span class="keyword">COLUMN</span> <span class="string">`last_modified_date`</span> <span class="keyword">timestamp</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span> ;</div></pre></td></tr></table></figure></p>
+<p>转自：<a href="https://www.cnblogs.com/lhj588/p/4245719.html" target="_blank" rel="external">https://www.cnblogs.com/lhj588/p/4245719.html</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/">db</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/数据库/Druid Monitor" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/12/11/Web后台/数据库/Druid Monitor/" class="article-date">
+      <time datetime="2017-12-11T02:24:12.000Z" itemprop="datePublished">2017-12-11</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/12/11/Web后台/数据库/Druid Monitor/">Druid Monitor</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="Druid-Monitor监控JavaSE和JavaWeb"><a href="#Druid-Monitor监控JavaSE和JavaWeb" class="headerlink" title="Druid Monitor监控JavaSE和JavaWeb"></a>Druid Monitor监控JavaSE和JavaWeb</h2><p>效果图:<br><img src="/images/server/数据库/druidMonitor.png" alt="logo"> </p>
+<p><a href="http://blog.csdn.net/binglovezi/article/details/50610269" target="_blank" rel="external">http://blog.csdn.net/binglovezi/article/details/50610269</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid/">druid</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Maven/maven 骨架" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/11/18/Web后台/Maven/maven 骨架/" class="article-date">
+      <time datetime="2017-11-18T13:58:45.000Z" itemprop="datePublished">2017-11-18</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/11/18/Web后台/Maven/maven 骨架/">Maven 41种骨架</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>Maven 的41种骨架功能介绍<br> …&gt;mvn archetype:generate<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">1: internal -&gt; appfuse-basic-jsf (创建一个基于Hibernate，Spring和JSF的Web应用程序的原型) </div><div class="line">2: internal -&gt; appfuse-basic-spring (创建一个基于Hibernate，Spring和Spring MVC的Web应用程序的原型) </div><div class="line">3: internal -&gt; appfuse-basic-struts (创建一个基于Hibernate，Spring和Struts 2的Web应用程序的原型) </div><div class="line">4: internal -&gt; appfuse-basic-tapestry (创建一个基于Hibernate, Spring 和 Tapestry 4的Web应用程序的原型) </div><div class="line">5: internal -&gt; appfuse-core (创建一个基于 Hibernate and Spring 和 XFire的jar应用程序的原型) </div><div class="line">6: internal -&gt; appfuse-modular-jsf (创建一个基于 Hibernate，Spring和JSF的模块化应用原型) </div><div class="line">7: internal -&gt; appfuse-modular-spring (创建一个基于 Hibernate, Spring 和 Spring MVC 的模块化应用原型) </div><div class="line">8: internal -&gt; appfuse-modular-struts (创建一个基于 Hibernate, Spring 和 Struts 2 的模块化应用原型) </div><div class="line">9: internal -&gt; appfuse-modular-tapestry (创建一个基于 Hibernate, Spring 和 Tapestry 4 的模块化应用原型) </div><div class="line">10: internal -&gt; maven-archetype-j2ee-simple (一个简单的J2EE的Java应用程序) </div><div class="line">11: internal -&gt; maven-archetype-marmalade-mojo (一个Maven的 插件开发项目 using marmalade) </div><div class="line">12: internal -&gt; maven-archetype-mojo (一个Maven的Java插件开发项目) </div><div class="line">13: internal -&gt; maven-archetype-portlet (一个简单的portlet应用程序) </div><div class="line">14: internal -&gt; maven-archetype-profiles () </div><div class="line">15: internal -&gt; maven-archetype-quickstart () </div><div class="line">16: internal -&gt; maven-archetype-site-simple (简单的网站生成项目) </div><div class="line">17: internal -&gt; maven-archetype-site (更复杂的网站项目) </div><div class="line">18: internal -&gt; maven-archetype-webapp (一个简单的Java Web应用程序) </div><div class="line">19: internal -&gt; jini-service-archetype (Archetype for Jini service project creation) </div><div class="line">20: internal -&gt; softeu-archetype-seam (JSF+Facelets+Seam Archetype) </div><div class="line">21: internal -&gt; softeu-archetype-seam-simple (JSF+Facelets+Seam (无残留) 原型) </div><div class="line">22: internal -&gt; softeu-archetype-jsf (JSF+Facelets 原型) </div><div class="line">23: internal -&gt; jpa-maven-archetype (JPA 应用程序) </div><div class="line">24: internal -&gt; spring-osgi-bundle-archetype (Spring-OSGi 原型) </div><div class="line">25: internal -&gt; confluence-plugin-archetype (Atlassian 聚合插件原型) </div><div class="line">26: internal -&gt; jira-plugin-archetype (Atlassian JIRA 插件原型) </div><div class="line">27: internal -&gt; maven-archetype-har (Hibernate 存档) </div><div class="line">28: internal -&gt; maven-archetype-sar (JBoss 服务存档) </div><div class="line">29: internal -&gt; wicket-archetype-quickstart (一个简单的Apache Wicket的项目) </div><div class="line">30: internal -&gt; scala-archetype-simple (一个简单的scala的项目) </div><div class="line">31: internal -&gt; lift-archetype-blank (一个 blank/empty liftweb 项目) </div><div class="line">32: internal -&gt; lift-archetype-basic (基本（liftweb）项目) </div><div class="line">33: internal -&gt; cocoon-22-archetype-block-plain ([http://cocoapacorg2/maven-plugins/]) </div><div class="line">34: internal -&gt; cocoon-22-archetype-block ([http://cocoapacorg2/maven-plugins/]) </div><div class="line">35: internal -&gt; cocoon-22-archetype-webapp ([http://cocoapacorg2/maven-plugins/]) </div><div class="line">36: internal -&gt; myfaces-archetype-helloworld (使用MyFaces的一个简单的原型) </div><div class="line">37: internal -&gt; myfaces-archetype-helloworld-facelets (一个使用MyFaces和Facelets的简单原型) </div><div class="line">38: internal -&gt; myfaces-archetype-trinidad (一个使用MyFaces和Trinidad的简单原型) </div><div class="line">39: internal -&gt; myfaces-archetype-jsfcomponents (一种使用MyFaces创建定制JSF组件的简单的原型) </div><div class="line">40: internal -&gt; gmaven-archetype-basic (Groovy的基本原型) </div><div class="line">41: internal -&gt; gmaven-archetype-mojo (Groovy mojo 原型)</div></pre></td></tr></table></figure></p>
+<p>原文: <a href="https://www.cnblogs.com/iusmile/archive/2012/11/14/2770118.html" target="_blank" rel="external">https://www.cnblogs.com/iusmile/archive/2012/11/14/2770118.html</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/server/">server</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/Spring Aop" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/11/18/Web后台/Spring/Spring Aop/" class="article-date">
+      <time datetime="2017-11-18T07:47:45.000Z" itemprop="datePublished">2017-11-18</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/11/18/Web后台/Spring/Spring Aop/">Spring Aop</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h2 id="Spring-Aop"><a href="#Spring-Aop" class="headerlink" title="Spring Aop"></a>Spring Aop</h2><h3 id="一-概念"><a href="#一-概念" class="headerlink" title="一: 概念"></a>一: 概念</h3><h4 id="1-什么是AOP"><a href="#1-什么是AOP" class="headerlink" title="1. 什么是AOP"></a>1. 什么是AOP</h4><p>在软件业，AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期动态代理实现程序功能的统一维护的一种技术。AOP是OOP的延续，是软件开发中的一个热点，也是Spring框架中的一个重要内容，是函数式编程的一种衍生范型。</p>
+<h4 id="2-为什么要用Aop"><a href="#2-为什么要用Aop" class="headerlink" title="2. 为什么要用Aop"></a>2. 为什么要用Aop</h4><p>利用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的可重用性，同时提高了开发的效率。在不改变原有方法的基础添加一些功能 , 比如:日志记录，性能统计，安全控制，事务处理，异常处理等等。</p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2017/11/18/Web后台/Spring/Spring Aop/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/mybatis/mybatis笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/11/14/Web后台/mybatis/mybatis笔记/" class="article-date">
+      <time datetime="2017-11-14T13:59:44.000Z" itemprop="datePublished">2017-11-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/11/14/Web后台/mybatis/mybatis笔记/">myBatis笔记</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="mybatis-foreach标签"><a href="#mybatis-foreach标签" class="headerlink" title="mybatis foreach标签"></a>mybatis foreach标签</h3><blockquote>
+<p>foreach 标签中 item属性名如果和其他参数中同名(如以下代码:item=”id” 和 if test=”id != null” 同名),即使没有传入id参数,SQL也会执行 AND id = #{id}</p>
+<h4 id="mapper文件"><a href="#mapper文件" class="headerlink" title="mapper文件:"></a>mapper文件:</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"findPageList"</span> <span class="attr">parameterType</span>=<span class="string">"map"</span> <span class="attr">resultType</span>=<span class="string">"user"</span>&gt;</span></div><div class="line">    SELECT *</div><div class="line">    FROM user</div><div class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"IN_id != null"</span>&gt;</span></div><div class="line">            id IN</div><div class="line">            <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"IN_id"</span> <span class="attr">index</span>=<span class="string">"index"</span> <span class="attr">item</span>=<span class="string">"id"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">","</span> <span class="attr">close</span>=<span class="string">")"</span>&gt;</span></div><div class="line">                #&#123;id&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"id != null"</span>&gt;</span></div><div class="line">          AND id = #&#123;id&#125;</div><div class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="dao层"><a href="#dao层" class="headerlink" title="dao层"></a>dao层</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function">List&lt;User&gt; <span class="title">findPageList</span><span class="params">(Map&lt;String, Object&gt; map)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Test</div><div class="line">public void test2() &#123;</div><div class="line">    Map<span class="tag">&lt;<span class="name">String,</span> <span class="attr">Object</span>&gt;</span> map = new HashMap<span class="tag">&lt;<span class="name">String,</span> <span class="attr">Object</span>&gt;</span>();</div><div class="line">    List<span class="tag">&lt;<span class="name">Integer</span>&gt;</span> idList = new ArrayList<span class="tag">&lt;<span class="name">Integer</span>&gt;</span>();</div><div class="line">    idList.add(1);</div><div class="line">    idList.add(4);</div><div class="line">    idList.add(5);</div><div class="line">    map.put("IN_id", idList);</div><div class="line">    userMapper.findPageList(map);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">==&gt;  Preparing: SELECT * <span class="function">FROM user WHERE id <span class="title">IN</span> <span class="params">( ? , ? , ? )</span> AND id </span>= ? </div><div class="line">==&gt; Parameters: <span class="number">1</span>(Integer), <span class="number">4</span>(Integer), <span class="number">5</span>(Integer), <span class="number">5</span>(Integer)</div><div class="line">&lt;==      Total: <span class="number">1</span></div></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+    </nav>
+  
+
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 songshuiyang<a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a>
+            </div>
+            <div class="footer-right">
+
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+    <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+</footer>
+
+    </div>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 4;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

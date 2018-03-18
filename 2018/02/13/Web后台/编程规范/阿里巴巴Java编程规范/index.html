@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="HuKlM4kUBb"/>
+  <meta name="keywords" contect="博客,个人博客,JAVA,宋水阳个人博客,宋水阳" />
+  <meta name="description" contect="宋水阳个人博客"/>
+  <meta name="author" contect="songshuiyang"/>
+  
+  
+  
+  
+  <title>阿里巴巴Java编程规范 | 宋水阳个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言：关于《阿里巴巴Java开发手册》    你是否曾因Java代码规范版本纷杂而无所适从？ 你是否想过代码规范能将系统故障率降低20%？ 你是否曾因团队代码风格迥异而协同困难？ 你是否正在review一些原本可以避免的故障？ 你是否无法确定自己的代码足够健壮？">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里巴巴Java编程规范">
+<meta property="og:url" content="http://www.songshuiyang.site/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言：关于《阿里巴巴Java开发手册》    你是否曾因Java代码规范版本纷杂而无所适从？ 你是否想过代码规范能将系统故障率降低20%？ 你是否曾因团队代码风格迥异而协同困难？ 你是否正在review一些原本可以避免的故障？ 你是否无法确定自己的代码足够健壮？">
+<meta property="og:updated_time" content="2018-02-26T12:34:49.085Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里巴巴Java编程规范">
+<meta name="twitter:description" content="前言：关于《阿里巴巴Java开发手册》    你是否曾因Java代码规范版本纷杂而无所适从？ 你是否想过代码规范能将系统故障率降低20%？ 你是否曾因团队代码风格迥异而协同困难？ 你是否正在review一些原本可以避免的故障？ 你是否无法确定自己的代码足够健壮？">
+  
+    <link rel="alternative" href="/atom.xml" title="宋水阳个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">songshuiyang</a></h1>
+        </hgroup>
+        
+        
+            <form>
+                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
+            </form>
+            <div id="local-search-result"></div>
+        
+        
+            <script type="text/javascript">
+                (function() {
+                    'use strict';
+                    function getMatchData(keyword, data) {
+                        var matchData = [];
+                        for(var i =0;i<data.length;i++){
+                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
+                                matchData.push(data[i])
+                        }
+                        return matchData;
+                    }
+                    var $input = $('#local-search-input');
+                    var $resultContent = $('#local-search-result');
+                    $input.keyup(function(){
+                        $.ajax({
+                            url: '/search.json',
+                            dataType: "json",
+                            success: function( json ) {
+                                var str='<ul class=\"search-result-list\">';                
+                                var keyword = $input.val().trim().toLowerCase();
+                                $resultContent.innerHTML = "";
+                                if ($input.val().trim().length <= 0) {
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                }
+                                var results = getMatchData(keyword, json);
+                                if(results.length === 0){
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                } 
+                                for(var i =0; i<results.length; i++){
+                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
+                                }
+                                str += "</ul>";
+                                $resultContent.empty();
+                                $resultContent.append(str);
+                                $('#switch-area').hide();
+                            }
+                        });
+                    });
+                })();
+            </script>
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/client/">Web前端</a></li>
+                        
+                            <li><a  href="/categories/server/">Web后端</a></li>
+                        
+                            <li><a  href="/categories/技术/">技术</a></li>
+                        
+                            <li><a  href="/categories/随笔/">随笔</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
+                            
+                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
+                            
+                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 11.25px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net">csdn</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.zhihu.com">知乎</a>
+                    
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一只默默充电的小码农</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">songshuiyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">songshuiyang</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/client/">Web前端</a></li>
+                
+                    <li><a href="/categories/server/">Web后端</a></li>
+                
+                    <li><a href="/categories/技术/">技术</a></li>
+                
+                    <li><a href="/categories/随笔/">随笔</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Web后台/编程规范/阿里巴巴Java编程规范" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/" class="article-date">
+      <time datetime="2018-02-13T01:54:12.000Z" itemprop="datePublished">2018-02-13</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      阿里巴巴Java编程规范
+    </h1>
+  
+
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><center>关于《阿里巴巴Java开发手册》</center>
+
+
+
+<p>你是否曾因Java代码规范版本纷杂而无所适从？</p>
+<p>你是否想过代码规范能将系统故障率降低20%？</p>
+<p>你是否曾因团队代码风格迥异而协同困难？</p>
+<p>你是否正在review一些原本可以避免的故障？</p>
+<p>你是否无法确定自己的代码足够健壮？ </p>
+<a id="more"></a>
+<h4 id="码出高效，码出质量！"><a href="#码出高效，码出质量！" class="headerlink" title="码出高效，码出质量！"></a>码出高效，码出质量！</h4><p>相比C++代码规范业界已经达成共识，Java代码规范业界比较混乱，我们期待这次发布的Java代码规范能够给业界带来一个标准，促使整体行业代码规范水平得到提高，最终能够帮助企业和开发者提升代码质量和降低代码故障率。</p>
+<h4 id="阿里出品，质量保证！"><a href="#阿里出品，质量保证！" class="headerlink" title="阿里出品，质量保证！"></a>阿里出品，质量保证！</h4><p>阿里Java技术团队一手打造出Dubbo、JStorm、Fastjson等诸多流行开源框架，部分已成为Apache基金会孵化项目；</p>
+<p>阿里在Java后端领域支撑起全球访问量最大的服务器集群；</p>
+<p>Java代码构建的阿里双11业务系统订单处理能力达到17.5万笔/秒；</p>
+<p>到目前已累计数亿行高并发、高稳定性的最佳Java代码实践；</p>
+<p>……</p>
+<p>此次公开的Java开发手册正是出自这样的团队，近万名阿里Java技术精英的经验总结，并经历了多次大规模一线实战检验及完善，铸就了这本高含金量的阿里Java开发手册。该手册以Java开发者为中心视角，划分为编程规约、异常日志规约、MYSQL规约、工程规约、安全规约五大块，再根据内容特征，细分成若干二级子目录。根据约束力强弱和故障敏感性，规约依次分为强制、推荐、参考三大类。此套规范不仅能让代码一目了然， 更有助于加强团队分工与合作、真正提升效率。 </p>
+<h4 id="无规矩不成方圆-无规范不能协作"><a href="#无规矩不成方圆-无规范不能协作" class="headerlink" title="无规矩不成方圆 无规范不能协作"></a>无规矩不成方圆 无规范不能协作</h4><p>众所周知，制订交通法规表面上是要限制行车权，实际上是保障公众的人身安全。试想如果没有限速，没有红绿灯，没有规定靠右行驶，谁还敢上路行驶。 </p>
+<p>同理，对软件来说，适当的规范和标准绝不是消灭代码内容的创造性、优雅性，而是限制过度个性化，以一种普遍认可的方式一起做事，降低故障率，提升协作效率。开发手册详细列举如何开发更加高效，更加容错，更加有协作性，力求知其然，更知其不然，结合正反例，提高代码质量。比如，异常日志处理时的各种不规范行为；集合转换的各种坑；创建线程池出现的等待队列OOM等。 </p>
+<h4 id="阿里技术资深大咖联袂推荐"><a href="#阿里技术资深大咖联袂推荐" class="headerlink" title="阿里技术资深大咖联袂推荐"></a>阿里技术资深大咖联袂推荐</h4><p>阿里高级研究员多隆：工程师对于代码，一定要“精益求精”，不论从性能，还是简洁优雅，都要具备“精益求精”的工匠精神，认真打磨自己的作品。 </p>
+<p>阿里研究员毕玄：一个优秀的工程师和一个普通工程师的区别，不是现在满天飞的架构图，他的功底就是体现在他写的每一行代码上。 </p>
+<p>阿里研究员玄难：代码是软件工程里面的产品设计、系统架构设计等工作的最后承载体，代码的质量决定了一切工作的成败。 </p>
+<p>阿里巴巴B2B事业群CTO李纯：好的软件产品离不开工程师高质量的代码及相互间顺畅的沟通与合作。简单，适用的代码规约背后所传递的是技术上的追求卓越、协同合作的精神，是每个技术团队不可缺失的重要利器。 </p>
+<p>阿里研究员、HipHop作者：赵海平（花名：福贝）：程序员是创造个性化作品的艺术家，但同时也是需要团队合作的工种。个性化应尽量表现在代码效率和算法方面，牺牲小我，成就大我。</p>
+<h4 id="拥抱规范，远离伤害！"><a href="#拥抱规范，远离伤害！" class="headerlink" title="拥抱规范，远离伤害！"></a>拥抱规范，远离伤害！</h4><p>开发的同学们赶紧行动起来，遵守代码规范，你好，我好，大家好！</p>
+<h5 id="传送门"><a href="#传送门" class="headerlink" title="传送门"></a>传送门</h5><ol>
+<li>原文: <a href="https://yq.aliyun.com/articles/69327?spm=5176.100239.blogcont69327.158.xUUgiz&amp;p=2#comments" target="_blank" rel="external">https://yq.aliyun.com/articles/69327?spm=5176.100239.blogcont69327.158.xUUgiz&amp;p=2#comments</a></li>
+<li>「阿里巴巴编码规范」考试认证 : <a href="https://edu.aliyun.com/certification/cldt02" target="_blank" rel="external">https://edu.aliyun.com/certification/cldt02</a> </li>
+<li>点击下载《阿里巴巴Java开发手册》(纪念版): <a href="https://yq.aliyun.com/attachment/download/?id=4942" target="_blank" rel="external">https://yq.aliyun.com/attachment/download/?id=4942</a></li>
+<li>IDE插件下载 : <a href="https://github.com/alibaba/p3c" target="_blank" rel="external">https://github.com/alibaba/p3c</a></li>
+</ol>
+<h3 id="以下记录以下自己需要注意的一些规范-遵守代码规范，你好，我好，大家好！"><a href="#以下记录以下自己需要注意的一些规范-遵守代码规范，你好，我好，大家好！" class="headerlink" title="以下记录以下自己需要注意的一些规范, 遵守代码规范，你好，我好，大家好！"></a>以下记录以下自己需要注意的一些规范, <code>遵守代码规范，你好，我好，大家好！</code></h3><h4 id="编程规约"><a href="#编程规约" class="headerlink" title="编程规约"></a>编程规约</h4><h4 id="命名风格"><a href="#命名风格" class="headerlink" title="命名风格"></a>命名风格</h4><ol>
+<li><p>【强制】</p>
+<p>  抽象类命名使用 Abstract 或 Base 开头； </p>
+<p>  异常类命名使用 Exception 结尾； </p>
+<p>  测试类命名以它要测试的类的名称开始，以 Test 结尾。</p>
+</li>
+<li><p>【强制】常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长。</p>
+<p>正例： <code>MAX_STOCK_COUNT</code></p>
+<p>反例： <code>MAX_COUNT</code></p>
+</li>
+<li><p>【强制】 POJO 类中布尔类型的变量，都不要加 is，否则部分框架解析会引起序列化错误。</p>
+<p>反例： 定义为基本数据类型 Boolean isDeleted； 的属性，它的方法也是 isDeleted()， RPC 框架在反向解析的时候， “以为”对应的属性名称是 deleted，导致属性获取不到，进而抛出异</p>
+<pre><code>常。
+</code></pre></li>
+<li><p>【强制】杜绝完全不规范的缩写， 避免望文不知义。</p>
+<p>反例： AbstractClass“缩写” 命名成 AbsClass； condition“缩写” 命名成 condi，此类随<br>意缩写严重降低了代码的可阅读性。</p>
+</li>
+<li><p>【推荐】为了达到代码自解释的目标，任何自定义编程元素在命名时，使用尽量完整的单词<br>组合来表达其意。</p>
+<p>正例： 从远程仓库拉取代码的类命名为 PullCodeFromRemoteRepository。</p>
+<p>反例： 变量 int a; 的随意命名方式。</p>
+</li>
+<li><p>【推荐】接口类中的方法和属性不要加任何修饰符号（public 也不要加） ，保持代码的简洁<br>性，并加上有效的 Javadoc 注释。尽量不要在接口里定义变量，如果一定要定义变量，肯定是<br>与接口方法相关，并且是整个应用的基础常量。</p>
+<p>正例： 接口方法签名： void f();</p>
+<p>接口基础常量表示： String COMPANY = “alibaba”;</p>
+<p>反例： 接口方法定义： public abstract void f();</p>
+<p>说明： JDK8 中接口允许有默认实现，那么这个 default 方法，是对所有实现类都有价值的默<br>认实现。</p>
+</li>
+<li><p>【参考】枚举类名建议带上 Enum 后缀，枚举成员名称需要全大写，单词间用下划线隔开。<br>说明： 枚举其实就是特殊的常量类，且构造方法被默认强制是私有。</p>
+<p>正例： 枚举名字为 ProcessStatusEnum 的成员名称： SUCCESS / UNKOWN_REASON。</p>
+</li>
+<li><p>【参考】各层命名规约：</p>
+<blockquote>
+<p>A) Service/DAO 层方法命名规约</p>
+</blockquote>
+<p>1） 获取单个对象的方法用 get 做前缀。</p>
+<p>2） 获取多个对象的方法用 list 做前缀。</p>
+<p>3） 获取统计值的方法用 count 做前缀。</p>
+<p>4） 插入的方法用 save/insert 做前缀。</p>
+<p>5） 删除的方法用 remove/delete 做前缀。</p>
+<p>6） 修改的方法用 update 做前缀。</p>
+<blockquote>
+<p>B) 领域模型命名规约</p>
+</blockquote>
+<p>1） 数据对象： xxxDO， xxx 即为数据表名。</p>
+<p>2） 数据传输对象： xxxDTO， xxx 为业务领域相关的名称。</p>
+<p>3） 展示对象： xxxVO， xxx 一般为网页名称。</p>
+<p>4） POJO 是 DO/DTO/BO/VO 的统称，禁止命名成 xxxPOJO。</p>
+</li>
+</ol>
+<h4 id="常量定义"><a href="#常量定义" class="headerlink" title="常量定义"></a>常量定义</h4><ol>
+<li><p>【强制】不允许任何魔法值（即未经定义的常量） 直接出现在代码中。</p>
+<p>反例： String key = “Id#taobao_” + tradeId;</p>
+<p>cache.put(key, value);</p>
+</li>
+<li><p>【推荐】不要使用一个常量类维护所有常量， 按常量功能进行归类，分开维护。</p>
+<p>说明： 大而全的常量类，非得使用查找功能才能定位到修改的常量，不利于理解和维护。</p>
+<p>正例： 缓存相关常量放在类 CacheConsts 下； 系统配置相关常量放在类 ConfigConsts 下。</p>
+<h4 id="代码格式"><a href="#代码格式" class="headerlink" title="代码格式"></a>代码格式</h4><p>1.示例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">    <span class="comment">// 缩进 4 个空格</span></div><div class="line">    String say = <span class="string">"hello"</span>;</div><div class="line">    <span class="comment">// 运算符的左右必须有一个空格</span></div><div class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;阿里巴巴 Java 开发手册</div><div class="line">    <span class="comment">// 关键词 if 与括号之间必须有一个空格，括号内的 f 与左括号， 0 与右括号不需要空格</span></div><div class="line">    <span class="keyword">if</span> (flag == <span class="number">0</span>) &#123;</div><div class="line">        System.out.println(say);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 左大括号前加空格且不换行；左大括号后换行</span></div><div class="line">    <span class="keyword">if</span> (flag == <span class="number">1</span>) &#123;</div><div class="line">        System.out.println(<span class="string">"world"</span>);</div><div class="line">        <span class="comment">// 右大括号前换行，右大括号后有 else，不用换行</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        System.out.println(<span class="string">"ok"</span>);</div><div class="line">        <span class="comment">// 在右大括号后直接结束，则必须换行</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>2.【强制】 注释的双斜线与注释内容之间有且仅有一个空格。</p>
+<p>   正例： // 注释内容， 注意在//和注释内容之间有一个空格。</p>
+<p>3.【强制】单行字符数限制不超过 120 个，超出需要换行，换行时遵循如下原则：</p>
+<p>   1） 第二行相对第一行缩进 4 个空格，从第三行开始，不再继续缩进，参考示例。</p>
+<p>   2） 运算符与下文一起换行。</p>
+<p>   3） 方法调用的点符号与下文一起换行。</p>
+<p>   4） 方法调用时，多个参数， 需要换行时， 在逗号后进行。</p>
+<p>   5） 在括号前不要换行，见反例。</p>
+<p>   正例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line"><span class="comment">// 超过 120 个字符的情况下，换行缩进 4 个空格， 点号和方法名称一起换行</span></div><div class="line">sb.append(<span class="string">"zi"</span>).append(<span class="string">"xin"</span>)...</div><div class="line">    .append(<span class="string">"huang"</span>)...</div><div class="line">    .append(<span class="string">"huang"</span>)...</div><div class="line">    .append(<span class="string">"huang"</span>);</div></pre></td></tr></table></figure></p>
+<p>   反例：<br>   <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line"><span class="comment">// 超过 120 个字符的情况下，不要在括号前换行</span></div><div class="line">sb.append(<span class="string">"zi"</span>).append(<span class="string">"xin"</span>)...append</div><div class="line">    (<span class="string">"huang"</span>);</div><div class="line"><span class="comment">// 参数很多的方法调用可能超过 120 个字符， 不要在逗号前换行</span></div><div class="line">method(args1, args2, args3, ...</div><div class="line">   , argsX);</div></pre></td></tr></table></figure></p>
+<p>4.【强制】方法参数在定义和传入时，多个参数逗号后边必须加空格。</p>
+<p>   正例： 下例中实参的”a”,后边必须要有一个空格。</p>
+<p>   method(“a”, “b”, “c”);<br>5.【推荐】方法体内的执行语句组、变量的定义语句组、不同的业务逻辑之间或者不同的语义<br>   之间插入一个空行。相同业务逻辑和语义之间不需要插入空行。<br>   说明： 没有必要插入多个空行进行隔开</p>
+<h4 id="注释规范"><a href="#注释规范" class="headerlink" title="注释规范"></a>注释规范</h4><ol>
+<li><p>【强制】类、类属性、类方法的注释必须使用 Javadoc 规范，使用/<em>*内容</em>/格式，不得使用<br>// xxx 方式。</p>
+<p>说明： 在 IDE 编辑窗口中， Javadoc 方式会提示相关注释，生成 Javadoc 可以正确输出相应注<br>释； 在 IDE 中，工程调用方法时，不进入方法即可悬浮提示方法、参数、返回值的意义，提高<br>阅读效率</p>
+</li>
+<li><p>【强制】所有的抽象方法（包括接口中的方法） 必须要用 Javadoc 注释、除了返回值、参数、<br>异常说明外，还必须指出该方法做什么事情，实现什么功能。</p>
+<p>说明： 对子类的实现要求，或者调用注意事项，请一并说明</p>
+</li>
+<li><p>【强制】所有的类都必须添加创建者和创建日期。</p>
+</li>
+<li><p>【推荐】与其“半吊子”英文来注释，不如用中文注释把问题说清楚。专有名词与关键字保持<br>英文原文即可</p>
+</li>
+<li><p>【推荐】代码修改的同时，注释也要进行相应的修改，尤其是参数、返回值、异常、核心逻辑<br>等的修改</p>
+<p>【推荐】代码修改的同时，注释也要进行相应的修改，尤其是参数、返回值、异常、核心逻辑<br>等的修改</p>
+</li>
+<li><p>【推荐】代码修改的同时，注释也要进行相应的修改，尤其是参数、返回值、异常、核心逻辑<br>等的修改</p>
+</li>
+<li><p>【参考】特殊注释标记，请注明标记人与标记时间。注意及时处理这些标记，通过标记扫描，<br>经常清理此类标记。线上故障有时候就是来源于这些标记处的代码。<br>1） 待办事宜（TODO） :（标记人，标记时间， [预计处理时间]）<br>表示需要实现，但目前还未实现的功能。这实际上是一个 Javadoc 的标签，目前的 Javadoc<br>还没有实现，但已经被广泛使用。只能应用于类，接口和方法（因为它是一个 Javadoc 标签） 。<br>2） 错误，不能工作（FIXME） :（标记人，标记时间， [预计处理时间]）<br>在注释中用 FIXME 标记某代码是错误的，而且不能工作，需要及时纠正的情况。</p>
+<h4 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h4></li>
+<li>【强制】有 try 块放到了事务代码中， catch 异常后，如果需要回滚事务，一定要注意手动回<br>滚事务。</li>
+<li>【强制】有 try 块放到了事务代码中， catch 异常后，如果需要回滚事务，一定要注意手动回<br>滚事务。</li>
+</ol>
+<h4 id="MySQL-数据库-建表规约"><a href="#MySQL-数据库-建表规约" class="headerlink" title="MySQL 数据库 建表规约"></a>MySQL 数据库 建表规约</h4><p>1.【强制】表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint<br>（1 表示是， 0 表示否） 。</p>
+<p>说明： 任何字段如果为非负数，必须是 unsigned。</p>
+<p>正例： 表达逻辑删除的字段名 is_deleted， 1 表示删除， 0 表示未删除</p>
+<p>2.【强制】 varchar 是可变长字符串，不预先分配存储空间，长度不要超过 5000，如果存储长<br>    度大于此值，定义字段类型为 text，独立出来一张表，用主键来对应，避免影响其它字段索<br>    引效率。<br>3.【强制】表必备三字段： id, gmt_create, gmt_modified。</p>
+<p>说明： 其中 id 必为主键，类型为 unsigned bigint、单表时自增、步长为 1。 gmt_create,<br>gmt_modified 的类型均为 date<em>time 类型，前者现在时表示主动创建，后者过去分词表示被<br>   动更新<br>4.【推荐】表的命名最好是加上“业务名称</em>表的作用”。<br>  正例： alipay_task / force_project / trade_config<br>5.【强制】业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。<br>   说明： 不要以为唯一索引影响了 insert 速度，这个速度损耗可以忽略，但提高查找速度是明<br>   显的； 另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必<br>   然有脏数据产生<br>6.【强制】超过三个表禁止 join。需要 join 的字段，数据类型必须绝对一致； 多表关联查询时，<br>  保证被关联的字段需要有索引。<br>  说明： 即使双表 join 也要注意表索引、 SQL 性能</p>
+<h4 id="MySQL-数据库-SQL语句"><a href="#MySQL-数据库-SQL语句" class="headerlink" title="MySQL 数据库 SQL语句"></a>MySQL 数据库 SQL语句</h4><ol>
+<li>【强制】不要使用 count(列名)或 count(常量)来替代 count(<em>)， count(</em>)是 SQL92 定义的<br>标准统计行数的语法，跟数据库无关，跟 NULL 和非 NULL 无关。<br>说明： count(*)会统计值为 NULL 的行，而 count(列名)不会统计此列为 NULL 值的行</li>
+</ol>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a  href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/">阿里巴巴Java编程规范</a></p>
+        <p><span>文章作者:</span><a  href="/" title="访问 songshuiyang 的个人博客">songshuiyang</a></p>
+        <p><span>发布时间:</span>2018年02月13日 - 09时54分</p>
+        <p><span>最后更新:</span>2018年02月26日 - 20时34分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/" title="阿里巴巴Java编程规范">http://www.songshuiyang.site/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://www.songshuiyang.site/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/　　作者: songshuiyang" title=""></span>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a  href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Spring mvc 前后台传值中文乱码问题
+        
+      </div>
+    </a>
+  
+  
+    <a  href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">解决CSS和JS文件的客户端缓存问题</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言："><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#码出高效，码出质量！"><span class="toc-number">1.1.</span> <span class="toc-text">码出高效，码出质量！</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#阿里出品，质量保证！"><span class="toc-number">1.2.</span> <span class="toc-text">阿里出品，质量保证！</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#无规矩不成方圆-无规范不能协作"><span class="toc-number">1.3.</span> <span class="toc-text">无规矩不成方圆 无规范不能协作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#阿里技术资深大咖联袂推荐"><span class="toc-number">1.4.</span> <span class="toc-text">阿里技术资深大咖联袂推荐</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#拥抱规范，远离伤害！"><span class="toc-number">1.5.</span> <span class="toc-text">拥抱规范，远离伤害！</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#传送门"><span class="toc-number">1.5.1.</span> <span class="toc-text">传送门</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#以下记录以下自己需要注意的一些规范-遵守代码规范，你好，我好，大家好！"><span class="toc-number">2.</span> <span class="toc-text">以下记录以下自己需要注意的一些规范, 遵守代码规范，你好，我好，大家好！</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#编程规约"><span class="toc-number">2.1.</span> <span class="toc-text">编程规约</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#命名风格"><span class="toc-number">2.2.</span> <span class="toc-text">命名风格</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#常量定义"><span class="toc-number">2.3.</span> <span class="toc-text">常量定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#代码格式"><span class="toc-number">2.4.</span> <span class="toc-text">代码格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注释规范"><span class="toc-number">2.5.</span> <span class="toc-text">注释规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#异常处理"><span class="toc-number">2.6.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MySQL-数据库-建表规约"><span class="toc-number">2.7.</span> <span class="toc-text">MySQL 数据库 建表规约</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MySQL-数据库-SQL语句"><span class="toc-number">2.8.</span> <span class="toc-text">MySQL 数据库 SQL语句</span></a></li></ol></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        
+<!-- 如果您配置过sourceid，建议在div标签中配置sourceid、cid(分类id)，没有请忽略  -->
+<div id="cyEmoji" role="cylabs" data-use="emoji"></div>
+<!-- 代码2：用来读取评论框配置，此代码需放置在代码1之后。 -->
+<!-- 如果当前页面有评论框，代码2请勿放置在评论框代码之前。 -->
+<!-- 如果页面同时使用多个实验室项目，以下代码只需要引入一次，只配置上面的div标签即可 -->
+<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cytf5fPKF"></script>
+
+<!--PC版-->
+<div id="SOHUCS" sid="songshuiyang"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cytf5fPKF',
+conf: 'prod_ee3a22e2c13174e193691fbc93e3cbc8'
+});
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a  href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/" title="上一篇: Spring mvc 前后台传值中文乱码问题">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a  href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/" title="下一篇: 解决CSS和JS文件的客户端缓存问题">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/08/Web后台/Linux/linux笔记/">Linux 命令笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/08/Web后台/Linux/Docker笔记/">Docker笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/07/Web后台/数据库/mysql 用户及权限管理/">mysql 用户及权限管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/07/Web后台/Linux/Centos7安装Mysql5.7/">Centos7安装Mysql5.7.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/05/Web后台/相关技术/百度富文本框编辑器Ueditor的使用/">百度富文本框编辑器Ueditor的使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/04/Web后台/相关技术/基于wordspress搭建个人博客系统/">基于wordspress搭建个人博客系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/Web后台/数据库/Mysql 数据类型/">Mysql 数据类型.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/Web前端/animate/">　animate.css</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/">Spring mvc 前后台传值中文乱码问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/">阿里巴巴Java编程规范</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/">解决CSS和JS文件的客户端缓存问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/">生成二维码图片(base64格式)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/">根据手机区号获取城市地理位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/">根据IP获取城市地理位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/20/Web后台/编译构建部署版本工具/阿里云服务器搭建Javaweb运行环境/">阿里云服务器搭建Javaweb运行环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/Web后台/Spring/spring-boot/spring-boot/">Spring boot</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/">组合注解</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/">异步方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/">Spring 事件监听</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/">注解Value, Spring EL</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web前端/npm/npm scripts/">npm scripts</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/11/Web后台/支付/接入银联支付接口/">接入银联支付接口</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/11/Web后台/支付/接入微信支付接口/">接入微信扫码支付接口</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/">PC网站上如何接入支付宝网关支付功能</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/Web后台/Java/ASCII 160 空格/">Ascii 160空格问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/17/Web后台/数据库/Mysql 如何设置字段自动获取当前时间/">Mysql 如何设置字段自动获取当前时间</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/11/Web后台/数据库/Druid Monitor/">Druid Monitor</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/18/Web后台/Maven/maven 骨架/">Maven 41种骨架</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/18/Web后台/Spring/Spring Aop/">Spring Aop</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Web后台/mybatis/mybatis笔记/">myBatis笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Web后台/Spring/Spring aop execution/">Spring aop execution</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Web后台/Spring/Spring Task/">Spring Task</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/24/Web后台/Spring/学习笔记/">Spring</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/Web后台/编译构建部署版本工具/git/git初始配置/">Git初始配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/14/Web后台/编译构建部署版本工具/如何修改Git commit的信息/">编译构建部署版本工具</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/14/Web后台/Hibernate/Hibernate Validator/">Hibernate Validator</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/14/Web后台/编译构建部署版本工具/grandle/">编译构建部署版本工具</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/08/技术/github/">github</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/05/Web前端/计算属性/">计算属性</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/05/Web前端/v-model和v-bind的区别/">v-model v-bind</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/03/Web前端/Vue/">Vue.js</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/技术/其他插件/">其他插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/随笔/网易云/">嵌入网易云插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/技术/增加畅言功能/">增加畅言功能</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/Web前端/nodeJs/">nodeJs</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/29/Web后台/Java/枚举类/">枚举类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/29/Web后台/Spring/Assert 的学习/">Spring Assert</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/24/Web后台/Hibernate/hibernate问题集合/">Hibernate 问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/23/Web后台/Hibernate/Hibernate/">Hibernate 例子</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/23/Web后台/Hibernate/Hibernate笔记/">Hibernate笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/Web后台/Java/Java位运算/">Java位运算</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/Web后台/Java/Java遍历Map/">Java 遍历Map</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/Web后台/Java/Java移位运算/">Java移位运算</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/21/Web后台/Java/Java基础/">Java基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/21/Web后台/相关技术/常见的编码方式/">常见的编码方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/19/Web后台/Struts2/Struts2 问题总结/">Struts2 问题总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/16/Web后台/Struts2/Struts2 的简单实例/">Struts2 的简单实例</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/15/Web后台/JspServlet/web.xml中配置JSP属性/">web.xml中配置JSP属性</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/14/Web后台/JspServlet/Servlet/">Servlet</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/14/Web后台/JspServlet/JSP脚本中的九个内置对象/">JSP脚本中的九个内置对象</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/11/Web后台/velocity/Spring mvc整合velocity/">Spring mvc整合velocity</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/Web后台/JavaEE服务器/常用的JavaEE服务器/">常用的JavaEE服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/Web后台/Java学习路线/">Java学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/随笔/新建博客方法/">新建博客方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/Web前端/前端学习技术/">前端学习技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/09/随笔/hexo问题总结/">Hexo问题总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/09/随笔/第一篇博客/">第一篇博客</a></li></ul>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        // $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+    <script>
+        
+    </script>
+
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 songshuiyang<a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a>
+            </div>
+            <div class="footer-right">
+
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+    <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+</footer>
+
+    </div>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 4;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

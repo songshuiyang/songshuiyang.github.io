@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="HuKlM4kUBb"/>
+  <meta name="keywords" contect="博客,个人博客,JAVA,宋水阳个人博客,宋水阳" />
+  <meta name="description" contect="宋水阳个人博客"/>
+  <meta name="author" contect="songshuiyang"/>
+  
+  
+  
+  
+  <title>宋水阳个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="宋水阳个人博客">
+<meta property="og:url" content="http://www.songshuiyang.site/page/2/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="宋水阳个人博客">
+  
+    <link rel="alternative" href="/atom.xml" title="宋水阳个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+    
+    
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: true,
+          isPost: false,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">songshuiyang</a></h1>
+        </hgroup>
+        
+        
+            <form>
+                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
+            </form>
+            <div id="local-search-result"></div>
+        
+        
+            <script type="text/javascript">
+                (function() {
+                    'use strict';
+                    function getMatchData(keyword, data) {
+                        var matchData = [];
+                        for(var i =0;i<data.length;i++){
+                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
+                                matchData.push(data[i])
+                        }
+                        return matchData;
+                    }
+                    var $input = $('#local-search-input');
+                    var $resultContent = $('#local-search-result');
+                    $input.keyup(function(){
+                        $.ajax({
+                            url: '/search.json',
+                            dataType: "json",
+                            success: function( json ) {
+                                var str='<ul class=\"search-result-list\">';                
+                                var keyword = $input.val().trim().toLowerCase();
+                                $resultContent.innerHTML = "";
+                                if ($input.val().trim().length <= 0) {
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                }
+                                var results = getMatchData(keyword, json);
+                                if(results.length === 0){
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                } 
+                                for(var i =0; i<results.length; i++){
+                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
+                                }
+                                str += "</ul>";
+                                $resultContent.empty();
+                                $resultContent.append(str);
+                                $('#switch-area').hide();
+                            }
+                        });
+                    });
+                })();
+            </script>
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/client/">Web前端</a></li>
+                        
+                            <li><a  href="/categories/server/">Web后端</a></li>
+                        
+                            <li><a  href="/categories/技术/">技术</a></li>
+                        
+                            <li><a  href="/categories/随笔/">随笔</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
+                            
+                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
+                            
+                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 11.25px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net">csdn</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.zhihu.com">知乎</a>
+                    
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一只默默充电的小码农</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">songshuiyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">songshuiyang</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/client/">Web前端</a></li>
+                
+                    <li><a href="/categories/server/">Web后端</a></li>
+                
+                    <li><a href="/categories/技术/">技术</a></li>
+                
+                    <li><a href="/categories/随笔/">随笔</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
+                    
+                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap">
+  
+    <article id="post-Web前端/CSS和JS文件的客户端缓存问题" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/" class="article-date">
+      <time datetime="2018-02-10T03:48:12.000Z" itemprop="datePublished">2018-02-10</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/">解决CSS和JS文件的客户端缓存问题</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>做项目的时候，发现自己修改了一个css文件但样式并没有应用，查看http请求(如下图)，注意这个参数<code>Status Code:200 OK (from disk cache)</code> , 说明文件是是之前浏览器缓存的文件，浏览器并没有请求我们新改的文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Request URL:http:<span class="comment">//localhost:8080/static/layui/build/css/app.cssRequest Method:GET</span></div><div class="line">Status Code:<span class="number">200</span> OK (from disk cache)</div><div class="line">Remote Address:<span class="number">127.0</span>.0.1:<span class="number">8080</span></div><div class="line">Referrer Policy:no-referrer-when-downgrade</div></pre></td></tr></table></figure></p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><blockquote>
+<p>发现问题了，现在就是要解决如果是服务器js css等文件修改了，怎样让浏览器能够请求我们最新的文件, 通过查看其他人的解决方法，还有看了一下大厂<code>百度, 淘宝 , 新浪</code> 对这个问题的处理，总结了一下下面几种方法:</p>
+</blockquote>
+<h4 id="方法一-在css文件上-js文件后面加上版本号-v-1245365"><a href="#方法一-在css文件上-js文件后面加上版本号-v-1245365" class="headerlink" title="方法一: 在css文件上, js文件后面加上版本号?v=1245365"></a>方法一: 在css文件上, js文件后面加上版本号<code>?v=1245365</code></h4><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"$&#123;ctx&#125;static/admin/css/main.css?v=1245365"</span> <span class="attr">media</span>=<span class="string">"all"</span> /&gt;</span></div></pre></td></tr></table></figure>
+<ol>
+<li>如果是经常更新的css文件版本号可以取当前时间的时间戳 <code>v=1518237859338</code> ,这样就可以每次都获取到最新的文件，但缺点就是每次刷新页面都会请求该文件，在项目开发过程中可以使用这种方式</li>
+<li>如果是更新频率不高的的文件，可以取: <code>v=20180210</code> , 这样的话刷新页面就不会每次请求这个文件了，可以减轻服务器的压力 </li>
+<li>如果是项目稳定了基本没有改动了，可以取一个固定值:<code>v=0.0.1</code></li>
+</ol>
+<h3 id="方法二：一个版本一个文件夹"><a href="#方法二：一个版本一个文件夹" class="headerlink" title="方法二：一个版本一个文件夹"></a>方法二：一个版本一个文件夹</h3><blockquote>
+<p>淘宝的做法: 用一个文件 <code>6.2.3</code><br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://g.alicdn.com/kg/??component/6.2.3/extension/content-box/xtpl/view.xtpl-min.js</div></pre></td></tr></table></figure></p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/client/">client</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/">css</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/相关技术/生成二维码图片(base64格式)" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/" class="article-date">
+      <time datetime="2018-01-29T13:00:12.000Z" itemprop="datePublished">2018-01-29</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/">生成二维码图片(base64格式)</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="生成二维码图片-base64格式"><a href="#生成二维码图片-base64格式" class="headerlink" title="生成二维码图片(base64格式)"></a>生成二维码图片(base64格式)</h3>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/相关技术/根据手机区号获取城市地理位置" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/" class="article-date">
+      <time datetime="2018-01-29T12:55:12.000Z" itemprop="datePublished">2018-01-29</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/">根据手机区号获取城市地理位置</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="根据手机区号获取城市地理位置"><a href="#根据手机区号获取城市地理位置" class="headerlink" title="根据手机区号获取城市地理位置"></a>根据手机区号获取城市地理位置</h3><p>httpAPI:  <a href="http://www.ip138.com:8080/search.asp?action=mobile&amp;mobile=%s" target="_blank" rel="external">http://www.ip138.com:8080/search.asp?action=mobile&amp;mobile=%s</a></p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/相关技术/根据IP获取城市地理位置" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/" class="article-date">
+      <time datetime="2018-01-29T12:54:12.000Z" itemprop="datePublished">2018-01-29</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/">根据IP获取城市地理位置</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="根据IP获取城市地理位置"><a href="#根据IP获取城市地理位置" class="headerlink" title="根据IP获取城市地理位置"></a>根据IP获取城市地理位置</h3><p>使用的是百度查询的api，试过到淘宝的API, 但是淘宝做了访问次数限制，如果批量查询的话直接timeout</p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/编译构建部署版本工具/阿里云服务器搭建Javaweb运行环境" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/20/Web后台/编译构建部署版本工具/阿里云服务器搭建Javaweb运行环境/" class="article-date">
+      <time datetime="2018-01-20T07:07:12.000Z" itemprop="datePublished">2018-01-20</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/20/Web后台/编译构建部署版本工具/阿里云服务器搭建Javaweb运行环境/">阿里云服务器搭建Javaweb运行环境</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h3><p>借助阿里云的云翼计划的梯子买了个 阿里的ESC云服务器，学生专享优惠10块钱/月，原价一百多一个月，超级划算，当然服务器配置对于我们这些学生捣鼓捣鼓还是满足的。</p>
+<p>配置：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th style="text-align:right">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU</td>
+<td style="text-align:right">Intel Xeon E5-2682 v4 1核</td>
+</tr>
+<tr>
+<td>内存</td>
+<td style="text-align:right">2G 最新一代DDR4 内存</td>
+</tr>
+<tr>
+<td>带宽</td>
+<td style="text-align:right">1M带宽 VPC专有网络, I/O 优化</td>
+</tr>
+<tr>
+<td>系统盘</td>
+<td style="text-align:right">40G系统盘高效云盘</td>
+</tr>
+</tbody>
+</table>
+<p>系统：CentOS 7.3 64位(可选ubuntu, windows service)</p>
+<p>ESC: 云服务器 ECS（Elastic Compute Service）是一种弹性可伸缩的计算服务，助您降低 IT 成本，提升运维效率，使您更专注于核心业务创新</p>
+<h3 id="二：搭建步骤"><a href="#二：搭建步骤" class="headerlink" title="二：搭建步骤"></a>二：搭建步骤</h3><h4 id="2-1-购买-ESC云服务器"><a href="#2-1-购买-ESC云服务器" class="headerlink" title="2.1 购买 ESC云服务器"></a>2.1 购买 ESC云服务器</h4><p>购买链接:<a href="https://www.aliyun.com/product/ecs?spm=5176.8499797.765261.239.9Uf4pK" target="_blank" rel="external">https://www.aliyun.com/product/ecs?spm=5176.8499797.765261.239.9Uf4pK</a>, 当然如果是学生的话可以使用上面的云翼计划(<a href="https://promotion.aliyun.com/ntms/campus2017.html?spm=5176.8789780.765430.4.246c0fa5bHX2oK)优惠的方式购买，当时购买还送了(CDN流量包)和(OSS资源包" target="_blank" rel="external">https://promotion.aliyun.com/ntms/campus2017.html?spm=5176.8789780.765430.4.246c0fa5bHX2oK)优惠的方式购买，当时购买还送了(CDN流量包)和(OSS资源包</a>) , 良心企业!!! </p>
+<h4 id="2-2-查看系统参数，及配置参数"><a href="#2-2-查看系统参数，及配置参数" class="headerlink" title="2.2 查看系统参数，及配置参数"></a>2.2 查看系统参数，及配置参数</h4><p>下单完成之后在 控制台-&gt; 云服务器 ECS -&gt; 实例 可看到系统自动为我们创建的 服务器实例, 里面提供了一些系统参数，还展示了系统的一些运行状态参数。</p>
+<p>我们需要的参数</p>
+<p>1.公网ip</p>
+<blockquote>
+<p>访问实例需要用</p>
+</blockquote>
+<p>2.远程连接密码  </p>
+<blockquote>
+<p>这个在第一次使用浏览器远程连接主机的时候，阿里云会提供，记住只出现一次，可以用笔记本记录下来，以后每次用浏览器远程控制访问主机的时候需要提供</p>
+</blockquote>
+<p>3.登入系统的密码 </p>
+<p>在实例信息面板中有一个重置密码的功能，第一次需要自己设置，这个是主机系统的登入密码。 一开始用浏览器远程连接主机的时候，进入到了命令行界面, 要求输入密码的时候一直输入的是远程连接密码，导致一直登不进，查了一下资料发现系统登入密码需要自己创建, 登入用户 <code>root</code></p>
+<p>4.安全组配置</p>
+<p>安全组配置是阿里云在系统做了一次网关过滤，外网访问主机，主机访问外网都需要配置这个参数，否则访问不到, 安全组配置分为入口和出口</p>
+<p>入口配置:</p>
+<ul>
+<li>把一些常用端口打开:<code>80 22(ssh, sftp) 23(telnet)</code> , 使用xshell和ftp都是使用的是22端口</li>
+<li>添加 <code>全部 ICMP</code> 协议类型, 端口范围为<code>-1/-1</code>, 没有这条规则则ping 不通主机</li>
+</ul>
+<h4 id="2-3-连接主机进行配置"><a href="#2-3-连接主机进行配置" class="headerlink" title="2.3 连接主机进行配置"></a>2.3 连接主机进行配置</h4><p>有了上面的配置就可以通过远程连接主机了, 我是使用<code>xshell</code> 进行远程连接, 使用<code>fileZilla</code>进行传输文件</p>
+<h5 id="2-3-1-配置-Java环境"><a href="#2-3-1-配置-Java环境" class="headerlink" title="2.3.1 配置 Java环境"></a>2.3.1 配置 Java环境</h5><p>参考: <a href="https://www.cnblogs.com/sxdcgaq8080/p/7492426.html" target="_blank" rel="external">https://www.cnblogs.com/sxdcgaq8080/p/7492426.html</a></p>
+<p>注: 如果出现<code>export =&#39; not a valid identifier</code><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">原因就是你修改的 /etc/profile 文件里</div><div class="line">你加过空格</div><div class="line"></div><div class="line">我的代码如下：</div><div class="line">export JAVA_HOME = /usr/java/jdk1.7.0_75</div><div class="line">export PATH = $JAVA_HOME/bin:$PATH</div><div class="line">export CLASSPATH = .:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</div><div class="line"></div><div class="line">修改为如下：</div><div class="line">export JAVA_HOME=/usr/java/jdk1.7.0_75</div><div class="line">export PATH=$JAVA_HOME/bin:$PATH</div><div class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</div><div class="line">将等号两边的空格去掉就可以了 ，大家要注意</div></pre></td></tr></table></figure></p>
+<h5 id="2-3-2-配置-Tomcat环境"><a href="#2-3-2-配置-Tomcat环境" class="headerlink" title="2.3.2 配置 Tomcat环境"></a>2.3.2 配置 Tomcat环境</h5><p>参考： <a href="http://www.linuxidc.com/Linux/2015-09/123118.htm" target="_blank" rel="external">http://www.linuxidc.com/Linux/2015-09/123118.htm</a></p>
+<p>注:<br>1.在ECS上启动tomcat后，第一次访问时间特别长<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">2017-04-25 10:16:04 INFO com.world.socket.ServerSocketListener  </div><div class="line">25-Apr-2017 10:18:48.171 INFO [localhost-startStop-1] org.apache.catalina.util.SessionIdGeneratorBase.createSecureRandom CreaecureRandom instance for session ID generation using [SHA1PRNG] took [163,521] milliseconds. </div><div class="line"> </div><div class="line"> </div><div class="line">这个session ID引起的 </div><div class="line"></div><div class="line">解决办法：在JVM环境中解决 </div><div class="line">打开$JAVA_PATH/jre/lib/security/java.security这个文件，找到下面的内容：securerandom.source=file:/dev/urandom </div><div class="line">替换成securerandom.source=file:/dev/./urandom</div></pre></td></tr></table></figure></p>
+<p>2.Centos打开、关闭、结束tomcat，及查看tomcat运行日志<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">启动：一般是执行sh tomcat/bin/startup.sh </div><div class="line">停止：一般是执行sh tomcat/bin/shutdown.sh脚本命令 </div><div class="line">查看：执行ps -ef |grep tomcat 输出如下 *** 5144 。。。等等.Bootstrap start 说明tomcat已经正常启动， 5144 就为进程号 pid = 5144 </div><div class="line">杀死：<span class="keyword">kill</span> <span class="number">-9</span> <span class="number">5144</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">------------------------linux下实时查看tomcat运行日志-------------------------</span></div><div class="line"><span class="number">1</span>、先切换到：cd tomcat/<span class="keyword">logs</span></div><div class="line"><span class="number">2</span>、tail -f catalina.out</div><div class="line"><span class="number">3</span>、这样运行时就可以实时查看运行日志了</div><div class="line">Ctrl+c 是退出tail命令。</div></pre></td></tr></table></figure></p>
+<h5 id="2-3-3-配置-Mysql环境"><a href="#2-3-3-配置-Mysql环境" class="headerlink" title="2.3.3 配置 Mysql环境"></a>2.3.3 配置 Mysql环境</h5><p>参考： <a href="http://www.linuxidc.com/Linux/2016-09/134992.htm" target="_blank" rel="external">http://www.linuxidc.com/Linux/2016-09/134992.htm</a></p>
+<h4 id="2-4-投放项目文件"><a href="#2-4-投放项目文件" class="headerlink" title="2.4 投放项目文件"></a>2.4 投放项目文件</h4><p>使用<code>fileZilla</code>进行传输文件<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Tomcat中部署web项目的三种方式：</div><div class="line">1.部署解包的webapp目录</div><div class="line">2.打包的war文件</div><div class="line">3.Manager Web应用程序</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/spring-boot/spring-boot" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/15/Web后台/Spring/spring-boot/spring-boot/" class="article-date">
+      <time datetime="2018-01-15T12:01:44.000Z" itemprop="datePublished">2018-01-15</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/15/Web后台/Spring/spring-boot/spring-boot/">Spring boot</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="什么是Spring-boot"><a href="#什么是Spring-boot" class="headerlink" title="什么是Spring-boot"></a>什么是Spring-boot</h3><p>Spring Boot是由Pivotal团队提供的全新框架，其设计目的是用来简化新Spring应用的初始搭建以及开发过程(习惯优于配置)。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。通过这种方式，Spring Boot致力于在蓬勃发展的快速应用开发领域(rapid application development)成为领导者。</p>
+<h3 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h3><ol>
+<li>独立运行的Spring项目,可以以jar包的形式独立运行, 运行一个Spring boot项目只要通过 <code>java -jar xx.jar</code></li>
+<li>内嵌Tomcat, Jetty, Undertow 无需以war包形式部署项目</li>
+<li>提供starter简化Maven配置</li>
+<li>自动配置Bean, 极大的减少了我们要使用的配置</li>
+</ol>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>快速构建项目</li>
+<li>对主流开发框架的无配置集成</li>
+<li>项目可独立运行</li>
+<li>提供运行时的应用监控</li>
+</ol>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/spring-boot/组合注解" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/" class="article-date">
+      <time datetime="2018-01-14T14:25:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/">组合注解</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="组合注解"><a href="#组合注解" class="headerlink" title="组合注解"></a>组合注解</h3><blockquote>
+<p>用一个注解表示其他注解</p>
+</blockquote>
+<p>CombinationAnnocation.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.lang.annotation.*;</div><div class="line"></div><div class="line"><span class="meta">@Target</span>(ElementType.TYPE)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="meta">@Documented</span></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> CombinationAnnocation &#123;</div><div class="line">    String [] value() <span class="keyword">default</span> &#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Config.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="meta">@CombinationAnnocation</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Application.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext(Config.class);</div><div class="line">        context.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/spring-boot/异步方法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/" class="article-date">
+      <time datetime="2018-01-14T14:25:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/">异步方法</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="异步方法"><a href="#异步方法" class="headerlink" title="异步方法"></a>异步方法</h3><blockquote>
+<p>加入@Async注解可以让普通方法变为异步方法</p>
+</blockquote>
+<p>AsyncTaskService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.Async;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</div><div class="line"></div><div class="line"><span class="meta">@Service</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncTaskService</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 异步方法</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> i</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Async</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">task1</span><span class="params">(Integer i)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行异步任务"</span> + i);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Async</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">task2</span><span class="params">(Integer i)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行异步任务+1 "</span> + (i + <span class="number">1</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Config.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.AsyncConfigurer;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.EnableAsync;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.concurrent.Executor;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.smart.boot.asyn"</span>)</div><div class="line"><span class="meta">@EnableAsync</span> <span class="comment">// 开启异步任务支持</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> <span class="keyword">implements</span> <span class="title">AsyncConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获得一个基于线程池的 taskExecutor</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Executor <span class="title">getAsyncExecutor</span><span class="params">()</span> </span>&#123;</div><div class="line">        ThreadPoolTaskExecutor taskExecutor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</div><div class="line">        taskExecutor.setCorePoolSize(<span class="number">5</span>);</div><div class="line">        taskExecutor.setMaxPoolSize(<span class="number">10</span>);</div><div class="line">        taskExecutor.setQueueCapacity(<span class="number">25</span>);</div><div class="line">        taskExecutor.initialize();</div><div class="line">        <span class="keyword">return</span> taskExecutor;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> AsyncUncaughtExceptionHandler <span class="title">getAsyncUncaughtExceptionHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Application.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext(Config.class);</div><div class="line">        AsyncTaskService asyncTaskService = context.getBean(AsyncTaskService.class);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">            asyncTaskService.task1(i);</div><div class="line">            asyncTaskService.task2(i);</div><div class="line">        &#125;</div><div class="line">        context.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/spring-boot/spring 事件监听" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/" class="article-date">
+      <time datetime="2018-01-14T12:01:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/">Spring 事件监听</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="Spring-事件监听"><a href="#Spring-事件监听" class="headerlink" title="Spring 事件监听"></a>Spring 事件监听</h3><h4 id="spring的事件-Application-Event"><a href="#spring的事件-Application-Event" class="headerlink" title="spring的事件(Application Event)"></a>spring的事件(Application Event)</h4><p><strong>为Bean与Bean之间的消息通信提供了支持, 当第一个Bean处理完一件事之后, 需要另外一个Bean知道并能做出相应的处理, 这时可以通过事件监听来讲一个Bean监听另一个Bean</strong></p>
+<h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><blockquote>
+<p>Spring 事件监听是观察者模式的一种实现 </p>
+</blockquote>
+<p>意图：定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。</p>
+<p>主要解决：一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合，保证高度的协作。</p>
+<p>何时使用：一个对象（目标对象）的状态发生改变，所有的依赖对象（观察者对象）都将得到通知，进行广播通知。</p>
+<p>如何解决：使用面向对象技术，可以将这种依赖关系弱化。</p>
+<blockquote>
+<p>事件驱动模型简介</p>
+</blockquote>
+<p>事件驱动模型也就是我们常说的观察者，或者发布-订阅模型；理解它的几个关键点：</p>
+<ol>
+<li>首先是一种对象间的一对多的关系；最简单的如交通信号灯，信号灯是目标（一方），行人注视着信号灯（多方）；</li>
+<li>当目标发送改变（发布），观察者（订阅者）就可以接收到改变；</li>
+<li>观察者如何处理（如行人如何走，是快走/慢走/不走，目标不会管的），目标无需干涉；所以就松散耦合了它们之间的关系。</li></ol>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/spring-boot/注解Value" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/" class="article-date">
+      <time datetime="2018-01-14T08:01:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/">注解Value, Spring EL</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="Value用法及配合Spring-EL使用"><a href="#Value用法及配合Spring-EL使用" class="headerlink" title="@Value用法及配合Spring EL使用"></a>@Value用法及配合Spring EL使用</h3><h4 id="spring支持-Value注解获取一些配置信息及加载资源"><a href="#spring支持-Value注解获取一些配置信息及加载资源" class="headerlink" title="spring支持@Value注解获取一些配置信息及加载资源"></a>spring支持@Value注解获取一些配置信息及加载资源</h4><blockquote>
+<p>ELConfig.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.el;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.io.IOUtils;</div><div class="line"><span class="keyword">import</span> org.slf4j.Logger;</div><div class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</div><div class="line"><span class="keyword">import</span> org.springframework.context.support.PropertySourcesPlaceholderConfigurer;</div><div class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</div><div class="line"><span class="keyword">import</span> org.springframework.core.io.Resource;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.smart.boot.el"</span>)</div><div class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:el.properties"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ELConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入普通字符串</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"songsy"</span>)</div><div class="line">    <span class="keyword">private</span> String str;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 通过el注入操作系统属性</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"# &#123;systemProperties['os.name']&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String osName;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 表达式结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"#&#123; T(java.lang.Math).random() * 100.0 &#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> randomNumber;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入其他Bean属性</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"#&#123;eLService.another&#125;"</span>)</div><div class="line">    <span class="keyword">public</span> String fromAnothor;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入文件资源</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"classpath:el.properties"</span>)</div><div class="line">    <span class="keyword">private</span> Resource testFile;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入网站资源</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"http://www.baidu.com"</span>)</div><div class="line">    <span class="keyword">private</span> Resource testUrl;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入配置文件</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;book.name&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String bookName;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 环境配置</span></div><div class="line"><span class="comment">     * 环境在容器中是一个抽象的集合，是指应用环境的2个方面: profiles和 properties.</span></div><div class="line"><span class="comment">     * profile:</span></div><div class="line"><span class="comment">     * 配置是一个被命名的，bean定义的逻辑组，这些bean只有在给定的profile配置激活时才会注册到容器。不管是XML还是注解，</span></div><div class="line"><span class="comment">     * Beans都有可能指派给profile配置。Environment环境对象的作用，对于profiles配置来说，它能决定当前激活的是哪个profile配置，和哪个profile是默认。</span></div><div class="line"><span class="comment">     * Properties:</span></div><div class="line"><span class="comment">     * 扮演一个非常重要的角色,可能来源于一下源码变量:properties文件，JVM properties,system环境变量，JNDI, servlet context parameters上下文参数,</span></div><div class="line"><span class="comment">     * 专门的Properties对象，Maps等等。Environment对象的作用，对于properties来说，是提供给用户方便的服务接口，方便撰写配置、方便解析配置。</span></div><div class="line"><span class="comment">     * 作者：不迷失</span></div><div class="line"><span class="comment">     * 链接：https://www.jianshu.com/p/49e950b0b008</span></div><div class="line"><span class="comment">     * 來源：简书</span></div><div class="line"><span class="comment">     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    <span class="keyword">private</span> Environment environment;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 若使用<span class="doctag">@Value</span>注入, 则要配置一个PropertySourcesPlaceholderConfigurer</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PropertySourcesPlaceholderConfigurer <span class="title">placeholderConfigurer</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PropertySourcesPlaceholderConfigurer();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        logger.info(<span class="string">"str: "</span> + str);</div><div class="line">        logger.info(<span class="string">"osName: "</span> + osName);</div><div class="line">        logger.info(<span class="string">"randomNumber: "</span> + String.valueOf(randomNumber));</div><div class="line">        logger.info(<span class="string">"fromAnothor: "</span> + fromAnothor);</div><div class="line">        logger.info(<span class="string">"testFile: "</span> + IOUtils.toString(testFile.getInputStream()));</div><div class="line">        logger.info(<span class="string">"testUrl: "</span> + IOUtils.toString(testUrl.getInputStream()));</div><div class="line">        logger.info(<span class="string">"bookName: "</span> + bookName);</div><div class="line">        logger.info(<span class="string">"environment: "</span> + environment.getProperty(<span class="string">"book.author"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    </nav>
+  
+
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 songshuiyang<a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a>
+            </div>
+            <div class="footer-right">
+
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+    <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+</footer>
+
+    </div>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 4;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
