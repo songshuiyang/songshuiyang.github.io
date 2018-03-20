@@ -210,7 +210,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 11.25px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
                     </div>
                 </section>
                 
@@ -288,6 +288,78 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Web后台/Spring/spring-boot/注解Value" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/" class="article-date">
+      <time datetime="2018-01-14T08:01:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/">注解Value, Spring EL</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="Value用法及配合Spring-EL使用"><a href="#Value用法及配合Spring-EL使用" class="headerlink" title="@Value用法及配合Spring EL使用"></a>@Value用法及配合Spring EL使用</h3><h4 id="spring支持-Value注解获取一些配置信息及加载资源"><a href="#spring支持-Value注解获取一些配置信息及加载资源" class="headerlink" title="spring支持@Value注解获取一些配置信息及加载资源"></a>spring支持@Value注解获取一些配置信息及加载资源</h4><blockquote>
+<p>ELConfig.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.el;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.io.IOUtils;</div><div class="line"><span class="keyword">import</span> org.slf4j.Logger;</div><div class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</div><div class="line"><span class="keyword">import</span> org.springframework.context.support.PropertySourcesPlaceholderConfigurer;</div><div class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</div><div class="line"><span class="keyword">import</span> org.springframework.core.io.Resource;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.smart.boot.el"</span>)</div><div class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:el.properties"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ELConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入普通字符串</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"songsy"</span>)</div><div class="line">    <span class="keyword">private</span> String str;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 通过el注入操作系统属性</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"# &#123;systemProperties['os.name']&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String osName;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 表达式结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"#&#123; T(java.lang.Math).random() * 100.0 &#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> randomNumber;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入其他Bean属性</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"#&#123;eLService.another&#125;"</span>)</div><div class="line">    <span class="keyword">public</span> String fromAnothor;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入文件资源</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"classpath:el.properties"</span>)</div><div class="line">    <span class="keyword">private</span> Resource testFile;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入网站资源</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"http://www.baidu.com"</span>)</div><div class="line">    <span class="keyword">private</span> Resource testUrl;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入配置文件</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;book.name&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String bookName;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 环境配置</span></div><div class="line"><span class="comment">     * 环境在容器中是一个抽象的集合，是指应用环境的2个方面: profiles和 properties.</span></div><div class="line"><span class="comment">     * profile:</span></div><div class="line"><span class="comment">     * 配置是一个被命名的，bean定义的逻辑组，这些bean只有在给定的profile配置激活时才会注册到容器。不管是XML还是注解，</span></div><div class="line"><span class="comment">     * Beans都有可能指派给profile配置。Environment环境对象的作用，对于profiles配置来说，它能决定当前激活的是哪个profile配置，和哪个profile是默认。</span></div><div class="line"><span class="comment">     * Properties:</span></div><div class="line"><span class="comment">     * 扮演一个非常重要的角色,可能来源于一下源码变量:properties文件，JVM properties,system环境变量，JNDI, servlet context parameters上下文参数,</span></div><div class="line"><span class="comment">     * 专门的Properties对象，Maps等等。Environment对象的作用，对于properties来说，是提供给用户方便的服务接口，方便撰写配置、方便解析配置。</span></div><div class="line"><span class="comment">     * 作者：不迷失</span></div><div class="line"><span class="comment">     * 链接：https://www.jianshu.com/p/49e950b0b008</span></div><div class="line"><span class="comment">     * 來源：简书</span></div><div class="line"><span class="comment">     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    <span class="keyword">private</span> Environment environment;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 若使用<span class="doctag">@Value</span>注入, 则要配置一个PropertySourcesPlaceholderConfigurer</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PropertySourcesPlaceholderConfigurer <span class="title">placeholderConfigurer</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PropertySourcesPlaceholderConfigurer();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        logger.info(<span class="string">"str: "</span> + str);</div><div class="line">        logger.info(<span class="string">"osName: "</span> + osName);</div><div class="line">        logger.info(<span class="string">"randomNumber: "</span> + String.valueOf(randomNumber));</div><div class="line">        logger.info(<span class="string">"fromAnothor: "</span> + fromAnothor);</div><div class="line">        logger.info(<span class="string">"testFile: "</span> + IOUtils.toString(testFile.getInputStream()));</div><div class="line">        logger.info(<span class="string">"testUrl: "</span> + IOUtils.toString(testUrl.getInputStream()));</div><div class="line">        logger.info(<span class="string">"bookName: "</span> + bookName);</div><div class="line">        logger.info(<span class="string">"environment: "</span> + environment.getProperty(<span class="string">"book.author"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
   
     <article id="post-Web前端/npm/npm scripts" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -920,77 +992,6 @@
         <p class="article-more-link">
           <a   href="/2017/11/18/Web后台/Spring/Spring Aop/#more">查看更多 >></a>
         </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/mybatis/mybatis笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/11/14/Web后台/mybatis/mybatis笔记/" class="article-date">
-      <time datetime="2017-11-14T13:59:44.000Z" itemprop="datePublished">2017-11-14</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/11/14/Web后台/mybatis/mybatis笔记/">myBatis笔记</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h3 id="mybatis-foreach标签"><a href="#mybatis-foreach标签" class="headerlink" title="mybatis foreach标签"></a>mybatis foreach标签</h3><blockquote>
-<p>foreach 标签中 item属性名如果和其他参数中同名(如以下代码:item=”id” 和 if test=”id != null” 同名),即使没有传入id参数,SQL也会执行 AND id = #{id}</p>
-<h4 id="mapper文件"><a href="#mapper文件" class="headerlink" title="mapper文件:"></a>mapper文件:</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"findPageList"</span> <span class="attr">parameterType</span>=<span class="string">"map"</span> <span class="attr">resultType</span>=<span class="string">"user"</span>&gt;</span></div><div class="line">    SELECT *</div><div class="line">    FROM user</div><div class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"IN_id != null"</span>&gt;</span></div><div class="line">            id IN</div><div class="line">            <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"IN_id"</span> <span class="attr">index</span>=<span class="string">"index"</span> <span class="attr">item</span>=<span class="string">"id"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">","</span> <span class="attr">close</span>=<span class="string">")"</span>&gt;</span></div><div class="line">                #&#123;id&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"id != null"</span>&gt;</span></div><div class="line">          AND id = #&#123;id&#125;</div><div class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
-</blockquote>
-<h4 id="dao层"><a href="#dao层" class="headerlink" title="dao层"></a>dao层</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function">List&lt;User&gt; <span class="title">findPageList</span><span class="params">(Map&lt;String, Object&gt; map)</span></span>;</div></pre></td></tr></table></figure>
-<h4 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Test</div><div class="line">public void test2() &#123;</div><div class="line">    Map<span class="tag">&lt;<span class="name">String,</span> <span class="attr">Object</span>&gt;</span> map = new HashMap<span class="tag">&lt;<span class="name">String,</span> <span class="attr">Object</span>&gt;</span>();</div><div class="line">    List<span class="tag">&lt;<span class="name">Integer</span>&gt;</span> idList = new ArrayList<span class="tag">&lt;<span class="name">Integer</span>&gt;</span>();</div><div class="line">    idList.add(1);</div><div class="line">    idList.add(4);</div><div class="line">    idList.add(5);</div><div class="line">    map.put("IN_id", idList);</div><div class="line">    userMapper.findPageList(map);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">==&gt;  Preparing: SELECT * <span class="function">FROM user WHERE id <span class="title">IN</span> <span class="params">( ? , ? , ? )</span> AND id </span>= ? </div><div class="line">==&gt; Parameters: <span class="number">1</span>(Integer), <span class="number">4</span>(Integer), <span class="number">5</span>(Integer), <span class="number">5</span>(Integer)</div><div class="line">&lt;==      Total: <span class="number">1</span></div></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul>
-    </div>
-
       
       <div class="clearfix"></div>
     </div>

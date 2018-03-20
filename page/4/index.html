@@ -210,7 +210,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 11.25px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
                     </div>
                 </section>
                 
@@ -289,11 +289,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-Web后台/Spring/Spring aop execution" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Web后台/mybatis/mybatis笔记" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a  href="/2017/11/07/Web后台/Spring/Spring aop execution/" class="article-date">
-      <time datetime="2017-11-07T14:47:45.000Z" itemprop="datePublished">2017-11-07</time>
+      <a  href="/2017/11/14/Web后台/mybatis/mybatis笔记/" class="article-date">
+      <time datetime="2017-11-14T13:59:44.000Z" itemprop="datePublished">2017-11-14</time>
 </a>
 
     </div>
@@ -307,7 +307,7 @@
         
   
     <h1 itemprop="name">
-      <a  class="article-title" href="/2017/11/07/Web后台/Spring/Spring aop execution/">Spring aop execution</a>
+      <a  class="article-title" href="/2017/11/14/Web后台/mybatis/mybatis笔记/">myBatis笔记</a>
     </h1>
   
 
@@ -318,10 +318,13 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <blockquote>
-<p>execution() 是最常见的切点函数,语法形式为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">excution(&lt;修饰符模式&gt; ? &lt;返回类型模式&gt; &lt;方法名模式&gt;(&lt;参数模式&gt;) &lt;异常模式&gt;?)</div></pre></td></tr></table></figure></p>
+        <h3 id="mybatis-foreach标签"><a href="#mybatis-foreach标签" class="headerlink" title="mybatis foreach标签"></a>mybatis foreach标签</h3><blockquote>
+<p>foreach 标签中 item属性名如果和其他参数中同名(如以下代码:item=”id” 和 if test=”id != null” 同名),即使没有传入id参数,SQL也会执行 AND id = #{id}</p>
+<h4 id="mapper文件"><a href="#mapper文件" class="headerlink" title="mapper文件:"></a>mapper文件:</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"findPageList"</span> <span class="attr">parameterType</span>=<span class="string">"map"</span> <span class="attr">resultType</span>=<span class="string">"user"</span>&gt;</span></div><div class="line">    SELECT *</div><div class="line">    FROM user</div><div class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"IN_id != null"</span>&gt;</span></div><div class="line">            id IN</div><div class="line">            <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"IN_id"</span> <span class="attr">index</span>=<span class="string">"index"</span> <span class="attr">item</span>=<span class="string">"id"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">","</span> <span class="attr">close</span>=<span class="string">")"</span>&gt;</span></div><div class="line">                #&#123;id&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"id != null"</span>&gt;</span></div><div class="line">          AND id = #&#123;id&#125;</div><div class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
 </blockquote>
-          
+<h4 id="dao层"><a href="#dao层" class="headerlink" title="dao层"></a>dao层</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function">List&lt;User&gt; <span class="title">findPageList</span><span class="params">(Map&lt;String, Object&gt; map)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Test</div><div class="line">public void test2() &#123;</div><div class="line">    Map<span class="tag">&lt;<span class="name">String,</span> <span class="attr">Object</span>&gt;</span> map = new HashMap<span class="tag">&lt;<span class="name">String,</span> <span class="attr">Object</span>&gt;</span>();</div><div class="line">    List<span class="tag">&lt;<span class="name">Integer</span>&gt;</span> idList = new ArrayList<span class="tag">&lt;<span class="name">Integer</span>&gt;</span>();</div><div class="line">    idList.add(1);</div><div class="line">    idList.add(4);</div><div class="line">    idList.add(5);</div><div class="line">    map.put("IN_id", idList);</div><div class="line">    userMapper.findPageList(map);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">==&gt;  Preparing: SELECT * <span class="function">FROM user WHERE id <span class="title">IN</span> <span class="params">( ? , ? , ? )</span> AND id </span>= ? </div><div class="line">==&gt; Parameters: <span class="number">1</span>(Integer), <span class="number">4</span>(Integer), <span class="number">5</span>(Integer), <span class="number">5</span>(Integer)</div><div class="line">&lt;==      Total: <span class="number">1</span></div></pre></td></tr></table></figure>
       
     </div>
     
@@ -335,13 +338,9 @@
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul>
     </div>
 
-      
-        <p class="article-more-link">
-          <a   href="/2017/11/07/Web后台/Spring/Spring aop execution/#more">查看更多 >></a>
-        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -413,6 +412,78 @@
       
         <p class="article-more-link">
           <a   href="/2017/11/07/Web后台/Spring/Spring Task/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/Spring aop execution" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/11/07/Web后台/Spring/Spring aop execution/" class="article-date">
+      <time datetime="2017-11-07T14:47:45.000Z" itemprop="datePublished">2017-11-07</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/11/07/Web后台/Spring/Spring aop execution/">Spring aop execution</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <blockquote>
+<p>execution() 是最常见的切点函数,语法形式为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">excution(&lt;修饰符模式&gt; ? &lt;返回类型模式&gt; &lt;方法名模式&gt;(&lt;参数模式&gt;) &lt;异常模式&gt;?)</div></pre></td></tr></table></figure></p>
+</blockquote>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2017/11/07/Web后台/Spring/Spring aop execution/#more">查看更多 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -1017,84 +1088,6 @@
         <p>计算属性是基于它们的依赖进行缓存的。计算属性只有在它的相关依赖发生改变时才会重新求值。这就意味着只要 message 还没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数。</p>
 <p>这也同样意味着下面的计算属性将不再更新，因为 Date.now() 不是响应式依赖：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">computed: &#123;</div><div class="line">  now: function () &#123;</div><div class="line">    return Date.now()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">computed: &#123;</div><div class="line">  now: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">Date</span>.now()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/client/">client</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue/">vue</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web前端/v-model和v-bind的区别" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/10/05/Web前端/v-model和v-bind的区别/" class="article-date">
-      <time datetime="2017-10-05T02:12:12.000Z" itemprop="datePublished">2017-10-05</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/10/05/Web前端/v-model和v-bind的区别/">v-model v-bind</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>Mustache (双大括号写法)不能在 HTML 属性中使用，应使用 v-bind 指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;div v-bind:id=&quot;dynamicId&quot;&gt;&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>这对布尔值的属性也有效 —— 如果条件被求值为 false 的话该属性会被移除：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;button v-bind:disabled=&quot;someDynamicCondition&quot;&gt;Button&lt;/button&gt;</div></pre></td></tr></table></figure></p>
-<ol>
-<li><p>v-bind动态绑定指令，默认情况下标签自带属性的值是固定的，在为了能够动态的给这些属性添加值，可以使用v-bind:你要动态变化的值=”表达式”</p>
-</li>
-<li><p>v-bind用于绑定属性和数据 ，其缩写为“ : ” 也就是v-bind:id  === :id  </p>
-</li>
-<li><p>v-model用在表单控件上的，用于实现双向数据绑定，所以如果你用在除了表单控件以外的标签是没有任何效果的。</p>
-</li>
-</ol>
-<blockquote>
-<p>v-bind<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 绑定一个属性 --&gt;</div><div class="line">&lt;img v-bind:src=&quot;imageSrc&quot;&gt;</div><div class="line">&lt;!-- 缩写 --&gt;</div><div class="line">&lt;img :src=&quot;imageSrc&quot;&gt;</div><div class="line">&lt;!-- 内联字符串拼接 --&gt;</div><div class="line">&lt;img :src=&quot;&apos;/path/to/images/&apos; + fileName&quot;&gt;</div><div class="line">&lt;!-- class 绑定 --&gt;</div><div class="line">&lt;div :class=&quot;&#123; red: isRed &#125;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;div :class=&quot;[classA, classB]&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;div :class=&quot;[classA, &#123; classB: isB, classC: isC &#125;]&quot;&gt;</div><div class="line">&lt;!-- style 绑定 --&gt;</div><div class="line">&lt;div :style=&quot;&#123; fontSize: size + &apos;px&apos; &#125;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;div :style=&quot;[styleObjectA, styleObjectB]&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 绑定一个有属性的对象 --&gt;</div><div class="line">&lt;div v-bind=&quot;&#123; id: someProp, &apos;other-attr&apos;: otherProp &#125;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 通过 prop 修饰符绑定 DOM 属性 --&gt;</div><div class="line">&lt;div v-bind:text-content.prop=&quot;text&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- prop 绑定。“prop”必须在 my-component 中声明。--&gt;</div><div class="line">&lt;my-component :prop=&quot;someThing&quot;&gt;&lt;/my-component&gt;</div><div class="line">&lt;!-- 通过 $props 将父组件的 props 一起传给子组件 --&gt;</div><div class="line">&lt;child-component v-bind=&quot;$props&quot;&gt;&lt;/child-component&gt;</div><div class="line">&lt;!-- XLink --&gt;</div><div class="line">&lt;svg&gt;&lt;a :xlink:special=&quot;foo&quot;&gt;&lt;/a&gt;&lt;/svg&gt;</div></pre></td></tr></table></figure></p>
-</blockquote>
 
       
     </div>

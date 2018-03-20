@@ -210,7 +210,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 11.25px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
                     </div>
                 </section>
                 
@@ -289,6 +289,84 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Web前端/v-model和v-bind的区别" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/10/05/Web前端/v-model和v-bind的区别/" class="article-date">
+      <time datetime="2017-10-05T02:12:12.000Z" itemprop="datePublished">2017-10-05</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/10/05/Web前端/v-model和v-bind的区别/">v-model v-bind</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>Mustache (双大括号写法)不能在 HTML 属性中使用，应使用 v-bind 指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;div v-bind:id=&quot;dynamicId&quot;&gt;&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>这对布尔值的属性也有效 —— 如果条件被求值为 false 的话该属性会被移除：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;button v-bind:disabled=&quot;someDynamicCondition&quot;&gt;Button&lt;/button&gt;</div></pre></td></tr></table></figure></p>
+<ol>
+<li><p>v-bind动态绑定指令，默认情况下标签自带属性的值是固定的，在为了能够动态的给这些属性添加值，可以使用v-bind:你要动态变化的值=”表达式”</p>
+</li>
+<li><p>v-bind用于绑定属性和数据 ，其缩写为“ : ” 也就是v-bind:id  === :id  </p>
+</li>
+<li><p>v-model用在表单控件上的，用于实现双向数据绑定，所以如果你用在除了表单控件以外的标签是没有任何效果的。</p>
+</li>
+</ol>
+<blockquote>
+<p>v-bind<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 绑定一个属性 --&gt;</div><div class="line">&lt;img v-bind:src=&quot;imageSrc&quot;&gt;</div><div class="line">&lt;!-- 缩写 --&gt;</div><div class="line">&lt;img :src=&quot;imageSrc&quot;&gt;</div><div class="line">&lt;!-- 内联字符串拼接 --&gt;</div><div class="line">&lt;img :src=&quot;&apos;/path/to/images/&apos; + fileName&quot;&gt;</div><div class="line">&lt;!-- class 绑定 --&gt;</div><div class="line">&lt;div :class=&quot;&#123; red: isRed &#125;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;div :class=&quot;[classA, classB]&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;div :class=&quot;[classA, &#123; classB: isB, classC: isC &#125;]&quot;&gt;</div><div class="line">&lt;!-- style 绑定 --&gt;</div><div class="line">&lt;div :style=&quot;&#123; fontSize: size + &apos;px&apos; &#125;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;div :style=&quot;[styleObjectA, styleObjectB]&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 绑定一个有属性的对象 --&gt;</div><div class="line">&lt;div v-bind=&quot;&#123; id: someProp, &apos;other-attr&apos;: otherProp &#125;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 通过 prop 修饰符绑定 DOM 属性 --&gt;</div><div class="line">&lt;div v-bind:text-content.prop=&quot;text&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- prop 绑定。“prop”必须在 my-component 中声明。--&gt;</div><div class="line">&lt;my-component :prop=&quot;someThing&quot;&gt;&lt;/my-component&gt;</div><div class="line">&lt;!-- 通过 $props 将父组件的 props 一起传给子组件 --&gt;</div><div class="line">&lt;child-component v-bind=&quot;$props&quot;&gt;&lt;/child-component&gt;</div><div class="line">&lt;!-- XLink --&gt;</div><div class="line">&lt;svg&gt;&lt;a :xlink:special=&quot;foo&quot;&gt;&lt;/a&gt;&lt;/svg&gt;</div></pre></td></tr></table></figure></p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/client/">client</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue/">vue</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Web前端/Vue" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -363,71 +441,6 @@
 
 
   
-    <article id="post-技术/其他插件" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/10/01/技术/其他插件/" class="article-date">
-      <time datetime="2017-10-01T06:31:12.000Z" itemprop="datePublished">2017-10-01</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/10/01/技术/其他插件/">其他插件</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/技术/">技术</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
     <article id="post-随笔/网易云" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -471,6 +484,71 @@
       
     <div class="article-category tagcloud">
     <a class="article-category-link" href="/categories/随笔/">随笔</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-技术/其他插件" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/10/01/技术/其他插件/" class="article-date">
+      <time datetime="2017-10-01T06:31:12.000Z" itemprop="datePublished">2017-10-01</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/10/01/技术/其他插件/">其他插件</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
     </div>
 
 
@@ -888,78 +966,6 @@
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hibernate/">Hibernate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
     </div>
 
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Hibernate/Hibernate" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/09/23/Web后台/Hibernate/Hibernate/" class="article-date">
-      <time datetime="2017-09-23T15:28:12.000Z" itemprop="datePublished">2017-09-23</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/09/23/Web后台/Hibernate/Hibernate/">Hibernate 例子</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h2 id="概述"><a href="#概述" class="headerlink" title="概述:"></a>概述:</h2><blockquote>
-<p>面向Java环境的对象/关系数据库映射工具,用于将面向对象模型表示的对象映射到基于SQL的关系模型的数据结构中,消除那些针对特定数据库厂商的SQL代码,并把结果集从表格式的形式转换成值对象的形式</p>
-</blockquote>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hibernate/">Hibernate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2017/09/23/Web后台/Hibernate/Hibernate/#more">查看更多 >></a>
-        </p>
       
       <div class="clearfix"></div>
     </div>
