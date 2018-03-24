@@ -289,6 +289,78 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/" class="article-date">
+      <time datetime="2018-02-28T13:49:44.000Z" itemprop="datePublished">2018-02-28</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/">Spring mvc 前后台传值中文乱码问题</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p>一： 解决GET请求参数到了后台中文乱码问题</p>
+<p>方式一: 修改tomcat配置, 暂时做法，没有找到更好的解决办法，换了tomcat了又要重新配置<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">把tomcat下，server.xml下，添加如下配置，就解决了．</div><div class="line"></div><div class="line">  &lt;Connector connectionTimeout=<span class="string">"20000"</span> port=<span class="string">"8080"</span> protocol=<span class="string">"HTTP/1.1"</span> redirectPort=<span class="string">"8443"</span> URIEncoding=<span class="string">"UTF-8"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p>方式二: 自定义filter, 解决了get请求中文参数问题，但post请求参数到了后台就gg了</p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Web后台/编程规范/阿里巴巴Java编程规范" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -983,91 +1055,6 @@
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
     </div>
 
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Spring/spring-boot/spring 事件监听" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/" class="article-date">
-      <time datetime="2018-01-14T12:01:44.000Z" itemprop="datePublished">2018-01-14</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/">Spring 事件监听</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h3 id="Spring-事件监听"><a href="#Spring-事件监听" class="headerlink" title="Spring 事件监听"></a>Spring 事件监听</h3><h4 id="spring的事件-Application-Event"><a href="#spring的事件-Application-Event" class="headerlink" title="spring的事件(Application Event)"></a>spring的事件(Application Event)</h4><p><strong>为Bean与Bean之间的消息通信提供了支持, 当第一个Bean处理完一件事之后, 需要另外一个Bean知道并能做出相应的处理, 这时可以通过事件监听来讲一个Bean监听另一个Bean</strong></p>
-<h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><blockquote>
-<p>Spring 事件监听是观察者模式的一种实现 </p>
-</blockquote>
-<p>意图：定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。</p>
-<p>主要解决：一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合，保证高度的协作。</p>
-<p>何时使用：一个对象（目标对象）的状态发生改变，所有的依赖对象（观察者对象）都将得到通知，进行广播通知。</p>
-<p>如何解决：使用面向对象技术，可以将这种依赖关系弱化。</p>
-<blockquote>
-<p>事件驱动模型简介</p>
-</blockquote>
-<p>事件驱动模型也就是我们常说的观察者，或者发布-订阅模型；理解它的几个关键点：</p>
-<ol>
-<li>首先是一种对象间的一对多的关系；最简单的如交通信号灯，信号灯是目标（一方），行人注视着信号灯（多方）；</li>
-<li>当目标发送改变（发布），观察者（订阅者）就可以接收到改变；</li>
-<li>观察者如何处理（如行人如何走，是快走/慢走/不走，目标不会管的），目标无需干涉；所以就松散耦合了它们之间的关系。</li></ol>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/#more">查看更多 >></a>
-        </p>
       
       <div class="clearfix"></div>
     </div>

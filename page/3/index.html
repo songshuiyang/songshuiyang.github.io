@@ -289,6 +289,91 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Web后台/Spring/spring-boot/spring 事件监听" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/" class="article-date">
+      <time datetime="2018-01-14T12:01:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/">Spring 事件监听</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h3 id="Spring-事件监听"><a href="#Spring-事件监听" class="headerlink" title="Spring 事件监听"></a>Spring 事件监听</h3><h4 id="spring的事件-Application-Event"><a href="#spring的事件-Application-Event" class="headerlink" title="spring的事件(Application Event)"></a>spring的事件(Application Event)</h4><p><strong>为Bean与Bean之间的消息通信提供了支持, 当第一个Bean处理完一件事之后, 需要另外一个Bean知道并能做出相应的处理, 这时可以通过事件监听来讲一个Bean监听另一个Bean</strong></p>
+<h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><blockquote>
+<p>Spring 事件监听是观察者模式的一种实现 </p>
+</blockquote>
+<p>意图：定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。</p>
+<p>主要解决：一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合，保证高度的协作。</p>
+<p>何时使用：一个对象（目标对象）的状态发生改变，所有的依赖对象（观察者对象）都将得到通知，进行广播通知。</p>
+<p>如何解决：使用面向对象技术，可以将这种依赖关系弱化。</p>
+<blockquote>
+<p>事件驱动模型简介</p>
+</blockquote>
+<p>事件驱动模型也就是我们常说的观察者，或者发布-订阅模型；理解它的几个关键点：</p>
+<ol>
+<li>首先是一种对象间的一对多的关系；最简单的如交通信号灯，信号灯是目标（一方），行人注视着信号灯（多方）；</li>
+<li>当目标发送改变（发布），观察者（订阅者）就可以接收到改变；</li>
+<li>观察者如何处理（如行人如何走，是快走/慢走/不走，目标不会管的），目标无需干涉；所以就松散耦合了它们之间的关系。</li></ol>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a   href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/#more">查看更多 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Web后台/Spring/spring-boot/注解Value" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -921,77 +1006,6 @@
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/server/">server</a></li></ul>
     </div>
 
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Spring/Spring Aop" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/11/18/Web后台/Spring/Spring Aop/" class="article-date">
-      <time datetime="2017-11-18T07:47:45.000Z" itemprop="datePublished">2017-11-18</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/11/18/Web后台/Spring/Spring Aop/">Spring Aop</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h2 id="Spring-Aop"><a href="#Spring-Aop" class="headerlink" title="Spring Aop"></a>Spring Aop</h2><h3 id="一-概念"><a href="#一-概念" class="headerlink" title="一: 概念"></a>一: 概念</h3><h4 id="1-什么是AOP"><a href="#1-什么是AOP" class="headerlink" title="1. 什么是AOP"></a>1. 什么是AOP</h4><p>在软件业，AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期动态代理实现程序功能的统一维护的一种技术。AOP是OOP的延续，是软件开发中的一个热点，也是Spring框架中的一个重要内容，是函数式编程的一种衍生范型。</p>
-<h4 id="2-为什么要用Aop"><a href="#2-为什么要用Aop" class="headerlink" title="2. 为什么要用Aop"></a>2. 为什么要用Aop</h4><p>利用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的可重用性，同时提高了开发的效率。在不改变原有方法的基础添加一些功能 , 比如:日志记录，性能统计，安全控制，事务处理，异常处理等等。</p>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2017/11/18/Web后台/Spring/Spring Aop/#more">查看更多 >></a>
-        </p>
       
       <div class="clearfix"></div>
     </div>
