@@ -210,7 +210,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 13.75px;">支付</a>
                     </div>
                 </section>
                 
@@ -288,6 +288,152 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Web后台/Spring/spring-boot/组合注解" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/" class="article-date">
+      <time datetime="2018-01-14T14:25:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/">组合注解</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="组合注解"><a href="#组合注解" class="headerlink" title="组合注解"></a>组合注解</h3><blockquote>
+<p>用一个注解表示其他注解</p>
+</blockquote>
+<p>CombinationAnnocation.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.lang.annotation.*;</div><div class="line"></div><div class="line"><span class="meta">@Target</span>(ElementType.TYPE)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="meta">@Documented</span></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> CombinationAnnocation &#123;</div><div class="line">    String [] value() <span class="keyword">default</span> &#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Config.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="meta">@CombinationAnnocation</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Application.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext(Config.class);</div><div class="line">        context.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Spring/spring-boot/异步方法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/" class="article-date">
+      <time datetime="2018-01-14T14:25:44.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/">异步方法</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="异步方法"><a href="#异步方法" class="headerlink" title="异步方法"></a>异步方法</h3><blockquote>
+<p>加入@Async注解可以让普通方法变为异步方法</p>
+</blockquote>
+<p>AsyncTaskService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.Async;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</div><div class="line"></div><div class="line"><span class="meta">@Service</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncTaskService</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 异步方法</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> i</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Async</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">task1</span><span class="params">(Integer i)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行异步任务"</span> + i);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Async</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">task2</span><span class="params">(Integer i)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行异步任务+1 "</span> + (i + <span class="number">1</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Config.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.AsyncConfigurer;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.EnableAsync;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.concurrent.Executor;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.smart.boot.asyn"</span>)</div><div class="line"><span class="meta">@EnableAsync</span> <span class="comment">// 开启异步任务支持</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> <span class="keyword">implements</span> <span class="title">AsyncConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获得一个基于线程池的 taskExecutor</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Executor <span class="title">getAsyncExecutor</span><span class="params">()</span> </span>&#123;</div><div class="line">        ThreadPoolTaskExecutor taskExecutor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</div><div class="line">        taskExecutor.setCorePoolSize(<span class="number">5</span>);</div><div class="line">        taskExecutor.setMaxPoolSize(<span class="number">10</span>);</div><div class="line">        taskExecutor.setQueueCapacity(<span class="number">25</span>);</div><div class="line">        taskExecutor.initialize();</div><div class="line">        <span class="keyword">return</span> taskExecutor;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> AsyncUncaughtExceptionHandler <span class="title">getAsyncUncaughtExceptionHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Application.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext(Config.class);</div><div class="line">        AsyncTaskService asyncTaskService = context.getBean(AsyncTaskService.class);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">            asyncTaskService.task1(i);</div><div class="line">            asyncTaskService.task2(i);</div><div class="line">        &#125;</div><div class="line">        context.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
   
     <article id="post-Web后台/Spring/spring-boot/spring 事件监听" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -891,143 +1037,9 @@
 
 
   
-    <article id="post-Web后台/数据库/Druid Monitor" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/12/11/Web后台/数据库/Druid Monitor/" class="article-date">
-      <time datetime="2017-12-11T02:24:12.000Z" itemprop="datePublished">2017-12-11</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/12/11/Web后台/数据库/Druid Monitor/">Druid Monitor</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="Druid-Monitor监控JavaSE和JavaWeb"><a href="#Druid-Monitor监控JavaSE和JavaWeb" class="headerlink" title="Druid Monitor监控JavaSE和JavaWeb"></a>Druid Monitor监控JavaSE和JavaWeb</h2><p>效果图:<br><img src="/images/server/数据库/druidMonitor.png" alt="logo"> </p>
-<p><a href="http://blog.csdn.net/binglovezi/article/details/50610269" target="_blank" rel="external">http://blog.csdn.net/binglovezi/article/details/50610269</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid/">druid</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Maven/maven 骨架" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/11/18/Web后台/Maven/maven 骨架/" class="article-date">
-      <time datetime="2017-11-18T13:58:45.000Z" itemprop="datePublished">2017-11-18</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/11/18/Web后台/Maven/maven 骨架/">Maven 41种骨架</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>Maven 的41种骨架功能介绍<br> …&gt;mvn archetype:generate<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">1: internal -&gt; appfuse-basic-jsf (创建一个基于Hibernate，Spring和JSF的Web应用程序的原型) </div><div class="line">2: internal -&gt; appfuse-basic-spring (创建一个基于Hibernate，Spring和Spring MVC的Web应用程序的原型) </div><div class="line">3: internal -&gt; appfuse-basic-struts (创建一个基于Hibernate，Spring和Struts 2的Web应用程序的原型) </div><div class="line">4: internal -&gt; appfuse-basic-tapestry (创建一个基于Hibernate, Spring 和 Tapestry 4的Web应用程序的原型) </div><div class="line">5: internal -&gt; appfuse-core (创建一个基于 Hibernate and Spring 和 XFire的jar应用程序的原型) </div><div class="line">6: internal -&gt; appfuse-modular-jsf (创建一个基于 Hibernate，Spring和JSF的模块化应用原型) </div><div class="line">7: internal -&gt; appfuse-modular-spring (创建一个基于 Hibernate, Spring 和 Spring MVC 的模块化应用原型) </div><div class="line">8: internal -&gt; appfuse-modular-struts (创建一个基于 Hibernate, Spring 和 Struts 2 的模块化应用原型) </div><div class="line">9: internal -&gt; appfuse-modular-tapestry (创建一个基于 Hibernate, Spring 和 Tapestry 4 的模块化应用原型) </div><div class="line">10: internal -&gt; maven-archetype-j2ee-simple (一个简单的J2EE的Java应用程序) </div><div class="line">11: internal -&gt; maven-archetype-marmalade-mojo (一个Maven的 插件开发项目 using marmalade) </div><div class="line">12: internal -&gt; maven-archetype-mojo (一个Maven的Java插件开发项目) </div><div class="line">13: internal -&gt; maven-archetype-portlet (一个简单的portlet应用程序) </div><div class="line">14: internal -&gt; maven-archetype-profiles () </div><div class="line">15: internal -&gt; maven-archetype-quickstart () </div><div class="line">16: internal -&gt; maven-archetype-site-simple (简单的网站生成项目) </div><div class="line">17: internal -&gt; maven-archetype-site (更复杂的网站项目) </div><div class="line">18: internal -&gt; maven-archetype-webapp (一个简单的Java Web应用程序) </div><div class="line">19: internal -&gt; jini-service-archetype (Archetype for Jini service project creation) </div><div class="line">20: internal -&gt; softeu-archetype-seam (JSF+Facelets+Seam Archetype) </div><div class="line">21: internal -&gt; softeu-archetype-seam-simple (JSF+Facelets+Seam (无残留) 原型) </div><div class="line">22: internal -&gt; softeu-archetype-jsf (JSF+Facelets 原型) </div><div class="line">23: internal -&gt; jpa-maven-archetype (JPA 应用程序) </div><div class="line">24: internal -&gt; spring-osgi-bundle-archetype (Spring-OSGi 原型) </div><div class="line">25: internal -&gt; confluence-plugin-archetype (Atlassian 聚合插件原型) </div><div class="line">26: internal -&gt; jira-plugin-archetype (Atlassian JIRA 插件原型) </div><div class="line">27: internal -&gt; maven-archetype-har (Hibernate 存档) </div><div class="line">28: internal -&gt; maven-archetype-sar (JBoss 服务存档) </div><div class="line">29: internal -&gt; wicket-archetype-quickstart (一个简单的Apache Wicket的项目) </div><div class="line">30: internal -&gt; scala-archetype-simple (一个简单的scala的项目) </div><div class="line">31: internal -&gt; lift-archetype-blank (一个 blank/empty liftweb 项目) </div><div class="line">32: internal -&gt; lift-archetype-basic (基本（liftweb）项目) </div><div class="line">33: internal -&gt; cocoon-22-archetype-block-plain ([http://cocoapacorg2/maven-plugins/]) </div><div class="line">34: internal -&gt; cocoon-22-archetype-block ([http://cocoapacorg2/maven-plugins/]) </div><div class="line">35: internal -&gt; cocoon-22-archetype-webapp ([http://cocoapacorg2/maven-plugins/]) </div><div class="line">36: internal -&gt; myfaces-archetype-helloworld (使用MyFaces的一个简单的原型) </div><div class="line">37: internal -&gt; myfaces-archetype-helloworld-facelets (一个使用MyFaces和Facelets的简单原型) </div><div class="line">38: internal -&gt; myfaces-archetype-trinidad (一个使用MyFaces和Trinidad的简单原型) </div><div class="line">39: internal -&gt; myfaces-archetype-jsfcomponents (一种使用MyFaces创建定制JSF组件的简单的原型) </div><div class="line">40: internal -&gt; gmaven-archetype-basic (Groovy的基本原型) </div><div class="line">41: internal -&gt; gmaven-archetype-mojo (Groovy mojo 原型)</div></pre></td></tr></table></figure></p>
-<p>原文: <a href="https://www.cnblogs.com/iusmile/archive/2012/11/14/2770118.html" target="_blank" rel="external">https://www.cnblogs.com/iusmile/archive/2012/11/14/2770118.html</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/server/">server</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 

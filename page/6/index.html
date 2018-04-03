@@ -210,7 +210,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 12.5px;">支付</a>
+                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 13.75px;">支付</a>
                     </div>
                 </section>
                 
@@ -288,6 +288,161 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Web后台/Spring/Assert 的学习" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/09/29/Web后台/Spring/Assert 的学习/" class="article-date">
+      <time datetime="2017-09-28T16:01:44.000Z" itemprop="datePublished">2017-09-29</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/09/29/Web后台/Spring/Assert 的学习/">Spring Assert</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="Assert（当要判断一个方法传入的参数时，我们就可以使用断言。）"><a href="#Assert（当要判断一个方法传入的参数时，我们就可以使用断言。）" class="headerlink" title="Assert（当要判断一个方法传入的参数时，我们就可以使用断言。）"></a>Assert（当要判断一个方法传入的参数时，我们就可以使用断言。）</h2><blockquote>
+<p>package org.springframework.util</p>
+</blockquote>
+<h3 id="1-notNull-Object-object"><a href="#1-notNull-Object-object" class="headerlink" title="1. notNull(Object object)"></a>1. notNull(Object object)</h3><p>当 object 不为 null 时抛出异常，notNull(Object object, String message) 方法允许您通过 message 定制异常信息。和 notNull() 方法断言规则相反的方法是 isNull(Object object)/isNull(Object object, String message)，它要求入参一定是 null；</p>
+<h3 id="2-isTrue-boolean-expression-isTrue-boolean-expression-String-message"><a href="#2-isTrue-boolean-expression-isTrue-boolean-expression-String-message" class="headerlink" title="2. isTrue(boolean expression) / isTrue(boolean expression, String message)"></a>2. isTrue(boolean expression) / isTrue(boolean expression, String message)</h3><p>当 expression 不为 true 抛出异常；</p>
+<h3 id="3-notEmpty-Collection-collection-notEmpty-Collection-collection-String-message"><a href="#3-notEmpty-Collection-collection-notEmpty-Collection-collection-String-message" class="headerlink" title="3. notEmpty(Collection collection) / notEmpty(Collection collection, String message)"></a>3. notEmpty(Collection collection) / notEmpty(Collection collection, String message)</h3><p>当集合未包含元素时抛出异常。</p>
+<p>notEmpty(Map map) / notEmpty(Map map, String message) 和 notEmpty(Object[] array, String message) / notEmpty(Object[] array, String message) 分别对 Map 和 Object[] 类型的入参进行判断；</p>
+<h3 id="4-hasLength-String-text-hasLength-String-text-String-message"><a href="#4-hasLength-String-text-hasLength-String-text-String-message" class="headerlink" title="4. hasLength(String text) / hasLength(String text, String message)"></a>4. hasLength(String text) / hasLength(String text, String message)</h3><p>当 text 为 null 或长度为 0 时抛出异常；</p>
+<h3 id="5-hasText-String-text-hasText-String-text-String-message"><a href="#5-hasText-String-text-hasText-String-text-String-message" class="headerlink" title="5. hasText(String text) / hasText(String text, String message)"></a>5. hasText(String text) / hasText(String text, String message)</h3><p>text 不能为 null 且必须至少包含一个非空格的字符，否则抛出异常；</p>
+<h3 id="6-isInstanceOf-Class-clazz-Object-obj-isInstanceOf-Class-type-Object-obj-String-message"><a href="#6-isInstanceOf-Class-clazz-Object-obj-isInstanceOf-Class-type-Object-obj-String-message" class="headerlink" title="6. isInstanceOf(Class clazz, Object obj) / isInstanceOf(Class type, Object obj, String message)"></a>6. isInstanceOf(Class clazz, Object obj) / isInstanceOf(Class type, Object obj, String message)</h3><p>如果 obj 不能被正确造型为 clazz 指定的类将抛出异常；</p>
+<h3 id="7-isAssignable-Class-superType-Class-subType-isAssignable-Class-superType-Class-subType-String-message"><a href="#7-isAssignable-Class-superType-Class-subType-isAssignable-Class-superType-Class-subType-String-message" class="headerlink" title="7. isAssignable(Class superType, Class subType) / isAssignable(Class superType, Class subType, String message)"></a>7. isAssignable(Class superType, Class subType) / isAssignable(Class superType, Class subType, String message)</h3><p>subType 必须可以按类型匹配于 superType，否则将抛出异常；</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器/">服务器</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web后台/Hibernate/hibernate问题集合" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a  href="/2017/09/24/Web后台/Hibernate/hibernate问题集合/" class="article-date">
+      <time datetime="2017-09-24T08:54:12.000Z" itemprop="datePublished">2017-09-24</time>
+</a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a  class="article-title" href="/2017/09/24/Web后台/Hibernate/hibernate问题集合/">Hibernate 问题记录</a>
+    </h1>
+  
+
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="org-hibernate-MappingException-Unknown-entity常见问题"><a href="#org-hibernate-MappingException-Unknown-entity常见问题" class="headerlink" title="org.hibernate.MappingException: Unknown entity常见问题"></a>org.hibernate.MappingException: Unknown entity常见问题</h3><ol>
+<li><p>可能原因一</p>
+<p>检查实体类是否导入的是 javax.persistence 下的包</p>
+</li>
+<li><p>可能原因二</p>
+<p>没有在cfg文件中加入 *.hbm.xml造成的</p>
+</li>
+<li><p>hibernate版本问题,一代版本一代神</p>
+<p>4.5 版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build();</div></pre></td></tr></table></figure>
+<p>5.2 版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).configure().build();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/server/">server</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hibernate/">Hibernate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
   
     <article id="post-Web后台/Hibernate/Hibernate笔记" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -923,173 +1078,9 @@ image/jpeg, image/bmp, image/gif, image/png
 
 
   
-    <article id="post-Web后台/Struts2/Struts2 的简单实例" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/09/16/Web后台/Struts2/Struts2 的简单实例/" class="article-date">
-      <time datetime="2017-09-16T13:30:44.000Z" itemprop="datePublished">2017-09-16</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/09/16/Web后台/Struts2/Struts2 的简单实例/">Struts2 的简单实例</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="Struts2-实现流程"><a href="#Struts2-实现流程" class="headerlink" title="Struts2 实现流程"></a>Struts2 实现流程</h2><ol>
-<li>浏览器发送请求</li>
-<li>到达 StrutsPrepareAndExecuteFilter ( 核心控制器 )</li>
-<li>分发到指定 XXXAction ( 业务控制器 ) 调用业务方法</li>
-<li>返回逻辑视图名</li>
-<li>StrutsPrepareAndExecuteFilter forward到物理视图,生成响应内容，输出响应</li>
-</ol>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/struts2/">struts2</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/JspServlet/web.xml中配置JSP属性" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/09/15/Web后台/JspServlet/web.xml中配置JSP属性/" class="article-date">
-      <time datetime="2017-09-15T08:19:45.000Z" itemprop="datePublished">2017-09-15</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/09/15/Web后台/JspServlet/web.xml中配置JSP属性/">web.xml中配置JSP属性</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="web-xml中配置JSP属性"><a href="#web-xml中配置JSP属性" class="headerlink" title="web.xml中配置JSP属性"></a>web.xml中配置JSP属性</h2><blockquote>
-<p>为什么要在web.xml配置JSP属性</p>
-</blockquote>
-<p>如果许多JSP有着相似的属性，那么在每个JSP文件的顶部重复添加page指令是非常麻烦的工作。幸运的是，在部署描述符中可以配置通用的JSP属性。</p>
-<blockquote>
-<p>web.xml中添加JSP属性样例</p>
-</blockquote>
-<pre><code>&lt;jsp-config&gt;  
-     &lt;jsp-property-group&gt;  
-         &lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;  
-         &lt;url-pattern&gt;*.jspf&lt;/url-pattern&gt;  
-         &lt;page-encoding&gt;UTF-8&lt;/page-encoding&gt;  
-         &lt;scripting-invalid&gt;false&lt;/scripting-invalid&gt;  
-         &lt;include-prelude&gt;/WEB-INF/jsp/base.jspf&lt;/include-prelude&gt;  
-         &lt;trim-directive-whitespaces&gt;true&lt;/trim-directive-whitespaces&gt;  
-         &lt;default-content-type&gt;text/html&lt;/default-content-type&gt;  
-         &lt;/jsp-property-group&gt;  
-&lt;/jsp-config&gt; 
-</code></pre><p><jsp-config>中可以包含任意数目的<jsp-property-group>标签。通过为<jsp-property-group>定义不同的<url-pattern>标签来区分不同的属性组。</url-pattern></jsp-property-group></jsp-property-group></jsp-config></p>
-<p><include-prelude>标签，将告诉容器在所有属于改该属性组的JSP的头部添加文件/WEB-INF/jsp/base.jspf。</include-prelude></p>
-<p><include-coda>标签定义了包含在组中所有JSP尾部的文件。</include-coda></p>
-<p>在一个JSP组中可以同时使用这些标签多次。</p>
-<p><page-encoding>与page指令的pageEncoding特性一致。</page-encoding></p>
-<p><default-content-type>标签可以定义内容类型，默认为text/html</default-content-type></p>
-<p><trim-directive-whitespaces>也是一个特别有用的属性，该属性告诉JSP转换器删除响应输出中的空白，只保留指令、声明、脚本和其他JSP标签创建的文本。</trim-directive-whitespaces></p>
-<p><scripting-invalid>标签可以实现完全禁止JSP中的Java</scripting-invalid></p>
-<p><el-ignored>的作用类似，不过它对应的是page指令中的isELIgnored特性。<br>除了<url-pattern>，<jsp-property-group>中所有标签都是可选的，但在使用它们时必须按照下面的顺序添加到<jsp-property-group>中(忽略掉部希望使用的标签)：<url-pattern>、<el-ignored>、<page-encoding>、<scripting-invalid>、<is-xml>、<include-prelude>、<include-coda>、<deferred-syntax-allowed-as-literal>、<trim-directive-whitespace>、<default-content-type>、<buffer>、<error-on-undeclared-namespace>。</error-on-undeclared-namespace></buffer></default-content-type></trim-directive-whitespace></deferred-syntax-allowed-as-literal></include-coda></include-prelude></is-xml></scripting-invalid></page-encoding></el-ignored></url-pattern></jsp-property-group></jsp-property-group></url-pattern></el-ignored></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jsp/">jsp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/server/">server</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
