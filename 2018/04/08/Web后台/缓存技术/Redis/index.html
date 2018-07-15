@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring 集成Redis | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="java">
+    <meta name="description" content="一：Redis1. 什么是RedisRedis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。从2013年5月开始，Redis的开发由Pivotal赞助。 官网: https://redis.io/ 中文教程网: http://www.redis.net">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring 集成Redis">
+<meta property="og:url" content="http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="一：Redis1. 什么是RedisRedis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。从2013年5月开始，Redis的开发由Pivotal赞助。 官网: https://redis.io/ 中文教程网: http://www.redis.net">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-04-09T14:07:01.475Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring 集成Redis">
+<meta name="twitter:description" content="一：Redis1. 什么是RedisRedis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。从2013年5月开始，Redis的开发由Pivotal赞助。 官网: https://redis.io/ 中文教程网: http://www.redis.net">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring 集成Redis</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring 集成Redis</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-08T14:02:12.000Z" itemprop="datePublished" class="page-time">
+  2018-04-08
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一：Redis"><span class="post-toc-number">1.</span> <span class="post-toc-text">一：Redis</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-什么是Redis"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1. 什么是Redis</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-基本介绍"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">2. 基本介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-简介"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">Redis 简介</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-优势"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">Redis 优势</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis与其他key-value存储有什么不同？"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">Redis与其他key-value存储有什么不同？</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-安装"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">3. 安装</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-1-windows环境"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">3.1 windows环境</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-1-1-修改配置文件"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">3.1.1 修改配置文件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-1-2-常用命令"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">3.1.2 常用命令</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-1-3-Redis可视化管理工具"><span class="post-toc-number">1.3.4.</span> <span class="post-toc-text">3.1.3 Redis可视化管理工具</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-2-Linux环境"><span class="post-toc-number">1.3.5.</span> <span class="post-toc-text">3.2 Linux环境</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-2-1-安装"><span class="post-toc-number">1.3.6.</span> <span class="post-toc-text">3.2.1 安装</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-2-1-启动服务"><span class="post-toc-number">1.3.7.</span> <span class="post-toc-text">3.2.1 启动服务</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-2-1-测试客户端程序"><span class="post-toc-number">1.3.8.</span> <span class="post-toc-text">3.2.1 测试客户端程序</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-与Spring-集成"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">4. 与Spring 集成</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-1-导入maven"><span class="post-toc-number">1.4.1.</span> <span class="post-toc-text">4.1 导入maven</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-2-新建-redis-config-properties"><span class="post-toc-number">1.4.2.</span> <span class="post-toc-text">4.2 新建 redis-config.properties</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-3-新建-applicationContext-redis-xml"><span class="post-toc-number">1.4.3.</span> <span class="post-toc-text">4.3 新建 applicationContext-redis.xml</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-4-引入-applicationContext-redis-xml-redis-config-properties"><span class="post-toc-number">1.4.4.</span> <span class="post-toc-text">4.4 引入 applicationContext-redis.xml redis-config.properties</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-5-新建-RedisCache-java-Cache接口实现类-Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。"><span class="post-toc-number">1.4.5.</span> <span class="post-toc-text">4.5 新建 RedisCache.java Cache接口实现类 Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-6-完成以上的配置之后就可以使用-Spring-Cache注解来使用缓存了"><span class="post-toc-number">1.4.6.</span> <span class="post-toc-text">4.6 完成以上的配置之后就可以使用 Spring Cache注解来使用缓存了</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#遇到的问题："><span class="post-toc-number">2.</span> <span class="post-toc-text">遇到的问题：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考："><span class="post-toc-number">3.</span> <span class="post-toc-text">参考：</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Web后台/缓存技术/Redis"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring 集成Redis</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-08 22:02:12" datetime="2018-04-08T14:02:12.000Z"  itemprop="datePublished">2018-04-08</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="一：Redis"><a href="#一：Redis" class="headerlink" title="一：Redis"></a>一：Redis</h2><h3 id="1-什么是Redis"><a href="#1-什么是Redis" class="headerlink" title="1. 什么是Redis"></a>1. 什么是Redis</h3><p>Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。从2013年5月开始，Redis的开发由Pivotal赞助。</p>
+<p>官网: <a href="https://redis.io/" target="_blank" rel="noopener">https://redis.io/</a></p>
+<p>中文教程网: <a href="http://www.redis.net.cn/tutorial/3501.html" target="_blank" rel="noopener">http://www.redis.net.cn/tutorial/3501.html</a></p>
+<h3 id="2-基本介绍"><a href="#2-基本介绍" class="headerlink" title="2. 基本介绍"></a>2. 基本介绍</h3><h4 id="Redis-简介"><a href="#Redis-简介" class="headerlink" title="Redis 简介"></a>Redis 简介</h4><ul>
+<li>Redis 是完全开源免费的，遵守BSD协议，是一个高性能的key-value数据库。</li>
+<li>Redis 与其他 key - value 缓存产品有以下三个特点：</li>
+<li>Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。</li>
+<li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
+<li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
+</ul>
+<h4 id="Redis-优势"><a href="#Redis-优势" class="headerlink" title="Redis 优势"></a>Redis 优势</h4><ul>
+<li>性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。</li>
+<li>丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。</li>
+<li>原子 – Redis的所有操作都是原子性的，意思就是要么成功执行要么失败完全不执行。单个操作是原子性的。多个操作也支持事务，即原子性，通过MULTI和EXEC指令包起来。</li>
+<li>丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。</li>
+</ul>
+<h4 id="Redis与其他key-value存储有什么不同？"><a href="#Redis与其他key-value存储有什么不同？" class="headerlink" title="Redis与其他key-value存储有什么不同？"></a>Redis与其他key-value存储有什么不同？</h4><ul>
+<li>Redis有着更为复杂的数据结构并且提供对他们的原子性操作，这是一个不同于其他数据库的进化路径。Redis的数据类型都是基于基本数据结构的同时对程序员透明，无需进行额外的抽象。</li>
+<li>Redis运行在内存中但是可以持久化到磁盘，所以在对不同数据集进行高速读写时需要权衡内存，因为数据量不能大于硬件内存。在内存数据库方面的另一个优点是，相比在磁盘上相同的复杂的数据结构，在内存中操作起来非常简单，这样Redis可以做很多内部复杂性很强的事情。同时，在磁盘格式方面他们是紧凑的以追加的方式产生的，因为他们并不需要进行随机访问。</li>
+</ul>
+<a id="more"></a>
+<h3 id="3-安装"><a href="#3-安装" class="headerlink" title="3. 安装"></a>3. 安装</h3><h4 id="3-1-windows环境"><a href="#3-1-windows环境" class="headerlink" title="3.1 windows环境"></a>3.1 windows环境</h4><p>下载地址: <a href="https://github.com/MicrosoftArchive/redis/releases" target="_blank" rel="noopener">https://github.com/MicrosoftArchive/redis/releases</a></p>
+<h4 id="3-1-1-修改配置文件"><a href="#3-1-1-修改配置文件" class="headerlink" title="3.1.1 修改配置文件"></a>3.1.1 修改配置文件</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">redis.windows.conf 文件 配置密码 </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># requirepass foobared</span><br><span class="line">requirepass shuiyang</span><br></pre></td></tr></table></figure>
+<h4 id="3-1-2-常用命令"><a href="#3-1-2-常用命令" class="headerlink" title="3.1.2 常用命令"></a>3.1.2 常用命令</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">redis服务安装成windows服务: redis-server --service-install redis.windows.conf</span><br><span class="line"></span><br><span class="line">开启服务：redis-server --service-start</span><br><span class="line"></span><br><span class="line">停止服务：redis-server --service-stop</span><br><span class="line"></span><br><span class="line">卸载服务：redis-server --service-uninstall</span><br></pre></td></tr></table></figure>
+<h4 id="3-1-3-Redis可视化管理工具"><a href="#3-1-3-Redis可视化管理工具" class="headerlink" title="3.1.3 Redis可视化管理工具"></a>3.1.3 Redis可视化管理工具</h4><ul>
+<li>RedisStudio，百度云连接：<a href="http://pan.baidu.com/s/1gfIbLar" target="_blank" rel="noopener">http://pan.baidu.com/s/1gfIbLar</a>  密码：mpne</li>
+<li>Redis Desktop Manager <a href="https://redisdesktop.com/download" target="_blank" rel="noopener">https://redisdesktop.com/download</a></li>
+</ul>
+<h4 id="3-2-Linux环境"><a href="#3-2-Linux环境" class="headerlink" title="3.2 Linux环境"></a>3.2 Linux环境</h4><p>下载地址：<a href="http://www.redis.net.cn/download/，下载最新文档版本。" target="_blank" rel="noopener">http://www.redis.net.cn/download/，下载最新文档版本。</a></p>
+<h4 id="3-2-1-安装"><a href="#3-2-1-安装" class="headerlink" title="3.2.1 安装"></a>3.2.1 安装</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://download.redis.io/releases/redis-2.8.17.tar.gz</span><br><span class="line">$ tar xzf redis-2.8.17.tar.gz</span><br><span class="line">$ cd redis-2.8.17</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+<p>make完后 redis-2.8.17目录下会出现编译后的redis服务程序redis-server,还有用于测试的客户端程序redis-cli</p>
+<h4 id="3-2-1-启动服务"><a href="#3-2-1-启动服务" class="headerlink" title="3.2.1 启动服务"></a>3.2.1 启动服务</h4><p>下面启动redis服务.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./redis-server</span><br></pre></td></tr></table></figure>
+<p>注意这种方式启动redis 使用的是默认配置。也可以通过启动参数告诉redis使用指定配置文件使用下面命令启动。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redis-server redis.conf</span><br></pre></td></tr></table></figure>
+<p>redis.conf是一个默认的配置文件。我们可以根据需要使用自己的配置文件。</p>
+<h4 id="3-2-1-测试客户端程序"><a href="#3-2-1-测试客户端程序" class="headerlink" title="3.2.1 测试客户端程序"></a>3.2.1 测试客户端程序</h4><p>启动redis服务进程后，就可以使用测试客户端程序redis-cli和redis服务交互了。 比如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ ./redis-cli</span><br><span class="line">redis&gt; set foo bar</span><br><span class="line">OK</span><br><span class="line">redis&gt; get foo</span><br><span class="line">"bar"</span><br></pre></td></tr></table></figure>
+<h3 id="4-与Spring-集成"><a href="#4-与Spring-集成" class="headerlink" title="4. 与Spring 集成"></a>4. 与Spring 集成</h3><h4 id="4-1-导入maven"><a href="#4-1-导入maven" class="headerlink" title="4.1 导入maven"></a>4.1 导入maven</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--redis--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="4-2-新建-redis-config-properties"><a href="#4-2-新建-redis-config-properties" class="headerlink" title="4.2 新建 redis-config.properties"></a>4.2 新建 <code>redis-config.properties</code></h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Redis settings</span><br><span class="line">redis.host=127.0.0.1</span><br><span class="line">redis.port=6379</span><br><span class="line">redis.pass=shuiyang</span><br><span class="line">redis.dbIndex=0</span><br><span class="line">redis.expiration=3000</span><br><span class="line">#最大空闲数</span><br><span class="line">redis.maxIdle=300</span><br><span class="line">#连接池的最大数据库连接数。设为0表示无限制,如果是jedis 2.4以后用redis.maxTotal</span><br><span class="line">redis.maxActive=600</span><br><span class="line">#最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。</span><br><span class="line">redis.maxWait=1000</span><br><span class="line">#是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个</span><br><span class="line">redis.testOnBorrow=true</span><br></pre></td></tr></table></figure>
+<h4 id="4-3-新建-applicationContext-redis-xml"><a href="#4-3-新建-applicationContext-redis-xml" class="headerlink" title="4.3 新建 applicationContext-redis.xml"></a>4.3 新建 <code>applicationContext-redis.xml</code></h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span> <span class="attr">xmlns:tx</span>=<span class="string">"http://www.springframework.org/schema/tx"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:cache</span>=<span class="string">"http://www.springframework.org/schema/cache"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/context/spring-context-4.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 启用缓存注解开关 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">cache:annotation-driven</span> <span class="attr">cache-manager</span>=<span class="string">"cacheManager"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 配置JedisPoolConfig实例 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"poolConfig"</span> <span class="attr">class</span>=<span class="string">"redis.clients.jedis.JedisPoolConfig"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxIdle"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.maxIdle&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxTotal"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.maxActive&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxWaitMillis"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.maxWait&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"testOnBorrow"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.testOnBorrow&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 配置JedisConnectionFactory --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"jedisConnectionFactory"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"org.springframework.data.redis.connection.jedis.JedisConnectionFactory"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"hostName"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.host&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"port"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.port&#125;"</span> /&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.pass&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"database"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.dbIndex&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"poolConfig"</span> <span class="attr">ref</span>=<span class="string">"poolConfig"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 配置RedisTemplate --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"redisTemplate"</span> <span class="attr">class</span>=<span class="string">"org.springframework.data.redis.core.RedisTemplate"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"connectionFactory"</span> <span class="attr">ref</span>=<span class="string">"jedisConnectionFactory"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 配置RedisCacheManager --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"cacheManager"</span> <span class="attr">class</span>=<span class="string">"org.springframework.data.redis.cache.RedisCacheManager"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">"redisOperations"</span> <span class="attr">ref</span>=<span class="string">"redisTemplate"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"defaultExpiration"</span> <span class="attr">value</span>=<span class="string">"$&#123;redis.expiration&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 配置RedisCacheManager --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"cacheManager"</span> <span class="attr">class</span>=<span class="string">"org.springframework.cache.support.SimpleCacheManager"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"caches"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 这里可以配置多个redis --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.ecut.core.config.RedisCache"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"redisTemplate"</span> <span class="attr">ref</span>=<span class="string">"redisTemplate"</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"articlesDetail"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.ecut.core.config.RedisCache"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"redisTemplate"</span> <span class="attr">ref</span>=<span class="string">"redisTemplate"</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"getHotArticlesInCache"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.ecut.core.config.RedisCache"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"redisTemplate"</span> <span class="attr">ref</span>=<span class="string">"redisTemplate"</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"articlesList"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="4-4-引入-applicationContext-redis-xml-redis-config-properties"><a href="#4-4-引入-applicationContext-redis-xml-redis-config-properties" class="headerlink" title="4.4 引入 applicationContext-redis.xml redis-config.properties"></a>4.4 引入 <code>applicationContext-redis.xml redis-config.properties</code></h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">xmlns:p</span>=<span class="string">"http://www.springframework.org/schema/p"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">xmlns:mvc</span>=<span class="string">"http://www.springframework.org/schema/mvc"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">	http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">	http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">	http://www.springframework.org/schema/context/spring-context.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">	http://www.springframework.org/schema/mvc</span></span></span><br><span class="line"><span class="tag"><span class="string">	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--使标注Spring注解的类生效--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.ecut"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 将多个配置文件读取到容器中，交给Spring管理 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"propertyConfigurer"</span> <span class="attr">class</span>=<span class="string">"com.ecut.core.spring.PropertyPlaceholderConfigurerFilter"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 这里支持多种寻址方式：classpath和file --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>classpath:project.properties<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 推荐使用file的方式引入，这样可以将配置和代码分离 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>classpath:jdbc.properties<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>classpath:redis-config.properties<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">"applicationContext-dao.xml"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">"applicationContext-shiro.xml"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--encache redis选择一种缓存--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;import resource="applicationContext-encache.xml"/&gt;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">"applicationContext-redis.xml"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="4-5-新建-RedisCache-java-Cache接口实现类-Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。"><a href="#4-5-新建-RedisCache-java-Cache接口实现类-Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。" class="headerlink" title="4.5 新建 RedisCache.java Cache接口实现类 Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。"></a>4.5 新建 <code>RedisCache.java</code> Cache接口实现类 Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ecut.core.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang3.SerializationUtils;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cache.Cache;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cache.support.SimpleValueWrapper;</span><br><span class="line"><span class="keyword">import</span> org.springframework.dao.DataAccessException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.connection.RedisConnection;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.RedisCallback;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.RedisTemplate;</span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Cache接口实现类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 　Spring对于缓存只是提供了抽象的接口，并且通过接口来调用功能，没有具体的实现类，所以需要我们自己实现具体的操作。</span></span><br><span class="line"><span class="comment"> 　　在上面配置中可知，每个实现类都会注入一个redisTemplate实例，我们就可以通过redisTemplate来操作redis</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songshuiyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2018/4/9 20:38</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisCache</span> <span class="keyword">implements</span> <span class="title">Cache</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate&lt;String, Object&gt; redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"----------------------------RedisCache  緩存清理-------------------------"</span>);</span><br><span class="line">        redisTemplate.execute(<span class="keyword">new</span> RedisCallback&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">doInRedis</span><span class="params">(RedisConnection connection)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">                connection.flushDb();</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"ok"</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">evict</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"----------------------------RedisCache  緩存刪除-------------------------"</span>);</span><br><span class="line">        <span class="keyword">final</span> String keyf=key.toString();</span><br><span class="line">        redisTemplate.execute(<span class="keyword">new</span> RedisCallback&lt;Long&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Long <span class="title">doInRedis</span><span class="params">(RedisConnection connection)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> connection.del(keyf.getBytes());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ValueWrapper <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"----------------------------RedisCache  缓存获取-------------------------"</span>);</span><br><span class="line">        <span class="keyword">final</span> String keyf = key.toString();</span><br><span class="line">        Object object = <span class="keyword">null</span>;</span><br><span class="line">        object = redisTemplate.execute(<span class="keyword">new</span> RedisCallback&lt;Object&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Object <span class="title">doInRedis</span><span class="params">(RedisConnection connection)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">                <span class="keyword">byte</span>[] key = keyf.getBytes();</span><br><span class="line">                <span class="keyword">byte</span>[] value = connection.get(key);</span><br><span class="line">                <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    logger.info(<span class="string">"----------------------------RedisCache 缓存不存在-------------------------"</span>);</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> SerializationUtils.deserialize(value);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        ValueWrapper obj=(object != <span class="keyword">null</span> ? <span class="keyword">new</span> SimpleValueWrapper(object) : <span class="keyword">null</span>);</span><br><span class="line">        logger.info(<span class="string">"----------------------------RedisCache 获取到内容-------------------------"</span>);</span><br><span class="line">        <span class="keyword">return</span>  obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(Object key, Object value)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"-------加入缓存------"</span>);</span><br><span class="line">        System.out.println(<span class="string">"key----:"</span>+key);</span><br><span class="line">        System.out.println(<span class="string">"key----:"</span>+value);</span><br><span class="line">        <span class="keyword">final</span> String keyString = key.toString();</span><br><span class="line">        <span class="keyword">final</span> Object valuef = value;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">long</span> liveTime = <span class="number">86400</span>;</span><br><span class="line">        redisTemplate.execute(<span class="keyword">new</span> RedisCallback&lt;Long&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Long <span class="title">doInRedis</span><span class="params">(RedisConnection connection)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">                <span class="keyword">byte</span>[] keyb = keyString.getBytes();</span><br><span class="line">                <span class="keyword">byte</span>[] valueb = SerializationUtils.serialize((Serializable) valuef);</span><br><span class="line">                connection.set(keyb, valueb);</span><br><span class="line">                <span class="keyword">if</span> (liveTime &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    connection.expire(keyb, liveTime);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1L</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">get</span><span class="params">(Object arg0, Class&lt;T&gt; arg1)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getNativeCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.redisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ValueWrapper <span class="title">putIfAbsent</span><span class="params">(Object arg0, Object arg1)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate&lt;String, Object&gt; <span class="title">getRedisTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRedisTemplate</span><span class="params">(RedisTemplate&lt;String, Object&gt; redisTemplate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.redisTemplate = redisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-6-完成以上的配置之后就可以使用-Spring-Cache注解来使用缓存了"><a href="#4-6-完成以上的配置之后就可以使用-Spring-Cache注解来使用缓存了" class="headerlink" title="4.6 完成以上的配置之后就可以使用 Spring Cache注解来使用缓存了"></a>4.6 完成以上的配置之后就可以使用 Spring Cache注解来使用缓存了</h4><p>首先使用注解标记方法，相当于定义了切点，然后使用Aop技术在这个方法的调用前、调用后获取方法的入参和返回值，进而实现了缓存的逻辑。</p>
+<ul>
+<li>@Cacheable</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">表明所修饰的方法是可以缓存的：当第一次调用这个方法时，它的结果会被缓存下来，在缓存的有效时间内，以后访问这个方法都直接返回缓存结果，不再执行方法中的代码段。 </span><br><span class="line">这个注解可以用condition属性来设置条件，如果不满足条件，就不使用缓存能力，直接执行方法。 </span><br><span class="line">可以使用key属性来指定key的生成规则。</span><br><span class="line"></span><br><span class="line">@Cacheable 支持如下几个参数：</span><br><span class="line"></span><br><span class="line">  value：缓存位置名称，不能为空，如果使用EHCache，就是ehcache.xml中声明的<span class="keyword">cache</span>的<span class="keyword">name</span>, 指明将值缓存到哪个<span class="keyword">Cache</span>中</span><br><span class="line">  <span class="keyword">key</span>：缓存的<span class="keyword">key</span>，默认为空，既表示使用方法的参数类型及参数值作为<span class="keyword">key</span>，支持SpEL，如果要引用参数值使用井号加参数名，如：#userId，</span><br><span class="line"></span><br><span class="line">  一般来说，我们的更新操作只需要刷新缓存中某一个值，所以定义缓存的<span class="keyword">key</span>值的方式就很重要，最好是能够唯一，因为这样可以准确的清除掉特定的缓存，而不会影响到其它缓存值 ， </span><br><span class="line">  本例子中使用实体加冒号再加<span class="keyword">ID</span>组合成键的名称，如”<span class="keyword">user</span>:<span class="number">1</span>”、”<span class="keyword">order</span>:<span class="number">223123</span>”等</span><br><span class="line"></span><br><span class="line">  condition：触发条件，只有满足条件的情况才会加入缓存，默认为空，既表示全部都加入缓存，支持SpEL</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  // 将缓存保存到名称为UserCache中，键为<span class="string">"user:"</span>字符串加上userId值，如 <span class="string">'user:1'</span></span><br><span class="line">  @Cacheable(<span class="keyword">value</span>=<span class="string">"UserCache"</span>, <span class="keyword">key</span>=<span class="string">"'user:' + #userId"</span>)    </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">User</span> findById(<span class="keyword">String</span> userId) &#123;    </span><br><span class="line">      <span class="keyword">return</span> (<span class="keyword">User</span>) <span class="keyword">new</span> <span class="keyword">User</span>(<span class="string">"1"</span>, <span class="string">"mengdee"</span>);           </span><br><span class="line">  &#125;    </span><br><span class="line">  </span><br><span class="line">  // 将缓存保存进UserCache中，并当参数userId的长度小于12时才保存进缓存，默认使用参数值及类型作为缓存的key</span><br><span class="line">  // 保存缓存需要指定key，value， value的数据类型，不指定key默认和参数名一样如："1"</span><br><span class="line">  @Cacheable(value="UserCache", condition="#userId.length() &lt; 12")    </span><br><span class="line">  public boolean isReserved(String userId) &#123;    </span><br><span class="line">      System.out.println("UserCache:"+userId);    </span><br><span class="line">      return false;    </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>@CachePut</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">与@Cacheable不同，@CachePut不仅会缓存方法的结果，还会执行方法的代码段。它支持的属性和用法都与@Cacheable一致。</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>@CacheEvict</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">与@Cacheable功能相反，@CacheEvict表明所修饰的方法是用来删除失效或无用的缓存数据。</span><br><span class="line"></span><br><span class="line">@CacheEvict 支持如下几个参数：</span><br><span class="line"></span><br><span class="line">  value：缓存位置名称，不能为空，同上</span><br><span class="line">  key：缓存的key，默认为空，同上</span><br><span class="line">  condition：触发条件，只有满足条件的情况才会清除缓存，默认为空，支持SpEL</span><br><span class="line">  allEntries：true表示清除value中的全部缓存，默认为false</span><br><span class="line"></span><br><span class="line">  //清除掉UserCache中某个指定key的缓存    </span><br><span class="line">  @CacheEvict(value="UserCache",key="'user:' + #userId")    </span><br><span class="line">  public void removeUser(User user) &#123;    </span><br><span class="line">      System.out.println("UserCache"+user.getUserId());    </span><br><span class="line">  &#125;    </span><br><span class="line">  </span><br><span class="line">  //清除掉UserCache中全部的缓存    </span><br><span class="line">  @CacheEvict(value="UserCache", allEntries=true)    </span><br><span class="line">  public final void setReservedUsers(String[] reservedUsers) &#123;    </span><br><span class="line">     System.out.println("UserCache deleteall");    </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@Caching</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">如果需要使用同一个缓存注解（@Cacheable、@CacheEvict或@CachePut）多次修饰一个方法，就需要用到@Caching。</span><br><span class="line"></span><br><span class="line">@Caching(evict = &#123; @CacheEvict("primary"), @CacheEvict(cacheNames="secondary", key="#p0") &#125;)</span><br><span class="line">public Book importBooks(String deposit, Date date)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@CacheConfig</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">与前面的缓存注解不同，这是一个类级别的注解。</span><br><span class="line"> 如果类的所有操作都是缓存操作，你可以使用@CacheConfig来指定类，省去一些配置。</span><br><span class="line"></span><br><span class="line">@CacheConfig("books")</span><br><span class="line">public class BookRepositoryImpl implements BookRepository &#123;</span><br><span class="line">    @Cacheable</span><br><span class="line">    public Book findBook(ISBN isbn) &#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="遇到的问题："><a href="#遇到的问题：" class="headerlink" title="遇到的问题："></a>遇到的问题：</h2><ul>
+<li><p>spring+redis报错org.springframework.core.serializer.support.DeserializingConverter.<init>(Ljava/lang/ClassLoader;)V</init></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">这个问题的原因大概就是spring-data-redis.jar包版本不对 ，下面版本可以正常启动</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.6.2.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;redis.clients&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;jedis&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.9.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Spring Cache 注解问题，使用redis缓存会出现类型转化的问题 ,还未解决</p>
+</li>
+</ul>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://www.cnblogs.com/panter/p/6801210.html" target="_blank" rel="noopener">https://www.cnblogs.com/panter/p/6801210.html</a><br><a href="http://www.redis.net.cn/tutorial/3503.html" target="_blank" rel="noopener">http://www.redis.net.cn/tutorial/3503.html</a><br><a href="https://www.cnblogs.com/hello-daocaoren/p/7891907.html" target="_blank" rel="noopener">https://www.cnblogs.com/hello-daocaoren/p/7891907.html</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    <time datetime="2018-04-09T14:07:01.475Z" itemprop="dateUpdated">2018-04-09 22:07:01</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://www.songshuiyang.site">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/&title=《Spring 集成Redis》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/&title=《Spring 集成Redis》 — 宋水阳个人博客&source=一：Redis1. 什么是RedisRedis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring 集成Redis》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/04/14/Web后台/Java/Java获取数据表元数据/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java获取数据表元数据</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/03/Web后台/支付/微信公众号开通发红包功能/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">微信公众号实现输入兑换码自动发红包功能</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2018</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/&title=《Spring 集成Redis》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/&title=《Spring 集成Redis》 — 宋水阳个人博客&source=一：Redis1. 什么是RedisRedis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring 集成Redis》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2018/04/08/Web后台/缓存技术/Redis/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsElEQVR42u3a22rDMBAFwPz/T7vQp0Ib5+xFIYXRUzGprXFA2hzt4xGP63s8iuP6MZ7d7fo1dueAh4eHd4J33Y5nt77ikVDvkfd3e/GC8PDw8I7x7hfiZMlOYMnUkzkkn8fDw8P7BF5eIveK9fu/8fDw8P4jr1pe509JSnk8PDy8T+P1yuIoDogL6Ml8FrIWPDw8vJi3W/i+5++D53t4eHh4g1P13oHWpMju3fPps/Dw8PAO8PIyt9pKtXyIFbQRlKeLh4eHN+Alh169K72oIt88qi8aDw8Pb84r64ubRHI9aUTIWxaiYhoPDw9vwEsenBzqby3rW9fx8PDw3snLQ4Qkcs2R1bBj9FsBDw8Pb8DLJ5FMbt5ulYfC0feGh4eHd5hXXdx7YUHeCtB7TX90RuDh4eEd4M0DiLw5IDk8m28qy/kKHh4eXqts7W0MvVK415rwIozAw8PDW+JVV9FJAT2JhquvrxBM4OHh4bV4+SnZbgGdg6sbRuFkDw8PD6/Iy2/RK3N3P1kNjvHw8PBO8HoBRLVQTraK5A6TRi48PDy8Ld7WAj1pBegFIlHhjoeHh3eYN2miyhm7jQIvZo6Hh4d3gDeJX5OFe3LENQkg8PDw8E7zqodbeTFdXdATWM7Gw8PDO83rha3z5XvrxZW/STw8PLwxLz+G7xW11eihWqaXE2I8PDy8AW9SsPZarKqw3n3w8PDwTvPyACLZMHrg3jHYi8/j4eHhrfKu4pi3TOVX5rEIHh4e3glePpJ/ni/xSemch8J4eHh453j5D/4qNVnoq0HwQtaCh4eHt8TrbQbV+DWfenUHw8PDw/tkXrW0nbRqVZ8StVvh4eHhvZG3G6HmgcIkpMDDw8M7x5s0NvWQ1ec2Y2I8PDy8A7zRT/14O0k2mF6rwSTCwMPDwyvyvgBDj5KXPDhV7QAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '怎么离开了 o(╥﹏╥)o';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来 (*^▽^*)';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

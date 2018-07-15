@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Docelver接口管理平台 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="测试">
+    <meta name="description" content="前言在项目开发过程中，开发一个功能模块，需要前后端开发进行接口定义并形成文档，如果使用doc这些文档去维护接口，多会出现纰漏，特别是在多人开发的项目中，缺点尤为明显，所以需要一个像代码版本控制（git svn）类型的平台去维护这些文档，方便开发人员进行接口维护，前后端开发人员联调接口，测试人员编写测试用例 市场上常用的接口管理平台1. Rap 阿里出品官网地址：  http://rapapi.or">
+<meta name="keywords" content="测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docelver接口管理平台">
+<meta property="og:url" content="http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言在项目开发过程中，开发一个功能模块，需要前后端开发进行接口定义并形成文档，如果使用doc这些文档去维护接口，多会出现纰漏，特别是在多人开发的项目中，缺点尤为明显，所以需要一个像代码版本控制（git svn）类型的平台去维护这些文档，方便开发人员进行接口维护，前后端开发人员联调接口，测试人员编写测试用例 市场上常用的接口管理平台1. Rap 阿里出品官网地址：  http://rapapi.or">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-06-06T13:06:57.972Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docelver接口管理平台">
+<meta name="twitter:description" content="前言在项目开发过程中，开发一个功能模块，需要前后端开发进行接口定义并形成文档，如果使用doc这些文档去维护接口，多会出现纰漏，特别是在多人开发的项目中，缺点尤为明显，所以需要一个像代码版本控制（git svn）类型的平台去维护这些文档，方便开发人员进行接口维护，前后端开发人员联调接口，测试人员编写测试用例 市场上常用的接口管理平台1. Rap 阿里出品官网地址：  http://rapapi.or">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Docelver接口管理平台</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Docelver接口管理平台</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-03T12:07:12.000Z" itemprop="datePublished" class="page-time">
+  2018-04-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#市场上常用的接口管理平台"><span class="post-toc-number">2.</span> <span class="post-toc-text">市场上常用的接口管理平台</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-Rap-阿里出品"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. Rap 阿里出品</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-DOClever"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. DOClever</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Web后台/测试/Docelver接口管理平台"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Docelver接口管理平台</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-03 20:07:12" datetime="2018-04-03T12:07:12.000Z"  itemprop="datePublished">2018-04-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在项目开发过程中，开发一个功能模块，需要前后端开发进行接口定义并形成文档，如果使用doc这些文档去维护接口，多会出现纰漏，特别是在多人开发的项目中，缺点尤为明显，所以需要一个像代码版本控制（git svn）类型的平台去维护这些文档，方便开发人员进行接口维护，前后端开发人员联调接口，测试人员编写测试用例</p>
+<h4 id="市场上常用的接口管理平台"><a href="#市场上常用的接口管理平台" class="headerlink" title="市场上常用的接口管理平台"></a>市场上常用的接口管理平台</h4><h5 id="1-Rap-阿里出品"><a href="#1-Rap-阿里出品" class="headerlink" title="1. Rap 阿里出品"></a>1. Rap 阿里出品</h5><p>官网地址：  <a href="http://rapapi.org/org/index.do" target="_blank" rel="noopener">http://rapapi.org/org/index.do</a></p>
+<p>官网介绍：</p>
+<p>RAP是一个可视化接口管理工具 通过分析接口结构，动态生成模拟数据，校验真实接口正确性， 围绕接口定义，通过一系列自动化工具提升我们的协作效率。我们的口号：提高效率，回家吃晚饭！</p>
+<p>使用体验：</p>
+<ol>
+<li>RAP的应用范围非常明确，是一个面向开发人员自测和联调的工具性平台，它更适合以开发为核心对接口进行维护</li>
+</ol>
+<h5 id="2-DOClever"><a href="#2-DOClever" class="headerlink" title="2. DOClever"></a>2. DOClever</h5><p>官网地址： <a href="http://www.doclever.cn/controller/index/index.html" target="_blank" rel="noopener">http://www.doclever.cn/controller/index/index.html</a></p>
+<p>可以对接口信息进行编辑管理，支持get,post,put,delete,patch 五种方法，支持 https 和 https 协议，并且支持 query，body，json，raw，rest，formdata 的参数可视化编辑。同时对 json 可以进行无限层次可视化编辑。并且，状态码，代码注入，markdown 文档等附加功能应有尽有。</p>
+<p>接口调试运行，可以对参数进行加密，从md5 到 aes 一应俱全，返回参数与模型实时分析对比，给出不一致的地方，找出接口可能出现的问题。如果你不想手写文档，那么试试接口的数据生成功能，可以对接口运行的数据一键生成文档信息。</p>
+<p>mock 的无缝整合，DOClever 自己就是一个 mock 服务器，当你把接口的开发状态设置成已完成，本地 mock 便会自动请求真实接口数据，否则返回事先定义好的 mock 数据。</p>
+<p>支持 postman，rap，swagger 的导入，方便你做无缝迁移，同时也支持 html 文件的导出，方便你离线浏览！</p>
+<p>项目版本和接口快照功能并行，你可以为一个项目定义 1.0，1.1，1.2 版本，并且可以自由的在不同版本间切换回滚，再也不怕接口信息的遗失，同时接口也有快照功能，当你接口开发到一半或者接口需求变更的时候，可以随时查看之前编辑的接口信息。</p>
+<p>自动化测试功能，目前市面上类似平台的接口自动化测试大部分都是伪自动化，对于一个复杂的场景，比如获取验证码，登陆，获取订单列表，获取某个特定订单详情这样一个上下文关联的一系列操作无能为力。而 DOClever 独创的自动化测试功能，只需要你编写极少量的 javascript 代码便可以在网页里完成这样一系列操作，同时，DOClever 还提供了后台定时批量执行测试用例并把结果发送到团队成员邮箱的功能，你可以及时获取接口的运行状态。</p>
+<p>团队协作功能，很多类似的平台这样的功能是收费的，但是 DOClever 觉得好东西需要共享出来，你可以新建一个团队，并且把团队内的成员都拉进来，给他们分组，给他们分配相关的项目以及权限，发布团队公告等等。</p>
+<p>DOClever 开源免费，支持内网部署，很多公司考虑到数据的安全性，不愿意把接口放到公网上，没有关系，DOClever 给出一个方便快捷的解决方案，你可以把平台放到自己的内网上，完全不需要连接外网，同时功能一样也不少，即便是对于产品的升级，DOClever 也提供了很便捷的升级方案！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    <time datetime="2018-06-06T13:06:57.972Z" itemprop="dateUpdated">2018-06-06 21:06:57</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://www.songshuiyang.site">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/&title=《Docelver接口管理平台》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/&title=《Docelver接口管理平台》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Docelver接口管理平台》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/04/03/Web后台/支付/微信公众号开通发红包功能/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">微信公众号实现输入兑换码自动发红包功能</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/24/Web后台/windows bat/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Windows批处理(cmd/bat)常用命令</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2018</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/&title=《Docelver接口管理平台》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/&title=《Docelver接口管理平台》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Docelver接口管理平台》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2018/04/03/Web后台/测试/Docelver接口管理平台/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACt0lEQVR42u3aQYojMRAEQP//07uwpwEzdmaV5PUhdDKepq3QgCSy6vGIx59/4+fnn9+8fub5ydfvf/4+f89w4OHh4Y2m/ttInnl+sl2sZIHy+eDh4eF9hpdPImHk7GSZ2rfh4eHhfQ8v2dBPXbLzIwQPDw/v+3nthfh1hJG8/6MHAx4eHl7MyyOGZIt/HfXm+DaqwMPDw/sM79TV9pOfr9f38PDw8EZV9Xy0V+okAt7PFg8PD+8Gr70ubxoF2mXKf/3NfPDw8PAu8zZl+5Y0iyeSGeLh4eHd5rXxa85O3jNr4Zq1guHh4eHteXkxPmfsSflG/2bR8fDw8C7zZkWm/MqbNBC0DV7FwYCHh4d3iJeHuZs2rPaoyJe4aDLAw8PDO8R7U3QvD4xkCZLP++gWDw8P7x4vn9btQLZ9Q3Hu4eHh4R3lbS67eUvBLOBIlq9oVMXDw8M7xNsUtPbhwmwp28XCw8PDu8HbxA2zv7alrPxYKnpy8fDw8Ba8/KLclqby0V7Ti38AHh4e3lFeXgDbtBdsmq5WxTY8PDy8C7zZJr6JGPKwow1B3lyp8fDw8A7x2qknE80vxG2LVX2o4OHh4V3gtWWndtNvSTdaDfDw8PDO8trAtF2CduvfxL5R6QsPDw/vEC+JBmbNVW0bQR40RJExHh4e3gVefkjkRaz2kMgj3dWFHg8PD+8QL99w2w09Px7y/0Ayk19Tajw8PLxDvNnYNAfMLtPt3B6bgYeHh/eStwlP25B3BsgPAzw8PLzP8GYbblviml2+W8bqMo2Hh4dX8toi/Sb83ce1bYCCh4eHd4+XHwabqW++n0UkeHh4eN/AS344jzOOMV6HuXh4eHj/ideGs7NnZoW3AwcDHh4eXsnLw4j8YMiDjLYFofgtPDw8vAu8WQHs1BGStyC0uz0eHh7eBd5fb08NAU8kSggAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '怎么离开了 o(╥﹏╥)o';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来 (*^▽^*)';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

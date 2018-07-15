@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>编译构建部署版本工具 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="git">
+    <meta name="description" content="转自：http://www.cnblogs.com/shenh062326/p/git.html">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译构建部署版本工具">
+<meta property="og:url" content="http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="转自：http://www.cnblogs.com/shenh062326/p/git.html">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-06-06T13:06:57.974Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编译构建部署版本工具">
+<meta name="twitter:description" content="转自：http://www.cnblogs.com/shenh062326/p/git.html">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">编译构建部署版本工具</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">编译构建部署版本工具</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-10-14T08:38:12.000Z" itemprop="datePublished" class="page-time">
+  2017-10-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-Web后台/编译构建部署版本工具/git/如何修改Git commit的信息"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">编译构建部署版本工具</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-10-14 16:38:12" datetime="2017-10-14T08:38:12.000Z"  itemprop="datePublished">2017-10-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>转自：<br><a href="http://www.cnblogs.com/shenh062326/p/git.html" target="_blank" rel="noopener">http://www.cnblogs.com/shenh062326/p/git.html</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    <time datetime="2018-06-06T13:06:57.974Z" itemprop="dateUpdated">2018-06-06 21:06:57</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://www.songshuiyang.site">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/&title=《编译构建部署版本工具》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/&title=《编译构建部署版本工具》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《编译构建部署版本工具》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/10/22/Web后台/编译构建部署版本工具/git/git初始配置/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Git初始配置</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/10/14/Web后台/Hibernate/Hibernate Validator/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Hibernate Validator</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2018</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/&title=《编译构建部署版本工具》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/&title=《编译构建部署版本工具》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《编译构建部署版本工具》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2017/10/14/Web后台/编译构建部署版本工具/git/如何修改Git commit的信息/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD5klEQVR42u3aS27jQAwFQN3/0snWQCzp8SPHi/IqSOR2d3kATpPvOOLXz8nr9a/XT74+8/dd1+uc7edsh2fPrL1w4MCBA0frqMnm8k0kQGcoVaDr/d/sAQcOHDhwLHHk25pX9YQ1eVeVI1oTBw4cOHB8nCO5kvWKd7LmdfHO34sDBw4cOL6H43or1abe5GvoXQVx4MCBA8dnOHqDpWSFfECVcORfz+O9Uhw4cODAcd9/axa/7//5kXwHDhw4cOCIQwZ50G0+KMoLbW+dwulw4MCBA8eYo/eR1VBCr/j1hlUTShw4cODAMedIAnDz4EL1rrT1TPL1HJPD48CBAweOuPE3GclMtp6ED3bDE2+exIEDBw4cY448plCd0cxDcnnBrsYabj4FBw4cOHAMOHpBgV7Bm4+p8r1VaXDgwIEDx5wjHyb1rky9lfN1lluHOHDgwIFjZwpzbG23FyZIflM98GQPOHDgwIFjsodeNCH/+F48Yn7Za7YdceDAgQPH0gSnuqFqScvLYbW9WP05osSBAwcOHAOO6laqUYNegy//lB5iOcqAAwcOHDiKHHkJnIyd8sMn4Yle2/HmFDhw4MCBY8yRxxSihYpNvV6JTUIP+fM3/0Zw4MCBA0eLozrOmZe6yaBoqwzjwIEDB44nOHrxuDwq3QtGVMdO8/Vx4MCBA8cuR368alxg98k53DUoDhw4cOD4DMckvtBbv3fsfJR1erHEgQMHDhyrHHlzLSls1ZzApKPZ2/+b9XHgwIEDx2Mc8zHPZBTUK58LYT4cOHDgwLHEkR+jWiyrxNW/9i6TpyfFgQMHDhxLHNFIJm7PzUtp7+qY/CfgZsCGAwcOHDiWOPKWXPU3SRHtDau2doUDBw4cOHY5qpuejKmei0dUW5Y3e8aBAwcOHAOOahwhHzX1rl75BS+P3xUuqDhw4MCBY5Vja7tbx7j+GpLWZI5VmMLhwIEDB46AI1862dA8lDAJ4SU0N71SHDhw4MCxxJE33XqFMA86TOIO1WBEM9OHAwcOHDjGA6etQphDJ5eu/BWVfBw4cODAscTRK4GfibtNLnLVXeHAgQMHjjnH/NjJ81ttwbxgV29tOHDgwIFji6N3EYrCAcEheyGGXngiYsKBAwcOHDuTmqNX0noXtuqxt4poTowDBw4cOOYc+cBmAlQtk7vDrcL6OHDgwIFjiWNSqPLrVq9AJq3JyS0sijXgwIEDB47HOHqtxpwyudQ9V8Jx4MCBA8d/cVSjCT2Ird8X4ho4cODAgWOJo1e6JuOo61ZjUmirk7TovThw4MCBY8wxadjlzbsJbnKY3hfQbDXiwIEDB473+/kFyhbDplfDjhYAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '怎么离开了 o(╥﹏╥)o';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来 (*^▽^*)';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

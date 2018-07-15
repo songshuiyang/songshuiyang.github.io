@@ -1,1180 +1,757 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="baidu-site-verification" content="HuKlM4kUBb"/>
-  <meta name="keywords" contect="博客,个人博客,JAVA,宋水阳个人博客,宋水阳" />
-  <meta name="description" contect="宋水阳个人博客"/>
-  <meta name="author" contect="songshuiyang"/>
-  
-  
-  
-  
-  <title>宋水阳个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta property="og:type" content="website">
 <meta property="og:title" content="宋水阳个人博客">
 <meta property="og:url" content="http://www.songshuiyang.site/page/3/index.html">
 <meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="宋水阳个人博客">
-  
-    <link rel="alternative" href="/atom.xml" title="宋水阳个人博客" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/img/favicon.png">
-  
-  
-  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  
     
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
     
-  
-  
-      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  
-  <!-- 加载特效 -->
-    <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
-  <script>
-      var yiliaConfig = {
-          fancybox: true,
-          animate: true,
-          isHome: true,
-          isPost: false,
-          isArchive: false,
-          isTag: false,
-          isCategory: false,
-          open_in_new: false
-      }
-  </script>
-  <script>
-  (function(){
-      var bp = document.createElement('script');
-      var curProtocol = window.location.protocol.split(':')[0];
-      if (curProtocol === 'https') {
-          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-      }
-      else {
-          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-      }
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(bp, s);
-  })();
-  </script>
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
 </head>
+
 <body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-    <header id="header" class="inner">
-        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-        <a href="/" class="profilepic">
-            
-            <img lazy-src="/img/avatar.png" class="js-avatar">
-            
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
         </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/">songshuiyang</a></h1>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
         </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
         
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
         
-            <form>
-                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
-            </form>
-            <div id="local-search-result"></div>
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
         
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
         
-            <script type="text/javascript">
-                (function() {
-                    'use strict';
-                    function getMatchData(keyword, data) {
-                        var matchData = [];
-                        for(var i =0;i<data.length;i++){
-                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
-                                matchData.push(data[i])
-                        }
-                        return matchData;
-                    }
-                    var $input = $('#local-search-input');
-                    var $resultContent = $('#local-search-result');
-                    $input.keyup(function(){
-                        $.ajax({
-                            url: '/search.json',
-                            dataType: "json",
-                            success: function( json ) {
-                                var str='<ul class=\"search-result-list\">';                
-                                var keyword = $input.val().trim().toLowerCase();
-                                $resultContent.innerHTML = "";
-                                if ($input.val().trim().length <= 0) {
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                }
-                                var results = getMatchData(keyword, json);
-                                if(results.length === 0){
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                } 
-                                for(var i =0; i<results.length; i++){
-                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
-                                }
-                                str += "</ul>";
-                                $resultContent.empty();
-                                $resultContent.append(str);
-                                $('#switch-area').hide();
-                            }
-                        });
-                    });
-                })();
-            </script>
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">宋水阳个人博客</div>
         
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
-                        
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
-            </div>
-        
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a  href="/archives/">所有文章</a></li>
-                        
-                            <li><a  href="/categories/client/">Web前端</a></li>
-                        
-                            <li><a  href="/categories/server/">Web后端</a></li>
-                        
-                            <li><a  href="/categories/技术/">技术</a></li>
-                        
-                            <li><a  href="/categories/随笔/">随笔</a></li>
-                        
-                            <li><a  href="/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fl github"  target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
-                            
-                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
-                            
-                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
-                            
-                        </ul>
-                    </nav>
-                </section>
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 13.75px;">支付</a>
-                    </div>
-                </section>
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net">csdn</a>
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.zhihu.com">知乎</a>
-                    
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">一只默默充电的小码农</div>
-                </section>
-                
-            </div>
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
         </div>
-    </header>
-</div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header index-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">宋水阳个人博客</h1>
+        <h5 class="subtitle">
+            
+                
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+<div class="container body-wrap">
+
+    <ul class="post-list">
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/相关技术/百度富文本框编辑器Ueditor的使用"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-05 22:54:12" datetime="2018-03-05T14:54:12.000Z"  itemprop="datePublished">2018-03-05</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
 
     </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">songshuiyang</a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/" class="profilepic">
-                
-                    <img lazy-src="/img/avatar.png" class="js-avatar">
-                
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/" title="回到主页">songshuiyang</a></h1>
-            </hgroup>
-            
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/archives/">所有文章</a></li>
-                
-                    <li><a href="/categories/client/">Web前端</a></li>
-                
-                    <li><a href="/categories/server/">Web后端</a></li>
-                
-                    <li><a href="/categories/技术/">技术</a></li>
-                
-                    <li><a href="/categories/随笔/">随笔</a></li>
-                
-                    <li><a href="/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                <div class="social">
-                    
-                        <a class="github" target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
-                    
-                        <a class="weibo" target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
-                    
-                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-                    
-                </div>
-            </nav>
-        </header>                
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/03/05/Web后台/相关技术/百度富文本框编辑器Ueditor的使用/">百度富文本框编辑器Ueditor的使用</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        百度富文本框编辑器：官网： http://ueditor.baidu.com/website/ 
+官网演示地址：http://ueditor.baidu.com/website/onlinedemo.html
+UEditor是由百度web前端研发部开发所见即所得富文本web编辑器，具有轻量，可定制，注重用户体验等特点，开源基于MIT协议，允许自由使用和修改代码…
+    
+
+        <a href="/2018/03/05/Web后台/相关技术/百度富文本框编辑器Ueditor的使用/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/相关技术/基于wordspress搭建个人博客系统"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-04 20:54:12" datetime="2018-03-04T12:54:12.000Z"  itemprop="datePublished">2018-03-04</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/03/04/Web后台/相关技术/基于wordspress搭建个人博客系统/">基于wordspress搭建个人博客系统</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        什么是Wordspress：官网： https://cn.wordpress.org/ 提供了中英版
+WordPress是使用PHP语言开发的博客平台，用户可以在支持PHP和MySQL数据库的服务器上架设属于自己的网站。也可以把 WordPress当作一个内容管理系统（CMS）来使用。
+WordPress是一款个人博客系统，并逐步演化成一款内容管理系统软件，它是使用PHP语言和MySQL数据库开发的。用户可以在支持 PHP 和 MySQL数据库的服务器上使用自己的博客。
+WordPress有许多第三方开发的免费模板，安装方式简单易用。不过要做一个自己的模板，则需要你有一定的专业知识。比如你至少要懂的标准通用标记语言下的一个应用HTML代码、CSS、PHP等相关知识。
+WordPress官方支持中文版，同时有爱好者开发的第三方中文语言包，如wopus中文语言包。WordPress拥有成千上万个各式插件和不计其数的主题模板样式。
+    
+
+        <a href="/2018/03/04/Web后台/相关技术/基于wordspress搭建个人博客系统/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/数据库/Mysql 数据类型"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-03 11:15:12" datetime="2018-03-03T03:15:12.000Z"  itemprop="datePublished">2018-03-03</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/03/03/Web后台/数据库/Mysql 数据类型/">Mysql 数据类型.md</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        MySQL中定义数据字段的类型对你数据库的优化是非常重要的。
+MySQL支持多种类型，大致可以分为三类：数值、日期/时间和字符串(字符)类型。
+    
+
+        <a href="/2018/03/03/Web后台/数据库/Mysql 数据类型/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/">db</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web前端/animate"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-03 10:52:12" datetime="2018-03-03T02:52:12.000Z"  itemprop="datePublished">2018-03-03</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/client/">client</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/03/03/Web前端/animate/">animate.css</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        一 前言:背景：在看其他人的项目的时候发现其动画效果做的不错，通过看人家的代码发现用了这个animate.css这个css组件，使用起来也是特别的方便，所以就把他copy到项目中来了，顿时档次就上升了
+简介:animate.css 是一个来自国外的 CSS3 动画库，它预设了抖动（shake）、闪烁（flash）、弹跳（bounce）、翻转（flip）、旋转（rotateIn/rotateO...
+    
+
+        <a href="/2018/03/03/Web前端/animate/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/">css</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-28 21:49:44" datetime="2018-02-28T13:49:44.000Z"  itemprop="datePublished">2018-02-28</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/服务器/">服务器</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/">Spring mvc 前后台传值中文乱码问题</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        一： 解决GET请求参数到了后台中文乱码问题
+方式一: 修改tomcat配置, 暂时做法，没有找到更好的解决办法，换了tomcat了又要重新配置123把tomcat下，server.xml下，添加如下配置，就解决了．  &lt;Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443" URIEncoding="UTF-8"/&gt;
+方式二: 自定义filter, 解决了get请求中文参数问题，但post请求参数到了后台就gg了
+    
+
+        <a href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/编程规范/阿里巴巴Java编程规范"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-13 09:54:12" datetime="2018-02-13T01:54:12.000Z"  itemprop="datePublished">2018-02-13</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/">阿里巴巴Java编程规范</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        前言：关于《阿里巴巴Java开发手册》
+
+
+
+你是否曾因Java代码规范版本纷杂而无所适从？
+你是否想过代码规范能将系统故障率降低20%？
+你是否曾因团队代码风格迥异而协同困难？
+你是否正在review一些原本可以避免的故障？
+你是否无法确定自己的代码足够健壮？ 
+    
+
+        <a href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web前端/CSS和JS文件的客户端缓存问题"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-10 11:48:12" datetime="2018-02-10T03:48:12.000Z"  itemprop="datePublished">2018-02-10</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/client/">client</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/">解决CSS和JS文件的客户端缓存问题</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        场景做项目的时候，发现自己修改了一个css文件但样式并没有应用，查看http请求(如下图)，注意这个参数Status Code:200 OK (from disk cache) , 说明文件是是之前浏览器缓存的文件，浏览器并没有请求我们新改的文件1234Request URL:http://localhost:8080/static/layui/build/css/app.cssReques...
+    
+
+        <a href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/">css</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/相关技术/生成二维码图片(base64格式)"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-29 21:00:12" datetime="2018-01-29T13:00:12.000Z"  itemprop="datePublished">2018-01-29</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/">生成二维码图片(base64格式)</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        生成二维码图片(base64格式)
+    
+
+        <a href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/相关技术/根据手机区号获取城市地理位置"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-29 20:55:12" datetime="2018-01-29T12:55:12.000Z"  itemprop="datePublished">2018-01-29</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/">根据手机区号获取城市地理位置</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        根据手机区号获取城市地理位置httpAPI:  http://www.ip138.com:8080/search.asp?action=mobile&amp;mobile=%s
+    
+
+        <a href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Web后台/相关技术/根据IP获取城市地理位置"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-29 20:54:12" datetime="2018-01-29T12:54:12.000Z"  itemprop="datePublished">2018-01-29</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/">根据IP获取城市地理位置</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        根据IP获取城市地理位置使用的是百度查询的api，试过到淘宝的API, 但是淘宝做了访问次数限制，如果批量查询的话直接timeout
+    
+
+        <a href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/" class="post-more waves-effect waves-button">
+            查看全文
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+    </ul>
+
+    
+<nav id="page-nav">
+    <div class="inner">
+    <a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
     </div>
 </nav>
-      <div class="body-wrap">
-  
-    <article id="post-Web后台/Spring/spring-boot/组合注解" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/" class="article-date">
-      <time datetime="2018-01-14T14:25:44.000Z" itemprop="datePublished">2018-01-14</time>
-</a>
 
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/">组合注解</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h3 id="组合注解"><a href="#组合注解" class="headerlink" title="组合注解"></a>组合注解</h3><blockquote>
-<p>用一个注解表示其他注解</p>
-</blockquote>
-<p>CombinationAnnocation.java</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.lang.annotation.*;</div><div class="line"></div><div class="line"><span class="meta">@Target</span>(ElementType.TYPE)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="meta">@Documented</span></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> CombinationAnnocation &#123;</div><div class="line">    String [] value() <span class="keyword">default</span> &#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Config.java</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="meta">@CombinationAnnocation</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Application.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.groupAnno;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext(Config.class);</div><div class="line">        context.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Spring/spring-boot/异步方法" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/" class="article-date">
-      <time datetime="2018-01-14T14:25:44.000Z" itemprop="datePublished">2018-01-14</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/">异步方法</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h3 id="异步方法"><a href="#异步方法" class="headerlink" title="异步方法"></a>异步方法</h3><blockquote>
-<p>加入@Async注解可以让普通方法变为异步方法</p>
-</blockquote>
-<p>AsyncTaskService.java</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.Async;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</div><div class="line"></div><div class="line"><span class="meta">@Service</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncTaskService</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 异步方法</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> i</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Async</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">task1</span><span class="params">(Integer i)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行异步任务"</span> + i);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Async</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">task2</span><span class="params">(Integer i)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行异步任务+1 "</span> + (i + <span class="number">1</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Config.java</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.AsyncConfigurer;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.EnableAsync;</div><div class="line"><span class="keyword">import</span> org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.concurrent.Executor;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.smart.boot.asyn"</span>)</div><div class="line"><span class="meta">@EnableAsync</span> <span class="comment">// 开启异步任务支持</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> <span class="keyword">implements</span> <span class="title">AsyncConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获得一个基于线程池的 taskExecutor</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Executor <span class="title">getAsyncExecutor</span><span class="params">()</span> </span>&#123;</div><div class="line">        ThreadPoolTaskExecutor taskExecutor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</div><div class="line">        taskExecutor.setCorePoolSize(<span class="number">5</span>);</div><div class="line">        taskExecutor.setMaxPoolSize(<span class="number">10</span>);</div><div class="line">        taskExecutor.setQueueCapacity(<span class="number">25</span>);</div><div class="line">        taskExecutor.initialize();</div><div class="line">        <span class="keyword">return</span> taskExecutor;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> AsyncUncaughtExceptionHandler <span class="title">getAsyncUncaughtExceptionHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Application.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.asyn;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AnnotationConfigApplicationContext context = <span class="keyword">new</span> AnnotationConfigApplicationContext(Config.class);</div><div class="line">        AsyncTaskService asyncTaskService = context.getBean(AsyncTaskService.class);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">            asyncTaskService.task1(i);</div><div class="line">            asyncTaskService.task2(i);</div><div class="line">        &#125;</div><div class="line">        context.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Spring/spring-boot/spring 事件监听" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/" class="article-date">
-      <time datetime="2018-01-14T12:01:44.000Z" itemprop="datePublished">2018-01-14</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/">Spring 事件监听</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h3 id="Spring-事件监听"><a href="#Spring-事件监听" class="headerlink" title="Spring 事件监听"></a>Spring 事件监听</h3><h4 id="spring的事件-Application-Event"><a href="#spring的事件-Application-Event" class="headerlink" title="spring的事件(Application Event)"></a>spring的事件(Application Event)</h4><p><strong>为Bean与Bean之间的消息通信提供了支持, 当第一个Bean处理完一件事之后, 需要另外一个Bean知道并能做出相应的处理, 这时可以通过事件监听来讲一个Bean监听另一个Bean</strong></p>
-<h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><blockquote>
-<p>Spring 事件监听是观察者模式的一种实现 </p>
-</blockquote>
-<p>意图：定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。</p>
-<p>主要解决：一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合，保证高度的协作。</p>
-<p>何时使用：一个对象（目标对象）的状态发生改变，所有的依赖对象（观察者对象）都将得到通知，进行广播通知。</p>
-<p>如何解决：使用面向对象技术，可以将这种依赖关系弱化。</p>
-<blockquote>
-<p>事件驱动模型简介</p>
-</blockquote>
-<p>事件驱动模型也就是我们常说的观察者，或者发布-订阅模型；理解它的几个关键点：</p>
-<ol>
-<li>首先是一种对象间的一对多的关系；最简单的如交通信号灯，信号灯是目标（一方），行人注视着信号灯（多方）；</li>
-<li>当目标发送改变（发布），观察者（订阅者）就可以接收到改变；</li>
-<li>观察者如何处理（如行人如何走，是快走/慢走/不走，目标不会管的），目标无需干涉；所以就松散耦合了它们之间的关系。</li></ol>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/#more">查看更多 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Spring/spring-boot/注解Value" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/" class="article-date">
-      <time datetime="2018-01-14T08:01:44.000Z" itemprop="datePublished">2018-01-14</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/">注解Value, Spring EL</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h3 id="Value用法及配合Spring-EL使用"><a href="#Value用法及配合Spring-EL使用" class="headerlink" title="@Value用法及配合Spring EL使用"></a>@Value用法及配合Spring EL使用</h3><h4 id="spring支持-Value注解获取一些配置信息及加载资源"><a href="#spring支持-Value注解获取一些配置信息及加载资源" class="headerlink" title="spring支持@Value注解获取一些配置信息及加载资源"></a>spring支持@Value注解获取一些配置信息及加载资源</h4><blockquote>
-<p>ELConfig.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.smart.boot.el;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.io.IOUtils;</div><div class="line"><span class="keyword">import</span> org.slf4j.Logger;</div><div class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</div><div class="line"><span class="keyword">import</span> org.springframework.context.support.PropertySourcesPlaceholderConfigurer;</div><div class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</div><div class="line"><span class="keyword">import</span> org.springframework.core.io.Resource;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.smart.boot.el"</span>)</div><div class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:el.properties"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ELConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入普通字符串</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"songsy"</span>)</div><div class="line">    <span class="keyword">private</span> String str;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 通过el注入操作系统属性</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"# &#123;systemProperties['os.name']&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String osName;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 表达式结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"#&#123; T(java.lang.Math).random() * 100.0 &#125;"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> randomNumber;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入其他Bean属性</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"#&#123;eLService.another&#125;"</span>)</div><div class="line">    <span class="keyword">public</span> String fromAnothor;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入文件资源</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"classpath:el.properties"</span>)</div><div class="line">    <span class="keyword">private</span> Resource testFile;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入网站资源</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"http://www.baidu.com"</span>)</div><div class="line">    <span class="keyword">private</span> Resource testUrl;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 注入配置文件</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;book.name&#125;"</span>)</div><div class="line">    <span class="keyword">private</span> String bookName;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 环境配置</span></div><div class="line"><span class="comment">     * 环境在容器中是一个抽象的集合，是指应用环境的2个方面: profiles和 properties.</span></div><div class="line"><span class="comment">     * profile:</span></div><div class="line"><span class="comment">     * 配置是一个被命名的，bean定义的逻辑组，这些bean只有在给定的profile配置激活时才会注册到容器。不管是XML还是注解，</span></div><div class="line"><span class="comment">     * Beans都有可能指派给profile配置。Environment环境对象的作用，对于profiles配置来说，它能决定当前激活的是哪个profile配置，和哪个profile是默认。</span></div><div class="line"><span class="comment">     * Properties:</span></div><div class="line"><span class="comment">     * 扮演一个非常重要的角色,可能来源于一下源码变量:properties文件，JVM properties,system环境变量，JNDI, servlet context parameters上下文参数,</span></div><div class="line"><span class="comment">     * 专门的Properties对象，Maps等等。Environment对象的作用，对于properties来说，是提供给用户方便的服务接口，方便撰写配置、方便解析配置。</span></div><div class="line"><span class="comment">     * 作者：不迷失</span></div><div class="line"><span class="comment">     * 链接：https://www.jianshu.com/p/49e950b0b008</span></div><div class="line"><span class="comment">     * 來源：简书</span></div><div class="line"><span class="comment">     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    <span class="keyword">private</span> Environment environment;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 若使用<span class="doctag">@Value</span>注入, 则要配置一个PropertySourcesPlaceholderConfigurer</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PropertySourcesPlaceholderConfigurer <span class="title">placeholderConfigurer</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PropertySourcesPlaceholderConfigurer();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        logger.info(<span class="string">"str: "</span> + str);</div><div class="line">        logger.info(<span class="string">"osName: "</span> + osName);</div><div class="line">        logger.info(<span class="string">"randomNumber: "</span> + String.valueOf(randomNumber));</div><div class="line">        logger.info(<span class="string">"fromAnothor: "</span> + fromAnothor);</div><div class="line">        logger.info(<span class="string">"testFile: "</span> + IOUtils.toString(testFile.getInputStream()));</div><div class="line">        logger.info(<span class="string">"testUrl: "</span> + IOUtils.toString(testUrl.getInputStream()));</div><div class="line">        logger.info(<span class="string">"bookName: "</span> + bookName);</div><div class="line">        logger.info(<span class="string">"environment: "</span> + environment.getProperty(<span class="string">"book.author"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-</blockquote>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/服务器/">服务器</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/#more">查看更多 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web前端/npm/npm scripts" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/14/Web前端/npm/npm scripts/" class="article-date">
-      <time datetime="2018-01-14T03:48:12.000Z" itemprop="datePublished">2018-01-14</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/14/Web前端/npm/npm scripts/">npm scripts</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h3 id="一、什么是-npm-脚本"><a href="#一、什么是-npm-脚本" class="headerlink" title="一、什么是 npm 脚本"></a>一、什么是 npm 脚本</h3><p>npm 允许在package.json文件里面，使用scripts字段定义脚本命令。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  // ...</div><div class="line">  "scripts": &#123;</div><div class="line">    "build": "node build.js"</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面代码是package.json文件的一个片段，里面的scripts字段是一个对象。它的每一个属性，对应一段脚本。比如，build命令对应的脚本是node build.js。<br>命令行下使用npm run命令，就可以执行这段脚本。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ npm run build</div><div class="line"># 等同于执行</div><div class="line">$ node build.js</div></pre></td></tr></table></figure></p>
-<p>这些定义在package.json里面的脚本，就称为 npm 脚本。它的优点很多</p>
-<ol>
-<li>项目的相关脚本，可以集中在一个地方。</li>
-<li>不同项目的脚本命令，只要功能相同，就可以有同样的对外接口。用户不需要知道怎么测试你的项目，只要运行npm run test即可。</li>
-<li>可以利用 npm 提供的很多辅助功能。</li>
-</ol>
-<p>查看当前项目的所有 npm 脚本命令，可以使用不带任何参数的npm run命令。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm run</div></pre></td></tr></table></figure></p>
-<h3 id="二：执行顺序"><a href="#二：执行顺序" class="headerlink" title="二：执行顺序"></a>二：执行顺序</h3><p>如果 npm 脚本里面需要执行多个任务，那么需要明确它们的执行顺序。<br>如果是并行执行（即同时的平行执行），可以使用&amp;符号。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm run script1.js &amp; npm run script2.js</div></pre></td></tr></table></figure></p>
-<p>如果是继发执行（即只有前一个任务成功，才执行下一个任务），可以使用&amp;&amp;符号<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm run script1.js &amp;&amp; npm run script2.js</div></pre></td></tr></table></figure></p>
-<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>在 <code>package.json</code> 添加以下代码执行<code>npm run gg</code> 可以连续执行（hexo g）（hexo d）俩个命令，这样就不用每次执行俩个命令<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">"scripts": &#123;</div><div class="line">   "gg": "hexo g &amp;&amp; hexo d"</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
-<p>详见:<a href="http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/client/">client</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/npm/">npm</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/支付/接入银联支付接口" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/11/Web后台/支付/接入银联支付接口/" class="article-date">
-      <time datetime="2018-01-11T14:24:12.000Z" itemprop="datePublished">2018-01-11</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/11/Web后台/支付/接入银联支付接口/">接入银联支付接口</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p>吐槽一下：</p>
-<blockquote>
-<p>1.银联支付SDK是没有提供独立的jar包的，高大上的银联把示例demo和sdk整合在一起了，支付流程和支付宝支付相似，支付需要到银联的支付页面</p>
-<p>2.证书说明：其实我们只需要一个邮件上的签名证书文件，官网上文档说的开发者调用接口前需要的其他证书在开发包中目录assets下都有，每个人都一样，没错，每个人都一样</p>
-<p>3.银联开发平台常常在下午6点发版本，遇到过俩次，第一次感到惊讶:银联网站挂了？不可能呀，过了十多分钟又恢复正常，晕</p>
-<p>4.代码不够规范，用代码检测工具一片黄色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * <span class="doctag">@ClassName</span> AcpService</span></div><div class="line"><span class="comment"> * <span class="doctag">@Description</span> acpsdk接口服务类，接入商户集成请可以直接参考使用本类中的方法</span></div><div class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-7-22 下午2:44:37</span></div><div class="line"><span class="comment"> * 声明：以下代码只是为了方便接入方测试而提供的样例代码，商户可以根据自己需要，按照技术文档编写。该代码仅供参考，不提供编码，性能，规范性等方面的保障</span></div><div class="line"><span class="comment"> */</span></div></pre></td></tr></table></figure></p>
-</blockquote>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2018/01/11/Web后台/支付/接入银联支付接口/#more">查看更多 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/支付/接入微信支付接口" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/11/Web后台/支付/接入微信支付接口/" class="article-date">
-      <time datetime="2018-01-11T13:24:12.000Z" itemprop="datePublished">2018-01-11</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/11/Web后台/支付/接入微信支付接口/">接入微信扫码支付接口</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h4 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h4><h5 id="开始之前先看一下微信的几个平台"><a href="#开始之前先看一下微信的几个平台" class="headerlink" title="开始之前先看一下微信的几个平台:"></a>开始之前先看一下微信的几个平台:</h5><ol>
-<li>微信公众平台:<br>是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。<br>平台入口：<a href="http://mp.weixin.qq.com。" target="_blank" rel="external">http://mp.weixin.qq.com。</a></li>
-<li>微信开放平台:<br>微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。<br>平台入口：<a href="http://open.weixin.qq.com。" target="_blank" rel="external">http://open.weixin.qq.com。</a></li>
-<li>微信商户平台:<br>微信商户平台是微信支付相关的商户功能集合，包括参数配置、支付数据查询与统计、在线退款、代金券或立减优惠运营等功能。<br>平台入口：<a href="http://pay.weixin.qq.com" target="_blank" rel="external">http://pay.weixin.qq.com</a></li>
-</ol>
-<p>刚开始接入的时候有点昏，各种参数需要到不同的平台找, 不像支付宝一样只有一个开发平台，如果是接入微信扫码支付设及到微信公众平台和微信商户平台，如果是手机app微信支付，设及到微信开放平台和微信商户平台</p>
-<h5 id="开通支付功能"><a href="#开通支付功能" class="headerlink" title="开通支付功能:"></a>开通支付功能:</h5><p>有了平台账号之后，然后就是开通支付功能，等待审核通过，当然审核过程有可能被退回，大多是描述信息或者经营类别与营业执照描述不一致<br></p>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2018/01/11/Web后台/支付/接入微信支付接口/#more">查看更多 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/支付/PC网站上如何接入支付宝网关支付功能" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/" class="article-date">
-      <time datetime="2018-01-10T02:24:12.000Z" itemprop="datePublished">2018-01-10</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/">PC网站上如何接入支付宝网关支付功能</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <h3 id="一-应用场景"><a href="#一-应用场景" class="headerlink" title="一: 应用场景"></a>一: 应用场景</h3><ol>
-<li><p>主要应用于一些交易平台商品订单支付，账户充值，线上收费这些有支付需求的交易</p>
-</li>
-<li><p>用户通过支付宝PC收银台完成支付，交易款项即时给到商户支付宝账户</p>
-</li>
-</ol>
-<p><img src="/images/server/支付/taobao.png" alt="logo"></p>
-<p><img src="/images/server/支付/12306.png" alt="logo"> </p>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a   href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/#more">查看更多 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/Java/ASCII 160 空格" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/09/Web后台/Java/ASCII 160 空格/" class="article-date">
-      <time datetime="2018-01-09T13:24:12.000Z" itemprop="datePublished">2018-01-09</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2018/01/09/Web后台/Java/ASCII 160 空格/">Ascii 160空格问题</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><blockquote>
-<p>获取从http传输过来的字符串的时候，碰到解析字符串不能分割字符串的情况<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String str = doc.get(<span class="number">0</span>); <span class="comment">// str = "江西省 赣州市"</span></div><div class="line">String [] area = str.spilt(<span class="string">"\\s+"</span>);</div></pre></td></tr></table></figure></p>
-</blockquote>
-<p>运行上面的代码的时候发现不能截取字符串, 初步怀疑是编码问题，然而经过验证发现并不是,然后就通过字符串截取成 char 字符发现，该char字符ASCII是160,<br>马上查找资料发现是空格分两种编码格式: 1: 普通的空格,ASCII码为32  2:第二种是 网页上的 &amp;nbsp 空格,ASCII为160, 才发现空格也是有多种情况</p>
-<p>解决方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 需要将ASCII为160的空格转成普通的空格</span></div><div class="line">str = str.replaceAll(<span class="string">"[\\s\\u00A0]+"</span>, <span class="string">" "</span>);</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Web后台/数据库/Mysql 如何设置字段自动获取当前时间" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2017/12/17/Web后台/数据库/Mysql 如何设置字段自动获取当前时间/" class="article-date">
-      <time datetime="2017-12-17T03:15:12.000Z" itemprop="datePublished">2017-12-17</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a  class="article-title" href="/2017/12/17/Web后台/数据库/Mysql 如何设置字段自动获取当前时间/">Mysql 如何设置字段自动获取当前时间</a>
-    </h1>
-  
-
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>应用场景：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、在数据表中，要记录每条数据是什么时候创建的，不需要应用程序去特意记录，而由数据数据库获取当前时间自动记录创建时间；</div><div class="line"></div><div class="line">2、在数据库中，要记录每条数据是什么时候修改的，不需要应用程序去特意记录，而由数据数据库获取当前时间自动记录修改时间；</div></pre></td></tr></table></figure></p>
-<p>实现方式:<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">--修改CreateTime 设置默认时间 CURRENT_TIMESTAMP </span></div><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="string">`table_name`</span></div><div class="line"><span class="keyword">MODIFY</span> <span class="keyword">COLUMN</span>  <span class="string">`created_date`</span> datetime <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span> ;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">--修改 UpdateTime 设置 默认时间 CURRENT_TIMESTAMP   设置更新时间为 ON UPDATE CURRENT_TIMESTAMP </span></div><div class="line"></div><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="string">`table_name`</span></div><div class="line"><span class="keyword">MODIFY</span> <span class="keyword">COLUMN</span> <span class="string">`last_modified_date`</span> <span class="keyword">timestamp</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span> ;</div></pre></td></tr></table></figure></p>
-<p>转自：<a href="https://www.cnblogs.com/lhj588/p/4245719.html" target="_blank" rel="external">https://www.cnblogs.com/lhj588/p/4245719.html</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/">db</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
-    </nav>
-  
 
 </div>
-      <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                &copy; 2018 songshuiyang<a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a>
-            </div>
-            <div class="footer-right">
 
-            </div>
-        </div>
-        
-            <div class="visit">
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2018</span>
+            <span>
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >到访数: 
-                            <span id="busuanzi_value_site_uv"></span>
-                        </span>
-                    </span>
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
                 
-                
-                    <span>, </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">本页阅读量: 
-                            <span id="busuanzi_value_page_pv"></span>
-                        </span>
-                    </span>
-                
-            </div>
-        
+            </span>
+        </p>
     </div>
-    <script>
-    (function(){
-        var bp = document.createElement('script');
-        var curProtocol = window.location.protocol.split(':')[0];
-        if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-        }
-        else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-        }
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(bp, s);
-    })();
-    </script>
 </footer>
 
-    </div>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-<script src="/js/main.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var backgroundnum = 4;
-            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-        })
-    </script>
-
-
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'xxxxx', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
 
 
 
-	<script>
-	var _hmt = _hmt || [];
-	(function() {
-	  var hm = document.createElement("script");
-	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
-	  var s = document.getElementsByTagName("script")[0]; 
-	  s.parentNode.insertBefore(hm, s);
-	})();
-	</script>
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/page/3/&title=宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/page/3/&title=宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/page/3/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=宋水阳个人博客&url=http://www.songshuiyang.site/page/3/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/page/3/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
 
 
-
-<div class="scroll" id="scroll">
-    <a href="#"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABzElEQVR42u3aQW6EMAwF0Ln/padSV5VawrcNGVS9rGYBwwsLy/nm9YrX+3v9/P17ra9c/+fFCxcXd8x9L1fCPfq3o3vzV/DHlnBxcTdy8+KVb6BHP7Hh4uI+jLtGVJsbXFzc/8Fds9btTl7gcHFxn8NNDj/5A9aFbNNZDRcXd8DtBabX/r4938XFxb1oKlEtKNWxSvnpuLi4W7hHBaUalFRbnEkLhYuLu5M7DzuSbqTXyeDi4n6KWw4ui41O8gqiwoqLi3szN7kof3A+au19uoGLi7uHmx9+Jhur3rW+BhcXdz+3GpvmD+uFp6PZLC4u7oB70lIMRia98LQ8cMXFxb2N2ysoveFKdQwTjVVwcXEv4vaKV1Kqehs+KZS4uLgbub2DyiQuqTZDuLi4O7nzuDMZwfZexElgiouLext3wiqEm4OPvXBxcT/FTYLLvK2pfshVCGdxcXE3cquRRz4orQapzcEJLi7updxqQclZedMzP1zh4uLewc1HI70Wp3p8OilwuLi4G7l58Zp85VGtoIf5Li4u7mO4ve6peog62R4uLu7juZPDT1IucXFxP8udfIKZtz7VIe4oFsHFxR1we+Vmze2Fp7i4uA/gfgEmJE3UGaOMPgAAAABJRU5ErkJggg==" alt="微信分享二维码">
 </div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
 <script>
-    $(document).ready(function() {
-        if ($("#comments").length < 1) {
-            $("#scroll > a:nth-child(2)").hide();
-        };
-    })
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
 </script>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
 
-  <script language="javascript">
-    $(function() {
-        $("a[title]").each(function() {
-            var a = $(this);
-            var title = a.attr('title');
-            if (title == undefined || title == "") return;
-            a.data('title', title).removeAttr('title').hover(
-            function() {
-                var offset = a.offset();
-                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
-                    top: offset.top - a.outerHeight() - 15,
-                    left: offset.left + a.outerWidth()/2 + 1
-                }).fadeIn(function() {
-                    var pop = $(this);
-                    setTimeout(function() {
-                        pop.remove();
-                    }, pop.text().length * 800);
-                });
-            }, function() {
-                $("#anchortitlecontainer").remove();
-            });
-        });
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '怎么离开了 o(╥﹏╥)o';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来 (*^▽^*)';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
     });
+})();
 </script>
 
 
-  </div>
+
 </body>
 </html>

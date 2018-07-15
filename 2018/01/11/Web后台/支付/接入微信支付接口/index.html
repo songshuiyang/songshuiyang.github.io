@@ -1,349 +1,194 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="baidu-site-verification" content="HuKlM4kUBb"/>
-  <meta name="keywords" contect="博客,个人博客,JAVA,宋水阳个人博客,宋水阳" />
-  <meta name="description" contect="宋水阳个人博客"/>
-  <meta name="author" contect="songshuiyang"/>
-  
-  
-  
-  
-  <title>接入微信扫码支付接口 | 宋水阳个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="准备条件开始之前先看一下微信的几个平台: 微信公众平台:是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。平台入口：http://mp.weixin.qq.com。 微信开放平台:微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。平台入口：http://open.weixin.qq.com。 微信商户平台">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>接入微信扫码支付接口 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="支付">
+    <meta name="description" content="准备条件开始之前先看一下微信的几个平台: 微信公众平台:是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。平台入口：http://mp.weixin.qq.com。 微信开放平台:微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。平台入口：http://open.weixin.qq.com。 微信商户平台">
 <meta name="keywords" content="支付">
 <meta property="og:type" content="article">
 <meta property="og:title" content="接入微信扫码支付接口">
 <meta property="og:url" content="http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/index.html">
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="准备条件开始之前先看一下微信的几个平台: 微信公众平台:是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。平台入口：http://mp.weixin.qq.com。 微信开放平台:微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。平台入口：http://open.weixin.qq.com。 微信商户平台">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.site/images/server/支付/weixin.png">
 <meta property="og:updated_time" content="2018-02-26T12:31:59.709Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="接入微信扫码支付接口">
 <meta name="twitter:description" content="准备条件开始之前先看一下微信的几个平台: 微信公众平台:是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。平台入口：http://mp.weixin.qq.com。 微信开放平台:微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。平台入口：http://open.weixin.qq.com。 微信商户平台">
 <meta name="twitter:image" content="http://www.songshuiyang.site/images/server/支付/weixin.png">
-  
-    <link rel="alternative" href="/atom.xml" title="宋水阳个人博客" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/img/favicon.png">
-  
-  
-  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  
-  
-      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  
-  <!-- 加载特效 -->
-    <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
-  <script>
-      var yiliaConfig = {
-          fancybox: true,
-          animate: true,
-          isHome: false,
-          isPost: true,
-          isArchive: false,
-          isTag: false,
-          isCategory: false,
-          open_in_new: false
-      }
-  </script>
-  <script>
-  (function(){
-      var bp = document.createElement('script');
-      var curProtocol = window.location.protocol.split(':')[0];
-      if (curProtocol === 'https') {
-          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-      }
-      else {
-          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-      }
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(bp, s);
-  })();
-  </script>
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
 </head>
+
 <body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-    <header id="header" class="inner">
-        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-        <a href="/" class="profilepic">
-            
-            <img lazy-src="/img/avatar.png" class="js-avatar">
-            
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
         </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/">songshuiyang</a></h1>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
         </hgroup>
-        
-        
-            <form>
-                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
-            </form>
-            <div id="local-search-result"></div>
-        
-        
-            <script type="text/javascript">
-                (function() {
-                    'use strict';
-                    function getMatchData(keyword, data) {
-                        var matchData = [];
-                        for(var i =0;i<data.length;i++){
-                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
-                                matchData.push(data[i])
-                        }
-                        return matchData;
-                    }
-                    var $input = $('#local-search-input');
-                    var $resultContent = $('#local-search-result');
-                    $input.keyup(function(){
-                        $.ajax({
-                            url: '/search.json',
-                            dataType: "json",
-                            success: function( json ) {
-                                var str='<ul class=\"search-result-list\">';                
-                                var keyword = $input.val().trim().toLowerCase();
-                                $resultContent.innerHTML = "";
-                                if ($input.val().trim().length <= 0) {
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                }
-                                var results = getMatchData(keyword, json);
-                                if(results.length === 0){
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                } 
-                                for(var i =0; i<results.length; i++){
-                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
-                                }
-                                str += "</ul>";
-                                $resultContent.empty();
-                                $resultContent.append(str);
-                                $('#switch-area').hide();
-                            }
-                        });
-                    });
-                })();
-            </script>
-        
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
-                        
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
-            </div>
-        
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a  href="/archives/">所有文章</a></li>
-                        
-                            <li><a  href="/categories/client/">Web前端</a></li>
-                        
-                            <li><a  href="/categories/server/">Web后端</a></li>
-                        
-                            <li><a  href="/categories/技术/">技术</a></li>
-                        
-                            <li><a  href="/categories/随笔/">随笔</a></li>
-                        
-                            <li><a  href="/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fl github"  target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
-                            
-                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
-                            
-                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
-                            
-                        </ul>
-                    </nav>
-                </section>
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Hibernate/" style="font-size: 13.75px;">Hibernate</a> <a href="/tags/Java/" style="font-size: 18.75px;">Java</a> <a href="/tags/Spring/" style="font-size: 17.5px;">Spring</a> <a href="/tags/Spring-Mvc/" style="font-size: 10px;">Spring Mvc</a> <a href="/tags/css/" style="font-size: 12.5px;">css</a> <a href="/tags/db/" style="font-size: 11.25px;">db</a> <a href="/tags/druid/" style="font-size: 10px;">druid</a> <a href="/tags/git/" style="font-size: 11.25px;">git</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/js/" style="font-size: 10px;">js</a> <a href="/tags/jsp/" style="font-size: 11.25px;">jsp</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mybatis/" style="font-size: 10px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/node/" style="font-size: 11.25px;">node</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/npm/" style="font-size: 11.25px;">npm</a> <a href="/tags/server/" style="font-size: 16.25px;">server</a> <a href="/tags/struts2/" style="font-size: 11.25px;">struts2</a> <a href="/tags/velocity/" style="font-size: 10px;">velocity</a> <a href="/tags/vue/" style="font-size: 12.5px;">vue</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/支付/" style="font-size: 13.75px;">支付</a>
-                    </div>
-                </section>
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net">csdn</a>
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.zhihu.com">知乎</a>
-                    
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">一只默默充电的小码农</div>
-                </section>
-                
-            </div>
-        </div>
-    </header>
-</div>
-
-    </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">songshuiyang</a></h1>
       </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/" class="profilepic">
-                
-                    <img lazy-src="/img/avatar.png" class="js-avatar">
-                
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">接入微信扫码支付接口</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/" title="回到主页">songshuiyang</a></h1>
-            </hgroup>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">接入微信扫码支付接口</h1>
+        <h5 class="subtitle">
             
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/archives/">所有文章</a></li>
-                
-                    <li><a href="/categories/client/">Web前端</a></li>
-                
-                    <li><a href="/categories/server/">Web后端</a></li>
-                
-                    <li><a href="/categories/技术/">技术</a></li>
-                
-                    <li><a href="/categories/随笔/">随笔</a></li>
-                
-                    <li><a href="/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                <div class="social">
-                    
-                        <a class="github" target="_blank" href="https://github.com/songshuiyang" title="github">github</a>
-                    
-                        <a class="weibo" target="_blank" href="https://weibo.com/u/1810548617" title="weibo">weibo</a>
-                    
-                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-                    
-                </div>
-            </nav>
-        </header>                
-    </div>
-</nav>
-      <div class="body-wrap"><article id="post-Web后台/支付/接入微信支付接口" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a  href="/2018/01/11/Web后台/支付/接入微信支付接口/" class="article-date">
-      <time datetime="2018-01-11T13:24:12.000Z" itemprop="datePublished">2018-01-11</time>
-</a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      接入微信扫码支付接口
-    </h1>
-  
+                <time datetime="2018-01-11T13:24:12.000Z" itemprop="datePublished" class="page-time">
+  2018-01-11
+</time>
 
 
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/server/">server</a>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+            
+        </h5>
     </div>
 
-
-        
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
-    </div>
-
-        <div class="clearfix"></div>
-      </div>
-      
     
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h4 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h4><h5 id="开始之前先看一下微信的几个平台"><a href="#开始之前先看一下微信的几个平台" class="headerlink" title="开始之前先看一下微信的几个平台:"></a>开始之前先看一下微信的几个平台:</h5><ol>
-<li>微信公众平台:<br>是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。<br>平台入口：<a href="http://mp.weixin.qq.com。" target="_blank" rel="external">http://mp.weixin.qq.com。</a></li>
-<li>微信开放平台:<br>微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。<br>平台入口：<a href="http://open.weixin.qq.com。" target="_blank" rel="external">http://open.weixin.qq.com。</a></li>
-<li>微信商户平台:<br>微信商户平台是微信支付相关的商户功能集合，包括参数配置、支付数据查询与统计、在线退款、代金券或立减优惠运营等功能。<br>平台入口：<a href="http://pay.weixin.qq.com" target="_blank" rel="external">http://pay.weixin.qq.com</a></li>
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#准备条件"><span class="post-toc-number">1.</span> <span class="post-toc-text">准备条件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#开始之前先看一下微信的几个平台"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">开始之前先看一下微信的几个平台:</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#开通支付功能"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">开通支付功能:</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#微信支付开发"><span class="post-toc-number">2.</span> <span class="post-toc-text">微信支付开发:</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#接入微信支付步骤"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">接入微信支付步骤</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#1-获取支付SDK"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1. 获取支付SDK</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#2-配置参数"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">2. 配置参数</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#3-新建一个参数配置类"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">3. 新建一个参数配置类</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#4-new-一个WXPay对象"><span class="post-toc-number">2.1.4.</span> <span class="post-toc-text">4. new 一个WXPay对象</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#5-有了”对象”之后就可以发送支付请求了"><span class="post-toc-number">2.1.5.</span> <span class="post-toc-text">5. 有了”对象”之后就可以发送支付请求了</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#6-生成支付二维码"><span class="post-toc-number">2.1.6.</span> <span class="post-toc-text">6. 生成支付二维码</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#7-支付完成-处理异步回调"><span class="post-toc-number">2.1.7.</span> <span class="post-toc-text">7. 支付完成, 处理异步回调</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#备注：-微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法"><span class="post-toc-number">2.1.8.</span> <span class="post-toc-text">备注： 微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Web后台/支付/接入微信支付接口"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">接入微信扫码支付接口</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-01-11 21:24:12" datetime="2018-01-11T13:24:12.000Z"  itemprop="datePublished">2018-01-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/server/">server</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h4 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h4><h5 id="开始之前先看一下微信的几个平台"><a href="#开始之前先看一下微信的几个平台" class="headerlink" title="开始之前先看一下微信的几个平台:"></a>开始之前先看一下微信的几个平台:</h5><ol>
+<li>微信公众平台:<br>是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支付功能。<br>平台入口：<a href="http://mp.weixin.qq.com。" target="_blank" rel="noopener">http://mp.weixin.qq.com。</a></li>
+<li>微信开放平台:<br>微信开放平台是商户APP接入微信支付开放接口的申请入口，通过此平台可申请微信APP支付。<br>平台入口：<a href="http://open.weixin.qq.com。" target="_blank" rel="noopener">http://open.weixin.qq.com。</a></li>
+<li>微信商户平台:<br>微信商户平台是微信支付相关的商户功能集合，包括参数配置、支付数据查询与统计、在线退款、代金券或立减优惠运营等功能。<br>平台入口：<a href="http://pay.weixin.qq.com" target="_blank" rel="noopener">http://pay.weixin.qq.com</a></li>
 </ol>
 <p>刚开始接入的时候有点昏，各种参数需要到不同的平台找, 不像支付宝一样只有一个开发平台，如果是接入微信扫码支付设及到微信公众平台和微信商户平台，如果是手机app微信支付，设及到微信开放平台和微信商户平台</p>
 <h5 id="开通支付功能"><a href="#开通支付功能" class="headerlink" title="开通支付功能:"></a>开通支付功能:</h5><p>有了平台账号之后，然后就是开通支付功能，等待审核通过，当然审核过程有可能被退回，大多是描述信息或者经营类别与营业执照描述不一致<br><a id="more"></a></p>
 <h4 id="微信支付开发"><a href="#微信支付开发" class="headerlink" title="微信支付开发:"></a>微信支付开发:</h4><blockquote>
-<p>下面是微信支付的业务流程时序图, 可以看到与支付宝的支付流程主要流程是差不多的，只不过微信扫码可以在本系统完成支付，没有发生页面跳转，可以自己DIY支付页面，只要将支付链接生成二维码图片即可完成支付<br><img src="/images/server/支付/weixin.png" alt="logo">    </p>
+<p>下面是微信支付的业务流程时序图, 可以看到与支付宝的支付流程主要流程是差不多的，只不过微信扫码可以在本系统完成支付，没有发生页面跳转，可以自己DIY支付页面，只要将支付链接生成二维码图片即可完成支付<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/支付/weixin.png" alt="logo" title="">
+                </div>
+                <div class="image-caption">logo</div>
+            </figure>    </p>
 </blockquote>
 <h5 id="接入微信支付步骤"><a href="#接入微信支付步骤" class="headerlink" title="接入微信支付步骤"></a>接入微信支付步骤</h5><h6 id="1-获取支付SDK"><a href="#1-获取支付SDK" class="headerlink" title="1. 获取支付SDK"></a>1. 获取支付SDK</h6><p> gradle:地址    <code>compile(&quot;com.github.wxpay:wxpay-sdk:0.0.3&quot;)</code></p>
 <h6 id="2-配置参数"><a href="#2-配置参数" class="headerlink" title="2. 配置参数"></a>2. 配置参数</h6><p>主要是如下参数, 可以配置在一个属性文件中方面配置</p>
@@ -356,313 +201,265 @@
 <h6 id="3-新建一个参数配置类"><a href="#3-新建一个参数配置类" class="headerlink" title="3. 新建一个参数配置类"></a>3. 新建一个参数配置类</h6><blockquote>
 <p>WxPcPayConfigImpl.java 继承 WXPayConfig.java</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 微信支付PC端 基础属性配置</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WxPcPayConfigImpl</span> <span class="keyword">implements</span> <span class="title">WXPayConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</div><div class="line"></div><div class="line">    <span class="comment">// 配置文件地址</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String FILE_NAME = <span class="string">"weixin_pc_pay.properties"</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 服务号的应用ID</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String APP_ID;</div><div class="line">    <span class="comment">// 服务号的应用密钥</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String APP_SECRET;</div><div class="line">    <span class="comment">// 服务号的配置token</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String TOKEN;</div><div class="line">    <span class="comment">// 商户号</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String MCH_ID;</div><div class="line">    <span class="comment">// API密钥</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String API_KEY;</div><div class="line">    <span class="comment">// 签名加密方式</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String SIGN_TYPE;</div><div class="line">    <span class="comment">// 微信支付证书</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String CERT_PATH;</div><div class="line">    <span class="comment">// 异步回调地址</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String NOTIFY_URL;</div><div class="line">    <span class="comment">// 是否使用沙箱环境</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> IS_USE_SANDBOX;</div><div class="line">    <span class="comment">// 证书</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] certData;</div><div class="line">    <span class="comment">// INSTANCE</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> WxPcPayConfigImpl INSTANCE;</div><div class="line">    <span class="comment">// 配置对象</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Configuration configs;</div><div class="line">    <span class="comment">// 文件分隔符</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String SF_FILE_SEPARATOR = System.getProperty(<span class="string">"file.separator"</span>);<span class="comment">//文件分隔符</span></div><div class="line">    <span class="comment">// 二维码图片宽度</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> QR_IMG_WIDTH = <span class="number">300</span>;</div><div class="line">    <span class="comment">// 二维码图片高度</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> QR_IMG_HEIGHT = <span class="number">300</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 返回配置文件实例</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> WxPcPayConfigImpl <span class="title">getInstance</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (WxPcPayConfigImpl.class) &#123;</div><div class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">                    INSTANCE = <span class="keyword">new</span> WxPcPayConfigImpl();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 加载微信配置文件</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (configs != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            configs = <span class="keyword">new</span> PropertiesConfiguration(FILE_NAME);</div><div class="line">        &#125; <span class="keyword">catch</span> (ConfigurationException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (configs == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"读取配置文件错误"</span> + FILE_NAME);</div><div class="line">        &#125;</div><div class="line">        APP_ID = configs.getString(<span class="string">"appId"</span>);</div><div class="line">        APP_SECRET = configs.getString(<span class="string">"appSecret"</span>);</div><div class="line">        TOKEN = configs.getString(<span class="string">"token"</span>);</div><div class="line">        MCH_ID = configs.getString(<span class="string">"mchId"</span>);</div><div class="line">        API_KEY = configs.getString(<span class="string">"apiKey"</span>);</div><div class="line">        SIGN_TYPE = configs.getString(<span class="string">"signType"</span>);</div><div class="line">        CERT_PATH = configs.getString(<span class="string">"certPath"</span>);</div><div class="line">        IS_USE_SANDBOX = configs.getBoolean(<span class="string">"isUseSandbox"</span>);</div><div class="line">        NOTIFY_URL = configs.getString(<span class="string">"notifyUrl"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// 加载证书</span></div><div class="line">        File file;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// file = new File(CERT_PATH);</span></div><div class="line">            Resource resource = <span class="keyword">new</span> ClassPathResource(CERT_PATH);</div><div class="line">            file = resource.getFile();</div><div class="line">            InputStream certStream = <span class="keyword">new</span> FileInputStream(file);</div><div class="line">            certData = <span class="keyword">new</span> <span class="keyword">byte</span>[(<span class="keyword">int</span>) file.length()];</div><div class="line">            certStream.read(certData);</div><div class="line">            certStream.close();</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取 App ID</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> App ID</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAppID</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> APP_ID;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取 Mch ID</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> Mch ID</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMchID</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> MCH_ID;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取 API 密钥</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> API密钥</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getKey</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> API_KEY;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取商户证书内容</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 商户证书内容</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> InputStream <span class="title">getCertStream</span><span class="params">()</span> </span>&#123;</div><div class="line">        ByteArrayInputStream certBis;</div><div class="line">        certBis = <span class="keyword">new</span> ByteArrayInputStream(<span class="keyword">this</span>.certData);</div><div class="line">        <span class="keyword">return</span> certBis;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * HTTP(S) 连接超时时间，单位毫秒</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHttpConnectTimeoutMs</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">8000</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * HTTP(S) 读数据超时时间，单位毫秒</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHttpReadTimeoutMs</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">10000</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] getCertData() &#123;</div><div class="line">        <span class="keyword">return</span> certData;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCertData</span><span class="params">(<span class="keyword">byte</span>[] certData)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.certData = certData;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h6 id="4-new-一个WXPay对象"><a href="#4-new-一个WXPay对象" class="headerlink" title="4. new 一个WXPay对象"></a>4. new 一个<code>WXPay</code>对象</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">WXPay wxAppPay;</div><div class="line">WxPcPayConfigImpl pcConfig = WxPcPayConfigImpl.getInstance();</div><div class="line">wxpay = <span class="keyword">new</span> WXPay(pcConfig, WXPayConstants.SignType.MD5, WxPcPayConfigImpl.IS_USE_SANDBOX);</div></pre></td></tr></table></figure>
-<h6 id="5-有了”对象”之后就可以发送支付请求了"><a href="#5-有了”对象”之后就可以发送支付请求了" class="headerlink" title="5. 有了”对象”之后就可以发送支付请求了"></a>5. 有了”对象”之后就可以发送支付请求了</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * PC端微信支付请求</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> domainId 商户订单号取实体类id</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> amount   充值金额</span></div><div class="line"><span class="comment"> * <span class="doctag">@return</span> 处理结果数据</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">weixinPay</span><span class="params">(String domainId, BigDecimal amount, HttpServletRequest request)</span> </span>&#123;</div><div class="line">    Map&lt;String, Object&gt; resultMaps = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    resultMaps.put(<span class="string">"status"</span>, <span class="string">"success"</span>);</div><div class="line"></div><div class="line">    HashMap&lt;String, String&gt; data = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    String currentUserName = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (AccountUtils.getCurrentUser() != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (StringUtils.isNotBlank(AccountUtils.getCurrentUser().getFdNickName())) &#123;</div><div class="line">            currentUserName = AccountUtils.getCurrentUser().getFdNickName();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    String description = currentUserName + <span class="string">" 账户充值"</span>;</div><div class="line"></div><div class="line">    data.put(<span class="string">"body"</span>, description);                                  <span class="comment">// 商品描述</span></div><div class="line">    data.put(<span class="string">"out_trade_no"</span>, domainId);                             <span class="comment">// 商户订单号</span></div><div class="line">    data.put(<span class="string">"total_fee"</span>, AmountUtils.transAmountToCent(amount));   <span class="comment">// 总金额,单位为分</span></div><div class="line">    data.put(<span class="string">"spbill_create_ip"</span>, WxUtils.getRemoteIp(request));     <span class="comment">// 发起人IP地址</span></div><div class="line">    data.put(<span class="string">"notify_url"</span>, WxPcPayConfigImpl.NOTIFY_URL);           <span class="comment">// 异步通知地址</span></div><div class="line">    data.put(<span class="string">"trade_type"</span>, <span class="string">"NATIVE"</span>);                               <span class="comment">// 此处指定为扫码支付</span></div><div class="line">    data.put(<span class="string">"product_id"</span>, domainId);                               <span class="comment">// 商品ID,trade_type=NATIVE时（即扫码支付），此参数必传</span></div><div class="line"></div><div class="line">    Map&lt;String, String&gt; resultMap;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        resultMap = wxpay.unifiedOrder(data);</div><div class="line">        logger.info(<span class="string">"微信生成二维码返回xml 转成Json"</span> + JsonFormatUtil.formatJson(resultMap.toString()));</div><div class="line">        System.out.println(resultMap);</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">        logger.error(<span class="string">"微信支付处理异常"</span>);</div><div class="line">        resultMaps.put(<span class="string">"status"</span>, <span class="string">"failed"</span>);</div><div class="line">        <span class="keyword">return</span> resultMaps;</div><div class="line">    &#125;</div><div class="line">    String returnCode = resultMap.get(<span class="string">"return_code"</span>);</div><div class="line">    <span class="comment">// 返回结果</span></div><div class="line">    <span class="keyword">if</span> (<span class="string">"SUCCESS"</span>.equals(returnCode)) &#123;</div><div class="line">        String resultCode = resultMap.get(<span class="string">"result_code"</span>);</div><div class="line">        <span class="comment">// 处理结果</span></div><div class="line">        <span class="keyword">if</span> (<span class="string">"SUCCESS"</span>.equals(resultCode)) &#123;</div><div class="line">            logger.info(<span class="string">"订单号：&#123;&#125;生成微信支付码成功"</span>, domainId);</div><div class="line">            String urlCode = resultMap.get(<span class="string">"code_url"</span>);</div><div class="line">            <span class="comment">// 生成二维码</span></div><div class="line">            logger.info(<span class="string">""</span>);</div><div class="line">            <span class="comment">// WxUtils.encodeQRCode(urlCode,imgPath);</span></div><div class="line">            String imgBase64Str = WxUtils.encodeQRCodeBase64(urlCode);</div><div class="line">            <span class="comment">// 是否是微信支付</span></div><div class="line">            resultMaps.put(<span class="string">"id"</span>, domainId);</div><div class="line">            resultMaps.put(<span class="string">"isWxPay"</span>, <span class="keyword">true</span>);</div><div class="line">            resultMaps.put(<span class="string">"img"</span>, imgBase64Str);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            String errCodeDes = resultMap.get(<span class="string">"err_code_des"</span>);</div><div class="line">            logger.info(<span class="string">"订单号：&#123;&#125;生成微信支付码(系统)失败:&#123;&#125;"</span>, domainId, errCodeDes);</div><div class="line">            resultMaps.put(<span class="string">"status"</span>, <span class="string">"failed"</span>);</div><div class="line">            <span class="keyword">return</span> resultMaps;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        String returnMsg = resultMap.get(<span class="string">"return_msg"</span>);</div><div class="line">        logger.info(<span class="string">"(订单号：&#123;&#125;生成微信支付码(通信)失败:&#123;&#125;"</span>, domainId, returnMsg);</div><div class="line">        resultMaps.put(<span class="string">"status"</span>, <span class="string">"failed"</span>);</div><div class="line">        <span class="keyword">return</span> resultMaps;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> resultMaps;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>微信支付统一下单接口:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 作用：统一下单&lt;br&gt;</span></div><div class="line"><span class="comment"> * 场景：公共号支付、扫码支付、APP支付</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> reqData 向wxpay post的请求数据</span></div><div class="line"><span class="comment"> * <span class="doctag">@return</span> API返回数据</span></div><div class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, String&gt; <span class="title">unifiedOrder</span><span class="params">(Map&lt;String, String&gt; reqData)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), <span class="keyword">this</span>.config.getHttpReadTimeoutMs());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 微信支付PC端 基础属性配置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WxPcPayConfigImpl</span> <span class="keyword">implements</span> <span class="title">WXPayConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置文件地址</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String FILE_NAME = <span class="string">"weixin_pc_pay.properties"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 服务号的应用ID</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String APP_ID;</span><br><span class="line">    <span class="comment">// 服务号的应用密钥</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String APP_SECRET;</span><br><span class="line">    <span class="comment">// 服务号的配置token</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String TOKEN;</span><br><span class="line">    <span class="comment">// 商户号</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String MCH_ID;</span><br><span class="line">    <span class="comment">// API密钥</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String API_KEY;</span><br><span class="line">    <span class="comment">// 签名加密方式</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String SIGN_TYPE;</span><br><span class="line">    <span class="comment">// 微信支付证书</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String CERT_PATH;</span><br><span class="line">    <span class="comment">// 异步回调地址</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String NOTIFY_URL;</span><br><span class="line">    <span class="comment">// 是否使用沙箱环境</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> IS_USE_SANDBOX;</span><br><span class="line">    <span class="comment">// 证书</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] certData;</span><br><span class="line">    <span class="comment">// INSTANCE</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> WxPcPayConfigImpl INSTANCE;</span><br><span class="line">    <span class="comment">// 配置对象</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Configuration configs;</span><br><span class="line">    <span class="comment">// 文件分隔符</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String SF_FILE_SEPARATOR = System.getProperty(<span class="string">"file.separator"</span>);<span class="comment">//文件分隔符</span></span><br><span class="line">    <span class="comment">// 二维码图片宽度</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> QR_IMG_WIDTH = <span class="number">300</span>;</span><br><span class="line">    <span class="comment">// 二维码图片高度</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> QR_IMG_HEIGHT = <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回配置文件实例</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> WxPcPayConfigImpl <span class="title">getInstance</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (WxPcPayConfigImpl.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    INSTANCE = <span class="keyword">new</span> WxPcPayConfigImpl();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加载微信配置文件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (configs != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            configs = <span class="keyword">new</span> PropertiesConfiguration(FILE_NAME);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ConfigurationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (configs == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"读取配置文件错误"</span> + FILE_NAME);</span><br><span class="line">        &#125;</span><br><span class="line">        APP_ID = configs.getString(<span class="string">"appId"</span>);</span><br><span class="line">        APP_SECRET = configs.getString(<span class="string">"appSecret"</span>);</span><br><span class="line">        TOKEN = configs.getString(<span class="string">"token"</span>);</span><br><span class="line">        MCH_ID = configs.getString(<span class="string">"mchId"</span>);</span><br><span class="line">        API_KEY = configs.getString(<span class="string">"apiKey"</span>);</span><br><span class="line">        SIGN_TYPE = configs.getString(<span class="string">"signType"</span>);</span><br><span class="line">        CERT_PATH = configs.getString(<span class="string">"certPath"</span>);</span><br><span class="line">        IS_USE_SANDBOX = configs.getBoolean(<span class="string">"isUseSandbox"</span>);</span><br><span class="line">        NOTIFY_URL = configs.getString(<span class="string">"notifyUrl"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 加载证书</span></span><br><span class="line">        File file;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// file = new File(CERT_PATH);</span></span><br><span class="line">            Resource resource = <span class="keyword">new</span> ClassPathResource(CERT_PATH);</span><br><span class="line">            file = resource.getFile();</span><br><span class="line">            InputStream certStream = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">            certData = <span class="keyword">new</span> <span class="keyword">byte</span>[(<span class="keyword">int</span>) file.length()];</span><br><span class="line">            certStream.read(certData);</span><br><span class="line">            certStream.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取 App ID</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> App ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAppID</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> APP_ID;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取 Mch ID</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Mch ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMchID</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> MCH_ID;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取 API 密钥</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> API密钥</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> API_KEY;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取商户证书内容</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 商户证书内容</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> InputStream <span class="title">getCertStream</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ByteArrayInputStream certBis;</span><br><span class="line">        certBis = <span class="keyword">new</span> ByteArrayInputStream(<span class="keyword">this</span>.certData);</span><br><span class="line">        <span class="keyword">return</span> certBis;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * HTTP(S) 连接超时时间，单位毫秒</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHttpConnectTimeoutMs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">8000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * HTTP(S) 读数据超时时间，单位毫秒</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHttpReadTimeoutMs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">10000</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] getCertData() &#123;</span><br><span class="line">        <span class="keyword">return</span> certData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCertData</span><span class="params">(<span class="keyword">byte</span>[] certData)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.certData = certData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="4-new-一个WXPay对象"><a href="#4-new-一个WXPay对象" class="headerlink" title="4. new 一个WXPay对象"></a>4. new 一个<code>WXPay</code>对象</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WXPay wxAppPay;</span><br><span class="line">WxPcPayConfigImpl pcConfig = WxPcPayConfigImpl.getInstance();</span><br><span class="line">wxpay = <span class="keyword">new</span> WXPay(pcConfig, WXPayConstants.SignType.MD5, WxPcPayConfigImpl.IS_USE_SANDBOX);</span><br></pre></td></tr></table></figure>
+<h6 id="5-有了”对象”之后就可以发送支付请求了"><a href="#5-有了”对象”之后就可以发送支付请求了" class="headerlink" title="5. 有了”对象”之后就可以发送支付请求了"></a>5. 有了”对象”之后就可以发送支付请求了</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * PC端微信支付请求</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> domainId 商户订单号取实体类id</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> amount   充值金额</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 处理结果数据</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">weixinPay</span><span class="params">(String domainId, BigDecimal amount, HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; resultMaps = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    resultMaps.put(<span class="string">"status"</span>, <span class="string">"success"</span>);</span><br><span class="line"></span><br><span class="line">    HashMap&lt;String, String&gt; data = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    String currentUserName = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">if</span> (AccountUtils.getCurrentUser() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isNotBlank(AccountUtils.getCurrentUser().getFdNickName())) &#123;</span><br><span class="line">            currentUserName = AccountUtils.getCurrentUser().getFdNickName();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    String description = currentUserName + <span class="string">" 账户充值"</span>;</span><br><span class="line"></span><br><span class="line">    data.put(<span class="string">"body"</span>, description);                                  <span class="comment">// 商品描述</span></span><br><span class="line">    data.put(<span class="string">"out_trade_no"</span>, domainId);                             <span class="comment">// 商户订单号</span></span><br><span class="line">    data.put(<span class="string">"total_fee"</span>, AmountUtils.transAmountToCent(amount));   <span class="comment">// 总金额,单位为分</span></span><br><span class="line">    data.put(<span class="string">"spbill_create_ip"</span>, WxUtils.getRemoteIp(request));     <span class="comment">// 发起人IP地址</span></span><br><span class="line">    data.put(<span class="string">"notify_url"</span>, WxPcPayConfigImpl.NOTIFY_URL);           <span class="comment">// 异步通知地址</span></span><br><span class="line">    data.put(<span class="string">"trade_type"</span>, <span class="string">"NATIVE"</span>);                               <span class="comment">// 此处指定为扫码支付</span></span><br><span class="line">    data.put(<span class="string">"product_id"</span>, domainId);                               <span class="comment">// 商品ID,trade_type=NATIVE时（即扫码支付），此参数必传</span></span><br><span class="line"></span><br><span class="line">    Map&lt;String, String&gt; resultMap;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        resultMap = wxpay.unifiedOrder(data);</span><br><span class="line">        logger.info(<span class="string">"微信生成二维码返回xml 转成Json"</span> + JsonFormatUtil.formatJson(resultMap.toString()));</span><br><span class="line">        System.out.println(resultMap);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        logger.error(<span class="string">"微信支付处理异常"</span>);</span><br><span class="line">        resultMaps.put(<span class="string">"status"</span>, <span class="string">"failed"</span>);</span><br><span class="line">        <span class="keyword">return</span> resultMaps;</span><br><span class="line">    &#125;</span><br><span class="line">    String returnCode = resultMap.get(<span class="string">"return_code"</span>);</span><br><span class="line">    <span class="comment">// 返回结果</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">"SUCCESS"</span>.equals(returnCode)) &#123;</span><br><span class="line">        String resultCode = resultMap.get(<span class="string">"result_code"</span>);</span><br><span class="line">        <span class="comment">// 处理结果</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"SUCCESS"</span>.equals(resultCode)) &#123;</span><br><span class="line">            logger.info(<span class="string">"订单号：&#123;&#125;生成微信支付码成功"</span>, domainId);</span><br><span class="line">            String urlCode = resultMap.get(<span class="string">"code_url"</span>);</span><br><span class="line">            <span class="comment">// 生成二维码</span></span><br><span class="line">            logger.info(<span class="string">""</span>);</span><br><span class="line">            <span class="comment">// WxUtils.encodeQRCode(urlCode,imgPath);</span></span><br><span class="line">            String imgBase64Str = WxUtils.encodeQRCodeBase64(urlCode);</span><br><span class="line">            <span class="comment">// 是否是微信支付</span></span><br><span class="line">            resultMaps.put(<span class="string">"id"</span>, domainId);</span><br><span class="line">            resultMaps.put(<span class="string">"isWxPay"</span>, <span class="keyword">true</span>);</span><br><span class="line">            resultMaps.put(<span class="string">"img"</span>, imgBase64Str);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            String errCodeDes = resultMap.get(<span class="string">"err_code_des"</span>);</span><br><span class="line">            logger.info(<span class="string">"订单号：&#123;&#125;生成微信支付码(系统)失败:&#123;&#125;"</span>, domainId, errCodeDes);</span><br><span class="line">            resultMaps.put(<span class="string">"status"</span>, <span class="string">"failed"</span>);</span><br><span class="line">            <span class="keyword">return</span> resultMaps;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        String returnMsg = resultMap.get(<span class="string">"return_msg"</span>);</span><br><span class="line">        logger.info(<span class="string">"(订单号：&#123;&#125;生成微信支付码(通信)失败:&#123;&#125;"</span>, domainId, returnMsg);</span><br><span class="line">        resultMaps.put(<span class="string">"status"</span>, <span class="string">"failed"</span>);</span><br><span class="line">        <span class="keyword">return</span> resultMaps;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> resultMaps;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>微信支付统一下单接口:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 作用：统一下单&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 场景：公共号支付、扫码支付、APP支付</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> reqData 向wxpay post的请求数据</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> API返回数据</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, String&gt; <span class="title">unifiedOrder</span><span class="params">(Map&lt;String, String&gt; reqData)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), <span class="keyword">this</span>.config.getHttpReadTimeoutMs());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h6 id="6-生成支付二维码"><a href="#6-生成支付二维码" class="headerlink" title="6. 生成支付二维码"></a>6. 生成支付二维码</h6><p>这里我是将二维码链接字符串转成字符流 然后生成Base64位的图片字符, 只要在<img src=""> 设置src属性值，就可以完成图片展示，不用考虑生成的图片放在那里</p>
-<h6 id="7-支付完成-处理异步回调"><a href="#7-支付完成-处理异步回调" class="headerlink" title="7. 支付完成, 处理异步回调"></a>7. 支付完成, 处理异步回调</h6><h6 id="备注：-微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法"><a href="#备注：-微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法" class="headerlink" title="备注： 微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法"></a>备注： 微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.github.wxpay.sdk;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"><span class="keyword">import</span> java.io.StringWriter;</div><div class="line"><span class="keyword">import</span> java.util.*;</div><div class="line"><span class="keyword">import</span> java.security.MessageDigest;</div><div class="line"><span class="keyword">import</span> org.w3c.dom.Node;</div><div class="line"><span class="keyword">import</span> org.w3c.dom.NodeList;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.crypto.Mac;</div><div class="line"><span class="keyword">import</span> javax.crypto.spec.SecretKeySpec;</div><div class="line"><span class="keyword">import</span> javax.xml.parsers.DocumentBuilder;</div><div class="line"><span class="keyword">import</span> javax.xml.parsers.DocumentBuilderFactory;</div><div class="line"><span class="keyword">import</span> javax.xml.transform.OutputKeys;</div><div class="line"><span class="keyword">import</span> javax.xml.transform.Transformer;</div><div class="line"><span class="keyword">import</span> javax.xml.transform.TransformerFactory;</div><div class="line"><span class="keyword">import</span> javax.xml.transform.dom.DOMSource;</div><div class="line"><span class="keyword">import</span> javax.xml.transform.stream.StreamResult;</div><div class="line"><span class="keyword">import</span> com.github.wxpay.sdk.WXPayConstants.SignType;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WXPayUtil</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * XML格式字符串转换为Map</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> strXML XML字符串</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> XML数据转换后的Map</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, String&gt; <span class="title">xmlToMap</span><span class="params">(String strXML)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Map&lt;String, String&gt; data = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();</div><div class="line">        DocumentBuilder documentBuilder= documentBuilderFactory.newDocumentBuilder();</div><div class="line">        InputStream stream = <span class="keyword">new</span> ByteArrayInputStream(strXML.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">        org.w3c.dom.Document doc = documentBuilder.parse(stream);</div><div class="line">        doc.getDocumentElement().normalize();</div><div class="line">        NodeList nodeList = doc.getDocumentElement().getChildNodes();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> idx=<span class="number">0</span>; idx&lt;nodeList.getLength(); ++idx) &#123;</div><div class="line">            Node node = nodeList.item(idx);</div><div class="line">            <span class="keyword">if</span> (node.getNodeType() == Node.ELEMENT_NODE) &#123;</div><div class="line">                org.w3c.dom.Element element = (org.w3c.dom.Element) node;</div><div class="line">                data.put(element.getNodeName(), element.getTextContent());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            stream.close();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> data;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 将Map转换为XML格式的字符串</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> XML格式的字符串</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mapToXml</span><span class="params">(Map&lt;String, String&gt; data)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();</div><div class="line">        DocumentBuilder documentBuilder= documentBuilderFactory.newDocumentBuilder();</div><div class="line">        org.w3c.dom.Document document = documentBuilder.newDocument();</div><div class="line">        org.w3c.dom.Element root = document.createElement(<span class="string">"xml"</span>);</div><div class="line">        document.appendChild(root);</div><div class="line">        <span class="keyword">for</span> (String key: data.keySet()) &#123;</div><div class="line">            String value = data.get(key);</div><div class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</div><div class="line">                value = <span class="string">""</span>;</div><div class="line">            &#125;</div><div class="line">            value = value.trim();</div><div class="line">            org.w3c.dom.Element filed = document.createElement(key);</div><div class="line">            filed.appendChild(document.createTextNode(value));</div><div class="line">            root.appendChild(filed);</div><div class="line">        &#125;</div><div class="line">        TransformerFactory tf = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = tf.newTransformer();</div><div class="line">        DOMSource source = <span class="keyword">new</span> DOMSource(document);</div><div class="line">        transformer.setOutputProperty(OutputKeys.ENCODING, <span class="string">"UTF-8"</span>);</div><div class="line">        transformer.setOutputProperty(OutputKeys.INDENT, <span class="string">"yes"</span>);</div><div class="line">        StringWriter writer = <span class="keyword">new</span> StringWriter();</div><div class="line">        StreamResult result = <span class="keyword">new</span> StreamResult(writer);</div><div class="line">        transformer.transform(source, result);</div><div class="line">        String output = writer.getBuffer().toString(); <span class="comment">//.replaceAll("\n|\r", "");</span></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            writer.close();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> output;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 生成带有 sign 的 XML 格式字符串</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 含有sign字段的XML</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignedXml</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">return</span> generateSignedXml(data, key, SignType.MD5);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 生成带有 sign 的 XML 格式字符串</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> signType 签名类型</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 含有sign字段的XML</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignedXml</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key, SignType signType)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String sign = generateSignature(data, key, signType);</div><div class="line">        data.put(WXPayConstants.FIELD_SIGN, sign);</div><div class="line">        <span class="keyword">return</span> mapToXml(data);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 判断签名是否正确</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> xmlStr XML格式数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 签名是否正确</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSignatureValid</span><span class="params">(String xmlStr, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Map&lt;String, String&gt; data = xmlToMap(xmlStr);</div><div class="line">        <span class="keyword">if</span> (!data.containsKey(WXPayConstants.FIELD_SIGN) ) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        String sign = data.get(WXPayConstants.FIELD_SIGN);</div><div class="line">        <span class="keyword">return</span> generateSignature(data, key).equals(sign);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 判断签名是否正确，必须包含sign字段，否则返回false。使用MD5签名。</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 签名是否正确</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSignatureValid</span><span class="params">(Map&lt;String, String&gt; data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">return</span> isSignatureValid(data, key, SignType.MD5);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 判断签名是否正确，必须包含sign字段，否则返回false。</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> signType 签名方式</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 签名是否正确</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSignatureValid</span><span class="params">(Map&lt;String, String&gt; data, String key, SignType signType)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!data.containsKey(WXPayConstants.FIELD_SIGN) ) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        String sign = data.get(WXPayConstants.FIELD_SIGN);</div><div class="line">        <span class="keyword">return</span> generateSignature(data, key, signType).equals(sign);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 生成签名</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data 待签名数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 签名</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignature</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">return</span> generateSignature(data, key, SignType.MD5);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 生成签名. 注意，若含有sign_type字段，必须和signType参数保持一致。</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data 待签名数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> signType 签名方式</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 签名</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignature</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key, SignType signType)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Set&lt;String&gt; keySet = data.keySet();</div><div class="line">        String[] keyArray = keySet.toArray(<span class="keyword">new</span> String[keySet.size()]);</div><div class="line">        Arrays.sort(keyArray);</div><div class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</div><div class="line">        <span class="keyword">for</span> (String k : keyArray) &#123;</div><div class="line">            <span class="keyword">if</span> (k.equals(WXPayConstants.FIELD_SIGN)) &#123;</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (data.get(k).trim().length() &gt; <span class="number">0</span>) <span class="comment">// 参数值为空，则不参与签名</span></div><div class="line">                sb.append(k).append(<span class="string">"="</span>).append(data.get(k).trim()).append(<span class="string">"&amp;"</span>);</div><div class="line">        &#125;</div><div class="line">        sb.append(<span class="string">"key="</span>).append(key);</div><div class="line">        <span class="keyword">if</span> (SignType.MD5.equals(signType)) &#123;</div><div class="line">            <span class="keyword">return</span> MD5(sb.toString()).toUpperCase();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (SignType.HMACSHA256.equals(signType)) &#123;</div><div class="line">            <span class="keyword">return</span> HMACSHA256(sb.toString(), key);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(String.format(<span class="string">"Invalid sign_type: %s"</span>, signType));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取随机字符串 Nonce Str</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> String 随机字符串</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateNonceStr</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> UUID.randomUUID().toString().replaceAll(<span class="string">"-"</span>, <span class="string">""</span>).substring(<span class="number">0</span>, <span class="number">32</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 生成 MD5</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data 待处理数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> MD5结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">MD5</span><span class="params">(String data)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        java.security.MessageDigest md = MessageDigest.getInstance(<span class="string">"MD5"</span>);</div><div class="line">        <span class="keyword">byte</span>[] array = md.digest(data.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> item : array) &#123;</div><div class="line">            sb.append(Integer.toHexString((item &amp; <span class="number">0xFF</span>) | <span class="number">0x100</span>).substring(<span class="number">1</span>, <span class="number">3</span>));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> sb.toString().toUpperCase();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 生成 HMACSHA256</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data 待处理数据</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> key 密钥</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 加密结果</span></div><div class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">HMACSHA256</span><span class="params">(String data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Mac sha256_HMAC = Mac.getInstance(<span class="string">"HmacSHA256"</span>);</div><div class="line">        SecretKeySpec secret_key = <span class="keyword">new</span> SecretKeySpec(key.getBytes(<span class="string">"UTF-8"</span>), <span class="string">"HmacSHA256"</span>);</div><div class="line">        sha256_HMAC.init(secret_key);</div><div class="line">        <span class="keyword">byte</span>[] array = sha256_HMAC.doFinal(data.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> item : array) &#123;</div><div class="line">            sb.append(Integer.toHexString((item &amp; <span class="number">0xFF</span>) | <span class="number">0x100</span>).substring(<span class="number">1</span>, <span class="number">3</span>));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> sb.toString().toUpperCase();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>参考于:<br><a href="http://mp.weixin.qq.com" target="_blank" rel="external">http://mp.weixin.qq.com</a></p>
-<p><a href="http://open.weixin.qq.com" target="_blank" rel="external">http://open.weixin.qq.com</a></p>
-<p><a href="http://pay.weixin.qq.com" target="_blank" rel="external">http://pay.weixin.qq.com</a></p>
+<h6 id="7-支付完成-处理异步回调"><a href="#7-支付完成-处理异步回调" class="headerlink" title="7. 支付完成, 处理异步回调"></a>7. 支付完成, 处理异步回调</h6><h6 id="备注：-微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法"><a href="#备注：-微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法" class="headerlink" title="备注： 微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法"></a>备注： 微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.github.wxpay.sdk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.StringWriter;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.security.MessageDigest;</span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.Node;</span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.NodeList;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.crypto.Mac;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.SecretKeySpec;</span><br><span class="line"><span class="keyword">import</span> javax.xml.parsers.DocumentBuilder;</span><br><span class="line"><span class="keyword">import</span> javax.xml.parsers.DocumentBuilderFactory;</span><br><span class="line"><span class="keyword">import</span> javax.xml.transform.OutputKeys;</span><br><span class="line"><span class="keyword">import</span> javax.xml.transform.Transformer;</span><br><span class="line"><span class="keyword">import</span> javax.xml.transform.TransformerFactory;</span><br><span class="line"><span class="keyword">import</span> javax.xml.transform.dom.DOMSource;</span><br><span class="line"><span class="keyword">import</span> javax.xml.transform.stream.StreamResult;</span><br><span class="line"><span class="keyword">import</span> com.github.wxpay.sdk.WXPayConstants.SignType;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WXPayUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * XML格式字符串转换为Map</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> strXML XML字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> XML数据转换后的Map</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, String&gt; <span class="title">xmlToMap</span><span class="params">(String strXML)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Map&lt;String, String&gt; data = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</span><br><span class="line">        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();</span><br><span class="line">        DocumentBuilder documentBuilder= documentBuilderFactory.newDocumentBuilder();</span><br><span class="line">        InputStream stream = <span class="keyword">new</span> ByteArrayInputStream(strXML.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">        org.w3c.dom.Document doc = documentBuilder.parse(stream);</span><br><span class="line">        doc.getDocumentElement().normalize();</span><br><span class="line">        NodeList nodeList = doc.getDocumentElement().getChildNodes();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> idx=<span class="number">0</span>; idx&lt;nodeList.getLength(); ++idx) &#123;</span><br><span class="line">            Node node = nodeList.item(idx);</span><br><span class="line">            <span class="keyword">if</span> (node.getNodeType() == Node.ELEMENT_NODE) &#123;</span><br><span class="line">                org.w3c.dom.Element element = (org.w3c.dom.Element) node;</span><br><span class="line">                data.put(element.getNodeName(), element.getTextContent());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            stream.close();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将Map转换为XML格式的字符串</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> XML格式的字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mapToXml</span><span class="params">(Map&lt;String, String&gt; data)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();</span><br><span class="line">        DocumentBuilder documentBuilder= documentBuilderFactory.newDocumentBuilder();</span><br><span class="line">        org.w3c.dom.Document document = documentBuilder.newDocument();</span><br><span class="line">        org.w3c.dom.Element root = document.createElement(<span class="string">"xml"</span>);</span><br><span class="line">        document.appendChild(root);</span><br><span class="line">        <span class="keyword">for</span> (String key: data.keySet()) &#123;</span><br><span class="line">            String value = data.get(key);</span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                value = <span class="string">""</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            value = value.trim();</span><br><span class="line">            org.w3c.dom.Element filed = document.createElement(key);</span><br><span class="line">            filed.appendChild(document.createTextNode(value));</span><br><span class="line">            root.appendChild(filed);</span><br><span class="line">        &#125;</span><br><span class="line">        TransformerFactory tf = TransformerFactory.newInstance();</span><br><span class="line">        Transformer transformer = tf.newTransformer();</span><br><span class="line">        DOMSource source = <span class="keyword">new</span> DOMSource(document);</span><br><span class="line">        transformer.setOutputProperty(OutputKeys.ENCODING, <span class="string">"UTF-8"</span>);</span><br><span class="line">        transformer.setOutputProperty(OutputKeys.INDENT, <span class="string">"yes"</span>);</span><br><span class="line">        StringWriter writer = <span class="keyword">new</span> StringWriter();</span><br><span class="line">        StreamResult result = <span class="keyword">new</span> StreamResult(writer);</span><br><span class="line">        transformer.transform(source, result);</span><br><span class="line">        String output = writer.getBuffer().toString(); <span class="comment">//.replaceAll("\n|\r", "");</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            writer.close();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> output;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成带有 sign 的 XML 格式字符串</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 含有sign字段的XML</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignedXml</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> generateSignedXml(data, key, SignType.MD5);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成带有 sign 的 XML 格式字符串</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> signType 签名类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 含有sign字段的XML</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignedXml</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key, SignType signType)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String sign = generateSignature(data, key, signType);</span><br><span class="line">        data.put(WXPayConstants.FIELD_SIGN, sign);</span><br><span class="line">        <span class="keyword">return</span> mapToXml(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断签名是否正确</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> xmlStr XML格式数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 签名是否正确</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSignatureValid</span><span class="params">(String xmlStr, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Map&lt;String, String&gt; data = xmlToMap(xmlStr);</span><br><span class="line">        <span class="keyword">if</span> (!data.containsKey(WXPayConstants.FIELD_SIGN) ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        String sign = data.get(WXPayConstants.FIELD_SIGN);</span><br><span class="line">        <span class="keyword">return</span> generateSignature(data, key).equals(sign);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断签名是否正确，必须包含sign字段，否则返回false。使用MD5签名。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 签名是否正确</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSignatureValid</span><span class="params">(Map&lt;String, String&gt; data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> isSignatureValid(data, key, SignType.MD5);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断签名是否正确，必须包含sign字段，否则返回false。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data Map类型数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> signType 签名方式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 签名是否正确</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSignatureValid</span><span class="params">(Map&lt;String, String&gt; data, String key, SignType signType)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!data.containsKey(WXPayConstants.FIELD_SIGN) ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        String sign = data.get(WXPayConstants.FIELD_SIGN);</span><br><span class="line">        <span class="keyword">return</span> generateSignature(data, key, signType).equals(sign);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成签名</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 待签名数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 签名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignature</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> generateSignature(data, key, SignType.MD5);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成签名. 注意，若含有sign_type字段，必须和signType参数保持一致。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 待签名数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key API密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> signType 签名方式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 签名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateSignature</span><span class="params">(<span class="keyword">final</span> Map&lt;String, String&gt; data, String key, SignType signType)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Set&lt;String&gt; keySet = data.keySet();</span><br><span class="line">        String[] keyArray = keySet.toArray(<span class="keyword">new</span> String[keySet.size()]);</span><br><span class="line">        Arrays.sort(keyArray);</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (String k : keyArray) &#123;</span><br><span class="line">            <span class="keyword">if</span> (k.equals(WXPayConstants.FIELD_SIGN)) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (data.get(k).trim().length() &gt; <span class="number">0</span>) <span class="comment">// 参数值为空，则不参与签名</span></span><br><span class="line">                sb.append(k).append(<span class="string">"="</span>).append(data.get(k).trim()).append(<span class="string">"&amp;"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        sb.append(<span class="string">"key="</span>).append(key);</span><br><span class="line">        <span class="keyword">if</span> (SignType.MD5.equals(signType)) &#123;</span><br><span class="line">            <span class="keyword">return</span> MD5(sb.toString()).toUpperCase();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (SignType.HMACSHA256.equals(signType)) &#123;</span><br><span class="line">            <span class="keyword">return</span> HMACSHA256(sb.toString(), key);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(String.format(<span class="string">"Invalid sign_type: %s"</span>, signType));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取随机字符串 Nonce Str</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String 随机字符串</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateNonceStr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> UUID.randomUUID().toString().replaceAll(<span class="string">"-"</span>, <span class="string">""</span>).substring(<span class="number">0</span>, <span class="number">32</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成 MD5</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 待处理数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> MD5结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">MD5</span><span class="params">(String data)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        java.security.MessageDigest md = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line">        <span class="keyword">byte</span>[] array = md.digest(data.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> item : array) &#123;</span><br><span class="line">            sb.append(Integer.toHexString((item &amp; <span class="number">0xFF</span>) | <span class="number">0x100</span>).substring(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString().toUpperCase();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成 HMACSHA256</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 待处理数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 密钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 加密结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">HMACSHA256</span><span class="params">(String data, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Mac sha256_HMAC = Mac.getInstance(<span class="string">"HmacSHA256"</span>);</span><br><span class="line">        SecretKeySpec secret_key = <span class="keyword">new</span> SecretKeySpec(key.getBytes(<span class="string">"UTF-8"</span>), <span class="string">"HmacSHA256"</span>);</span><br><span class="line">        sha256_HMAC.init(secret_key);</span><br><span class="line">        <span class="keyword">byte</span>[] array = sha256_HMAC.doFinal(data.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> item : array) &#123;</span><br><span class="line">            sb.append(Integer.toHexString((item &amp; <span class="number">0xFF</span>) | <span class="number">0x100</span>).substring(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString().toUpperCase();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考于:<br><a href="http://mp.weixin.qq.com" target="_blank" rel="noopener">http://mp.weixin.qq.com</a></p>
+<p><a href="http://open.weixin.qq.com" target="_blank" rel="noopener">http://open.weixin.qq.com</a></p>
+<p><a href="http://pay.weixin.qq.com" target="_blank" rel="noopener">http://pay.weixin.qq.com</a></p>
 
-      
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    <time datetime="2018-02-26T12:31:59.709Z" itemprop="dateUpdated">2018-02-26 20:31:59</time>
+</span><br>
+
+
+        
     </div>
     
-  </div>
-  
+    <footer>
+        <a href="http://www.songshuiyang.site">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付/">支付</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
     
-    <div class="copyright">
-        <p><span>本文标题:</span><a  href="/2018/01/11/Web后台/支付/接入微信支付接口/">接入微信扫码支付接口</a></p>
-        <p><span>文章作者:</span><a  href="/" title="访问 songshuiyang 的个人博客">songshuiyang</a></p>
-        <p><span>发布时间:</span>2018年01月11日 - 21时24分</p>
-        <p><span>最后更新:</span>2018年02月26日 - 20时31分</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/01/11/Web后台/支付/接入微信支付接口/" title="接入微信扫码支付接口">http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/　　作者: songshuiyang" title=""></span>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
-        </p>
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/&title=《接入微信扫码支付接口》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/&title=《接入微信扫码支付接口》 — 宋水阳个人博客&source=准备条件开始之前先看一下微信的几个平台:
+微信公众平台:是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《接入微信扫码支付接口》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
     </div>
 
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/01/11/Web后台/支付/接入银联支付接口/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">接入银联支付接口</h4>
+      </a>
+    </div>
+  
 
-
-<nav id="article-nav">
   
-    <a  href="/2018/01/11/Web后台/支付/接入银联支付接口/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          接入银联支付接口
-        
-      </div>
-    </a>
-  
-  
-    <a  href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">PC网站上如何接入支付宝网关支付功能</div>
-      <strong class="article-nav-caption">></strong>
-    </a>
+    <div class="waves-block waves-effect next">
+      <a href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">PC网站上如何接入支付宝网关支付功能</h4>
+      </a>
+    </div>
   
 </nav>
 
 
-  
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </article>
 
-    <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#准备条件"><span class="toc-number">1.</span> <span class="toc-text">准备条件</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#开始之前先看一下微信的几个平台"><span class="toc-number">1.1.</span> <span class="toc-text">开始之前先看一下微信的几个平台:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#开通支付功能"><span class="toc-number">1.2.</span> <span class="toc-text">开通支付功能:</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#微信支付开发"><span class="toc-number">2.</span> <span class="toc-text">微信支付开发:</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#接入微信支付步骤"><span class="toc-number">2.1.</span> <span class="toc-text">接入微信支付步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-获取支付SDK"><span class="toc-number">2.1.1.</span> <span class="toc-text">1. 获取支付SDK</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-配置参数"><span class="toc-number">2.1.2.</span> <span class="toc-text">2. 配置参数</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-新建一个参数配置类"><span class="toc-number">2.1.3.</span> <span class="toc-text">3. 新建一个参数配置类</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-new-一个WXPay对象"><span class="toc-number">2.1.4.</span> <span class="toc-text">4. new 一个WXPay对象</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#5-有了”对象”之后就可以发送支付请求了"><span class="toc-number">2.1.5.</span> <span class="toc-text">5. 有了”对象”之后就可以发送支付请求了</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#6-生成支付二维码"><span class="toc-number">2.1.6.</span> <span class="toc-text">6. 生成支付二维码</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#7-支付完成-处理异步回调"><span class="toc-number">2.1.7.</span> <span class="toc-text">7. 支付完成, 处理异步回调</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#备注：-微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法"><span class="toc-number">2.1.8.</span> <span class="toc-text">备注： 微信支付是使用的xml进行传输数据，需要将xml转成map，当然微信SDK中也提供了工具类，提供了一些十分用的方法</span></a></li></ol></li></ol></li></ol>
+
+
 </div>
-<style>
-    .left-col .switch-btn {
-        display: none;
-    }
-    .left-col .switch-area {
-        display: none;
-    }
-</style>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-<script>
-    var valueHide = "隐藏目录";
-    var valueShow = "显示目录";
-    if ($(".left-col").is(":hidden")) {
-        $("#tocButton").attr("value", valueShow);
-    }
-    $("#tocButton").click(function() {
-        if ($("#toc").is(":hidden")) {
-            $("#tocButton").attr("value", valueHide);
-            $("#toc").slideDown(320);
-            $(".switch-btn, .switch-area").fadeOut(300);
-        }
-        else {
-            $("#tocButton").attr("value", valueShow);
-            $("#toc").slideUp(350);
-            $(".switch-btn, .switch-area").fadeIn(500);
-        }
-    })
-    if ($(".toc").length < 1) {
-        $("#toc, #tocButton").hide();
-        $(".switch-btn, .switch-area").show();
-    }
-</script>
 
-
-
-
-<div class="bdsharebuttonbox">
-	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
-	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
-	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
-	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
-	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
-</div>
-<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
-
-
-
-
-    
-        
-<!-- 如果您配置过sourceid，建议在div标签中配置sourceid、cid(分类id)，没有请忽略  -->
-<div id="cyEmoji" role="cylabs" data-use="emoji"></div>
-<!-- 代码2：用来读取评论框配置，此代码需放置在代码1之后。 -->
-<!-- 如果当前页面有评论框，代码2请勿放置在评论框代码之前。 -->
-<!-- 如果页面同时使用多个实验室项目，以下代码只需要引入一次，只配置上面的div标签即可 -->
-<script type="text/javascript" charset="utf-8" src="https://changyan.itc.cn/js/lib/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cytf5fPKF"></script>
-
-<!--PC版-->
-<div id="SOHUCS" sid="songshuiyang"></div>
-<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
-<script type="text/javascript">
-window.changyan.api.config({
-appid: 'cytf5fPKF',
-conf: 'prod_ee3a22e2c13174e193691fbc93e3cbc8'
-});
-</script>
-    
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a  href="/2018/01/11/Web后台/支付/接入银联支付接口/" title="上一篇: 接入银联支付接口">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-        
-            <a  href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/" title="下一篇: PC网站上如何接入支付宝网关支付功能">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2018</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+        </p>
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/03/Web后台/支付/微信公众号开通发红包功能/">微信公众号实现输入兑换码自动发红包功能</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/24/Web后台/windows bat/">Windows批处理(cmd/bat)常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/24/Web后台/缓存技术/Encache/">Spring 集成Encache</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/20/Web前端/hover/">hover.css</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/08/Web后台/Linux/linux笔记/">Linux 命令笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/08/Web后台/Linux/Docker笔记/">Docker笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/07/Web后台/数据库/mysql 用户及权限管理/">mysql 用户及权限管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/07/Web后台/Linux/Centos7安装Mysql5.7/">Centos7安装Mysql5.7.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/05/Web后台/相关技术/百度富文本框编辑器Ueditor的使用/">百度富文本框编辑器Ueditor的使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/04/Web后台/相关技术/基于wordspress搭建个人博客系统/">基于wordspress搭建个人博客系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/Web后台/数据库/Mysql 数据类型/">Mysql 数据类型.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/Web前端/animate/">animate.css</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/28/Web后台/Spring/spring-mvc/Spring mvc 中文乱码问题/">Spring mvc 前后台传值中文乱码问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/13/Web后台/编程规范/阿里巴巴Java编程规范/">阿里巴巴Java编程规范</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/Web前端/CSS和JS文件的客户端缓存问题/">解决CSS和JS文件的客户端缓存问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/Web后台/相关技术/生成二维码图片(base64格式)/">生成二维码图片(base64格式)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/Web后台/相关技术/根据手机区号获取城市地理位置/">根据手机区号获取城市地理位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/29/Web后台/相关技术/根据IP获取城市地理位置/">根据IP获取城市地理位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/20/Web后台/编译构建部署版本工具/阿里云服务器搭建Javaweb运行环境/">阿里云服务器搭建Javaweb运行环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/Web后台/Spring/spring-boot/spring-boot/">Spring boot</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/组合注解/">组合注解</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/异步方法/">异步方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/spring 事件监听/">Spring 事件监听</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web后台/Spring/spring-boot/注解Value/">注解Value, Spring EL</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/Web前端/npm/npm scripts/">npm scripts</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/11/Web后台/支付/接入银联支付接口/">接入银联支付接口</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/11/Web后台/支付/接入微信支付接口/">接入微信扫码支付接口</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Web后台/支付/PC网站上如何接入支付宝网关支付功能/">PC网站上如何接入支付宝网关支付功能</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/Web后台/Java/ASCII 160 空格/">Ascii 160空格问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/17/Web后台/数据库/Mysql 如何设置字段自动获取当前时间/">Mysql 如何设置字段自动获取当前时间</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/11/Web后台/数据库/Druid Monitor/">Druid Monitor</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/18/Web后台/Maven/maven 骨架/">Maven 41种骨架</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/18/Web后台/Spring/Spring Aop/">Spring Aop</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Web后台/mybatis/mybatis笔记/">myBatis笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Web后台/Spring/Spring aop execution/">Spring aop execution</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Web后台/Spring/Spring Task/">Spring Task</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/24/Web后台/Spring/学习笔记/">Spring</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/Web后台/编译构建部署版本工具/git/git初始配置/">Git初始配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/14/Web后台/编译构建部署版本工具/如何修改Git commit的信息/">编译构建部署版本工具</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/14/Web后台/Hibernate/Hibernate Validator/">Hibernate Validator</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/14/Web后台/编译构建部署版本工具/grandle/">编译构建部署版本工具</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/08/技术/github/">github</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/05/Web前端/计算属性/">计算属性</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/05/Web前端/v-model和v-bind的区别/">v-model v-bind</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/03/Web前端/Vue/">Vue.js</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/随笔/网易云/">嵌入网易云插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/技术/其他插件/">其他插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/技术/增加畅言功能/">增加畅言功能</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/Web前端/nodeJs/">nodeJs</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/29/Web后台/Java/枚举类/">枚举类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/29/Web后台/Spring/Assert 的学习/">Spring Assert</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/24/Web后台/Hibernate/hibernate问题集合/">Hibernate 问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/23/Web后台/Hibernate/Hibernate笔记/">Hibernate笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/23/Web后台/Hibernate/Hibernate/">Hibernate 例子</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/Web后台/Java/Java位运算/">Java位运算</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/Web后台/Java/Java遍历Map/">Java 遍历Map</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/22/Web后台/Java/Java移位运算/">Java移位运算</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/21/Web后台/Java/Java基础/">Java基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/21/Web后台/相关技术/常见的编码方式/">常见的编码方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/19/Web后台/Struts2/Struts2 问题总结/">Struts2 问题总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/16/Web后台/Struts2/Struts2 的简单实例/">Struts2 的简单实例</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/15/Web后台/JspServlet/web.xml中配置JSP属性/">web.xml中配置JSP属性</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/14/Web后台/JspServlet/Servlet/">Servlet</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/14/Web后台/JspServlet/JSP脚本中的九个内置对象/">JSP脚本中的九个内置对象</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/11/Web后台/velocity/Spring mvc整合velocity/">Spring mvc整合velocity</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/Web后台/JavaEE服务器/常用的JavaEE服务器/">常用的JavaEE服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/随笔/新建博客方法/">新建博客方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/Web后台/Java学习路线/">Java学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/10/Web前端/前端学习技术/">前端学习技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/09/随笔/hexo问题总结/">Hexo问题总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/09/随笔/第一篇博客/">第一篇博客</a></li></ul>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-    <script>
-        $(".post-list").addClass("toc-article");
-        // $(".post-list-item a").attr("target","_blank");
-        $("#post-nav-button > a:nth-child(2)").click(function() {
-            $(".fa-bars, .fa-times").toggle();
-            $(".post-list").toggle(300);
-            if ($(".toc").length > 0) {
-                $("#toc, #tocButton").toggle(200, function() {
-                    if ($(".switch-area").is(":visible")) {
-                        $("#toc, .switch-btn, .switch-area").toggle();
-                        $("#tocButton").attr("value", valueHide);
-                        }
-                    })
-            }
-            else {
-                $(".switch-btn, .switch-area").fadeToggle(300);
-            }
-        })
-    </script>
-
-
-
-
-    <script>
-        
-    </script>
-
-</div>
-      <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                &copy; 2018 songshuiyang<a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a>
-            </div>
-            <div class="footer-right">
-
-            </div>
-        </div>
-        
-            <div class="visit">
-                
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >到访数: 
-                            <span id="busuanzi_value_site_uv"></span>
-                        </span>
-                    </span>
-                
-                
-                    <span>, </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">本页阅读量: 
-                            <span id="busuanzi_value_page_pv"></span>
-                        </span>
-                    </span>
-                
-            </div>
-        
-    </div>
-    <script>
-    (function(){
-        var bp = document.createElement('script');
-        var curProtocol = window.location.protocol.split(':')[0];
-        if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-        }
-        else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-        }
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(bp, s);
-    })();
-    </script>
 </footer>
 
-    </div>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-<script src="/js/main.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var backgroundnum = 4;
-            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-        })
-    </script>
-
-
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'xxxxx', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
 
 
 
-	<script>
-	var _hmt = _hmt || [];
-	(function() {
-	  var hm = document.createElement("script");
-	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
-	  var s = document.getElementsByTagName("script")[0]; 
-	  s.parentNode.insertBefore(hm, s);
-	})();
-	</script>
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/&title=《接入微信扫码支付接口》 — 宋水阳个人博客&pic=http://www.songshuiyang.site/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/&title=《接入微信扫码支付接口》 — 宋水阳个人博客&source=准备条件开始之前先看一下微信的几个平台:
+微信公众平台:是微信公众账号申请入口和管理后台。商户可以在公众平台提交基本资料、业务资料、财务资料申请开通微信支..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《接入微信扫码支付接口》 — 宋水阳个人博客&url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/&via=http://www.songshuiyang.site" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.site/2018/01/11/Web后台/支付/接入微信支付接口/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
 
 
-
-<div class="scroll" id="scroll">
-    <a href="#"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACpklEQVR42u3aQW7DMAwEwPz/0+kDWjtLUgxcYHQq0sT26GAR5L5e8XpfrN/fya+Tfyf51Wjh4eHhHXr0qxtc/feeen+16oYmz4yHh4e3zbu6Qf735LWebNz9fS8/x8PDw3sYL3n154xkC/Dw8PD+I6/apMhL6nswHh4e3tN4Z9sNveZC0o9d7LXg4eHhxbx8ivScv1fme3h4eHjjqfpG4ZuHD6pDrz+ujIeHh7fAm4SlemVxNTpQDV3h4eHhbfPerVVtYSQt4CopOVTw8PDw9niT4yEvo6vfn/AKEzw8PDy8Me/+Zr2xWe+oOLCVeHh4eGu8eXSgFwiYHEUH4lZ4eHh4C7zq2OlUw3e+rXh4eHh7vN4D5WV3HhfIy+jyUA0PDw9vjXeqqXqWMX82PDw8vLO86g+SUjiPAiRFdq9RgoeHh7fNyxsN8wZr3iDOn+fyEzw8PLwFXh6lmgz+ky0oB6qql8PDw8M7yusFAqrlclJMz4NWHzYCDw8Pb8yrlq3J56OYVHF49uGQw8PDw1vg5UdCNXTVG2v14lzlYRgeHh7egNd73VfHY9VNScZsUQACDw8Pb41XbaHmI/95CGCyiXh4eHgbvOo4v9f8rTZhq22RD9uNh4eHt8abjO1zTPWa8+YIHh4e3h6v98qulry9tsUo2oWHh4f3Fd6poyIf/ydDr2bEAQ8PD2+NNxnq5zGpHvsVrEImAg8PD2/Am8SqksZuvnHJlaubi4eHh7fBy1dS7PZavXkjOA9mlRceHh5ekVeNQ/WCApMCvVqs4+Hh4X2HNx9Z5S3gySCteabh4eHhPYCXNyMmWzPZejw8PLzn8Kov9Hy4lZfmhVYIHh4e3hovH3pVx1TVgdmkG32ZjMDDw8M7yqv+bPSaLpbdvQMGDw8Pb433A5aI5CmTpUPcAAAAAElFTkSuQmCC" alt="微信分享二维码">
 </div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
 <script>
-    $(document).ready(function() {
-        if ($("#comments").length < 1) {
-            $("#scroll > a:nth-child(2)").hide();
-        };
-    })
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
 </script>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
 
-  <script language="javascript">
-    $(function() {
-        $("a[title]").each(function() {
-            var a = $(this);
-            var title = a.attr('title');
-            if (title == undefined || title == "") return;
-            a.data('title', title).removeAttr('title').hover(
-            function() {
-                var offset = a.offset();
-                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
-                    top: offset.top - a.outerHeight() - 15,
-                    left: offset.left + a.outerWidth()/2 + 1
-                }).fadeIn(function() {
-                    var pop = $(this);
-                    setTimeout(function() {
-                        pop.remove();
-                    }, pop.text().length * 800);
-                });
-            }, function() {
-                $("#anchortitlecontainer").remove();
-            });
-        });
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '怎么离开了 o(╥﹏╥)o';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来 (*^▽^*)';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
     });
+})();
 </script>
 
 
-  </div>
+
 </body>
 </html>
