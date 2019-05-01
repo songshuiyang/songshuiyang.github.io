@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.songshuiyang.site/2019/05/01/backend/Java/Concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%8D%81%E4%B8%89)ConcurrentLinkedQueue%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</loc>
+    
+    <lastmod>2019-05-01T13:55:08.519Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.songshuiyang.site/2019/05/01/backend/Java/Concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%8D%81%E4%BA%8C)ConcurrentHashMap%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</loc>
+    
+    <lastmod>2019-05-01T13:52:04.722Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.songshuiyang.site/2019/05/01/backend/Java/Concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%8D%81%E4%B8%80)CompareAndSwap(CAS)/</loc>
+    
+    <lastmod>2019-05-01T13:28:04.247Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.songshuiyang.site/2019/04/29/backend/Java/Concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B9%9D)ReadWriteLock%E4%B8%8EReentrantReadWriteLock/</loc>
     
     <lastmod>2019-05-01T11:13:55.391Z</lastmod>
@@ -516,13 +537,6 @@
     <loc>http://www.songshuiyang.site/2018/11/09/backend/mybatis/SpringBoot%E9%85%8D%E7%BD%AEMybatis%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/</loc>
     
     <lastmod>2018-11-13T11:59:09.617Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.songshuiyang.site/2018/10/29/backend/Java/highConcurrency/ThreadLocal/</loc>
-    
-    <lastmod>2018-11-06T14:20:15.856Z</lastmod>
     
   </url>
   
