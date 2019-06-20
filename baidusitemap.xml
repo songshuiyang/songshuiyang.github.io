@@ -4,12 +4,152 @@
 
     
   <url>
+    <loc>http://www.songshuiyang.site/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E4%B8%80)BeanPostProcessor%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2019-06-20T15:27:53.497Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二一)BeanPostProcessor接口分析</title>
+        <pubTime>2019-07-01T14:01:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.site/2018/04/01/backend/server/JavaEE%E6%9C%8D%E5%8A%A1%E5%99%A8/%E9%AB%98%E5%B9%B6%E5%8F%91/</loc>
+    <lastmod>2019-06-20T15:18:42.336Z</lastmod>
+    <data>
+        <display>
+        <title>高并发</title>
+        <pubTime>2018-04-01T12:50:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.site/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E5%8D%81)Aware%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2019-06-20T15:04:27.669Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二十)Aware接口分析</title>
+        <pubTime>2019-07-01T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.site/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%B8%80)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BAutowiredAnnotationBeanPostProcessor@Autowired%E6%B3%A8%E8%A7%A3%E5%8E%9F%E7%90%86/</loc>
+    <lastmod>2019-06-20T14:01:46.089Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十一)加载Bean之AutowiredAnnotationBeanPostProcessor@Autowired注解原理</title>
+        <pubTime>2019-06-19T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.site/2019/06/09/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94)Document%E8%AF%BB%E5%8F%96%E5%99%A8BeanDefinitionDocumentReader/</loc>
+    <lastmod>2019-06-20T13:53:56.725Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(五)Document读取器BeanDefinitionDocumentReader</title>
+        <pubTime>2019-06-09T08:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.site/2019/06/18/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BAbstractBeanFactory%E7%B1%BBcreateBean%E6%96%B9%E6%B3%95/</loc>
+    <lastmod>2019-06-18T15:43:18.573Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法</title>
+        <pubTime>2019-06-18T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.songshuiyang.site/2019/06/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%85%AB)%E5%8A%A0%E8%BD%BDBean%E4%B9%8B%E5%8D%95%E4%BE%8B%E7%BC%93%E5%AD%98%E4%B8%AD%E8%8E%B7%E5%8F%96%E5%8D%95%E4%BE%8B%20Bean/</loc>
-    <lastmod>2019-06-12T16:12:34.262Z</lastmod>
+    <lastmod>2019-06-18T15:22:16.133Z</lastmod>
     <data>
         <display>
         <title>Spring系列(八)加载Bean之单例缓存中获取单例 Bean</title>
         <pubTime>2019-06-12T15:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.site/2019/06/17/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B9%9D)%E5%8A%A0%E8%BD%BDBean%E4%B9%8B%E4%B8%8D%E5%90%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8B%E8%8E%B7%E5%8F%96Bean/</loc>
+    <lastmod>2019-06-18T13:21:57.110Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(九)加载Bean之不同作用域下获取Bean</title>
+        <pubTime>2019-06-17T15:00:46.000Z</pubTime>
         
         <tag>Spring</tag>
          
@@ -50,26 +190,6 @@
         <display>
         <title>Spring系列(六)装载BeanDefinition总结</title>
         <pubTime>2019-06-11T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.site/2019/06/09/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94)Document%E8%AF%BB%E5%8F%96%E5%99%A8BeanDefinitionDocumentReader/</loc>
-    <lastmod>2019-06-12T15:15:34.489Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(五)Document读取器BeanDefinitionDocumentReader</title>
-        <pubTime>2019-06-09T08:00:46.000Z</pubTime>
         
         <tag>Spring</tag>
          
@@ -676,26 +796,6 @@
         <display>
         <title>Java基础-一切皆是对象</title>
         <pubTime>2018-01-09T13:24:12.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.site/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.site/2019/04/01/backend/server/JavaEE%E6%9C%8D%E5%8A%A1%E5%99%A8/%E9%AB%98%E5%B9%B6%E5%8F%91/</loc>
-    <lastmod>2019-05-04T03:16:45.666Z</lastmod>
-    <data>
-        <display>
-        <title>高并发</title>
-        <pubTime>2019-04-01T12:50:44.000Z</pubTime>
         
         <tag>Java</tag>
          
