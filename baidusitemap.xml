@@ -4,11 +4,11 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%80)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</loc>
-    <lastmod>2019-06-29T14:54:40.487Z</lastmod>
+    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%80)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E8%A7%A3%E6%9E%90%E4%BA%8B%E5%8A%A1%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/</loc>
+    <lastmod>2019-06-30T06:10:26.832Z</lastmod>
     <data>
         <display>
-        <title>Spring系列(七一)Spring事务之执行过程</title>
+        <title>Spring系列(七一)Spring事务之解析事务自定义标签</title>
         <pubTime>2019-08-04T16:00:01.000Z</pubTime>
         
         <tag>Spring</tag>
@@ -24,11 +24,71 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%8D%81)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E8%A7%A3%E6%9E%90%E4%BA%8B%E5%8A%A1%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/</loc>
-    <lastmod>2019-06-29T13:16:40.849Z</lastmod>
+    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%9B%9B)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8BMybatis%E9%9B%86%E6%88%90%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/</loc>
+    <lastmod>2019-06-30T04:20:00.058Z</lastmod>
     <data>
         <display>
-        <title>Spring系列(七十)Spring事务之解析事务自定义标签</title>
+        <title>Spring系列(七四)Spring事务之Mybatis集成事务管理</title>
+        <pubTime>2019-08-04T16:00:04.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%89)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8BPlatformTransactionManager/</loc>
+    <lastmod>2019-06-29T16:16:46.292Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七三)Spring事务之PlatformTransactionManager</title>
+        <pubTime>2019-08-04T16:00:03.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%BA%8C)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E5%85%B7%E4%BD%93%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</loc>
+    <lastmod>2019-06-29T16:16:46.221Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七二)Spring事务之具体执行过程</title>
+        <pubTime>2019-08-04T16:00:02.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/05/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%8D%81)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2019-06-29T15:53:30.894Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七十)Spring事务之基础概念</title>
         <pubTime>2019-08-04T16:00:00.000Z</pubTime>
         
         <tag>Spring</tag>
@@ -3875,9 +3935,9 @@
         <title>解决CSS和JS文件的客户端缓存问题</title>
         <pubTime>2018-02-10T03:48:12.000Z</pubTime>
         
-        <tag>css</tag>
-         
         <tag>js</tag>
+         
+        <tag>css</tag>
          
          
            
