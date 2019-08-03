@@ -4,6 +4,468 @@
 
     
   <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E5%9B%9B)@EnableAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2019-08-03T02:56:23.232Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(四)@EnableAutoConfiguration自动配置</title>
+        <pubTime>2019-08-05T16:00:04.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E4%BA%94)%E5%86%85%E5%B5%8CTomcat%E5%90%AF%E5%8A%A8%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2019-08-03T02:56:23.227Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(五)内嵌Tomcat启动原理解析</title>
+        <pubTime>2019-08-05T16:00:05.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E4%BA%8C)%E6%9E%84%E5%BB%BA%E5%8F%8A%E9%85%8D%E7%BD%AESpringBoot%E9%A1%B9%E7%9B%AE/</loc>
+    <lastmod>2019-08-03T02:56:23.206Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(二)构建及配置SpringBoot项目</title>
+        <pubTime>2019-08-05T16:00:01.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E4%B8%89)%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81%E5%8F%8ASpringApplication/</loc>
+    <lastmod>2019-08-03T02:56:23.201Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(三)下载源码及SpringApplication</title>
+        <pubTime>2019-08-05T16:00:03.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E4%B8%80)%E5%89%8D%E8%A8%80/</loc>
+    <lastmod>2019-08-03T02:56:23.198Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(一)前言</title>
+        <pubTime>2019-08-05T16:00:01.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm1/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E5%9B%9B)%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88/</loc>
+    <lastmod>2019-07-29T13:37:02.931Z</lastmod>
+    <data>
+        <display>
+        <title>JVM运行时数据区域(四)本地方法栈</title>
+        <pubTime>2019-03-04T03:59:44.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+        <tag>jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2017/09/22/backend/java/collection/Java%E9%9B%86%E5%90%88-%E9%81%8D%E5%8E%86Map/</loc>
+    <lastmod>2019-07-29T13:37:02.926Z</lastmod>
+    <data>
+        <display>
+        <title>Java集合-遍历Map</title>
+        <pubTime>2017-09-22T11:00:12.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2017/09/29/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-%E6%9E%9A%E4%B8%BE%E7%B1%BB/</loc>
+    <lastmod>2019-07-29T13:37:02.921Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-枚举类</title>
+        <pubTime>2017-09-29T15:32:12.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/08/01/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-hashcode%E5%92%8Cequals%E7%9A%84%E5%8C%BA%E5%88%AB/</loc>
+    <lastmod>2019-07-29T13:37:02.916Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-hashcode和equals的区别</title>
+        <pubTime>2018-08-01T12:10:12.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E5%85%AB)RequestMappingHandlerAdapter/</loc>
+    <lastmod>2019-07-29T13:37:02.904Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(八)RequestMappingHandlerAdapter</title>
+        <pubTime>2019-03-03T03:59:44.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B9%9D)%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%99%A8HandlerMethodArgumentResolver/</loc>
+    <lastmod>2019-07-29T13:37:02.896Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</title>
+        <pubTime>2019-03-03T04:59:44.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/02/28/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B8%83)%E5%A4%84%E7%90%86%E9%80%82%E9%85%8D%E5%99%A8HanlderAdapter/</loc>
+    <lastmod>2019-07-29T13:37:02.890Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(七)处理适配器HanlderAdapter</title>
+        <pubTime>2019-02-28T13:59:44.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%9B%9B)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.885Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(四)创建型模式-原型模式</title>
+        <pubTime>2018-07-21T15:01:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%85%AD)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.878Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(六)结构型模式-代理模式</title>
+        <pubTime>2018-07-22T00:01:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%BA%94)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.870Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(五)结构型模式-适配器模式</title>
+        <pubTime>2018-07-21T16:01:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%BA%8C)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.862Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(二)创建型模式-工厂模式</title>
+        <pubTime>2018-07-21T13:24:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B9%9D)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.855Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(九)结构型模式-装饰器模式</title>
+        <pubTime>2018-07-22T08:36:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%89)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.851Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(三)创建型模式-建造者模式</title>
+        <pubTime>2018-07-21T14:01:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%83)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.846Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(七)结构型模式-桥接模式</title>
+        <pubTime>2018-07-22T02:01:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%80)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2019-07-29T13:37:02.841Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(一)创建型模式-单例模式</title>
+        <pubTime>2018-07-21T10:24:12.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/01/23/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B8%80)Spring%20Mvc%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2019-07-20T02:04:07.945Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(一)Spring Mvc介绍</title>
+        <pubTime>2019-01-23T11:59:44.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E5%8D%81)RequestBody%E6%B3%A8%E8%A7%A3%E8%A7%A3%E6%9E%90%E4%B9%8BRequestResponseBodyMethodProcessor/</loc>
+    <lastmod>2019-07-20T02:01:45.568Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor</title>
+        <pubTime>2019-03-03T12:59:44.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%8D%81%E4%B8%83)%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</loc>
     <lastmod>2019-07-16T14:32:03.145Z</lastmod>
     <data>
@@ -44,72 +506,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%85%AD)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:03.056Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(六)结构型模式-代理模式</title>
-        <pubTime>2018-07-22T00:01:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%8D%81%E5%85%AB)%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/</loc>
     <lastmod>2019-07-16T14:32:03.020Z</lastmod>
     <data>
         <display>
         <title>设计模式(十八)行为型模式-模板方法模式</title>
         <pubTime>2018-07-22T13:43:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%80)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:02.975Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(一)创建型模式-单例模式</title>
-        <pubTime>2018-07-21T10:24:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%BA%8C)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:02.942Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(二)创建型模式-工厂模式</title>
-        <pubTime>2018-07-21T13:24:12.000Z</pubTime>
         
         <tag>设计模式</tag>
          
@@ -184,72 +586,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%83)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:02.773Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(七)结构型模式-桥接模式</title>
-        <pubTime>2018-07-22T02:01:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%8D%81)%EF%BC%9A%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/</loc>
     <lastmod>2019-07-16T14:32:02.742Z</lastmod>
     <data>
         <display>
         <title>设计模式(十)：结构型模式-外观模式</title>
         <pubTime>2018-07-22T08:36:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%89)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:02.708Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(三)创建型模式-建造者模式</title>
-        <pubTime>2018-07-21T14:01:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/07/21/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E5%9B%9B)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:02.674Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(四)创建型模式-原型模式.</title>
-        <pubTime>2018-07-21T15:01:12.000Z</pubTime>
         
         <tag>设计模式</tag>
          
@@ -377,112 +719,6 @@
            
              
               <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B9%9D)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:02.453Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(九)结构型模式-装饰器模式</title>
-        <pubTime>2018-07-22T08:36:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/07/22/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%BA%94)%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-07-16T14:32:00.197Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(五)结构型模式-适配器模式</title>
-        <pubTime>2018-07-21T16:01:12.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B9%9D)RequestBody%E6%B3%A8%E8%A7%A3%E8%A7%A3%E6%9E%90%E4%B9%8BRequestResponseBodyMethodProcessor/</loc>
-    <lastmod>2019-07-15T14:37:50.507Z</lastmod>
-    <data>
-        <display>
-        <title>Spring Mvc源码(九)RequestBody注解解析之RequestResponseBodyMethodProcessor</title>
-        <pubTime>2019-03-03T12:59:44.000Z</pubTime>
-        
-        <tag>spring mvc</tag>
-         
-        <tag>spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E5%85%AB)RequestMappingHandlerAdapter/</loc>
-    <lastmod>2019-07-15T13:51:22.804Z</lastmod>
-    <data>
-        <display>
-        <title>Spring Mvc源码(八)RequestMappingHandlerAdapter</title>
-        <pubTime>2019-03-03T03:59:44.000Z</pubTime>
-        
-        <tag>spring mvc</tag>
-         
-        <tag>spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/02/28/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B8%83)%E5%A4%84%E7%90%86%E9%80%82%E9%85%8D%E5%99%A8HanlderAdapter/</loc>
-    <lastmod>2019-07-15T13:32:04.347Z</lastmod>
-    <data>
-        <display>
-        <title>Spring Mvc源码(七)处理适配器HanlderAdapter</title>
-        <pubTime>2019-02-28T13:59:44.000Z</pubTime>
-        
-        <tag>spring mvc</tag>
-         
-        <tag>spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
           
         </display>
     </data>
@@ -1730,26 +1966,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2017/09/22/backend/java/collection/Java%E9%9B%86%E5%90%88-%E9%81%8D%E5%8E%86Map/</loc>
-    <lastmod>2019-05-04T03:16:45.514Z</lastmod>
-    <data>
-        <display>
-        <title>Java集合-遍历Map</title>
-        <pubTime>2017-09-22T11:00:12.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/07/08/backend/java/collection/Java%E9%9B%86%E5%90%88-HashSet/</loc>
     <lastmod>2019-05-04T03:16:45.473Z</lastmod>
     <data>
@@ -1796,26 +2012,6 @@
         <display>
         <title>Java基础-null != a 与 a != null 区别</title>
         <pubTime>2018-08-01T12:09:12.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2017/09/29/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-%E6%9E%9A%E4%B8%BE%E7%B1%BB/</loc>
-    <lastmod>2019-05-04T03:16:45.365Z</lastmod>
-    <data>
-        <display>
-        <title>Java基础-枚举类</title>
-        <pubTime>2017-09-29T15:32:12.000Z</pubTime>
         
         <tag>Java</tag>
          
@@ -2156,28 +2352,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm1/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E5%9B%9B)%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88/</loc>
-    <lastmod>2019-03-19T14:43:16.791Z</lastmod>
-    <data>
-        <display>
-        <title>JVM运行时数据区域(四)本地方法栈</title>
-        <pubTime>2019-03-04T03:59:44.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-        <tag>jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/03/16/backend/java/jvm1/JVM%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84(%E4%B8%89)%E5%AD%97%E8%8A%82%E7%A0%81%E6%8C%87%E4%BB%A4/</loc>
     <lastmod>2019-03-19T14:43:16.758Z</lastmod>
     <data>
@@ -2254,28 +2428,6 @@
         <tag>java</tag>
          
         <tag>jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/01/23/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B8%80)Spring%20Mvc%E4%BB%8B%E7%BB%8D/</loc>
-    <lastmod>2019-02-26T12:02:32.502Z</lastmod>
-    <data>
-        <display>
-        <title>Spring Mvc源码(一)Spring Mvc介绍</title>
-        <pubTime>2019-01-23T11:59:44.000Z</pubTime>
-        
-        <tag>spring mvc</tag>
-         
-        <tag>spring</tag>
          
          
            
@@ -2894,26 +3046,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/10/30/backend/framework/spring/spring-cloud/SpringBootMaven%E4%B8%ADparent%E9%97%AE%E9%A2%98/</loc>
-    <lastmod>2018-10-31T13:59:45.129Z</lastmod>
-    <data>
-        <display>
-        <title>SpringBoot Maven中parent问题</title>
-        <pubTime>2018-10-30T08:07:12.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/10/23/backend/framework/spring/spring-cloud/%E7%BD%91%E5%85%B3%E6%9C%8D%E5%8A%A1Zuul/</loc>
     <lastmod>2018-10-23T13:25:14.276Z</lastmod>
     <data>
@@ -3000,26 +3132,6 @@
         <display>
         <title>服务治理Eureka</title>
         <pubTime>2018-10-15T14:07:12.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/10/15/backend/framework/spring/spring-cloud/Springboot%E6%9E%84%E5%BB%BA%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
-    <lastmod>2018-10-15T14:19:52.882Z</lastmod>
-    <data>
-        <display>
-        <title>Springboot构建微服务</title>
-        <pubTime>2018-10-15T13:07:12.000Z</pubTime>
         
         <tag>java</tag>
          
