@@ -4,8 +4,374 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E5%85%AB)Zuul%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/</loc>
-    <lastmod>2019-08-18T03:39:44.011Z</lastmod>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%BA%94)%E9%9B%86%E6%88%90Consul%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E4%BA%8C/</loc>
+    <lastmod>2019-08-27T13:48:07.044Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(五)集成Consul源码分析之执行流程二</title>
+        <pubTime>2019-08-06T16:02:03.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E5%9B%9B)Spring%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B9%8BLifecycle/</loc>
+    <lastmod>2019-08-27T13:02:39.429Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二四)Spring生命周期之Lifecycle</title>
+        <pubTime>2019-07-01T15:02:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E5%9B%9B)%E9%9B%86%E6%88%90Consul%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E4%B8%80/</loc>
+    <lastmod>2019-08-27T12:55:35.122Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(四)集成Consul源码分析之执行流程一</title>
+        <pubTime>2019-08-06T16:02:02.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/18/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BAbstractBeanFactory%E7%B1%BBcreateBean%E6%96%B9%E6%B3%95/</loc>
+    <lastmod>2019-08-25T04:32:57.913Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法</title>
+        <pubTime>2019-06-18T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%B8%89)%E9%9B%86%E6%88%90Consul%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
+    <lastmod>2019-08-24T06:27:43.004Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(三)集成Consul源码分析之初始化</title>
+        <pubTime>2019-08-06T16:02:01.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E9%9B%B6)SpringCloudNetflix/</loc>
+    <lastmod>2019-08-24T04:16:29.059Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(零)SpringCloudNetflix</title>
+        <pubTime>2019-08-06T16:00:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%BA%8C)%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83Consul/</loc>
+    <lastmod>2019-08-24T04:16:28.892Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(二)注册中心Consul</title>
+        <pubTime>2019-08-06T16:02:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/05/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C)%E8%A3%85%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6Resource/</loc>
+    <lastmod>2019-08-24T03:41:55.549Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二)装载配置文件Resource</title>
+        <pubTime>2019-05-12T15:00:44.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/05/11/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%80)%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0Spring/</loc>
+    <lastmod>2019-08-24T03:40:56.060Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(一)为什么要学习Spring</title>
+        <pubTime>2019-05-11T15:02:44.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E5%9B%9B)@EnableAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2019-08-24T03:28:43.697Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(四)@EnableAutoConfiguration自动配置</title>
+        <pubTime>2019-08-05T16:04:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B8%80)Spring%20Mvc%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2019-08-22T13:06:22.447Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(一)Spring Mvc介绍</title>
+        <pubTime>2019-08-02T16:01:00.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1Ribbon%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2019-08-22T13:00:30.897Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud()负载均衡Ribbon源码分析</title>
+        <pubTime>2019-08-06T16:03:01.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1Ribbon%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2019-08-22T13:00:30.880Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(四)负载均衡Ribbon介绍</title>
+        <pubTime>2019-08-06T16:03:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()%E7%BD%91%E5%85%B3%E6%9C%8D%E5%8A%A1Zuul/</loc>
+    <lastmod>2019-08-22T13:00:30.876Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(六)网关服务Zuul</title>
+        <pubTime>2019-08-06T16:06:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%B8%80)%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86Eureka/</loc>
+    <lastmod>2019-08-22T13:00:30.872Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(一)服务治理Eureka</title>
+        <pubTime>2019-08-06T16:01:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()%E6%9C%8D%E5%8A%A1%E5%AE%B9%E9%94%99%E4%BF%9D%E6%8A%A4Hystrix/</loc>
+    <lastmod>2019-08-22T13:00:30.869Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(四)服务容错保护Hystrix</title>
+        <pubTime>2019-08-06T16:04:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%9C%8D%E5%8A%A1%E8%B0%83%E7%94%A8Feign/</loc>
+    <lastmod>2019-08-22T13:00:30.866Z</lastmod>
+    <data>
+        <display>
+        <title>SpringCloud(五)声明式服务调用Feign</title>
+        <pubTime>2019-08-06T16:05:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Cloud</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()Zuul%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/</loc>
+    <lastmod>2019-08-22T13:00:30.863Z</lastmod>
     <data>
         <display>
         <title>SpringCloud(八)Zuul工作原理源码分析之执行流程</title>
@@ -26,8 +392,8 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%B8%83)Zuul%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
-    <lastmod>2019-08-18T02:08:31.180Z</lastmod>
+    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud()Zuul%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
+    <lastmod>2019-08-22T13:00:30.856Z</lastmod>
     <data>
         <display>
         <title>SpringCloud(七)Zuul工作原理源码分析之初始化</title>
@@ -63,50 +429,6 @@
            
              
               <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E5%85%AD)%E7%BD%91%E5%85%B3%E6%9C%8D%E5%8A%A1Zuul/</loc>
-    <lastmod>2019-08-18T01:50:32.843Z</lastmod>
-    <data>
-        <display>
-        <title>SpringCloud(六)网关服务Zuul</title>
-        <pubTime>2019-08-06T16:06:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Cloud</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/SpringBoot(%E5%9B%9B)@EnableAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/</loc>
-    <lastmod>2019-08-18T01:50:32.825Z</lastmod>
-    <data>
-        <display>
-        <title>SpringBoot(四)@EnableAutoConfiguration自动配置</title>
-        <pubTime>2019-08-05T16:04:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Boot</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
           
         </display>
     </data>
@@ -415,138 +737,6 @@
            
              
               <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%B8%80)Spring%20Mvc%E4%BB%8B%E7%BB%8D/</loc>
-    <lastmod>2019-08-12T13:33:08.895Z</lastmod>
-    <data>
-        <display>
-        <title>Spring Mvc源码(一)Spring Mvc介绍</title>
-        <pubTime>2019-08-02T16:01:00.000Z</pubTime>
-        
-        <tag>spring mvc</tag>
-         
-        <tag>spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="服务器" url="http://www.songshuiyang.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E5%9B%9B)%E6%9C%8D%E5%8A%A1%E5%AE%B9%E9%94%99%E4%BF%9D%E6%8A%A4Hystrix/</loc>
-    <lastmod>2019-08-12T13:33:08.886Z</lastmod>
-    <data>
-        <display>
-        <title>SpringCloud(四)服务容错保护Hystrix</title>
-        <pubTime>2019-08-06T16:04:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Cloud</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%BA%94)%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%9C%8D%E5%8A%A1%E8%B0%83%E7%94%A8Feign/</loc>
-    <lastmod>2019-08-12T13:33:08.880Z</lastmod>
-    <data>
-        <display>
-        <title>SpringCloud(五)声明式服务调用Feign</title>
-        <pubTime>2019-08-06T16:05:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Cloud</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%BA%8C)%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83Consul/</loc>
-    <lastmod>2019-08-12T13:33:08.877Z</lastmod>
-    <data>
-        <display>
-        <title>SpringCloud(二)注册中心Consul</title>
-        <pubTime>2019-08-06T16:02:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Cloud</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%B8%89)%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1Ribbon/</loc>
-    <lastmod>2019-08-12T13:33:08.874Z</lastmod>
-    <data>
-        <display>
-        <title>SpringCloud(三)负载均衡Ribbon</title>
-        <pubTime>2019-08-06T16:03:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Cloud</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/SpringCloud(%E4%B8%80)%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86Eureka/</loc>
-    <lastmod>2019-08-12T13:33:08.870Z</lastmod>
-    <data>
-        <display>
-        <title>SpringCloud(一)服务治理Eureka</title>
-        <pubTime>2019-08-06T16:01:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Cloud</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
           
         </display>
     </data>
@@ -1300,26 +1490,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/06/18/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BAbstractBeanFactory%E7%B1%BBcreateBean%E6%96%B9%E6%B3%95/</loc>
-    <lastmod>2019-06-24T15:43:33.837Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法</title>
-        <pubTime>2019-06-18T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/07/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%89%E4%B8%80)ApplicationContext%E5%88%86%E6%9E%90/</loc>
     <lastmod>2019-06-24T15:36:10.865Z</lastmod>
     <data>
@@ -1462,26 +1632,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/05/11/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%80)%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0Spring/</loc>
-    <lastmod>2019-06-22T01:36:27.958Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(一)为什么要学习Spring</title>
-        <pubTime>2019-05-11T15:02:44.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/04/01/backend/server/JavaEE%E6%9C%8D%E5%8A%A1%E5%99%A8/%E9%AB%98%E5%B9%B6%E5%8F%91/</loc>
     <lastmod>2019-06-20T15:18:42.336Z</lastmod>
     <data>
@@ -1608,26 +1758,6 @@
         <display>
         <title>Spring系列(三)Bean标签BeanDefinition</title>
         <pubTime>2019-06-08T08:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="server" url="http://www.songshuiyang.com/categories/server/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/05/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C)%E8%A3%85%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6Resource/</loc>
-    <lastmod>2019-06-12T15:15:34.336Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(二)装载配置文件Resource</title>
-        <pubTime>2019-05-12T15:00:44.000Z</pubTime>
         
         <tag>Spring</tag>
          
@@ -4567,9 +4697,9 @@
         <title>解决CSS和JS文件的客户端缓存问题</title>
         <pubTime>2018-02-10T03:48:12.000Z</pubTime>
         
-        <tag>css</tag>
-         
         <tag>js</tag>
+         
+        <tag>css</tag>
          
          
            
