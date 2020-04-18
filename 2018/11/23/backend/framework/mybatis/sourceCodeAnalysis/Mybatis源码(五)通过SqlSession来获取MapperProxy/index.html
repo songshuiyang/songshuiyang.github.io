@@ -1,1 +1,684 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>Mybatis源码(五)通过SqlSession来获取Mapper的代理类 | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="mybatis"><meta name="description" content="前言有了SqlSession 这个类之后，就可以通过sqlSession.getMapper(UserMapper.class);来获取UserMapper了12345678910// 读取配置文件File file = new File(&quot;src/test/java/resources/mybatis-config.xml&quot;);InputStream inputStream = new File"><meta name="keywords" content="mybatis"><meta property="og:type" content="article"><meta property="og:title" content="Mybatis源码(五)通过SqlSession来获取Mapper的代理类"><meta property="og:url" content="http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="前言有了SqlSession 这个类之后，就可以通过sqlSession.getMapper(UserMapper.class);来获取UserMapper了12345678910// 读取配置文件File file = new File(&quot;src/test/java/resources/mybatis-config.xml&quot;);InputStream inputStream = new File"><meta property="og:locale" content="default"><meta property="og:image" content="http://www.songshuiyang.com/images/server/mybatis/mapper.png"><meta property="og:updated_time" content="2018-11-24T03:08:39.809Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Mybatis源码(五)通过SqlSession来获取Mapper的代理类"><meta name="twitter:description" content="前言有了SqlSession 这个类之后，就可以通过sqlSession.getMapper(UserMapper.class);来获取UserMapper了12345678910// 读取配置文件File file = new File(&quot;src/test/java/resources/mybatis-config.xml&quot;);InputStream inputStream = new File"><meta name="twitter:image" content="http://www.songshuiyang.com/images/server/mybatis/mapper.png"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">Mybatis源码(五)通过SqlSession来获取Mapper的代理类</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">Mybatis源码(五)通过SqlSession来获取Mapper的代理类</h1><h5 class="subtitle"> <time datetime="2018-11-23T02:10:44.000Z" itemprop="datePublished" class="page-time">2018-11-23</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/服务器/">服务器</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#获取Mapper"><span class="post-toc-number">2.</span> <span class="post-toc-text">获取Mapper</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#时序图"><span class="post-toc-number">3.</span> <span class="post-toc-text">时序图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol></nav></aside><article id="post-backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">Mybatis源码(五)通过SqlSession来获取Mapper的代理类</h1><div class="post-meta"> <time class="post-time" title="2018-11-23 10:10:44" datetime="2018-11-23T02:10:44.000Z" itemprop="datePublished">2018-11-23</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/服务器/">服务器</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有了SqlSession 这个类之后，就可以通过<code>sqlSession.getMapper(UserMapper.class);</code>来获取<code>UserMapper</code>了<br></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取配置文件</span></span><br><span class="line">File file = <span class="keyword">new</span> File(<span class="string">"src/test/java/resources/mybatis-config.xml"</span>);</span><br><span class="line">InputStream inputStream = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line"><span class="comment">// 构建SqlSessionFactory</span></span><br><span class="line">SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"><span class="comment">// 得到SqlSession</span></span><br><span class="line">SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line"><span class="comment">// 得到Mapper</span></span><br><span class="line">UserMapper userMapper = sqlSession.getMapper(UserMapper.class);</span><br><span class="line">System.out.println(userMapper.selectByPrimaryKey(<span class="number">1</span>));</span><br></pre></td></tr></table></figure><p></p><h2 id="获取Mapper"><a href="#获取Mapper" class="headerlink" title="获取Mapper"></a>获取Mapper</h2><ul><li><p>查看代码又可以发现 Configuration 这个类的影子，哪里都有它的影子，当然因为Mapper的映射关系数据存在这里</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 最后会去调用MapperRegistry.getMapper</span></span><br><span class="line">  <span class="keyword">return</span> configuration.&lt;T&gt;getMapper(type, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>继续跟进 <code>configuration.&lt;T&gt;getMapper(type, this);</code> 方法，进入到Configuration 类中，可以发现是MapperRegistry 类维护了Mapper的映射关系</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> mapperRegistry.getMapper(type, sqlSession);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>继续跟进<code>mapperRegistry.getMapper(type, sqlSession);</code> 方法，进入到 MapperRegistry 类中，可以看到里面的映射关系就是用<code>Map&lt;Class&lt;?&gt;, MapperProxyFactory&lt;?&gt;&gt; knownMappers</code> 一个Map来存放，Key是 Class对象，Value就是<code>MapperProxyFactory</code> 是Mapper代理类的生成工厂</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射器注册机</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Lasse Voss</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MapperRegistry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Configuration config;</span><br><span class="line">  <span class="comment">// 将已经添加的映射都放入HashMap</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, MapperProxyFactory&lt;?&gt;&gt; knownMappers = <span class="keyword">new</span> HashMap&lt;Class&lt;?&gt;, MapperProxyFactory&lt;?&gt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MapperRegistry</span><span class="params">(Configuration config)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.config = config;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="comment">// 返回代理类</span></span><br><span class="line">  <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> MapperProxyFactory&lt;T&gt; mapperProxyFactory = (MapperProxyFactory&lt;T&gt;) knownMappers.get(type);</span><br><span class="line">    <span class="keyword">if</span> (mapperProxyFactory == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Type "</span> + type + <span class="string">" is not known to the MapperRegistry."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> mapperProxyFactory.newInstance(sqlSession);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Error getting mapper instance. Cause: "</span> + e, e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">boolean</span> <span class="title">hasMapper</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> knownMappers.containsKey(type);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 看一下如何添加一个映射</span></span><br><span class="line">  <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">addMapper</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// mapper必须是接口！才会添加</span></span><br><span class="line">    <span class="keyword">if</span> (type.isInterface()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (hasMapper(type)) &#123;</span><br><span class="line">        <span class="comment">// 如果重复添加了，报错</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Type "</span> + type + <span class="string">" is already known to the MapperRegistry."</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">boolean</span> loadCompleted = <span class="keyword">false</span>;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        knownMappers.put(type, <span class="keyword">new</span> MapperProxyFactory&lt;T&gt;(type));</span><br><span class="line">        <span class="comment">// It's important that the type is added before the parser is run</span></span><br><span class="line">        <span class="comment">// otherwise the binding may automatically be attempted by the</span></span><br><span class="line">        <span class="comment">// mapper parser. If the type is already known, it won't try.</span></span><br><span class="line">        MapperAnnotationBuilder parser = <span class="keyword">new</span> MapperAnnotationBuilder(config, type);</span><br><span class="line">        parser.parse();</span><br><span class="line">        loadCompleted = <span class="keyword">true</span>;</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// 如果加载过程中出现异常需要再将这个mapper从mybatis中删除,这种方式比较丑陋吧，难道是不得已而为之？</span></span><br><span class="line">        <span class="keyword">if</span> (!loadCompleted) &#123;</span><br><span class="line">          knownMappers.remove(type);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 3.2.2</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> Collection&lt;Class&lt;?&gt;&gt; getMappers() &#123;</span><br><span class="line">    <span class="keyword">return</span> Collections.unmodifiableCollection(knownMappers.keySet());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 3.2.2</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addMappers</span><span class="params">(String packageName, Class&lt;?&gt; superType)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 查找包下所有是superType的类</span></span><br><span class="line">    ResolverUtil&lt;Class&lt;?&gt;&gt; resolverUtil = <span class="keyword">new</span> ResolverUtil&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">    resolverUtil.find(<span class="keyword">new</span> ResolverUtil.IsA(superType), packageName);</span><br><span class="line">    Set&lt;Class&lt;? extends Class&lt;?&gt;&gt;&gt; mapperSet = resolverUtil.getClasses();</span><br><span class="line">    <span class="keyword">for</span> (Class&lt;?&gt; mapperClass : mapperSet) &#123;</span><br><span class="line">      addMapper(mapperClass);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 3.2.2</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="comment">// 查找包下所有类</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addMappers</span><span class="params">(String packageName)</span> </span>&#123;</span><br><span class="line">    addMappers(packageName, Object.class);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>查看该类可以发现 knownMappers 是通过 addMapper()方法来添加的，那么addMapper()是哪里调用的呢，大家还记得之前的<code>XMLConfigBuilder</code>这个类吗，就是这里来解析mapper节点的</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">"resources/mapper/UserMapper.xml"</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br></pre></td></tr></table></figure></li></ul><p>回到XMLConfigBuilder类可以找到这个方法<code>mapperElement</code>，可以发现是通过 <code>configuration.addMappers(mapperPackage);</code> 及<code>configuration.addMapper(mapperInterface);</code> 来添加mapper映射的<br></p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">private void mapperElement(XNode parent) throws Exception &#123;</span><br><span class="line">  if (parent != null) &#123;</span><br><span class="line">    for (XNode child : parent.getChildren()) &#123;</span><br><span class="line">      if ("package".equals(child.getName())) &#123;</span><br><span class="line">        //10.4自动扫描包下所有映射器</span><br><span class="line">        String mapperPackage = child.getStringAttribute("name");</span><br><span class="line">        configuration.addMappers(mapperPackage);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        String resource = child.getStringAttribute("resource");</span><br><span class="line">        String url = child.getStringAttribute("url");</span><br><span class="line">        String mapperClass = child.getStringAttribute("class");</span><br><span class="line">        if (resource != null &amp;&amp; url == null &amp;&amp; mapperClass == null) &#123;</span><br><span class="line">          //10.1使用类路径</span><br><span class="line">          ErrorContext.instance().resource(resource);</span><br><span class="line">          InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">          //映射器比较复杂，调用XMLMapperBuilder</span><br><span class="line">          //注意在for循环里每个mapper都重新new一个XMLMapperBuilder，来解析</span><br><span class="line">          XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());</span><br><span class="line">          mapperParser.parse();</span><br><span class="line">        &#125; else if (resource == null &amp;&amp; url != null &amp;&amp; mapperClass == null) &#123;</span><br><span class="line">          //10.2使用绝对url路径</span><br><span class="line">          ErrorContext.instance().resource(url);</span><br><span class="line">          InputStream inputStream = Resources.getUrlAsStream(url);</span><br><span class="line">          //映射器比较复杂，调用XMLMapperBuilder</span><br><span class="line">          XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());</span><br><span class="line">          mapperParser.parse();</span><br><span class="line">        &#125; else if (resource == null &amp;&amp; url == null &amp;&amp; mapperClass != null) &#123;</span><br><span class="line">          //10.3使用java类名</span><br><span class="line">          Class&lt;?&gt; mapperInterface = Resources.classForName(mapperClass);</span><br><span class="line">          //直接把这个映射加入配置</span><br><span class="line">          configuration.addMapper(mapperInterface);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p></p><ul><li><p>回归主线，在 <code>MapperRegistry</code> 类的 <code>getMapper</code> 方法，可以发现是通过<code>mapperProxyFactory.newInstance(sqlSession);</code> 是通过Mapper代理类工厂来获取Mapper的</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回代理类</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> MapperProxyFactory&lt;T&gt; mapperProxyFactory = (MapperProxyFactory&lt;T&gt;) knownMappers.get(type);</span><br><span class="line">  <span class="keyword">if</span> (mapperProxyFactory == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Type "</span> + type + <span class="string">" is not known to the MapperRegistry."</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> mapperProxyFactory.newInstance(sqlSession);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Error getting mapper instance. Cause: "</span> + e, e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>继续跟进 <code>mapperProxyFactory.newInstance(sqlSession)</code> 进入到 <code>MapperProxyFactory</code>类中，没错就是在这里生成代理Mapper的，是用JDK自带的动态代理生成映射器</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射器代理工厂</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Lasse Voss</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MapperProxyFactory</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; mapperInterface;</span><br><span class="line">  <span class="keyword">private</span> Map&lt;Method, MapperMethod&gt; methodCache = <span class="keyword">new</span> ConcurrentHashMap&lt;Method, MapperMethod&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MapperProxyFactory</span><span class="params">(Class&lt;T&gt; mapperInterface)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mapperInterface = mapperInterface;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Class&lt;T&gt; <span class="title">getMapperInterface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mapperInterface;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Map&lt;Method, MapperMethod&gt; <span class="title">getMethodCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> methodCache;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> T <span class="title">newInstance</span><span class="params">(MapperProxy&lt;T&gt; mapperProxy)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 用JDK自带的动态代理生成映射器</span></span><br><span class="line">    <span class="keyword">return</span> (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), <span class="keyword">new</span> Class[] &#123; mapperInterface &#125;, mapperProxy);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> T <span class="title">newInstance</span><span class="params">(SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> MapperProxy&lt;T&gt; mapperProxy = <span class="keyword">new</span> MapperProxy&lt;T&gt;(sqlSession, mapperInterface, methodCache);</span><br><span class="line">    <span class="keyword">return</span> newInstance(mapperProxy);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>看一下<code>MapperProxy.java</code> 的真面目，这就是真正的实现类，重点是 <code>mapperMethod.execute(sqlSession, args);</code> 这一句，这是真正的执行者</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射器代理，代理模式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MapperProxy</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">InvocationHandler</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">6424540398559729838L</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> SqlSession sqlSession;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; mapperInterface;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Method, MapperMethod&gt; methodCache;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MapperProxy</span><span class="params">(SqlSession sqlSession, Class&lt;T&gt; mapperInterface, Map&lt;Method, MapperMethod&gt; methodCache)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.sqlSession = sqlSession;</span><br><span class="line">    <span class="keyword">this</span>.mapperInterface = mapperInterface;</span><br><span class="line">    <span class="keyword">this</span>.methodCache = methodCache;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="comment">// 代理以后，所有Mapper的方法调用时，都会调用这个invoke方法</span></span><br><span class="line">    <span class="comment">// 并不是任何一个方法都需要执行调用代理对象进行执行，如果这个方法是Object中通用的方法（toString、hashCode等）无需执行</span></span><br><span class="line">    <span class="keyword">if</span> (Object.class.equals(method.getDeclaringClass())) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>, args);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        <span class="keyword">throw</span> ExceptionUtil.unwrapThrowable(t);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 这里优化了，去缓存中找MapperMethod</span></span><br><span class="line">    <span class="keyword">final</span> MapperMethod mapperMethod = cachedMapperMethod(method);</span><br><span class="line">    <span class="comment">// 真正的执行方法</span></span><br><span class="line">    <span class="keyword">return</span> mapperMethod.execute(sqlSession, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 去缓存中找MapperMethod</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> MapperMethod <span class="title">cachedMapperMethod</span><span class="params">(Method method)</span> </span>&#123;</span><br><span class="line">    MapperMethod mapperMethod = methodCache.get(method);</span><br><span class="line">    <span class="keyword">if</span> (mapperMethod == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 找不到才去new</span></span><br><span class="line">      mapperMethod = <span class="keyword">new</span> MapperMethod(mapperInterface, method, sqlSession.getConfiguration());</span><br><span class="line">      methodCache.put(method, mapperMethod);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mapperMethod;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul><h2 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h2><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/mybatis/mapper.png" alt="image" title=""></div><div class="image-caption">image</div></figure><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul><li>Mapper接口的实现类是Mybatis生成的代理类<code>MapperProxy.java</code>，所有接口的代理类是通过<code>MapperProxyFactory.java</code> 方法来生成的，这里可以看到Mybatis的高明之处就是所有Mapper接口的代理类都是通过<code>MapperProxy.java</code>来实现</li><li>因为是Mapper接口，所以Mybatis代理类的实现运用的是JDK的动态代理</li></ul></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(六)使用MapperProxy来执行方法/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">Mybatis源码(六)使用MapperProxy来执行方法</h4></a></div><div class="waves-block waves-effect next"><a href="/2018/11/22/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(四)构建SqlSession/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">Mybatis源码(四)构建SqlSession</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2019</span> <span><a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEjElEQVR42u3awW7jOgwF0Pz/T3eAh7foYtLeSzqYyDleFUlsyUcFRFJ8POLr67/r+9/fr+Q3P9/1/ZP2evbkZ8/fjIUJEyZMmE5kyl/m2TDJFJ99+/OS/Px5+4R2OTFhwoQJ052Y8scl2207lWR58tfOcQtoTJgwYcL0AUz5Zj+7K9nIk807T7MxYcKECROmZIBZcpsXW/MlScgwYcKECdNnMr0iNc052nFfESJcVgvHhAkTJkxvxjRr3LnH3xdfmDBhwoTpzZi+yuuqJphZybj95f59/38+JkyYMGE6lilvdskT4GubcjZF52sPODFhwoQJ0/2Y2rLvpuQ6K7buly3/BBMmTJgwncs0CwvyY8v8hZPR8zadPOzAhAkTJkyfzDTb2tvibB5wPP7thQkTJkyYjmLap6yzQ8fZoWkbNOT3/hL6YMKECROmWzPlw+Sl4Q16csyZH4hGCTMmTJgwYTqWaTOh/Nt9Ettu6lcVlH9p4sGECRMmTG/PlDflbF4jb5G5NkCZBRNPO5swYcKECdOBTG0jyz76aI8t85nMEvW2ZIwJEyZMmM5iah+3DxSST9oGo81voiQfEyZMmDAdy/Tztrp5aN6Oky9YPs9NYl8cZGLChAkTprdn2qeU7eFi/hr73+dHm78EKJgwYcKE6Vim9lVnrTNJWJCUeq/tV5oFHJgwYcKE6USm2TZ/Lc0MLk+w80QXEyZMmDDdj2nW3TMr4ObbfL617482i2XGhAkTJkyHM7XHfpvWn2Qbfl1i3JatMWHChAnTiUz58JsS7Wwz3ocFm6DkL7UBTJgwYcJ0LFMbENTDrMu+VxWO8+CjyIkxYcKECdMhTLPNu916X1HknT25KGFjwoQJE6ZbM+UNNEnJON/m6yp1kIq3BWhMmDBhwnQ607VBwGyDTwrEbZtsfjiavyMmTJgwYTqX6Su+ku28PWLcjDLb8mcBCiZMmDBhOpGpbfqcJYr7ZqCcbP/JI58QJkyYMGF6e6Y8Hd0fW26WoV2AKA5KDjIxYcKECdPhTLNyas46Cz5mDaZt0FA8GRMmTJgwHcvUEsxS0Ly8e22BeHMI+jTIwIQJEyZMRzHl092/ZDv1tgEoP0zNwxpMmDBhwnQ60yytbVPfa0vGLV9+7yMfABMmTJgwHcLUFl6vOtrMm4GSpdqEI1FTESZMmDBhuh3TLCBot/M8nd6EFHlYUBR5MWHChAnTUUxF28qodDsrwm6OM2eHr09HxIQJEyZMt2BqU808gXwFejvzNvhYDYYJEyZMmN6GaXNy105uE3bMZjJLfaMFxoQJEyZMhzDNSquzY8ikvSZPR/NEd/Zt8V+ACRMmTJjemGmWjraTbu/Kx9o/P19aTJgwYcJ0LlPbIrPZ1JNy8CblnhWCo4AAEyZMmDAdzjSrDbctMpuoJG8z2oz49C5MmDBhwvQBTMkk2s8T9GQB2pnXh6aYMGHChOljmPIDy7ac+rW42lHyd8SECRMmTPdgmm3zszJxXiBuC7XtuxRJNSZMmDBhOpZpVmCdtc60SfJmC8+JZ0VnTJgwYcL09kx/AMpzJKUtQdZhAAAAAElFTkSuQmCC" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mybatis源码(五)通过SqlSession来获取Mapper的代理类 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="mybatis">
+    <meta name="description" content="前言有了SqlSession 这个类之后，就可以通过sqlSession.getMapper(UserMapper.class);来获取UserMapper了 12345678910// 读取配置文件File file = new File(&quot;src/test/java/resources/mybatis-config.xml&quot;);InputStream inputStream = new Fil">
+<meta name="keywords" content="mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis源码(五)通过SqlSession来获取Mapper的代理类">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言有了SqlSession 这个类之后，就可以通过sqlSession.getMapper(UserMapper.class);来获取UserMapper了 12345678910// 读取配置文件File file = new File(&quot;src/test/java/resources/mybatis-config.xml&quot;);InputStream inputStream = new Fil">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mybatis/mapper.png">
+<meta property="og:updated_time" content="2019-12-05T12:19:35.208Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mybatis源码(五)通过SqlSession来获取Mapper的代理类">
+<meta name="twitter:description" content="前言有了SqlSession 这个类之后，就可以通过sqlSession.getMapper(UserMapper.class);来获取UserMapper了 12345678910// 读取配置文件File file = new File(&quot;src/test/java/resources/mybatis-config.xml&quot;);InputStream inputStream = new Fil">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/mybatis/mapper.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mybatis源码(五)通过SqlSession来获取Mapper的代理类</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mybatis源码(五)通过SqlSession来获取Mapper的代理类</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-11-23T02:10:44.000Z" itemprop="datePublished" class="page-time">
+  2018-11-23
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Mybatis/">Mybatis</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#获取Mapper"><span class="post-toc-number">2.</span> <span class="post-toc-text">获取Mapper</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#时序图"><span class="post-toc-number">3.</span> <span class="post-toc-text">时序图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mybatis源码(五)通过SqlSession来获取Mapper的代理类</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-11-23 10:10:44" datetime="2018-11-23T02:10:44.000Z" itemprop="datePublished">2018-11-23</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Mybatis/">Mybatis</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有了SqlSession 这个类之后，就可以通过<code>sqlSession.getMapper(UserMapper.class);</code>来获取<code>UserMapper</code>了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取配置文件</span></span><br><span class="line">File file = <span class="keyword">new</span> File(<span class="string">"src/test/java/resources/mybatis-config.xml"</span>);</span><br><span class="line">InputStream inputStream = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line"><span class="comment">// 构建SqlSessionFactory</span></span><br><span class="line">SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"><span class="comment">// 得到SqlSession</span></span><br><span class="line">SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line"><span class="comment">// 得到Mapper</span></span><br><span class="line">UserMapper userMapper = sqlSession.getMapper(UserMapper.class);</span><br><span class="line">System.out.println(userMapper.selectByPrimaryKey(<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="获取Mapper"><a href="#获取Mapper" class="headerlink" title="获取Mapper"></a>获取Mapper</h2><ul>
+<li>查看代码又可以发现 Configuration 这个类的影子，哪里都有它的影子，当然因为Mapper的映射关系数据存在这里 </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 最后会去调用MapperRegistry.getMapper</span></span><br><span class="line">  <span class="keyword">return</span> configuration.&lt;T&gt;getMapper(type, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续跟进 <code>configuration.&lt;T&gt;getMapper(type, this);</code> 方法，进入到Configuration 类中，可以发现是MapperRegistry 类维护了Mapper的映射关系</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> mapperRegistry.getMapper(type, sqlSession);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续跟进<code>mapperRegistry.getMapper(type, sqlSession);</code> 方法，进入到 MapperRegistry 类中，可以看到里面的映射关系就是用<code>Map&lt;Class&lt;?&gt;, MapperProxyFactory&lt;?&gt;&gt; knownMappers</code> 一个Map来存放，Key是 Class对象，Value就是<code>MapperProxyFactory</code> 是Mapper代理类的生成工厂</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射器注册机</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Lasse Voss</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MapperRegistry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Configuration config;</span><br><span class="line">  <span class="comment">// 将已经添加的映射都放入HashMap</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, MapperProxyFactory&lt;?&gt;&gt; knownMappers = <span class="keyword">new</span> HashMap&lt;Class&lt;?&gt;, MapperProxyFactory&lt;?&gt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MapperRegistry</span><span class="params">(Configuration config)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.config = config;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="comment">// 返回代理类</span></span><br><span class="line">  <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> MapperProxyFactory&lt;T&gt; mapperProxyFactory = (MapperProxyFactory&lt;T&gt;) knownMappers.get(type);</span><br><span class="line">    <span class="keyword">if</span> (mapperProxyFactory == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Type "</span> + type + <span class="string">" is not known to the MapperRegistry."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> mapperProxyFactory.newInstance(sqlSession);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Error getting mapper instance. Cause: "</span> + e, e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">boolean</span> <span class="title">hasMapper</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> knownMappers.containsKey(type);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 看一下如何添加一个映射</span></span><br><span class="line">  <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">addMapper</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// mapper必须是接口！才会添加</span></span><br><span class="line">    <span class="keyword">if</span> (type.isInterface()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (hasMapper(type)) &#123;</span><br><span class="line">        <span class="comment">// 如果重复添加了，报错</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Type "</span> + type + <span class="string">" is already known to the MapperRegistry."</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">boolean</span> loadCompleted = <span class="keyword">false</span>;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        knownMappers.put(type, <span class="keyword">new</span> MapperProxyFactory&lt;T&gt;(type));</span><br><span class="line">        <span class="comment">// It's important that the type is added before the parser is run</span></span><br><span class="line">        <span class="comment">// otherwise the binding may automatically be attempted by the</span></span><br><span class="line">        <span class="comment">// mapper parser. If the type is already known, it won't try.</span></span><br><span class="line">        MapperAnnotationBuilder parser = <span class="keyword">new</span> MapperAnnotationBuilder(config, type);</span><br><span class="line">        parser.parse();</span><br><span class="line">        loadCompleted = <span class="keyword">true</span>;</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// 如果加载过程中出现异常需要再将这个mapper从mybatis中删除,这种方式比较丑陋吧，难道是不得已而为之？</span></span><br><span class="line">        <span class="keyword">if</span> (!loadCompleted) &#123;</span><br><span class="line">          knownMappers.remove(type);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 3.2.2</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> Collection&lt;Class&lt;?&gt;&gt; getMappers() &#123;</span><br><span class="line">    <span class="keyword">return</span> Collections.unmodifiableCollection(knownMappers.keySet());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 3.2.2</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addMappers</span><span class="params">(String packageName, Class&lt;?&gt; superType)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 查找包下所有是superType的类</span></span><br><span class="line">    ResolverUtil&lt;Class&lt;?&gt;&gt; resolverUtil = <span class="keyword">new</span> ResolverUtil&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">    resolverUtil.find(<span class="keyword">new</span> ResolverUtil.IsA(superType), packageName);</span><br><span class="line">    Set&lt;Class&lt;? extends Class&lt;?&gt;&gt;&gt; mapperSet = resolverUtil.getClasses();</span><br><span class="line">    <span class="keyword">for</span> (Class&lt;?&gt; mapperClass : mapperSet) &#123;</span><br><span class="line">      addMapper(mapperClass);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@since</span> 3.2.2</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="comment">// 查找包下所有类</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addMappers</span><span class="params">(String packageName)</span> </span>&#123;</span><br><span class="line">    addMappers(packageName, Object.class);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看该类可以发现 knownMappers 是通过 addMapper()方法来添加的，那么addMapper()是哪里调用的呢，大家还记得之前的<code>XMLConfigBuilder</code>这个类吗，就是这里来解析mapper节点的</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">"resources/mapper/UserMapper.xml"</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>回到XMLConfigBuilder类可以找到这个方法<code>mapperElement</code>，可以发现是通过 <code>configuration.addMappers(mapperPackage);</code> 及<code>configuration.addMapper(mapperInterface);</code> 来添加mapper映射的</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">private void mapperElement(XNode parent) throws Exception &#123;</span><br><span class="line">  if (parent != null) &#123;</span><br><span class="line">    for (XNode child : parent.getChildren()) &#123;</span><br><span class="line">      if ("package".equals(child.getName())) &#123;</span><br><span class="line">        //10.4自动扫描包下所有映射器</span><br><span class="line">        String mapperPackage = child.getStringAttribute("name");</span><br><span class="line">        configuration.addMappers(mapperPackage);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        String resource = child.getStringAttribute("resource");</span><br><span class="line">        String url = child.getStringAttribute("url");</span><br><span class="line">        String mapperClass = child.getStringAttribute("class");</span><br><span class="line">        if (resource != null &amp;&amp; url == null &amp;&amp; mapperClass == null) &#123;</span><br><span class="line">          //10.1使用类路径</span><br><span class="line">          ErrorContext.instance().resource(resource);</span><br><span class="line">          InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">          //映射器比较复杂，调用XMLMapperBuilder</span><br><span class="line">          //注意在for循环里每个mapper都重新new一个XMLMapperBuilder，来解析</span><br><span class="line">          XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());</span><br><span class="line">          mapperParser.parse();</span><br><span class="line">        &#125; else if (resource == null &amp;&amp; url != null &amp;&amp; mapperClass == null) &#123;</span><br><span class="line">          //10.2使用绝对url路径</span><br><span class="line">          ErrorContext.instance().resource(url);</span><br><span class="line">          InputStream inputStream = Resources.getUrlAsStream(url);</span><br><span class="line">          //映射器比较复杂，调用XMLMapperBuilder</span><br><span class="line">          XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());</span><br><span class="line">          mapperParser.parse();</span><br><span class="line">        &#125; else if (resource == null &amp;&amp; url == null &amp;&amp; mapperClass != null) &#123;</span><br><span class="line">          //10.3使用java类名</span><br><span class="line">          Class&lt;?&gt; mapperInterface = Resources.classForName(mapperClass);</span><br><span class="line">          //直接把这个映射加入配置</span><br><span class="line">          configuration.addMapper(mapperInterface);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>回归主线，在 <code>MapperRegistry</code> 类的  <code>getMapper</code> 方法，可以发现是通过<code>mapperProxyFactory.newInstance(sqlSession);</code> 是通过Mapper代理类工厂来获取Mapper的</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回代理类</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> MapperProxyFactory&lt;T&gt; mapperProxyFactory = (MapperProxyFactory&lt;T&gt;) knownMappers.get(type);</span><br><span class="line">  <span class="keyword">if</span> (mapperProxyFactory == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Type "</span> + type + <span class="string">" is not known to the MapperRegistry."</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> mapperProxyFactory.newInstance(sqlSession);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> BindingException(<span class="string">"Error getting mapper instance. Cause: "</span> + e, e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续跟进 <code>mapperProxyFactory.newInstance(sqlSession)</code> 进入到 <code>MapperProxyFactory</code>类中，没错就是在这里生成代理Mapper的，是用JDK自带的动态代理生成映射器</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射器代理工厂</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Lasse Voss</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MapperProxyFactory</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; mapperInterface;</span><br><span class="line">  <span class="keyword">private</span> Map&lt;Method, MapperMethod&gt; methodCache = <span class="keyword">new</span> ConcurrentHashMap&lt;Method, MapperMethod&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MapperProxyFactory</span><span class="params">(Class&lt;T&gt; mapperInterface)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mapperInterface = mapperInterface;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Class&lt;T&gt; <span class="title">getMapperInterface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mapperInterface;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Map&lt;Method, MapperMethod&gt; <span class="title">getMethodCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> methodCache;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> T <span class="title">newInstance</span><span class="params">(MapperProxy&lt;T&gt; mapperProxy)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 用JDK自带的动态代理生成映射器</span></span><br><span class="line">    <span class="keyword">return</span> (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), <span class="keyword">new</span> Class[] &#123; mapperInterface &#125;, mapperProxy);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> T <span class="title">newInstance</span><span class="params">(SqlSession sqlSession)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> MapperProxy&lt;T&gt; mapperProxy = <span class="keyword">new</span> MapperProxy&lt;T&gt;(sqlSession, mapperInterface, methodCache);</span><br><span class="line">    <span class="keyword">return</span> newInstance(mapperProxy);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>看一下<code>MapperProxy.java</code> 的真面目，这就是真正的实现类，这个类实现了<code>JDK</code>动态代理接口<code>InvocationHandler</code>，关注<code>invoke()</code>方法里面有一行是 <code>mapperMethod.execute(sqlSession, args);</code> 这一句，这是真正的执行者</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射器代理，代理模式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MapperProxy</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">InvocationHandler</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">6424540398559729838L</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> SqlSession sqlSession;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; mapperInterface;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Method, MapperMethod&gt; methodCache;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MapperProxy</span><span class="params">(SqlSession sqlSession, Class&lt;T&gt; mapperInterface, Map&lt;Method, MapperMethod&gt; methodCache)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.sqlSession = sqlSession;</span><br><span class="line">    <span class="keyword">this</span>.mapperInterface = mapperInterface;</span><br><span class="line">    <span class="keyword">this</span>.methodCache = methodCache;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="comment">// 代理以后，所有Mapper的方法调用时，都会调用这个invoke方法</span></span><br><span class="line">    <span class="comment">// 并不是任何一个方法都需要执行调用代理对象进行执行，如果这个方法是Object中通用的方法（toString、hashCode等）无需执行</span></span><br><span class="line">    <span class="keyword">if</span> (Object.class.equals(method.getDeclaringClass())) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>, args);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        <span class="keyword">throw</span> ExceptionUtil.unwrapThrowable(t);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 这里优化了，去缓存中找MapperMethod</span></span><br><span class="line">    <span class="keyword">final</span> MapperMethod mapperMethod = cachedMapperMethod(method);</span><br><span class="line">    <span class="comment">// 真正的执行方法</span></span><br><span class="line">    <span class="keyword">return</span> mapperMethod.execute(sqlSession, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 去缓存中找MapperMethod</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> MapperMethod <span class="title">cachedMapperMethod</span><span class="params">(Method method)</span> </span>&#123;</span><br><span class="line">    MapperMethod mapperMethod = methodCache.get(method);</span><br><span class="line">    <span class="keyword">if</span> (mapperMethod == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 找不到才去new</span></span><br><span class="line">      mapperMethod = <span class="keyword">new</span> MapperMethod(mapperInterface, method, sqlSession.getConfiguration());</span><br><span class="line">      methodCache.put(method, mapperMethod);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mapperMethod;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mybatis/mapper.png" alt="image" title="">
+                </div>
+                <div class="image-caption">image</div>
+            </figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>Mapper接口的实现类是Mybatis生成的代理类<code>MapperProxy.java</code>，所有接口的代理类是通过<code>MapperProxyFactory.java</code> 方法来生成的，这里可以看到Mybatis的高明之处就是所有Mapper接口的代理类都是通过<code>MapperProxy.java</code>来实现</li>
+<li>因为是Mapper接口，所以Mybatis代理类的实现运用的是JDK的动态代理</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(六)使用MapperProxy来执行方法/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mybatis源码(六)使用MapperProxy来执行方法</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/11/22/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(四)构建SqlSession/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mybatis源码(四)构建SqlSession</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&title=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mybatis源码(五)通过SqlSession来获取Mapper的代理类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/11/23/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(五)通过SqlSession来获取MapperProxy/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEjElEQVR42u3awW7jOgwF0Pz/T3eAh7foYtLeSzqYyDleFUlsyUcFRFJ8POLr67/r+9/fr+Q3P9/1/ZP2evbkZ8/fjIUJEyZMmE5kyl/m2TDJFJ99+/OS/Px5+4R2OTFhwoQJ052Y8scl2207lWR58tfOcQtoTJgwYcL0AUz5Zj+7K9nIk807T7MxYcKECROmZIBZcpsXW/MlScgwYcKECdNnMr0iNc052nFfESJcVgvHhAkTJkxvxjRr3LnH3xdfmDBhwoTpzZi+yuuqJphZybj95f59/38+JkyYMGE6lilvdskT4GubcjZF52sPODFhwoQJ0/2Y2rLvpuQ6K7buly3/BBMmTJgwncs0CwvyY8v8hZPR8zadPOzAhAkTJkyfzDTb2tvibB5wPP7thQkTJkyYjmLap6yzQ8fZoWkbNOT3/hL6YMKECROmWzPlw+Sl4Q16csyZH4hGCTMmTJgwYTqWaTOh/Nt9Ettu6lcVlH9p4sGECRMmTG/PlDflbF4jb5G5NkCZBRNPO5swYcKECdOBTG0jyz76aI8t85nMEvW2ZIwJEyZMmM5iah+3DxSST9oGo81voiQfEyZMmDAdy/Tztrp5aN6Oky9YPs9NYl8cZGLChAkTprdn2qeU7eFi/hr73+dHm78EKJgwYcKE6Vim9lVnrTNJWJCUeq/tV5oFHJgwYcKE6USm2TZ/Lc0MLk+w80QXEyZMmDDdj2nW3TMr4ObbfL617482i2XGhAkTJkyHM7XHfpvWn2Qbfl1i3JatMWHChAnTiUz58JsS7Wwz3ocFm6DkL7UBTJgwYcJ0LFMbENTDrMu+VxWO8+CjyIkxYcKECdMhTLPNu916X1HknT25KGFjwoQJE6ZbM+UNNEnJON/m6yp1kIq3BWhMmDBhwnQ607VBwGyDTwrEbZtsfjiavyMmTJgwYTqX6Su+ku28PWLcjDLb8mcBCiZMmDBhOpGpbfqcJYr7ZqCcbP/JI58QJkyYMGF6e6Y8Hd0fW26WoV2AKA5KDjIxYcKECdPhTLNyas46Cz5mDaZt0FA8GRMmTJgwHcvUEsxS0Ly8e22BeHMI+jTIwIQJEyZMRzHl092/ZDv1tgEoP0zNwxpMmDBhwnQ60yytbVPfa0vGLV9+7yMfABMmTJgwHcLUFl6vOtrMm4GSpdqEI1FTESZMmDBhuh3TLCBot/M8nd6EFHlYUBR5MWHChAnTUUxF28qodDsrwm6OM2eHr09HxIQJEyZMt2BqU808gXwFejvzNvhYDYYJEyZMmN6GaXNy105uE3bMZjJLfaMFxoQJEyZMhzDNSquzY8ikvSZPR/NEd/Zt8V+ACRMmTJjemGmWjraTbu/Kx9o/P19aTJgwYcJ0LlPbIrPZ1JNy8CblnhWCo4AAEyZMmDAdzjSrDbctMpuoJG8z2oz49C5MmDBhwvQBTMkk2s8T9GQB2pnXh6aYMGHChOljmPIDy7ac+rW42lHyd8SECRMmTPdgmm3zszJxXiBuC7XtuxRJNSZMmDBhOpZpVmCdtc60SfJmC8+JZ0VnTJgwYcL09kx/AMpzJKUtQdZhAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

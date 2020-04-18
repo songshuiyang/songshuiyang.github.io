@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>分布式-Zookeeper-基本命令 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="分布式,Zookeeper">
+    <meta name="description" content="前言 连接 ZooKeeper 服务 可以看出控制台打印出了很多信息，包括我们的主机名称、JDK 版本、操作系统等等。如果你成功看到这些信息，说明你成功连接到 ZooKeeper 服务。    12345678910111213141516171819202122D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin&amp;gt;zkCli.">
+<meta name="keywords" content="分布式,Zookeeper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式-Zookeeper-基本命令">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 连接 ZooKeeper 服务 可以看出控制台打印出了很多信息，包括我们的主机名称、JDK 版本、操作系统等等。如果你成功看到这些信息，说明你成功连接到 ZooKeeper 服务。    12345678910111213141516171819202122D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin&amp;gt;zkCli.">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-01-04T12:21:52.089Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式-Zookeeper-基本命令">
+<meta name="twitter:description" content="前言 连接 ZooKeeper 服务 可以看出控制台打印出了很多信息，包括我们的主机名称、JDK 版本、操作系统等等。如果你成功看到这些信息，说明你成功连接到 ZooKeeper 服务。    12345678910111213141516171819202122D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin&amp;gt;zkCli.">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">分布式-Zookeeper-基本命令</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">分布式-Zookeeper-基本命令</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-01T16:00:05.000Z" itemprop="datePublished" class="page-time">
+  2018-03-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分布式/">分布式</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Zookeeper-的-Java-客户端都有哪些？"><span class="post-toc-number">2.</span> <span class="post-toc-text">Zookeeper 的 Java 客户端都有哪些？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/distributed/zookeeper/分布式-Zookeeper-基本命令" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">分布式-Zookeeper-基本命令</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-02 00:00:05" datetime="2018-03-01T16:00:05.000Z" itemprop="datePublished">2018-03-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分布式/">分布式</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>连接 ZooKeeper 服务<ul>
+<li>可以看出控制台打印出了很多信息，包括我们的主机名称、JDK 版本、操作系统等等。如果你成功看到这些信息，说明你成功连接到 ZooKeeper 服务。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin&gt;zkCli.cmd  -server 127.0.0.1:2181</span><br><span class="line">Connecting to 127.0.0.1:2181</span><br><span class="line">2019-12-27 11:13:26,167 [myid:] - INFO  [main:Environment@100] - Client environment:zookeeper.version=3.4.5-1392090, built on 09/30/2012 17:52 GMT</span><br><span class="line">2019-12-27 11:13:26,170 [myid:] - INFO  [main:Environment@100] - Client environment:host.name=DESKTOP-DT6DIHG</span><br><span class="line">2019-12-27 11:13:26,171 [myid:] - INFO  [main:Environment@100] - Client environment:java.version=1.8.0_181</span><br><span class="line">2019-12-27 11:13:26,171 [myid:] - INFO  [main:Environment@100] - Client environment:java.vendor=Oracle Corporation</span><br><span class="line">2019-12-27 11:13:26,171 [myid:] - INFO  [main:Environment@100] - Client environment:java.home=C:\Program Files\Java\jre1.8.0_181</span><br><span class="line">2019-12-27 11:13:26,171 [myid:] - INFO  [main:Environment@100] - Client environment:java.class.path=D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\build\classes;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\build\lib\*;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\zookeeper-3.4.5.jar;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\lib\jline-0.9.94.jar;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\lib\log4j-1.2.15.jar;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\lib\netty-3.2.2.Final.jar;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\lib\slf4j-api-1.6.1.jar;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\lib\slf4j-log4j12-1.6.1.jar;D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin\..\conf</span><br><span class="line">2019-12-27 11:13:26,172 [myid:] - INFO  [main:Environment@100] - Client environment:java.library.path=C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;"C:\Program Files\Java\jdk1.8.0_181\bin;C:\Program Files\Java\jdk1.8.0_181\jre\bin;";C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Utilities 1.6\;D:\soft\consul_1.2.2_windows_amd64;C:\Program Files\erl10.1\bin;%RABBITMQ_HOME%\sbin;C:\Program Files\010 Editor;C:\Program Files\nodejs\;D:\Downloads\rocketmq-all-4.5.2-bin-<span class="keyword">release</span>;C:\Users\songsy\AppData\Local\Microsoft\WindowsApps;;C:\Users\songsy\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\songsy\AppData\Roaming\npm;.</span><br><span class="line">2019-12-27 11:13:26,172 [myid:] - INFO  [main:Environment@100] - Client environment:java.io.tmpdir=C:\Users\songsy\AppData\Local\Temp\</span><br><span class="line">2019-12-27 11:13:26,173 [myid:] - INFO  [main:Environment@100] - Client environment:java.compiler=&lt;NA&gt;</span><br><span class="line">2019-12-27 11:13:26,173 [myid:] - INFO  [main:Environment@100] - Client environment:os.name=Windows 10</span><br><span class="line">2019-12-27 11:13:26,174 [myid:] - INFO  [main:Environment@100] - Client environment:os.arch=amd64</span><br><span class="line">2019-12-27 11:13:26,174 [myid:] - INFO  [main:Environment@100] - Client environment:os.version=10.0</span><br><span class="line">2019-12-27 11:13:26,174 [myid:] - INFO  [main:Environment@100] - Client environment:user.name=songsy</span><br><span class="line">2019-12-27 11:13:26,175 [myid:] - INFO  [main:Environment@100] - Client environment:user.home=C:\Users\songsy</span><br><span class="line">2019-12-27 11:13:26,175 [myid:] - INFO  [main:Environment@100] - Client environment:user.dir=D:\Downloads\Downloads\zookeeper-3.4.5\zookeeper-3.4.5\bin</span><br><span class="line">2019-12-27 11:13:26,177 [myid:] - INFO  [main:ZooKeeper@438] - Initiating client connection, connectString=127.0.0.1:2181 sessionTimeout=30000 watcher=org.apache.zookeeper.ZooKeeperMain$MyWatcher@579bb367</span><br><span class="line">Welcome to ZooKeeper!</span><br><span class="line">2019-12-27 11:13:26,421 [myid:] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@966] - Opening socket connection to server 127.0.0.1/127.0.0.1:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">2019-12-27 11:13:26,425 [myid:] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@849] - Socket connection established to 127.0.0.1/127.0.0.1:2181, initiating session</span><br><span class="line">JLine support is enabled</span><br></pre></td></tr></table></figure>
+<ul>
+<li>help 命令查看 zookeeper 常用命令</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 31] <span class="keyword">help</span></span><br><span class="line">ZooKeeper -<span class="keyword">server</span> host:port cmd args</span><br><span class="line">        stat <span class="keyword">path</span> [watch]</span><br><span class="line">        <span class="keyword">set</span> <span class="keyword">path</span> <span class="keyword">data</span> [<span class="keyword">version</span>]</span><br><span class="line">        ls <span class="keyword">path</span> [watch]</span><br><span class="line">        delquota [-n|-b] <span class="keyword">path</span></span><br><span class="line">        ls2 <span class="keyword">path</span> [watch]</span><br><span class="line">        setAcl <span class="keyword">path</span> acl</span><br><span class="line">        setquota -n|-b val <span class="keyword">path</span></span><br><span class="line">        history</span><br><span class="line">        <span class="keyword">redo</span> cmdno</span><br><span class="line">        printwatches <span class="keyword">on</span>|<span class="keyword">off</span></span><br><span class="line">        <span class="keyword">delete</span> <span class="keyword">path</span> [<span class="keyword">version</span>]</span><br><span class="line">        <span class="keyword">sync</span> <span class="keyword">path</span></span><br><span class="line">        listquota <span class="keyword">path</span></span><br><span class="line">        rmr <span class="keyword">path</span></span><br><span class="line">        <span class="keyword">get</span> <span class="keyword">path</span> [watch]</span><br><span class="line">        <span class="keyword">create</span> [-s] [-e] <span class="keyword">path</span> <span class="keyword">data</span> acl</span><br><span class="line">        addauth scheme auth</span><br><span class="line">        quit</span><br><span class="line">        getAcl <span class="keyword">path</span></span><br><span class="line">        <span class="keyword">close</span></span><br><span class="line">        <span class="keyword">connect</span> host:port</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建节点(create 命令)</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 37] <span class="keyword">create</span> /<span class="keyword">name</span> <span class="string">"songsy"</span></span><br><span class="line">Created /<span class="keyword">name</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取节点的数据(get 命令)<ul>
+<li>get 命令可以获取指定节点的数据内容和节点的状态</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 38] get /name</span><br><span class="line">"songsy"</span><br><span class="line">cZxid = 0x10f</span><br><span class="line">ctime = Fri Dec 27 14:38:20 CST 2019</span><br><span class="line">mZxid = 0x10f</span><br><span class="line">mtime = Fri Dec 27 14:38:20 CST 2019</span><br><span class="line">pZxid = 0x10f</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 8</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>更新节点数据内容(set 命令)</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 39] <span class="keyword">set</span> /<span class="keyword">name</span> <span class="string">"songshuiyang"</span></span><br><span class="line">cZxid = <span class="number">0x10f</span></span><br><span class="line">ctime = Fri <span class="built_in">Dec</span> <span class="number">27</span> <span class="number">14</span>:<span class="number">38</span>:<span class="number">20</span> CST <span class="number">2019</span></span><br><span class="line">mZxid = <span class="number">0x110</span></span><br><span class="line">mtime = Fri <span class="built_in">Dec</span> <span class="number">27</span> <span class="number">14</span>:<span class="number">40</span>:<span class="number">19</span> CST <span class="number">2019</span></span><br><span class="line">pZxid = <span class="number">0x10f</span></span><br><span class="line">cversion = <span class="number">0</span></span><br><span class="line">dataVersion = <span class="number">1</span></span><br><span class="line">aclVersion = <span class="number">0</span></span><br><span class="line">ephemeralOwner = <span class="number">0x0</span></span><br><span class="line"><span class="keyword">dataLength</span> = <span class="number">14</span></span><br><span class="line">numChildren = <span class="number">0</span></span><br><span class="line">[zk: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">2181</span>(CONNECTED) <span class="number">40</span>] <span class="keyword">get</span> /<span class="keyword">name</span></span><br><span class="line"><span class="string">"songshuiyang"</span></span><br><span class="line">cZxid = <span class="number">0x10f</span></span><br><span class="line">ctime = Fri <span class="built_in">Dec</span> <span class="number">27</span> <span class="number">14</span>:<span class="number">38</span>:<span class="number">20</span> CST <span class="number">2019</span></span><br><span class="line">mZxid = <span class="number">0x110</span></span><br><span class="line">mtime = Fri <span class="built_in">Dec</span> <span class="number">27</span> <span class="number">14</span>:<span class="number">40</span>:<span class="number">19</span> CST <span class="number">2019</span></span><br><span class="line">pZxid = <span class="number">0x10f</span></span><br><span class="line">cversion = <span class="number">0</span></span><br><span class="line">dataVersion = <span class="number">1</span></span><br><span class="line">aclVersion = <span class="number">0</span></span><br><span class="line">ephemeralOwner = <span class="number">0x0</span></span><br><span class="line"><span class="keyword">dataLength</span> = <span class="number">14</span></span><br><span class="line">numChildren = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看某个目录下的子节点(ls 命令)<ul>
+<li>zookeeper 中的 ls 命令和 linux 命令中的 ls 类似， 这个命令将列出绝对路径path下的所有子节点信息（列出1级，并不递归）</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 42] ls /</span><br><span class="line">[name, dubbo, zookeeper, node1]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看节点状态(stat 命令)</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 43] stat /name</span><br><span class="line">cZxid = 0x10f</span><br><span class="line">ctime = Fri Dec 27 14:38:20 CST 2019</span><br><span class="line">mZxid = 0x110</span><br><span class="line">mtime = Fri Dec 27 14:40:19 CST 2019</span><br><span class="line">pZxid = 0x10f</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 1</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 14</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除节点(delete 命令)<ul>
+<li>这个命令很简单，但是需要注意的一点是如果你要删除某一个节点，那么这个节点必须无子节点才行。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zk: 127.0.0.1:2181(CONNECTED) 45] <span class="keyword">delete</span> /<span class="keyword">name</span></span><br></pre></td></tr></table></figure>
+<h2 id="Zookeeper-的-Java-客户端都有哪些？"><a href="#Zookeeper-的-Java-客户端都有哪些？" class="headerlink" title="Zookeeper 的 Java 客户端都有哪些？"></a>Zookeeper 的 Java 客户端都有哪些？</h2><ul>
+<li>Zookeeper 自带的 zkclient</li>
+<li>Apache 开源的 Curator</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://snailclimb.gitee.io/javaguide/#/docs/system-design/framework/ZooKeeper数据模型和常见命令?id=查看常用命令help-命令" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/system-design/framework/ZooKeeper数据模型和常见命令?id=查看常用命令help-命令</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Zookeeper/">Zookeeper</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式/">分布式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/&title=《分布式-Zookeeper-基本命令》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/&title=《分布式-Zookeeper-基本命令》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式-Zookeeper-基本命令》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/database/Druid Monitor/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Druid Monitor</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-Session会话/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">分布式-Zookeeper-Session会话</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/&title=《分布式-Zookeeper-基本命令》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/&title=《分布式-Zookeeper-基本命令》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式-Zookeeper-基本命令》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADJUlEQVR42u3ay3LbQAwEQP3/TyvXHELWDCCnzFXz5LL56uUBBmZfr/h4B8ffZ77K4x0fV+e/fuLAxsbGfgi7xSTI+3PuX/f+Wcm73VuwsbGxT2XvH5+/xBW+XdDNVdjY2NjY+RLcv+gGiY2NjY3dsvPGIBk25cUvb2mwsbGxv5k9G8dH45ty4fKr/tMsDRsbG/vXs/NU9Pf//CP5NjY2NvYvZr/L4/7aTQuxaW9qBTY2NvZB7M2WnfvftKFvWz7z1uVytISNjY19HHtGmgW9++VrtwRdFjBsbGzsg9h5KJtjZuHBp2IGbGxs7G9gJ81AMojP25g2YB62GbM9StjY2NgPZLctwWZLzX1R3C9HXT6xsbGxj2AnvLYt2YQKs6CiLcnY2NjYp7LzCDYZ6GxamuTOs6j4HwUMGxsb++HsGaxtXfINQHmonPy1bq6wsbGxH8veNCT1UH50hzzWLaICbGxs7CPYeVnKl2Y/qGoHRsmY6fI7Y2NjYz+c3Q7uc947Pj6FrKMCbGxs7CPY+xF824rkv28XKNkYdNmKYGNjYz+c3f5DPytObagw+wAJHhsbG/skdnLr/cu1bcYm6K1HXdjY2NgPZ+elJccnSzMLFWahxT/eHxsbG/sL2LMR/6yN2UcOdVnFxsbGPoidxLqzkX27JSg/v21+sLGxsb+BvSk8ScuRR8VJAZs1P9jY2Ninsj9bMBJA+6x8KfPPho2NjX0SOykhbZsxw+dXfSyExsbGxj6UnVDb7TJ5yzFrQvJP9corJDY2NvYR7Hb43pauTy1xsriXqQg2Njb2Eex9YWvvtokiNht9sLGxsU9l3xeVz26anH2NPGwuBmTY2NjYX8PexAbtsu7HWKu9PNjY2NgPZL/LYxbfzhYib4rqIoqNjY19EHtT5GYR7Owp7RK0DQw2Njb209ltyckfnDQn+Z33sXTRkGBjY2M/kJ2P2pOmYlaK2uB5NkHCxsbGxs6rQFJa2qe0S3/5ntjY2Nhfz86H+21bko+KVkMxbGxs7OPYPx3ubgpbG/dGbQw2Njb2QezZQKctMB9Im8v77MseNjY29q9n/wEvbbqWjVh5XgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

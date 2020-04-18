@@ -1,1 +1,710 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="spring mvc,spring"><meta name="description" content="1.1 前言 回顾上一章节的方法参数解析器的入口，可以看到Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);这行代码是获取方法参数值，这里是返回的是个数组， getMethodArgumentValues(request, mavContainer, providedArgs)里面的逻辑就是遍历"><meta name="keywords" content="spring mvc,spring"><meta property="og:type" content="article"><meta property="og:title" content="Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver"><meta property="og:url" content="http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="1.1 前言 回顾上一章节的方法参数解析器的入口，可以看到Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);这行代码是获取方法参数值，这里是返回的是个数组， getMethodArgumentValues(request, mavContainer, providedArgs)里面的逻辑就是遍历"><meta property="og:locale" content="default"><meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/argumentResolvers.jpg"><meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/mvc/PathVariableMethodArgumentResolver.png"><meta property="og:updated_time" content="2019-08-12T13:33:08.914Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver"><meta name="twitter:description" content="1.1 前言 回顾上一章节的方法参数解析器的入口，可以看到Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);这行代码是获取方法参数值，这里是返回的是个数组， getMethodArgumentValues(request, mavContainer, providedArgs)里面的逻辑就是遍历"><meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/argumentResolvers.jpg"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</h1><h5 class="subtitle"> <time datetime="2019-08-02T16:09:00.000Z" itemprop="datePublished" class="page-time">2019-08-03</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/服务器/">服务器</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.1 前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.1 解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-1-PathVariableMethodArgumentResolver"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">2.1.1 PathVariableMethodArgumentResolver</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-1-RequestParamMethodArgumentResolver"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2.1.1 RequestParamMethodArgumentResolver</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-1-RequestAttributeMethodArgumentResolver"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">2.1.1 RequestAttributeMethodArgumentResolver</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-1-总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.1 总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-1-参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.1 参考</span></a></li></nav></aside><article id="post-backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</h1><div class="post-meta"> <time class="post-time" title="2019-08-03 00:09:00" datetime="2019-08-02T16:09:00.000Z" itemprop="datePublished">2019-08-03</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/服务器/">服务器</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="1-1-前言"><a href="#1-1-前言" class="headerlink" title="1.1 前言"></a>1.1 前言</h2><ul><li>回顾上一章节的方法参数解析器的入口，可以看到<code>Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);</code>这行代码是获取方法参数值，这里是返回的是个数组， <code>getMethodArgumentValues(request, mavContainer, providedArgs)</code>里面的逻辑就是遍历每一个参数进行解析</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.method.support.InvocableHandlerMethod#invokeForRequest</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invokeForRequest</span><span class="params">(NativeWebRequest request, org.springframework.web.method.support.ModelAndViewContainer mavContainer,</span></span></span><br><span class="line"><span class="function"><span class="params">        Object... providedArgs)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1、这里得到了方法参数值</span></span><br><span class="line">    Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);</span><br><span class="line">    <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">        logger.trace(<span class="string">"Invoking '"</span> + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +</span><br><span class="line">                <span class="string">"' with arguments "</span> + Arrays.toString(args));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2、传入方法参数值并执行方法</span></span><br><span class="line">    Object returnValue = doInvoke(args);</span><br><span class="line">    <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">        logger.trace(<span class="string">"Method ["</span> + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +</span><br><span class="line">                <span class="string">"] returned ["</span> + returnValue + <span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3、返回结果</span></span><br><span class="line">    <span class="keyword">return</span> returnValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 根据当前请求获取方法的请求参数</span></span><br><span class="line"><span class="comment"> * Get the method argument values for the current request.</span></span><br><span class="line"><span class="comment"> * 先是判断相应类型的参数已经在providedArgs中提供了，如果有的话就是直接返回，否则则使用argumentResolvers解析</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> Object[] getMethodArgumentValues(NativeWebRequest request, org.springframework.web.method.support.ModelAndViewContainer mavContainer,</span><br><span class="line">        Object... providedArgs) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 获取方法的参数，在HanderMethod中</span></span><br><span class="line">    MethodParameter[] parameters = getMethodParameters();</span><br><span class="line">    <span class="comment">// 用于保存解析出参数的值</span></span><br><span class="line">    Object[] args = <span class="keyword">new</span> Object[parameters.length];</span><br><span class="line">    <span class="comment">// 遍历每一个参数进行解析</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; parameters.length; i++) &#123;</span><br><span class="line">        MethodParameter parameter = parameters[i];</span><br><span class="line">        <span class="comment">// 给Parameter设置参数名解析器</span></span><br><span class="line">        parameter.initParameterNameDiscovery(<span class="keyword">this</span>.parameterNameDiscoverer);</span><br><span class="line">        <span class="comment">// 如果相应类型的参数已经在providedArgs中提供了，则直接设置到parameter</span></span><br><span class="line">        args[i] = resolveProvidedArgument(parameter, providedArgs);</span><br><span class="line">        <span class="keyword">if</span> (args[i] != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.argumentResolvers.supportsParameter(parameter)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 使用argumentResolvers解析参数</span></span><br><span class="line">                args[i] = <span class="keyword">this</span>.argumentResolvers.resolveArgument(parameter, mavContainer, request, <span class="keyword">this</span>.dataBinderFactory);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">                <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                    logger.debug(getArgumentResolutionErrorMessage(<span class="string">"Failed to resolve"</span>, i), ex);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">throw</span> ex;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解析不出来，抛异常</span></span><br><span class="line">        <span class="keyword">if</span> (args[i] == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Could not resolve method parameter at index "</span> +</span><br><span class="line">                    parameter.getParameterIndex() + <span class="string">" in "</span> + parameter.getMethod().toGenericString() +</span><br><span class="line">                    <span class="string">": "</span> + getArgumentResolutionErrorMessage(<span class="string">"No suitable resolver for"</span>, i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> args;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li><code>Spring Mvc</code>的方法参数解析是交给<code>HandlerMethodArgumentResolver</code>来实现的，由下面可以看到是这个接口就两个方法，第一个方法是判断解析器是否支持该参数，第二个方法是根据<code>request</code>并将<code>http</code>的请求参数解析为<code>Java Bean</code></li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 方法参数解析器</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Strategy interface for resolving method parameters into argument values in</span></span><br><span class="line"><span class="comment"> * the context of a given request.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Arjen Poutsma</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 3.1</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMethodReturnValueHandler</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HandlerMethodArgumentResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 是否支持</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Whether the given &#123;<span class="doctag">@linkplain</span> MethodParameter method parameter&#125; is</span></span><br><span class="line"><span class="comment">	 * supported by this resolver.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> parameter the method parameter to check</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if this resolver supports the supplied parameter;</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@code</span> false&#125; otherwise</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">boolean</span> <span class="title">supportsParameter</span><span class="params">(MethodParameter parameter)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 根据request解析方法参数值</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Resolves a method parameter into an argument value from a given request.</span></span><br><span class="line"><span class="comment">	 * A &#123;<span class="doctag">@link</span> ModelAndViewContainer&#125; provides access to the model for the</span></span><br><span class="line"><span class="comment">	 * request. A &#123;<span class="doctag">@link</span> WebDataBinderFactory&#125; provides a way to create</span></span><br><span class="line"><span class="comment">	 * a &#123;<span class="doctag">@link</span> WebDataBinder&#125; instance when needed for data binding and</span></span><br><span class="line"><span class="comment">	 * type conversion purposes.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> parameter the method parameter to resolve. This parameter must</span></span><br><span class="line"><span class="comment">	 * have previously been passed to &#123;<span class="doctag">@link</span> #supportsParameter&#125; which must</span></span><br><span class="line"><span class="comment">	 * have returned &#123;<span class="doctag">@code</span> true&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> mavContainer the ModelAndViewContainer for the current request</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> webRequest the current request</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> binderFactory a factory for creating &#123;<span class="doctag">@link</span> WebDataBinder&#125; instances</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the resolved argument value, or &#123;<span class="doctag">@code</span> null&#125;</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception in case of errors with the preparation of argument values</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">Object <span class="title">resolveArgument</span><span class="params">(MethodParameter parameter, ModelAndViewContainer mavContainer,</span></span></span><br><span class="line"><span class="function"><span class="params">			NativeWebRequest webRequest, WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>通过调试可以看到有下面这些<code>argumentResolvers</code>，看类名称是不是很熟悉，就是我们平常使用的<code>@RequestBody</code> <code>@RequestParam</code> 是一一对应的，还是专人做专事，可以得出不同的参数是有不同的参数解析组件来专门处理的</li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/spring/spring-mvc/argumentResolvers.jpg" alt="" title=""></div><div class="image-caption"></div></figure><ul><li>下面来看主要<code>XXXArgumentResolver</code>的作用</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. SessionAttributeMethodArgumentResolver</span><br><span class="line">    针对 被 <span class="meta">@SessionAttribute</span> 修饰的参数起作用, 参数的获取一般通过 HttpServletRequest.getAttribute(name, RequestAttributes.SCOPE_SESSION)    </span><br><span class="line"><span class="number">2</span>. RequestParamMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@RequestParam</span> 注解修饰, 但类型不是 Map, 或类型是 Map, 并且 <span class="meta">@RequestParam</span> 中指定 name, 一般通过 MultipartHttpServletRequest | HttpServletRequest 获取数据</span><br><span class="line"><span class="number">3</span>. RequestHeaderMethodArgumentResolver</span><br><span class="line">    针对 参数被 RequestHeader 注解, 并且 参数不是 Map 类型, 数据通过 HttpServletRequest.getHeaderValues(name) 获取</span><br><span class="line"><span class="number">4</span>. RequestAttributeMethodArgumentResolver</span><br><span class="line">    针对 被 <span class="meta">@RequestAttribute</span> 修饰的参数起作用, 参数的获取一般通过 HttpServletRequest.getAttribute(name, RequestAttributes.SCOPE_REQUEST)</span><br><span class="line"><span class="number">5</span>. PathVariableMethodArgumentResolver</span><br><span class="line">    解决被注解 <span class="meta">@PathVariable</span> 注释的参数 &lt;- 这个注解对应的是 uri 中的数据, 在解析 URI 中已经进行解析好了 &lt;- 在 RequestMappingInfoHandlerMapping.handleMatch -&gt; getPathMatcher().extractUriTemplateVariables</span><br><span class="line"><span class="number">6</span>. MatrixVariableMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@MatrixVariable</span> 注解修饰的参数起作用,  从 HttpServletRequest 中获取去除 ; 的 URI Template Variables 获取数据</span><br><span class="line"><span class="number">7</span>. ExpressionValueMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@Value</span> 修饰, 返回 ExpressionValueNamedValueInfo</span><br><span class="line"><span class="number">8</span>. ServletCookieValueMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@CookieValue</span> 修饰, 通过 HttpServletRequest.getCookies 获取对应数据</span><br></pre></td></tr></table></figure><h2 id="2-1-解析"><a href="#2-1-解析" class="headerlink" title="2.1 解析"></a>2.1 解析</h2><h4 id="2-1-1-PathVariableMethodArgumentResolver"><a href="#2-1-1-PathVariableMethodArgumentResolver" class="headerlink" title="2.1.1 PathVariableMethodArgumentResolver"></a>2.1.1 PathVariableMethodArgumentResolver</h4><ul><li>这个<code>ArgumentResolver</code>解析类是解析被注解 <code>@PathVariable</code> 注释的参数，这个注解会把<code>url</code>上面的值解析到对应的方法参数上，比如下面的例子，参数<code>id</code>会解析为<code>1</code>，参数<code>name</code>会解析为<code>name</code></li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http://127.0.0.1/user/view/1/songsy</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/view/&#123;id&#125;/&#123;name&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> ResponseMO <span class="title">view</span><span class="params">(@PathVariable Integer id, @PathVariable String name)</span> </span>&#123;</span><br><span class="line">    IUser iUser = userService.selectByPrimaryKey(id);</span><br><span class="line">    iUser.setUsername(name);</span><br><span class="line">    <span class="keyword">return</span> success(iUser);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>下面来看<code>Spring MVC</code>是怎样把<code>url</code>上面的值解析到对应的方法参数上，首先要获取<code>url</code>上面的值，那么是在哪里获取的呢？，回顾之前的<code>org.springframework.web.servlet.handler.AbstractHandlerMethodMapping#lookupHandlerMethod</code>方法，这个方法是查找当前<code>request</code>请求 最为匹配的处理方法<code>HandlerMethod</code>，如果有多个匹配结果，则选择最佳匹配结果</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 查找当前request请求 最为匹配的处理方法HandlerMethod，如果有多个匹配结果，则选择最佳匹配结果</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Look up the best-matching handler method for the current request.</span></span><br><span class="line"><span class="comment"> * If multiple matches are found, the best match is selected.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> lookupPath mapping lookup path within the current servlet mapping</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request the current request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the best-matching handler method, or &#123;<span class="doctag">@code</span> null&#125; if no match</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #handleMatch(Object, String, HttpServletRequest)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #handleNoMatch(Set, String, HttpServletRequest)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> HandlerMethod <span class="title">lookupHandlerMethod</span><span class="params">(String lookupPath, HttpServletRequest request)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    List&lt;Match&gt; matches = <span class="keyword">new</span> ArrayList&lt;Match&gt;();</span><br><span class="line">    <span class="comment">// 根据URL来获取,springMVC会在初始化的时候建立URL和相应RequestMappingInfo的映射。如果不是restful接口，这里就可以直接获取到了</span></span><br><span class="line">    List&lt;T&gt; directPathMatches = <span class="keyword">this</span>.mappingRegistry.getMappingsByUrl(lookupPath);</span><br><span class="line">    <span class="keyword">if</span> (directPathMatches != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 匹配校验 根据directPathMatches获取到List&lt;Match&gt; matches中</span></span><br><span class="line">        addMatchingMappings(directPathMatches, matches, request);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (matches.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">// 全盘扫描</span></span><br><span class="line">        <span class="comment">// No choice but to go through all mappings...</span></span><br><span class="line">        addMatchingMappings(<span class="keyword">this</span>.mappingRegistry.getMappings().keySet(), matches, request);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 得到匹配结果</span></span><br><span class="line">    <span class="keyword">if</span> (!matches.isEmpty()) &#123;</span><br><span class="line">        Comparator&lt;Match&gt; comparator = <span class="keyword">new</span> MatchComparator(getMappingComparator(request));</span><br><span class="line">        Collections.sort(matches, comparator);</span><br><span class="line">        <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">            logger.trace(<span class="string">"Found "</span> + matches.size() + <span class="string">" matching mapping(s) for ["</span> +</span><br><span class="line">                    lookupPath + <span class="string">"] : "</span> + matches);</span><br><span class="line">        &#125;</span><br><span class="line">        Match bestMatch = matches.get(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (matches.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (CorsUtils.isPreFlightRequest(request)) &#123;</span><br><span class="line">                <span class="keyword">return</span> PREFLIGHT_AMBIGUOUS_MATCH;</span><br><span class="line">            &#125;</span><br><span class="line">            Match secondBestMatch = matches.get(<span class="number">1</span>);</span><br><span class="line">            <span class="comment">// 如果最佳匹配 第二佳匹配都是同一个则报错</span></span><br><span class="line">            <span class="keyword">if</span> (comparator.compare(bestMatch, secondBestMatch) == <span class="number">0</span>) &#123;</span><br><span class="line">                Method m1 = bestMatch.handlerMethod.getMethod();</span><br><span class="line">                Method m2 = secondBestMatch.handlerMethod.getMethod();</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Ambiguous handler methods mapped for HTTP path '"</span> +</span><br><span class="line">                        request.getRequestURL() + <span class="string">"': &#123;"</span> + m1 + <span class="string">", "</span> + m2 + <span class="string">"&#125;"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置HttpServletRequest值 如解析url上的属性值</span></span><br><span class="line">        handleMatch(bestMatch.mapping, lookupPath, request);</span><br><span class="line">        <span class="keyword">return</span> bestMatch.handlerMethod;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有找到匹配，返回null</span></span><br><span class="line">        <span class="keyword">return</span> handleNoMatch(<span class="keyword">this</span>.mappingRegistry.getMappings().keySet(), lookupPath, request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>关注<code>handleMatch(bestMatch.mapping, lookupPath, request);</code>方法，看注释可以看到是<code>Expose URI template variables</code>，这里主要是对<code>HttpServletRequest</code>进行<code>setAttribute</code></li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Expose URI template variables, matrix variables, and producible media types in the request.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMapping#URI_TEMPLATE_VARIABLES_ATTRIBUTE</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMapping#MATRIX_VARIABLES_ATTRIBUTE</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMapping#PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">handleMatch</span><span class="params">(RequestMappingInfo info, String lookupPath, HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.handleMatch(info, lookupPath, request);</span><br><span class="line"></span><br><span class="line">    String bestPattern;</span><br><span class="line">    Map&lt;String, String&gt; uriVariables;</span><br><span class="line">    Map&lt;String, String&gt; decodedUriVariables;</span><br><span class="line"></span><br><span class="line">    Set&lt;String&gt; patterns = info.getPatternsCondition().getPatterns();</span><br><span class="line">    <span class="keyword">if</span> (patterns.isEmpty()) &#123;</span><br><span class="line">        bestPattern = lookupPath;</span><br><span class="line">        uriVariables = Collections.emptyMap();</span><br><span class="line">        decodedUriVariables = Collections.emptyMap();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        bestPattern = patterns.iterator().next();</span><br><span class="line">        <span class="comment">// 获取url上的参数值</span></span><br><span class="line">        uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath);</span><br><span class="line">        decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestPattern);</span><br><span class="line">    request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isMatrixVariableContentAvailable()) &#123;</span><br><span class="line">        Map&lt;String, MultiValueMap&lt;String, String&gt;&gt; matrixVars = extractMatrixVariables(request, uriVariables);</span><br><span class="line">        request.setAttribute(HandlerMapping.MATRIX_VARIABLES_ATTRIBUTE, matrixVars);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!info.getProducesCondition().getProducibleMediaTypes().isEmpty()) &#123;</span><br><span class="line">        Set&lt;MediaType&gt; mediaTypes = info.getProducesCondition().getProducibleMediaTypes();</span><br><span class="line">        request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, mediaTypes);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>注意下面这个方法，可以看到是获取了<code>url</code>上面的参数值封装为<code>Map&lt;String, String&gt;</code>并赋值到<code>request</code>中</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; uriVariables;</span><br><span class="line">Map&lt;String, String&gt; decodedUriVariables;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取url上的参数值</span></span><br><span class="line">uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath);</span><br><span class="line">decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables);</span><br><span class="line"></span><br><span class="line">... </span><br><span class="line"></span><br><span class="line">request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables);</span><br></pre></td></tr></table></figure><ul><li>到这里<code>HttpServletRequest</code>已经有参数值了，现在是如何赋值到对应的参数中，这里我们的<code>PathVariableMethodArgumentResolver</code>就发挥作用了</li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/spring/analysis/mvc/PathVariableMethodArgumentResolver.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li><p>我们关注它是怎么实现<code>HandlerMethodArgumentResolver</code>接口的两个方法的</p><ul><li><p><code>supportsParameter()</code>方法</p><ul><li>代码如下，可以看到是看参数值有没有被<code>PathVariable</code>注解修饰<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">supportsParameter</span><span class="params">(MethodParameter parameter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!parameter.hasParameterAnnotation(PathVariable.class)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType())) &#123;</span><br><span class="line">        String paramName = parameter.getParameterAnnotation(PathVariable.class).value();</span><br><span class="line">        <span class="keyword">return</span> StringUtils.hasText(paramName);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul></li><li><p><code>resolveArgument()</code>方法</p><ul><li>代码如下<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">resolveArgument</span><span class="params">(MethodParameter parameter, ModelAndViewContainer mavContainer,</span></span></span><br><span class="line"><span class="function"><span class="params">        NativeWebRequest webRequest, WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);</span><br><span class="line">    MethodParameter nestedParameter = parameter.nestedIfOptional();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取参数名</span></span><br><span class="line">    Object resolvedName = resolveStringValue(namedValueInfo.name);</span><br><span class="line">    <span class="keyword">if</span> (resolvedName == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                <span class="string">"Specified name must not resolve to null: ["</span> + namedValueInfo.name + <span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 根据参数名获取参数值</span></span><br><span class="line">    Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);</span><br><span class="line">    <span class="keyword">if</span> (arg == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (namedValueInfo.defaultValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">            arg = resolveStringValue(namedValueInfo.defaultValue);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (namedValueInfo.required &amp;&amp; !nestedParameter.isOptional()) &#123;</span><br><span class="line">            handleMissingValue(namedValueInfo.name, nestedParameter, webRequest);</span><br><span class="line">        &#125;</span><br><span class="line">        arg = handleNullValue(namedValueInfo.name, arg, nestedParameter.getNestedParameterType());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">""</span>.equals(arg) &amp;&amp; namedValueInfo.defaultValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">        arg = resolveStringValue(namedValueInfo.defaultValue);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (binderFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">        WebDataBinder binder = binderFactory.createBinder(webRequest, <span class="keyword">null</span>, namedValueInfo.name);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (ConversionNotSupportedException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> MethodArgumentConversionNotSupportedException(arg, ex.getRequiredType(),</span><br><span class="line">                    namedValueInfo.name, parameter, ex.getCause());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (TypeMismatchException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> MethodArgumentTypeMismatchException(arg, ex.getRequiredType(),</span><br><span class="line">                    namedValueInfo.name, parameter, ex.getCause());</span><br><span class="line">    </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    handleResolvedValue(arg, namedValueInfo.name, parameter, mavContainer, webRequest);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul></li></ul></li></ul><h4 id="2-1-1-RequestParamMethodArgumentResolver"><a href="#2-1-1-RequestParamMethodArgumentResolver" class="headerlink" title="2.1.1 RequestParamMethodArgumentResolver"></a>2.1.1 RequestParamMethodArgumentResolver</h4><h4 id="2-1-1-RequestAttributeMethodArgumentResolver"><a href="#2-1-1-RequestAttributeMethodArgumentResolver" class="headerlink" title="2.1.1 RequestAttributeMethodArgumentResolver"></a>2.1.1 RequestAttributeMethodArgumentResolver</h4><h2 id="3-1-总结"><a href="#3-1-总结" class="headerlink" title="3.1 总结"></a>3.1 总结</h2><ul><li><code>HandlerMethodArgumentResolver</code> 的方法参数绑定处理是针对于不同的方法参数有专门的<code>ArgumentResolver</code> 专人做专事，专业</li></ul><h2 id="4-1-参考"><a href="#4-1-参考" class="headerlink" title="4.1 参考"></a>4.1 参考</h2><p>官方文档: <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html</a></p></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/">spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-mvc/">spring mvc</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor</h4></a></div><div class="waves-block waves-effect next"><a href="/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(八)RequestMappingHandlerAdapter/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">Spring Mvc源码(八)RequestMappingHandlerAdapter</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2019</span> <span><a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT4AAAE+CAAAAAAxUyPsAAAFMElEQVR42u3aQW7kOBAEQP//097rDrCtyayUBwtM6GTYLZEMGehiFr++4uv7X9env376+XZvMp/nuX1/uJ4/8/UTFz58+PDhwxcMs08xuet5Gd/x9fzkfT4fifHhw4cPH74T31JSPE83LxSeZ5KXIO0TntF/M0N8+PDhw4fvD/K1Rcb+hHxWSQSQv3h8+PDhw4fv/8Z32/wvqXhelNyeiQ8fPnz48P0cXzuJpTjII/Vb63ppBvxgrwMfPnz48OErJ/T3/PzyhQ8fPnz48JXheNt+Xr7y87uSVnf+nHot+PDhw4cP32kt+ba/bXW3091DgSWOPzrgw4cPHz588bi3GH0Z8q0XkL+GfNy8iJm6EPjw4cOH76/nW7bW7ZDJIp9f0u2YWhvTT4kLPnz48OHDd+JLJrFs7G8Qt+bB0vj/uAp8+PDhw4fvkgN85ZPet+tJvH4L3Jdyqo0q6vQCHz58+PDhixvhbYi/NKTbRd4aDHs7AR8+fPjw4Vv4lhZ1+5aS8qJd2FKc5XOOzvfhw4cPHz58jz55Q3pZ0m3Z+yLbT7YRCT58+PDhw7fwtQfUkjigjdcT+ls7f2+3/6ZwwYcPHz58+F7ia5f3blyeBxNtw+CFsB4fPnz48OGb2+RvbcLb8iJpe7e/z0uWF8IIfPjw4cOH715FfC0Qt61+XgC1oUby19sLw4cPHz58+Fq+5Ct/CbufS5O3Cqb2dR5DgbZ3gQ8fPnz48AXD38L62yLbsKCdebL2Fu6XT+LDhw8fPnwl361d3RYE7dRv0HvkkRdzv+l44MOHDx8+fI/3LpNIGu3tYbJb0HAsNU5tfnz48OHDh+/Gt2+5b8XNW+VO/rQ6iL8lLvjw4cOHD1/wnLbSScL9PAjIaW5A+T/HbV348OHDhw/fu3y3gH5vjd+KniT+SO4txsWHDx8+fPjicfN2dULQlgVt4dIWVUvbIHoCPnz48OHDd+Jro/NblPA8Yjtu+2KWcaNeBz58+PDhwxf3eW+Tu23O81GeJ51D3KKQOu7Hhw8fPnz44g5vW14sIfv++/3g2q0A+o978eHDhw8fvpf48gig2FQHhUjeEmgLrLYoqdvk+PDhw4cP30t8S7S9Fw354l9ugecn+/Dhw4cPH76YL0e8ffG319L8bkucvcGADx8+fPjwtXxtIZJv6Zey4BbT782G+t8FHz58+PDhG/h+ZIChxd4+/9jqXv5R8OHDhw8fvoGvLVnawd6KyNs5t3MoAgh8+PDhw4fvVb5b+3lpObfRQP6cNqCPmvH48OHDhw9fyVd/qGwt58fUkshgb4e3QUPRzMCHDx8+fPgCh+cNcw6UHya7FUxtyzw/1naLSPDhw4cPH76F77a1zimX15b/Zp95TY8PHz58+PDN39r549roYQni88+05Us+5yhGwYcPHz58+GK+nCbfWucLu5UU7YGzvBnQjosPHz58+PAl4+YfXRrb+fNvR9n2WR2PEeDDhw8fPnwnvvyrfSF+6yTdDrSM+8vn8eHDhw8fvpnvhpKH7MmCl/D9VgYlrB9TFnz48OHDh+/NnXIdZLfFQd6cvgUTbdB/O9aGDx8+fPjw5XxLNN+CLk9on9MejLvh4sOHDx8+fDe+JBa/HVnbA4glkriVU/VU8OHDhw8fvh/jaxvqS8u8bdjn0Ev5MhUu+PDhw4cP34mv3aLnLe22DLrVGHvxhA8fPnz48C18eQFxa4rnRUxy7x4K5O3213od+PDhw4cP30tf+cnVbvVbuLyuuN2bvGZ8+PDhw4fvke8fkwE1ZHiigikAAAAASUVORK5CYII=" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="spring mvc,spring">
+    <meta name="description" content="1.1 前言 回顾上一章节的方法参数解析器的入口，可以看到Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);这行代码是获取方法参数值，这里是返回的是个数组， getMethodArgumentValues(request, mavContainer, providedArgs)里面的逻辑就是遍历">
+<meta name="keywords" content="spring mvc,spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="1.1 前言 回顾上一章节的方法参数解析器的入口，可以看到Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);这行代码是获取方法参数值，这里是返回的是个数组， getMethodArgumentValues(request, mavContainer, providedArgs)里面的逻辑就是遍历">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/argumentResolvers.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/mvc/PathVariableMethodArgumentResolver.png">
+<meta property="og:updated_time" content="2019-09-16T13:11:06.116Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver">
+<meta name="twitter:description" content="1.1 前言 回顾上一章节的方法参数解析器的入口，可以看到Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);这行代码是获取方法参数值，这里是返回的是个数组， getMethodArgumentValues(request, mavContainer, providedArgs)里面的逻辑就是遍历">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/argumentResolvers.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-02T16:09:00.000Z" itemprop="datePublished" class="page-time">
+  2019-08-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringMvc/">SpringMvc</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.1 前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.1 解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-1-PathVariableMethodArgumentResolver"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">2.1.1 PathVariableMethodArgumentResolver</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-1-RequestParamMethodArgumentResolver"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2.1.1 RequestParamMethodArgumentResolver</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-1-RequestAttributeMethodArgumentResolver"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">2.1.1 RequestAttributeMethodArgumentResolver</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-1-总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.1 总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-1-参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.1 参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-03 00:09:00" datetime="2019-08-02T16:09:00.000Z" itemprop="datePublished">2019-08-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringMvc/">SpringMvc</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="1-1-前言"><a href="#1-1-前言" class="headerlink" title="1.1 前言"></a>1.1 前言</h2><ul>
+<li>回顾上一章节的方法参数解析器的入口，可以看到<code>Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);</code>这行代码是获取方法参数值，这里是返回的是个数组， <code>getMethodArgumentValues(request, mavContainer, providedArgs)</code>里面的逻辑就是遍历每一个参数进行解析</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.method.support.InvocableHandlerMethod#invokeForRequest</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invokeForRequest</span><span class="params">(NativeWebRequest request, org.springframework.web.method.support.ModelAndViewContainer mavContainer,</span></span></span><br><span class="line"><span class="function"><span class="params">        Object... providedArgs)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1、这里得到了方法参数值</span></span><br><span class="line">    Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);</span><br><span class="line">    <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">        logger.trace(<span class="string">"Invoking '"</span> + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +</span><br><span class="line">                <span class="string">"' with arguments "</span> + Arrays.toString(args));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2、传入方法参数值并执行方法</span></span><br><span class="line">    Object returnValue = doInvoke(args);</span><br><span class="line">    <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">        logger.trace(<span class="string">"Method ["</span> + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +</span><br><span class="line">                <span class="string">"] returned ["</span> + returnValue + <span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3、返回结果</span></span><br><span class="line">    <span class="keyword">return</span> returnValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 根据当前请求获取方法的请求参数</span></span><br><span class="line"><span class="comment"> * Get the method argument values for the current request.</span></span><br><span class="line"><span class="comment"> * 先是判断相应类型的参数已经在providedArgs中提供了，如果有的话就是直接返回，否则则使用argumentResolvers解析</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> Object[] getMethodArgumentValues(NativeWebRequest request, org.springframework.web.method.support.ModelAndViewContainer mavContainer,</span><br><span class="line">        Object... providedArgs) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 获取方法的参数，在HanderMethod中</span></span><br><span class="line">    MethodParameter[] parameters = getMethodParameters();</span><br><span class="line">    <span class="comment">// 用于保存解析出参数的值</span></span><br><span class="line">    Object[] args = <span class="keyword">new</span> Object[parameters.length];</span><br><span class="line">    <span class="comment">// 遍历每一个参数进行解析</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; parameters.length; i++) &#123;</span><br><span class="line">        MethodParameter parameter = parameters[i];</span><br><span class="line">        <span class="comment">// 给Parameter设置参数名解析器</span></span><br><span class="line">        parameter.initParameterNameDiscovery(<span class="keyword">this</span>.parameterNameDiscoverer);</span><br><span class="line">        <span class="comment">// 如果相应类型的参数已经在providedArgs中提供了，则直接设置到parameter</span></span><br><span class="line">        args[i] = resolveProvidedArgument(parameter, providedArgs);</span><br><span class="line">        <span class="keyword">if</span> (args[i] != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.argumentResolvers.supportsParameter(parameter)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 使用argumentResolvers解析参数</span></span><br><span class="line">                args[i] = <span class="keyword">this</span>.argumentResolvers.resolveArgument(parameter, mavContainer, request, <span class="keyword">this</span>.dataBinderFactory);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">                <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                    logger.debug(getArgumentResolutionErrorMessage(<span class="string">"Failed to resolve"</span>, i), ex);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">throw</span> ex;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解析不出来，抛异常</span></span><br><span class="line">        <span class="keyword">if</span> (args[i] == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Could not resolve method parameter at index "</span> +</span><br><span class="line">                    parameter.getParameterIndex() + <span class="string">" in "</span> + parameter.getMethod().toGenericString() +</span><br><span class="line">                    <span class="string">": "</span> + getArgumentResolutionErrorMessage(<span class="string">"No suitable resolver for"</span>, i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> args;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Spring Mvc</code>的方法参数解析是交给<code>HandlerMethodArgumentResolver</code>来实现的，由下面可以看到是这个接口就两个方法，第一个方法是判断解析器是否支持该参数，第二个方法是根据<code>request</code>并将<code>http</code>的请求参数解析为<code>Java Bean</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 方法参数解析器</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Strategy interface for resolving method parameters into argument values in</span></span><br><span class="line"><span class="comment"> * the context of a given request.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Arjen Poutsma</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 3.1</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMethodReturnValueHandler</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HandlerMethodArgumentResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 是否支持</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Whether the given &#123;<span class="doctag">@linkplain</span> MethodParameter method parameter&#125; is</span></span><br><span class="line"><span class="comment">	 * supported by this resolver.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> parameter the method parameter to check</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if this resolver supports the supplied parameter;</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@code</span> false&#125; otherwise</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">boolean</span> <span class="title">supportsParameter</span><span class="params">(MethodParameter parameter)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 根据request解析方法参数值</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Resolves a method parameter into an argument value from a given request.</span></span><br><span class="line"><span class="comment">	 * A &#123;<span class="doctag">@link</span> ModelAndViewContainer&#125; provides access to the model for the</span></span><br><span class="line"><span class="comment">	 * request. A &#123;<span class="doctag">@link</span> WebDataBinderFactory&#125; provides a way to create</span></span><br><span class="line"><span class="comment">	 * a &#123;<span class="doctag">@link</span> WebDataBinder&#125; instance when needed for data binding and</span></span><br><span class="line"><span class="comment">	 * type conversion purposes.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> parameter the method parameter to resolve. This parameter must</span></span><br><span class="line"><span class="comment">	 * have previously been passed to &#123;<span class="doctag">@link</span> #supportsParameter&#125; which must</span></span><br><span class="line"><span class="comment">	 * have returned &#123;<span class="doctag">@code</span> true&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> mavContainer the ModelAndViewContainer for the current request</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> webRequest the current request</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> binderFactory a factory for creating &#123;<span class="doctag">@link</span> WebDataBinder&#125; instances</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the resolved argument value, or &#123;<span class="doctag">@code</span> null&#125;</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception in case of errors with the preparation of argument values</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">Object <span class="title">resolveArgument</span><span class="params">(MethodParameter parameter, ModelAndViewContainer mavContainer,</span></span></span><br><span class="line"><span class="function"><span class="params">			NativeWebRequest webRequest, WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过调试可以看到有下面这些<code>argumentResolvers</code>，看类名称是不是很熟悉，就是我们平常使用的<code>@RequestBody</code> <code>@RequestParam</code> 是一一对应的，还是专人做专事，可以得出不同的参数是有不同的参数解析组件来专门处理的</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/argumentResolvers.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>下面来看主要<code>XXXArgumentResolver</code>的作用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. SessionAttributeMethodArgumentResolver</span><br><span class="line">    针对 被 <span class="meta">@SessionAttribute</span> 修饰的参数起作用, 参数的获取一般通过 HttpServletRequest.getAttribute(name, RequestAttributes.SCOPE_SESSION)    </span><br><span class="line"><span class="number">2</span>. RequestParamMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@RequestParam</span> 注解修饰, 但类型不是 Map, 或类型是 Map, 并且 <span class="meta">@RequestParam</span> 中指定 name, 一般通过 MultipartHttpServletRequest | HttpServletRequest 获取数据</span><br><span class="line"><span class="number">3</span>. RequestHeaderMethodArgumentResolver</span><br><span class="line">    针对 参数被 RequestHeader 注解, 并且 参数不是 Map 类型, 数据通过 HttpServletRequest.getHeaderValues(name) 获取</span><br><span class="line"><span class="number">4</span>. RequestAttributeMethodArgumentResolver</span><br><span class="line">    针对 被 <span class="meta">@RequestAttribute</span> 修饰的参数起作用, 参数的获取一般通过 HttpServletRequest.getAttribute(name, RequestAttributes.SCOPE_REQUEST)</span><br><span class="line"><span class="number">5</span>. PathVariableMethodArgumentResolver</span><br><span class="line">    解决被注解 <span class="meta">@PathVariable</span> 注释的参数 &lt;- 这个注解对应的是 uri 中的数据, 在解析 URI 中已经进行解析好了 &lt;- 在 RequestMappingInfoHandlerMapping.handleMatch -&gt; getPathMatcher().extractUriTemplateVariables</span><br><span class="line"><span class="number">6</span>. MatrixVariableMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@MatrixVariable</span> 注解修饰的参数起作用,  从 HttpServletRequest 中获取去除 ; 的 URI Template Variables 获取数据</span><br><span class="line"><span class="number">7</span>. ExpressionValueMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@Value</span> 修饰, 返回 ExpressionValueNamedValueInfo</span><br><span class="line"><span class="number">8</span>. ServletCookieValueMethodArgumentResolver</span><br><span class="line">    针对被 <span class="meta">@CookieValue</span> 修饰, 通过 HttpServletRequest.getCookies 获取对应数据</span><br></pre></td></tr></table></figure>
+<h2 id="2-1-解析"><a href="#2-1-解析" class="headerlink" title="2.1 解析"></a>2.1 解析</h2><h4 id="2-1-1-PathVariableMethodArgumentResolver"><a href="#2-1-1-PathVariableMethodArgumentResolver" class="headerlink" title="2.1.1 PathVariableMethodArgumentResolver"></a>2.1.1 PathVariableMethodArgumentResolver</h4><ul>
+<li>这个<code>ArgumentResolver</code>解析类是解析被注解 <code>@PathVariable</code> 注释的参数，这个注解会把<code>url</code>上面的值解析到对应的方法参数上，比如下面的例子，参数<code>id</code>会解析为<code>1</code>，参数<code>name</code>会解析为<code>name</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http://127.0.0.1/user/view/1/songsy</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/view/&#123;id&#125;/&#123;name&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> ResponseMO <span class="title">view</span><span class="params">(@PathVariable Integer id, @PathVariable String name)</span> </span>&#123;</span><br><span class="line">    IUser iUser = userService.selectByPrimaryKey(id);</span><br><span class="line">    iUser.setUsername(name);</span><br><span class="line">    <span class="keyword">return</span> success(iUser);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面来看<code>Spring MVC</code>是怎样把<code>url</code>上面的值解析到对应的方法参数上，首先要获取<code>url</code>上面的值，那么是在哪里获取的呢？，回顾之前的<code>org.springframework.web.servlet.handler.AbstractHandlerMethodMapping#lookupHandlerMethod</code>方法，这个方法是查找当前<code>request</code>请求 最为匹配的处理方法<code>HandlerMethod</code>，如果有多个匹配结果，则选择最佳匹配结果</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 查找当前request请求 最为匹配的处理方法HandlerMethod，如果有多个匹配结果，则选择最佳匹配结果</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Look up the best-matching handler method for the current request.</span></span><br><span class="line"><span class="comment"> * If multiple matches are found, the best match is selected.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> lookupPath mapping lookup path within the current servlet mapping</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request the current request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the best-matching handler method, or &#123;<span class="doctag">@code</span> null&#125; if no match</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #handleMatch(Object, String, HttpServletRequest)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #handleNoMatch(Set, String, HttpServletRequest)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> HandlerMethod <span class="title">lookupHandlerMethod</span><span class="params">(String lookupPath, HttpServletRequest request)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    List&lt;Match&gt; matches = <span class="keyword">new</span> ArrayList&lt;Match&gt;();</span><br><span class="line">    <span class="comment">// 根据URL来获取,springMVC会在初始化的时候建立URL和相应RequestMappingInfo的映射。如果不是restful接口，这里就可以直接获取到了</span></span><br><span class="line">    List&lt;T&gt; directPathMatches = <span class="keyword">this</span>.mappingRegistry.getMappingsByUrl(lookupPath);</span><br><span class="line">    <span class="keyword">if</span> (directPathMatches != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 匹配校验 根据directPathMatches获取到List&lt;Match&gt; matches中</span></span><br><span class="line">        addMatchingMappings(directPathMatches, matches, request);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (matches.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">// 全盘扫描</span></span><br><span class="line">        <span class="comment">// No choice but to go through all mappings...</span></span><br><span class="line">        addMatchingMappings(<span class="keyword">this</span>.mappingRegistry.getMappings().keySet(), matches, request);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 得到匹配结果</span></span><br><span class="line">    <span class="keyword">if</span> (!matches.isEmpty()) &#123;</span><br><span class="line">        Comparator&lt;Match&gt; comparator = <span class="keyword">new</span> MatchComparator(getMappingComparator(request));</span><br><span class="line">        Collections.sort(matches, comparator);</span><br><span class="line">        <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">            logger.trace(<span class="string">"Found "</span> + matches.size() + <span class="string">" matching mapping(s) for ["</span> +</span><br><span class="line">                    lookupPath + <span class="string">"] : "</span> + matches);</span><br><span class="line">        &#125;</span><br><span class="line">        Match bestMatch = matches.get(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (matches.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (CorsUtils.isPreFlightRequest(request)) &#123;</span><br><span class="line">                <span class="keyword">return</span> PREFLIGHT_AMBIGUOUS_MATCH;</span><br><span class="line">            &#125;</span><br><span class="line">            Match secondBestMatch = matches.get(<span class="number">1</span>);</span><br><span class="line">            <span class="comment">// 如果最佳匹配 第二佳匹配都是同一个则报错</span></span><br><span class="line">            <span class="keyword">if</span> (comparator.compare(bestMatch, secondBestMatch) == <span class="number">0</span>) &#123;</span><br><span class="line">                Method m1 = bestMatch.handlerMethod.getMethod();</span><br><span class="line">                Method m2 = secondBestMatch.handlerMethod.getMethod();</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Ambiguous handler methods mapped for HTTP path '"</span> +</span><br><span class="line">                        request.getRequestURL() + <span class="string">"': &#123;"</span> + m1 + <span class="string">", "</span> + m2 + <span class="string">"&#125;"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置HttpServletRequest值 如解析url上的属性值</span></span><br><span class="line">        handleMatch(bestMatch.mapping, lookupPath, request);</span><br><span class="line">        <span class="keyword">return</span> bestMatch.handlerMethod;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有找到匹配，返回null</span></span><br><span class="line">        <span class="keyword">return</span> handleNoMatch(<span class="keyword">this</span>.mappingRegistry.getMappings().keySet(), lookupPath, request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关注<code>handleMatch(bestMatch.mapping, lookupPath, request);</code>方法，看注释可以看到是<code>Expose URI template variables</code>，这里主要是对<code>HttpServletRequest</code>进行<code>setAttribute</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Expose URI template variables, matrix variables, and producible media types in the request.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMapping#URI_TEMPLATE_VARIABLES_ATTRIBUTE</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMapping#MATRIX_VARIABLES_ATTRIBUTE</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> HandlerMapping#PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">handleMatch</span><span class="params">(RequestMappingInfo info, String lookupPath, HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.handleMatch(info, lookupPath, request);</span><br><span class="line"></span><br><span class="line">    String bestPattern;</span><br><span class="line">    Map&lt;String, String&gt; uriVariables;</span><br><span class="line">    Map&lt;String, String&gt; decodedUriVariables;</span><br><span class="line"></span><br><span class="line">    Set&lt;String&gt; patterns = info.getPatternsCondition().getPatterns();</span><br><span class="line">    <span class="keyword">if</span> (patterns.isEmpty()) &#123;</span><br><span class="line">        bestPattern = lookupPath;</span><br><span class="line">        uriVariables = Collections.emptyMap();</span><br><span class="line">        decodedUriVariables = Collections.emptyMap();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        bestPattern = patterns.iterator().next();</span><br><span class="line">        <span class="comment">// 获取url上的参数值</span></span><br><span class="line">        uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath);</span><br><span class="line">        decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestPattern);</span><br><span class="line">    request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isMatrixVariableContentAvailable()) &#123;</span><br><span class="line">        Map&lt;String, MultiValueMap&lt;String, String&gt;&gt; matrixVars = extractMatrixVariables(request, uriVariables);</span><br><span class="line">        request.setAttribute(HandlerMapping.MATRIX_VARIABLES_ATTRIBUTE, matrixVars);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!info.getProducesCondition().getProducibleMediaTypes().isEmpty()) &#123;</span><br><span class="line">        Set&lt;MediaType&gt; mediaTypes = info.getProducesCondition().getProducibleMediaTypes();</span><br><span class="line">        request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, mediaTypes);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意下面这个方法，可以看到是获取了<code>url</code>上面的参数值封装为<code>Map&lt;String, String&gt;</code>并赋值到<code>request</code>中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; uriVariables;</span><br><span class="line">Map&lt;String, String&gt; decodedUriVariables;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取url上的参数值</span></span><br><span class="line">uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath);</span><br><span class="line">decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables);</span><br><span class="line"></span><br><span class="line">... </span><br><span class="line"></span><br><span class="line">request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>到这里<code>HttpServletRequest</code>已经有参数值了，现在是如何赋值到对应的参数中，这里我们的<code>PathVariableMethodArgumentResolver</code>就发挥作用了</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/mvc/PathVariableMethodArgumentResolver.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>我们关注它是怎么实现<code>HandlerMethodArgumentResolver</code>接口的两个方法的</p>
+<ul>
+<li><p><code>supportsParameter()</code>方法</p>
+<ul>
+<li>代码如下，可以看到是看参数值有没有被<code>PathVariable</code>注解修饰<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">supportsParameter</span><span class="params">(MethodParameter parameter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!parameter.hasParameterAnnotation(PathVariable.class)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType())) &#123;</span><br><span class="line">        String paramName = parameter.getParameterAnnotation(PathVariable.class).value();</span><br><span class="line">        <span class="keyword">return</span> StringUtils.hasText(paramName);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>resolveArgument()</code>方法</p>
+<ul>
+<li>代码如下<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">resolveArgument</span><span class="params">(MethodParameter parameter, ModelAndViewContainer mavContainer,</span></span></span><br><span class="line"><span class="function"><span class="params">        NativeWebRequest webRequest, WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);</span><br><span class="line">    MethodParameter nestedParameter = parameter.nestedIfOptional();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取参数名</span></span><br><span class="line">    Object resolvedName = resolveStringValue(namedValueInfo.name);</span><br><span class="line">    <span class="keyword">if</span> (resolvedName == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                <span class="string">"Specified name must not resolve to null: ["</span> + namedValueInfo.name + <span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 根据参数名获取参数值</span></span><br><span class="line">    Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);</span><br><span class="line">    <span class="keyword">if</span> (arg == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (namedValueInfo.defaultValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">            arg = resolveStringValue(namedValueInfo.defaultValue);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (namedValueInfo.required &amp;&amp; !nestedParameter.isOptional()) &#123;</span><br><span class="line">            handleMissingValue(namedValueInfo.name, nestedParameter, webRequest);</span><br><span class="line">        &#125;</span><br><span class="line">        arg = handleNullValue(namedValueInfo.name, arg, nestedParameter.getNestedParameterType());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">""</span>.equals(arg) &amp;&amp; namedValueInfo.defaultValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">        arg = resolveStringValue(namedValueInfo.defaultValue);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (binderFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">        WebDataBinder binder = binderFactory.createBinder(webRequest, <span class="keyword">null</span>, namedValueInfo.name);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (ConversionNotSupportedException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> MethodArgumentConversionNotSupportedException(arg, ex.getRequiredType(),</span><br><span class="line">                    namedValueInfo.name, parameter, ex.getCause());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (TypeMismatchException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> MethodArgumentTypeMismatchException(arg, ex.getRequiredType(),</span><br><span class="line">                    namedValueInfo.name, parameter, ex.getCause());</span><br><span class="line">    </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    handleResolvedValue(arg, namedValueInfo.name, parameter, mavContainer, webRequest);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-1-1-RequestParamMethodArgumentResolver"><a href="#2-1-1-RequestParamMethodArgumentResolver" class="headerlink" title="2.1.1 RequestParamMethodArgumentResolver"></a>2.1.1 RequestParamMethodArgumentResolver</h4><h4 id="2-1-1-RequestAttributeMethodArgumentResolver"><a href="#2-1-1-RequestAttributeMethodArgumentResolver" class="headerlink" title="2.1.1 RequestAttributeMethodArgumentResolver"></a>2.1.1 RequestAttributeMethodArgumentResolver</h4><h2 id="3-1-总结"><a href="#3-1-总结" class="headerlink" title="3.1 总结"></a>3.1 总结</h2><ul>
+<li><code>HandlerMethodArgumentResolver</code> 的方法参数绑定处理是针对于不同的方法参数有专门的<code>ArgumentResolver</code> 专人做专事，专业</li>
+</ul>
+<h2 id="4-1-参考"><a href="#4-1-参考" class="headerlink" title="4.1 参考"></a>4.1 参考</h2><p>官方文档: <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/">spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-mvc/">spring mvc</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(八)RequestMappingHandlerAdapter/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring Mvc源码(八)RequestMappingHandlerAdapter</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&title=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(九)方法参数解析器HandlerMethodArgumentResolver/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT4AAAE+CAAAAAAxUyPsAAAFMElEQVR42u3aQW7kOBAEQP//097rDrCtyayUBwtM6GTYLZEMGehiFr++4uv7X9env376+XZvMp/nuX1/uJ4/8/UTFz58+PDhwxcMs08xuet5Gd/x9fzkfT4fifHhw4cPH74T31JSPE83LxSeZ5KXIO0TntF/M0N8+PDhw4fvD/K1Rcb+hHxWSQSQv3h8+PDhw4fv/8Z32/wvqXhelNyeiQ8fPnz48P0cXzuJpTjII/Vb63ppBvxgrwMfPnz48OErJ/T3/PzyhQ8fPnz48JXheNt+Xr7y87uSVnf+nHot+PDhw4cP32kt+ba/bXW3091DgSWOPzrgw4cPHz588bi3GH0Z8q0XkL+GfNy8iJm6EPjw4cOH76/nW7bW7ZDJIp9f0u2YWhvTT4kLPnz48OHDd+JLJrFs7G8Qt+bB0vj/uAp8+PDhw4fvkgN85ZPet+tJvH4L3Jdyqo0q6vQCHz58+PDhixvhbYi/NKTbRd4aDHs7AR8+fPjw4Vv4lhZ1+5aS8qJd2FKc5XOOzvfhw4cPHz58jz55Q3pZ0m3Z+yLbT7YRCT58+PDhw7fwtQfUkjigjdcT+ls7f2+3/6ZwwYcPHz58+F7ia5f3blyeBxNtw+CFsB4fPnz48OGb2+RvbcLb8iJpe7e/z0uWF8IIfPjw4cOH715FfC0Qt61+XgC1oUby19sLw4cPHz58+Fq+5Ct/CbufS5O3Cqb2dR5DgbZ3gQ8fPnz48AXD38L62yLbsKCdebL2Fu6XT+LDhw8fPnwl361d3RYE7dRv0HvkkRdzv+l44MOHDx8+fI/3LpNIGu3tYbJb0HAsNU5tfnz48OHDh+/Gt2+5b8XNW+VO/rQ6iL8lLvjw4cOHD1/wnLbSScL9PAjIaW5A+T/HbV348OHDhw/fu3y3gH5vjd+KniT+SO4txsWHDx8+fPjicfN2dULQlgVt4dIWVUvbIHoCPnz48OHDd+Jro/NblPA8Yjtu+2KWcaNeBz58+PDhwxf3eW+Tu23O81GeJ51D3KKQOu7Hhw8fPnz44g5vW14sIfv++/3g2q0A+o978eHDhw8fvpf48gig2FQHhUjeEmgLrLYoqdvk+PDhw4cP30t8S7S9Fw354l9ugecn+/Dhw4cPH76YL0e8ffG319L8bkucvcGADx8+fPjwtXxtIZJv6Zey4BbT782G+t8FHz58+PDhG/h+ZIChxd4+/9jqXv5R8OHDhw8fvoGvLVnawd6KyNs5t3MoAgh8+PDhw4fvVb5b+3lpObfRQP6cNqCPmvH48OHDhw9fyVd/qGwt58fUkshgb4e3QUPRzMCHDx8+fPgCh+cNcw6UHya7FUxtyzw/1naLSPDhw4cPH76F77a1zimX15b/Zp95TY8PHz58+PDN39r549roYQni88+05Us+5yhGwYcPHz58+GK+nCbfWucLu5UU7YGzvBnQjosPHz58+PAl4+YfXRrb+fNvR9n2WR2PEeDDhw8fPnwnvvyrfSF+6yTdDrSM+8vn8eHDhw8fvpnvhpKH7MmCl/D9VgYlrB9TFnz48OHDh+/NnXIdZLfFQd6cvgUTbdB/O9aGDx8+fPjw5XxLNN+CLk9on9MejLvh4sOHDx8+fDe+JBa/HVnbA4glkriVU/VU8OHDhw8fvh/jaxvqS8u8bdjn0Ev5MhUu+PDhw4cP34mv3aLnLe22DLrVGHvxhA8fPnz48C18eQFxa4rnRUxy7x4K5O3213od+PDhw4cP30tf+cnVbvVbuLyuuN2bvGZ8+PDhw4fvke8fkwE1ZHiigikAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

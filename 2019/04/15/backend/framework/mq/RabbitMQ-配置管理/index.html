@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>RabbitMQ-配置管理 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="消息队列,RabbitMQ">
+    <meta name="description" content="前言管理用户管理123456789101112131415161718192021# 创建songsy2用户，密码songsy2[root@VM_0_8_centos ~]# rabbitmqctl add_user songsy2 songsy2Creating user &quot;songsy2&quot; ...# 修改密码[root@VM_0_8_centos ~]# rabbitmqctl change_">
+<meta name="keywords" content="消息队列,RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ-配置管理">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言管理用户管理123456789101112131415161718192021# 创建songsy2用户，密码songsy2[root@VM_0_8_centos ~]# rabbitmqctl add_user songsy2 songsy2Creating user &quot;songsy2&quot; ...# 修改密码[root@VM_0_8_centos ~]# rabbitmqctl change_">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq_vhost.png">
+<meta property="og:updated_time" content="2020-04-11T12:23:47.861Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ-配置管理">
+<meta name="twitter:description" content="前言管理用户管理123456789101112131415161718192021# 创建songsy2用户，密码songsy2[root@VM_0_8_centos ~]# rabbitmqctl add_user songsy2 songsy2Creating user &quot;songsy2&quot; ...# 修改密码[root@VM_0_8_centos ~]# rabbitmqctl change_">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RabbitMQ-配置管理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RabbitMQ-配置管理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-14T16:04:00.000Z" itemprop="datePublished" class="page-time">
+  2019-04-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#管理"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">管理</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#用户管理"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">用户管理</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#虚拟主机（vhost）"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">虚拟主机（vhost）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#HTTP-API接口"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">HTTP API接口</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#内存及磁盘告警"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">内存及磁盘告警</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">2.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/mq/RabbitMQ-配置管理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RabbitMQ-配置管理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-15 00:04:00" datetime="2019-04-14T16:04:00.000Z" itemprop="datePublished">2019-04-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><h4 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># 创建songsy2用户，密码songsy2</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl add_user songsy2 songsy2</span><br><span class="line">Creating user "songsy2" ...</span><br><span class="line"></span><br><span class="line"># 修改密码</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl change_password songsy2  songsy21</span><br><span class="line"></span><br><span class="line"># 删除用户</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl delete_user songsy2</span><br><span class="line">Deleting user "songsy2" ...</span><br><span class="line"></span><br><span class="line"># 查看用户及角色（tag）</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl list_users</span><br><span class="line">Listing users ...</span><br><span class="line">songsy2 []</span><br><span class="line">songsy1 []</span><br><span class="line">songsy  [administrator]</span><br><span class="line"></span><br><span class="line"># 用户授权</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl set_user_tags songsy2 management</span><br><span class="line">Setting tags for user "songsy2" to [management] ...</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rabbitmq.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>角色分类<ul>
+<li>1、其他(none)<ul>
+<li>无法登陆管理控制台，通常就是普通的生产者和消费者，新建用户默认就是这个</li>
+</ul>
+</li>
+<li>2、普通管理者(management)<ul>
+<li>仅可登陆管理控制台，无法看到节点信息，也无法对策略进行管理。</li>
+</ul>
+</li>
+<li>3、策略制定者(policymaker)<ul>
+<li>包含management所有权限，可以管理策略(policy)和参数(parameter)</li>
+</ul>
+</li>
+<li>4、监控者(monitoring)<ul>
+<li>包含management所有权限，可以看到所有连接、信道及节点相关信息</li>
+</ul>
+</li>
+<li>5、超级管理员(administrator)<ul>
+<li>最高权限</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="虚拟主机（vhost）"><a href="#虚拟主机（vhost）" class="headerlink" title="虚拟主机（vhost）"></a>虚拟主机（vhost）</h4><ul>
+<li><p>每一个RabbitMQ都能创建虚拟消息服务器，我们称之为虚拟主机（vhost），每一个vhost本质上是一个mini版的RabbitMQ服务器，拥有自己的交换器、队列和绑定……更重要的是他有自己的权限机制</p>
+</li>
+<li><p>实例</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 添加一个名为vhost1的虚拟主机</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl add_vhost vhost1</span><br><span class="line">Creating vhost "vhost1" ...</span><br><span class="line"></span><br><span class="line"># 查看有哪些虚拟主机（/是默认的）</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl list_vhosts</span><br><span class="line">Listing vhosts ...</span><br><span class="line">vhost1</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line"># 授权songsy1用户可以访问vhost1并在所有资源上都具备可配置可读写的权限</span><br><span class="line">[root@VM_0_8_centos ~]# rabbitmqctl set_permissions -p vhost1 songsy1 ".*" ".*" ".*"</span><br><span class="line">Setting permissions for user "songsy1" in vhost "vhost1" ...</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rabbitmq_vhost.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h4 id="HTTP-API接口"><a href="#HTTP-API接口" class="headerlink" title="HTTP API接口"></a>HTTP API接口</h4><ul>
+<li>HTTP API接口通常用来方便客户端的调用，采用RESTful协议的接口形式</li>
+</ul>
+<h4 id="内存及磁盘告警"><a href="#内存及磁盘告警" class="headerlink" title="内存及磁盘告警"></a>内存及磁盘告警</h4><ul>
+<li>内存告警<ul>
+<li>默认情况下vm_memory_high_watermark 的值为0.4，即内存阑值为0.4</li>
+<li>表示当 RabbitMQ 使用的内存超过 40%时，就会产生内存告警井阻塞所有生产者的连接。</li>
+<li>一旦告警被解除(有消息被消费或者从内存转储到磁盘等情况的发生)， 一切都会恢复正常。</li>
+</ul>
+</li>
+<li>磁盘告警<ul>
+<li>默认情况下，磁盘阑值为 50MB，这意味着当磁盘剩余空间低于50MB 时会阻塞生产者井停止内存中消息的换页动作</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>RabbitMQ实战指南</li>
+<li><a href="https://pdf-lib.org/Home/Details/10901" target="_blank" rel="noopener">https://pdf-lib.org/Home/Details/10901</a></li>
+<li><a href="https://blog.csdn.net/w893932747/java/article/details/81018591" target="_blank" rel="noopener">https://blog.csdn.net/w893932747/java/article/details/81018591</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息队列/">消息队列</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/&title=《RabbitMQ-配置管理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/&title=《RabbitMQ-配置管理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-配置管理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-分布式部署/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RabbitMQ-分布式部署</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RabbitMQ-使用-死信队列及延迟队列</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/&title=《RabbitMQ-配置管理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/&title=《RabbitMQ-配置管理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-配置管理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACq0lEQVR42u3aQXLjQAgFUN3/0p4DOOl8oHG5pp5WKkeR+mlBI+B54uP1y3G+/v38/Mv7nc/3uXbg4eHhXVr6+63PsOQ++Ss7v5TCs/Dw8PDWeHlwP4f1XkDPX0e+Zjw8PLzv4f1GSh7WY+Ph4eH9f7w8KU/OJ4UJPDw8vE/yeqWBjd/PVy7WWvDw8PBqNdVnntp+8nylv4eHh4c37qonzbC77zi5c2G1eHh4eAu8XoNqUpadtLua68TDw8P7OG+eBE+Grqq//CDCw8PDW+D1gm91gKCalFdX8vR2Njw8PLwBL/n4P986D9zVimv+3D+ehYeHh3eJVw3cvTicl2t729Vza1/Cw8PDGy+oOiRaHdjKSyHVlhgeHh7eBu+8JeTLqrayqhtAszCBh4eHt8BL2kjVsadqEO+l2oUNBg8PD+8qr9B6jzP03khBdcuJXgEeHh7eAi9PZ+cpby81z4cMfgXj4eHhrfHyf5iE/lHu3ypz4OHh4e3x5qlwrzS8nXzj4eHh3eXlH/nVkms+FnB3w/hhdAAPDw9vjVcN5dtF2wuFCTw8PLwFXt7Uz0u31a2i2oQbDV3h4eHhXeVV0+LzQqtBv3pNoaSLh4eHt8DrhePqcpPKam8srFAEwcPDw7vKe8XH3eGqvWYbHh4e3h6vmrbmTbJbZYvJOBceHh7eHq96TBpgeUH2NTjw8PDwPsMrjDTFJd186c/4+ONbAQ8PD2/Ma4baOKBXk+Ck5ZZfg4eHh7fBmxRk83JAdfSqmr4/t/YTPDw8vJg3Lzr0Qv+kqJEPE+Dh4eHt8aop8mQ4YFLkbdZa8PDw8L6Al6TR+ZXVpxTWg4eHh/cFvLtJcL55NNtmeHh4eGu8pBgxKb9Wxw6Sv0ZgPDw8vAVe7yO/XE69NAqQgPHw8PDWeP8A2qcW2xP4jVsAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

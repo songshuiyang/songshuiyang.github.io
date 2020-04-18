@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>RabbitMQ-下载安装 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="消息队列,RabbitMQ">
+    <meta name="description" content="Centos7中安装RabbitMQ 1).首先需要安装erlang，安装过程中会有提示，一路输入“y”即可。  12#rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm#yum install erlang  2).完成后安装RabbitMQ：  先下载rpm：">
+<meta name="keywords" content="消息队列,RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ-下载安装">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="Centos7中安装RabbitMQ 1).首先需要安装erlang，安装过程中会有提示，一路输入“y”即可。  12#rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm#yum install erlang  2).完成后安装RabbitMQ：  先下载rpm：">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-04T03:31:04.763Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ-下载安装">
+<meta name="twitter:description" content="Centos7中安装RabbitMQ 1).首先需要安装erlang，安装过程中会有提示，一路输入“y”即可。  12#rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm#yum install erlang  2).完成后安装RabbitMQ：  先下载rpm：">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RabbitMQ-下载安装</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RabbitMQ-下载安装</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-14T16:01:00.000Z" itemprop="datePublished" class="page-time">
+  2019-04-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Centos7中安装RabbitMQ"><span class="post-toc-number">1.</span> <span class="post-toc-text">Centos7中安装RabbitMQ</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#RabbitMQ的配置"><span class="post-toc-number">2.</span> <span class="post-toc-text">RabbitMQ的配置</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-修改配置文件"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1.修改配置文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-安装插件"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2.安装插件</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/mq/RabbitMQ-下载安装" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RabbitMQ-下载安装</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-15 00:01:00" datetime="2019-04-14T16:01:00.000Z" itemprop="datePublished">2019-04-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Centos7中安装RabbitMQ"><a href="#Centos7中安装RabbitMQ" class="headerlink" title="Centos7中安装RabbitMQ"></a>Centos7中安装RabbitMQ</h2><ul>
+<li>1).首先需要安装erlang，安装过程中会有提示，一路输入“y”即可。</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm</span><br><span class="line">#yum install erlang</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>2).完成后安装RabbitMQ：</p>
+</li>
+<li><p>先下载rpm：</p>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下载完成后安装：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<ul>
+<li>完成后启动服务：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#service rabbitmq-server start</span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以查看服务状态：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#service rabbitmq-server status</span><br></pre></td></tr></table></figure>
+<h2 id="RabbitMQ的配置"><a href="#RabbitMQ的配置" class="headerlink" title="RabbitMQ的配置"></a>RabbitMQ的配置</h2><h3 id="1-修改配置文件"><a href="#1-修改配置文件" class="headerlink" title="1.修改配置文件"></a>1.修改配置文件</h3><ul>
+<li><code>service rabbitmq-server status</code>查看服务状态， 这里可以看到<code>log</code>文件的位置（<code>/var/log/rabbitmq/rabbit@VM_0_8_centos.log</code>），转到文件位置，打开文件：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Redirecting to /bin/systemctl status  rabbitmq-server.service</span><br><span class="line">鈼[0m rabbitmq-server.service - RabbitMQ broker</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/rabbitmq-server.service; disabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Mon 2019-11-04 11:33:30 CST; 4min 31s ago</span><br><span class="line">  Process: 24631 ExecStop=/usr/sbin/rabbitmqctl <span class="keyword">stop</span> (code=exited, <span class="keyword">status</span>=<span class="number">0</span>/<span class="keyword">SUCCESS</span>)</span><br><span class="line"> <span class="keyword">Main</span> PID: <span class="number">24761</span> (beam)</span><br><span class="line">   <span class="keyword">Status</span>: <span class="string">"Initialized"</span></span><br><span class="line">   CGroup: /system.slice/rabbitmq-server.service</span><br><span class="line">           鈹溾攢<span class="number">24761</span> /usr/lib64/erlang/erts<span class="number">-5.10</span><span class="number">.4</span>/<span class="keyword">bin</span>/beam -W w -A <span class="number">64</span> -P <span class="number">1048576</span> -t <span class="number">5000000</span> -stbt db -zdbbl <span class="number">32000</span> -K <span class="literal">true</span> <span class="comment">-- -root /usr/lib64/erlang -progname erl -- -home /var/lib/rabbitmq -- -pa /u...</span></span><br><span class="line">           鈹溾攢<span class="number">25062</span> inet_gethost <span class="number">4</span></span><br><span class="line">           鈹斺攢<span class="number">25063</span> inet_gethost <span class="number">4</span></span><br><span class="line"></span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: RabbitMQ <span class="number">3.6</span><span class="number">.6</span>. Copyright (C) <span class="number">2007</span><span class="number">-2016</span> Pivotal Software, Inc.</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: ##  ##      Licensed <span class="keyword">under</span> the MPL.  See <span class="keyword">http</span>://www.rabbitmq.com/</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: ##  ##</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: ##########  <span class="keyword">Logs</span>: /<span class="keyword">var</span>/<span class="keyword">log</span>/rabbitmq/rabbit@VM_0_8_centos.log</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: ######  ##        /<span class="keyword">var</span>/<span class="keyword">log</span>/rabbitmq/rabbit@VM_0_8_centos-sasl.log</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: ##########</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">28</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: <span class="keyword">Starting</span> broker...</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">30</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: systemd unit <span class="keyword">for</span> activation <span class="keyword">check</span>: <span class="string">"rabbitmq-server.service"</span></span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">30</span> VM_0_8_centos systemd[<span class="number">1</span>]: Started RabbitMQ broker.</span><br><span class="line">Nov <span class="number">04</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">31</span> VM_0_8_centos rabbitmq-<span class="keyword">server</span>[<span class="number">24761</span>]: completed <span class="keyword">with</span> <span class="number">6</span> plugins.</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这里显示的是没有找到配置文件，我们可以自己创建这个文件</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#cd /etc/rabbitmq/</span><br><span class="line">#vim rabbitmq.config</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编辑内容如下，注意后面有个点</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>这里的意思是开放使用，<code>rabbitmq</code>默认创建的用户<code>guest</code>，密码也是<code>guest</code>，这个用户默认只能是本机访问，<code>localhost</code>或者<code>127.0.0.1</code>，从外部访问需要添加上面的配置。</p>
+</li>
+<li><p>保存配置后重启服务：</p>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#service rabbitmq-server stop</span><br><span class="line">#service rabbitmq-server start</span><br></pre></td></tr></table></figure>
+<h3 id="2-安装插件"><a href="#2-安装插件" class="headerlink" title="2.安装插件"></a>2.安装插件</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#/sbin/rabbitmq-plugins enable rabbitmq_management</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>#service rabbitmq-server restart</code>重启<code>rabbitmq</code>服务</p>
+</li>
+<li><p>到此,就可以通过<code>http://ip:15672</code> 使用<code>guest,guest</code>进行登陆web页面了</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.cnblogs.com/php-linux/p/10855350.html" target="_blank" rel="noopener">https://www.cnblogs.com/php-linux/p/10855350.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息队列/">消息队列</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/&title=《RabbitMQ-下载安装》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/&title=《RabbitMQ-下载安装》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-下载安装》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-基础概念/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RabbitMQ-基础概念</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/14/backend/framework/mq/RocketMQ-下载安装/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RocketMQ-下载安装</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/&title=《RabbitMQ-下载安装》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/&title=《RabbitMQ-下载安装》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-下载安装》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsklEQVR42u3aMXIjMQwEQP//0+f0qmytZwBSpaAVqSR5l70BCQ/w9RW//v14/fw8+f3/3+bXf/VXx154eHh466U/M17dJllict/nR5CvGQ8PD+8279Xt8w26vU5+kKzWgIeHh/cBvOdiOim18xL5wCPGw8PD+0heXpQn7zfBBB4eHt47eW000G7cSeDbHiqHsxY8PDy8mJd3kT7n/ZX+Hh4eHt66q56PC5x6xsmVi9Xi4eHhXeC1cWp+++eAYNbuateJh4eHd48326Y3bbA8tG0/KQ4nPDw8vDWv3Xw3hXLeBju2Ejw8PLxbK4nK6LZtNhtXPVug4+Hh4Z3l5aVquzXnpfasKF9lw3h4eHjrWaNNc6sdfmp/mcS7L/t7eHh4eBd47chpGx/sD4DhEYWHh4d3mZcfEkkAkW/is1K7jiHw8PDwLvDaTTw5HtpjZjYc8PIR4OHh4V3gtQ2wU/Nc+0Gr5Dp4eHh493izYnq20H2wOzz98PDw8N7Cy+PafHM/VaYX4w54eHh4R3ktbNbUz4e99gdGNBmBh4eHt+C1oWq7obe/bOOPYs14eHh4h3jJKEC++W5GAWZxcD10hYeHh3eUd+o2ySPIQ+F8Pb8o8PDw8C7wWkDbtr8XWBRBMx4eHt4F3qbpNQPsG2n5J3h4eHg3eHkhux8LaAPZ9tuoh4aHh4d3iNdGBm1hvWmqzV54eHh47+S1w0950bwZqFq1wfDw8PAO8YZb7SLwnYUUbfkeDV3h4eHhjXizUYDNeEE+LtC21g6cJ3h4eHgxb3Pp2aa/v1c+TICHh4d3j5eUxe3jWM0y3M5a8PDw8N7Oa1tWeWyRBxPRA8LDw8P7AF7+V22R/Xx4DNtmeHh4eNd4eYncbtBtINs+1j/AeHh4eBd4s3/y6zj10CjApv2Gh4eHt+Z9A00Lh1xQVpcHAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

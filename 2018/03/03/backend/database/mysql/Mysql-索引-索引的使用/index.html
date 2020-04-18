@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mysql-索引-索引的使用 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,Mysql">
+    <meta name="description" content="前言使用索引的目的 索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？是不是觉得如果没有索引，这个事情根本无法完成？  除了词典，生活中随处可见索引的例子，如坐火车的场景（比如你买了一张火车票，">
+<meta name="keywords" content="数据库,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-索引-索引的使用">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言使用索引的目的 索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？是不是觉得如果没有索引，这个事情根本无法完成？  除了词典，生活中随处可见索引的例子，如坐火车的场景（比如你买了一张火车票，">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-索引-索引的使用">
+<meta name="twitter:description" content="前言使用索引的目的 索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？是不是觉得如果没有索引，这个事情根本无法完成？  除了词典，生活中随处可见索引的例子，如坐火车的场景（比如你买了一张火车票，">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mysql-索引-索引的使用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mysql-索引-索引的使用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-02T16:05:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#使用索引的目的"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">使用索引的目的</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#索引的类型"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">索引的类型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#一、从逻辑角度划分"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">一、从逻辑角度划分</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、普通索引"><span class="post-toc-number">2.1.1.1.</span> <span class="post-toc-text">1、普通索引</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、唯一索引："><span class="post-toc-number">2.1.1.2.</span> <span class="post-toc-text">2、唯一索引：</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3、主键索引："><span class="post-toc-number">2.1.1.3.</span> <span class="post-toc-text">3、主键索引：</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4、复合索引："><span class="post-toc-number">2.1.1.4.</span> <span class="post-toc-text">4、复合索引：</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#5、外键索引："><span class="post-toc-number">2.1.1.5.</span> <span class="post-toc-text">5、外键索引：</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#6、全文索引："><span class="post-toc-number">2.1.1.6.</span> <span class="post-toc-text">6、全文索引：</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#二、从数据结构角度划分"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">二、从数据结构角度划分</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、B-树索引-O-log-n"><span class="post-toc-number">2.1.2.1.</span> <span class="post-toc-text">1、B+树索引(O(log(n)))</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、hash索引"><span class="post-toc-number">2.1.2.2.</span> <span class="post-toc-text">2、hash索引</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"><span class="post-toc-number">2.1.2.3.</span> <span class="post-toc-text">3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"><span class="post-toc-number">2.1.2.4.</span> <span class="post-toc-text">4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#三、从物理存储角度划分"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">三、从物理存储角度划分</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、聚集索引（clustered-index）"><span class="post-toc-number">2.1.3.1.</span> <span class="post-toc-text">1、聚集索引（clustered index）</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、非聚集索引（non-clustered-index）"><span class="post-toc-number">2.1.3.2.</span> <span class="post-toc-text">2、非聚集索引（non-clustered index）</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#MySQL-索引的“使用”注意事项？"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">MySQL 索引的“使用”注意事项？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#索引有什么好处"><span class="post-toc-number">4.0.1.</span> <span class="post-toc-text">索引有什么好处</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#索引有什么坏处"><span class="post-toc-number">4.0.2.</span> <span class="post-toc-text">索引有什么坏处</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#索引的使用场景"><span class="post-toc-number">4.0.3.</span> <span class="post-toc-text">索引的使用场景</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/mysql/Mysql-索引-索引的使用" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mysql-索引-索引的使用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-03 00:05:00" datetime="2018-03-02T16:05:00.000Z" itemprop="datePublished">2018-03-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h4 id="使用索引的目的"><a href="#使用索引的目的" class="headerlink" title="使用索引的目的"></a>使用索引的目的</h4><ul>
+<li><p>索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？是不是觉得如果没有索引，这个事情根本无法完成？</p>
+</li>
+<li><p>除了词典，生活中随处可见索引的例子，如坐火车的场景（比如你买了一张火车票，然后需要找到自己票的位置，那你是不是先看一下是在哪个车厢然后就是对号入座，这里的车厢就是索引，如果没有这个索引的话那你是不是要从头到尾在一节节车厢里找？）、图书的目录等。它们的原理都是一样的，通过不断的缩小想要获得数据的范围来筛选出最终想要的结果，同时把随机的事件变成顺序的事件，也就是我们总是通过同一种查找方式来锁定数据。</p>
+</li>
+<li><p>数据库也是一样，但显然要复杂许多，因为不仅面临着等值查询，还有范围查询(&gt;、&lt;、between、in)、模糊查询(like)、并集查询(or)等等。数据库应该选择怎么样的方式来应对所有的问题呢？</p>
+<ul>
+<li>我们回想字典的例子，能不能把数据分成段，然后分段查询呢？最简单的如果1000条数据，1到100分成第一段，101到200分成第二段，201到300分成第三段……这样查第250条数据，只要找第三段就可以了，一下子去除了90%的无效数据。</li>
+<li>但如果是1千万的记录呢，分成几段比较好？稍有算法基础的同学会想到搜索树，其平均复杂度是lgN，具有不错的查询性能。</li>
+<li>但这里我们忽略了一个关键的问题，复杂度模型是基于每次相同的操作成本来考虑的，数据库实现比较复杂，数据保存在磁盘上，而为了提高性能，每次又可以把部分数据读入内存来计算，因为我们知道访问磁盘的成本大概是访问内存的十万倍左右，所以简单的搜索树难以满足复杂的应用场景。</li>
+</ul>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h3><h4 id="一、从逻辑角度划分"><a href="#一、从逻辑角度划分" class="headerlink" title="一、从逻辑角度划分"></a>一、从逻辑角度划分</h4><ul>
+<li>索引都是在存储引擎层实现的，主要有六种类型：</li>
+</ul>
+<h5 id="1、普通索引"><a href="#1、普通索引" class="headerlink" title="1、普通索引"></a>1、普通索引</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> index_name <span class="keyword">on</span> tbl_name(index_col_name);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最基本的索引，没有任何约束。</li>
+</ul>
+<h5 id="2、唯一索引："><a href="#2、唯一索引：" class="headerlink" title="2、唯一索引："></a>2、唯一索引：</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> index_name <span class="keyword">on</span> tbl_name(index_col_name,...);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>唯一索引和单列索引类似，主要的区别在于，唯一索引限制列的值必须唯一，但允许有空值</p>
+</li>
+<li><p>对于多个字段，唯一索引规定列值的组合必须唯一。</p>
+</li>
+<li><p>与普通索引类似，但具有唯一性约束。</p>
+</li>
+<li><p>主键自动建立唯一索引</p>
+</li>
+</ul>
+<h5 id="3、主键索引："><a href="#3、主键索引：" class="headerlink" title="3、主键索引："></a>3、主键索引：</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> tbl_name <span class="keyword">add</span> primary <span class="keyword">key</span>(index_col_name);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>主键索引是一种特殊的唯一索引，不允许有空值</p>
+</li>
+<li><p>CREATE INDEX 不能创建主键索引，需要使用 ALTER TABLE 代替</p>
+</li>
+<li><p>特殊的唯一索引，不允许有空值。</p>
+</li>
+</ul>
+<h5 id="4、复合索引："><a href="#4、复合索引：" class="headerlink" title="4、复合索引："></a>4、复合索引：</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> index_name <span class="keyword">on</span> tbl_name(index_col_name,...);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>将多个列组合在一起创建索引，可以覆盖多个列。</p>
+</li>
+<li><p>复合索引遵守“最左前缀”原则，即在查询条件中使用了复合索引的第一个字段，索引才会被使用。因此，在复合索引中索引列的顺序至关重要。</p>
+</li>
+</ul>
+<h5 id="5、外键索引："><a href="#5、外键索引：" class="headerlink" title="5、外键索引："></a>5、外键索引：</h5><ul>
+<li>只有InnoDB类型的表才可以使用外键索引，保证数据的一致性、完整性和实现级联操作。</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="6、全文索引："><a href="#6、全文索引：" class="headerlink" title="6、全文索引："></a>6、全文索引：</h5><ul>
+<li><p>在一般情况下，模糊查询都是通过 <code>like</code> 的方式进行查询。但是，对于海量数据，这并不是一个好办法，在 <code>like “value%”</code> 可以使用索引，但是对于 <code>like “%value%”</code> 这样的方式，执行全表查询，这在数据量小的表，不存在性能问题，但是对于海量数据，全表扫描是非常可怕的事情,所以 <code>like</code> 进行模糊匹配性能很差。</p>
+</li>
+<li><p>这种情况下，需要考虑使用全文搜索的方式进行优化。全文搜索在 <code>MySQL</code> 中是一个 <code>FULLTEXT</code> 类型索引。 <code>FULLTEXT</code> 索引在 <code>MySQL 5.6</code> 版本之后支持 <code>InnoDB</code>，而之前的版本只支持 <code>MyISAM</code> 表。</p>
+</li>
+<li><p>示例</p>
+<ul>
+<li><p>假设，有一张应用全文索引表。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="string">`app_full_text`</span> (</span><br><span class="line">  <span class="string">`app_id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`app_name_full_text`</span> <span class="built_in">text</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`introduce_full_text`</span> <span class="built_in">text</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>现在需要对应用的名称创建全文索引，可以这么设计。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> <span class="string">`app_full_text`</span> <span class="keyword">add</span> fulltext <span class="keyword">key</span> <span class="string">`app_name_intro`</span> (<span class="string">`app_name_full_text`</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>全文索引只对英文有用，目前对中文还不支持。<code>5.7</code>版本之后通过使用<code>ngram</code>插件开始支持中文。</li>
+<li>如果检索的字符串太短则无法检索得到预期的结果，检索的字符串长度至少为4字节</li>
+</ul>
+</li>
+<li><p>常用的全文索引引擎的解决方案有 <code>Elasticsearch、Solr</code> 等等。最为常用的是 <code>Elasticsearch</code>。</p>
+</li>
+</ul>
+<h4 id="二、从数据结构角度划分"><a href="#二、从数据结构角度划分" class="headerlink" title="二、从数据结构角度划分"></a>二、从数据结构角度划分</h4><h5 id="1、B-树索引-O-log-n"><a href="#1、B-树索引-O-log-n" class="headerlink" title="1、B+树索引(O(log(n)))"></a>1、B+树索引(O(log(n)))</h5><h5 id="2、hash索引"><a href="#2、hash索引" class="headerlink" title="2、hash索引"></a>2、hash索引</h5><h5 id="3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"><a href="#3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）" class="headerlink" title="3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"></a>3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）</h5><h5 id="4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"><a href="#4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）" class="headerlink" title="4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"></a>4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）</h5><h4 id="三、从物理存储角度划分"><a href="#三、从物理存储角度划分" class="headerlink" title="三、从物理存储角度划分"></a>三、从物理存储角度划分</h4><h5 id="1、聚集索引（clustered-index）"><a href="#1、聚集索引（clustered-index）" class="headerlink" title="1、聚集索引（clustered index）"></a>1、聚集索引（clustered index）</h5><h5 id="2、非聚集索引（non-clustered-index）"><a href="#2、非聚集索引（non-clustered-index）" class="headerlink" title="2、非聚集索引（non-clustered index）"></a>2、非聚集索引（non-clustered index）</h5><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h4 id="MySQL-索引的“使用”注意事项？"><a href="#MySQL-索引的“使用”注意事项？" class="headerlink" title="MySQL 索引的“使用”注意事项？"></a>MySQL 索引的“使用”注意事项？</h4><ul>
+<li><p>MySQL 索引通常是被用于提高 <code>WHERE</code>条件的数据行匹配时的搜索速度，在索引的使用过程中，存在一些使用细节和注意事项。</p>
+</li>
+<li><p>不要在列上使用函数和进行运算</p>
+<ul>
+<li>不要在列上使用函数，这将导致索引失效而进行全表扫描。 <ul>
+<li>示例：<code>select * from news where year(publish_time) &lt; 2017</code></li>
+<li>改造：<code>select * from news where publish_time &lt; &#39;2017-01-01&#39;</code></li>
+</ul>
+</li>
+<li>不要在列上进行运算，这也将导致索引失效而进行全表扫描。<ul>
+<li>示例：<code>select * from news where id / 100 = 1</code></li>
+<li>改造：<code>select * from news where id = 1 * 100</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>尽量避免使用 <code>!=</code> 或 <code>not in</code>或 <code>&lt;&gt;</code> 等否定操作符<ul>
+<li>应该尽量避免在 <code>where</code> 子句中使用 <code>!=</code> 或 <code>not in</code> 或 <code>&lt;&gt;</code> 操作符，因为这几个操作符都会导致索引失效而进行全表扫描。</li>
+</ul>
+</li>
+<li>尽量避免使用 <code>or</code> 来连接条件<ul>
+<li>应该尽量避免在 <code>where</code> 子句中使用 <code>or</code>来连接条件，因为这会导致索引失效而进行全表扫描。</li>
+<li>示例：<code>select * from news where id = 1 or id = 2</code></li>
+</ul>
+</li>
+<li>多个单列索引并不是最佳选择<ul>
+<li><code>MySQL</code> 只能使用一个索引，会从多个索引中选择一个限制最为严格的索引，因此，为多个列创建单列索引，并不能提高 MySQL 的查询性能。</li>
+<li>假设，有两个单列索引，分别为 <code>news_year_idx(news_year)</code> 和 <code>news_month_idx(news_month)</code>。现在，有一个场景需要针对资讯的年份和月份进行查询，那么，<code>SQL</code> 语句可以写成：<code>select * from news where news_year = 2017 and news_month = 1</code></li>
+<li>事实上，<code>MySQL</code> 只能使用一个单列索引。为了提高性能，可以使用复合索引 <code>news_year_month_idx(news_year, news_month)</code> 保证 <code>news_year</code> 和 <code>news_month</code> 两个列都被索引覆盖。</li>
+</ul>
+</li>
+<li>复合索引的最左前缀原则<ul>
+<li>复合索引遵守“最左前缀”原则，即在查询条件中使用了复合索引的第一个字段，索引才会被使用。因此，在复合索引中索引列的顺序至关重要。如果不是按照索引的最左列开始查找，则无法使用索引。</li>
+<li>假设，有一个场景只需要针对资讯的月份进行查询，那么，SQL 语句可以写成：<code>select * from news where news_month = 1</code></li>
+<li>此时，无法使用 <code>news_year_month_idx(news_year, news_month)</code>索引，因为遵守“最左前缀”原则，在查询条件中没有使用复合索引的第一个字段，索引是不会被使用的。</li>
+</ul>
+</li>
+<li>什么是索引的最左匹配特性？<ul>
+<li>当 <code>B+Tree</code> 的数据项是复合的数据结构，比如索引 <code>(name, age, sex)</code> 的时候，<code>B+Tree</code> 是按照从左到右的顺序来建立搜索树的。</li>
+<li>比如当 <code>(张三, 20, F)</code>这样的数据来检索的时候，<code>B+Tree</code> 会优先比较<code>name</code> 来确定下一步的所搜方向，如果 <code>name</code>相同再依次比较 <code>age</code> 和 <code>sex</code> ，最后得到检索的数据。</li>
+<li>但当 <code>(20, F)</code>这样的没有 <code>name</code> 的数据来的时候，<code>B+Tree</code> 就不知道下一步该查哪个节点，因为建立搜索树的时候 <code>name</code> 就是第一个比较因子，必须要先根据 <code>name</code> 来搜索才能知道下一步去哪里查询。</li>
+<li>比如当 <code>(张三, F)</code> 这样的数据来检索时，<code>B+Tree</code> 可以用 <code>name</code> 来指定搜索方向，但下一个字段 <code>ag</code>e 的缺失，所以只能把名字等于张三的数据都找到，然后再匹配性别是 <code>F</code> 的数据了。</li>
+<li>这个是非常重要的性质，即索引的最左匹配特性。</li>
+</ul>
+</li>
+<li><p>覆盖索引的好处</p>
+</li>
+<li><p>范围查询对多列查询的影响</p>
+<ul>
+<li>查询中的某个列有范围查询，则其右边所有列都无法使用索引优化查找。</li>
+<li>举个例子，假设有一个场景需要查询本周发布的资讯文章，其中的条件是必须是启用状态，且发布时间在这周内<ul>
+<li><code>SQL</code> 语句可以写成：<code>select * from news where publish_time &gt;= &#39;2017-01-02&#39; and publish_time &lt;= &#39;2017-01-08&#39; and enable = 1</code></li>
+<li>这种情况下，因为范围查询对多列查询的影响，将导致 <code>news_publish_idx(publish_time, enable)</code>索引中 <code>publish_time</code> 右边所有列都无法使用索引优化查找。换句话说，<code>news_publish_idx(publish_time, enable)</code>索引等价于 <code>news_publish_idx(publish_time)</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>索引不会包含有<code>NULL</code>值的列</p>
+<ul>
+<li>只要列中包含有<code>NULL</code> 值都将不会被包含在索引中，复合索引中只要有一列含有 <code>NULL</code>值，那么这一列对于此复合索引就是无效的。</li>
+<li>因此，在数据库设计时，除非有一个很特别的原因使用 <code>NULL</code> 值，不然尽量不要让字段的默认值为 <code>NULL</code>。</li>
+</ul>
+</li>
+<li><code>like</code> 语句的索引失效问题<ul>
+<li><code>like</code> 的方式进行查询，在 <code>like “value%”</code> 可以使用索引，但是对于 <code>like “%value%”</code> 这样的方式，执行全表查询，这在数据量小的表，不存在性能问题，但是对于海量数据，全表扫描是非常可怕的事情</li>
+<li>根据业务需求，考虑使用 <code>ElasticSearch</code>或 <code>Solr</code> 是个不错的方案。</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>索引（在<code>MYSQL</code>中也叫做键<code>&lt;key&gt;</code>），是存储引擎用于快速找到记录的一种数据结构。索引用来快速地寻找那些具有特定值的记录，所有<code>MySQL</code>索引都以<code>B-</code>树的形式保存。如果没有索引，执行查询时<code>MySQL</code>必须从第一个记录开始扫描整个表的所有记录，直至找到符合要求的记录。表里面的记录数量越多，这个操作的代价就越高。如果作为搜索条件的列上已经创建了索引，<code>MySQL</code>无需扫描任何记录即可迅速得到目标记录所在的位置。如果表有1000个记录，通过索引查找记录至少要比顺序扫描记录快100倍。 </p>
+</li>
+<li><p>索引对查询的速度有着至关重要的影响，理解索引也是进行数据库性能调优的起点，很多时候，当你的应用程序进行<code>SQL</code>查询速度很慢时，应该想想是否可以建索引。</p>
+</li>
+</ul>
+<h4 id="索引有什么好处"><a href="#索引有什么好处" class="headerlink" title="索引有什么好处"></a>索引有什么好处</h4><ul>
+<li>提高数据的检索速度，降低数据库IO成本<ul>
+<li>使用索引的意义就是通过缩小表中需要查询的记录的数目从而加快搜索的速度。</li>
+</ul>
+</li>
+<li>降低数据排序的成本，降低CPU消耗<ul>
+<li>索引之所以查的快，是因为先将数据排好序，若该字段正好需要排序，则正好降低了排序的成本。 </li>
+</ul>
+</li>
+</ul>
+<h4 id="索引有什么坏处"><a href="#索引有什么坏处" class="headerlink" title="索引有什么坏处"></a>索引有什么坏处</h4><ul>
+<li>占用存储空间：索引实际上也是一张表，记录了主键与索引字段，一般以索引文件的形式存储在磁盘上。</li>
+<li>降低更新表的速度：表的数据发生了变化，对应的索引也需要一起变更，从而减低的更新速度。否则索引指向的物理数据可能不对，这也是索引失效的原因之一。</li>
+</ul>
+<h4 id="索引的使用场景"><a href="#索引的使用场景" class="headerlink" title="索引的使用场景"></a>索引的使用场景</h4><ul>
+<li>1、对非常小的表，大部分情况下全表扫描效率更高。</li>
+<li>2、对中大型表，索引非常有效。</li>
+<li>3、特大型的表，建立和使用索引的代价随着增长，可以使用分区技术来解决。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://tech.meituan.com/2014/06/30/mysql-index.html" target="_blank" rel="noopener">https://tech.meituan.com/2014/06/30/mysql-index.html</a></li>
+<li><a href="http://www.iocoder.cn/" target="_blank" rel="noopener">http://www.iocoder.cn/</a></li>
+<li><a href="http://blog.720ui.com/2017/mysql_core_03_how_use_index/" target="_blank" rel="noopener">http://blog.720ui.com/2017/mysql_core_03_how_use_index/</a></li>
+<li><a href="http://blog.720ui.com/2017/mysql_core_04_index_item/" target="_blank" rel="noopener">http://blog.720ui.com/2017/mysql_core_04_index_item/</a></li>
+<li><a href="https://www.cnblogs.com/duanxz/p/3799045.html" target="_blank" rel="noopener">https://www.cnblogs.com/duanxz/p/3799045.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/&title=《Mysql-索引-索引的使用》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/&title=《Mysql-索引-索引的使用》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-索引-索引的使用》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql-索引-各种BTree类型</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-面试题/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql-面试题</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/&title=《Mysql-索引-索引的使用》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/&title=《Mysql-索引-索引的使用》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-索引-索引的使用》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADLklEQVR42u3aQW7jQAwEwPz/095zEFhqksrCw5ROgWFLU2Mg7SH59RVfr8vr+p3v7tZ74s87JHdrXtjY2NiHsBNSgrleRLLo68/mW5B8PdjY2Nj72PlCk1eu4+0aVo2lfOOwsbGxsa9J81/71Wflm4WNjY2NnS+0WjbKI/C6gIWNjY2NPSnH568kAZZ8Af+1loaNjY398exJ4ebT/v6V/jY2Njb2B7NfxStv+vaWOF9J9FlsbGzsRexqAWhSSJocD6rFpmT92NjY2DvYvdJMdTSnN7iTD/0UWgJ53wMbGxv7EPbkYb3PTu5zHWB5QwIbGxt7E7u3oGpU5Iy8iZuv820tDRsbG3sFuzdwk5d78uCpbmg+4lOopWFjY2MfyM5bp3nI5cX9anRNVlj+BrCxsbEPYU+OHDmmULIfbG65v42NjY29iD0/JFSbspOAzA8hha4INjY29rHsaoM2bwP0hnsmmHz7sLGxsTex8x/x1b+vF5EP2VQHgHrbio2NjX0uOx957I3FTJq4vUCNtgkbGxt7ETuPhPxHf7VV0BsYyt9zU1rCxsbGXsGeFGVGERKHU154Ko/yYGNjY69gTwr61TDLI6dXQso3GhsbG3s3u/qAyfBlXtKaF7BuBnewsbGxl7KTNkB1yCbHJ/dpxhg2Njb2Onb1kJA3X/PN7bUQqgcYbGxs7K3sXqjkTdbkuT1Ab8wIGxsbewc7/ylfPZY8tZW9tsRNoGJjY2OvY/eaptVSfvLOXhkrj71vAYaNjY29gt0r+vSK8tUS1bOvNwd3sLGxsQ9k926RF5UmrYjeEeUmRLGxsbFXsJ+Kljyu5kWoByITGxsbex37qbHI8mGguK2TAMPGxsbeze4FRnWJeYmqGqXJhY2Njb2P/SpeOTWJtF6w9QY9o13HxsbGPpBd/dffKwxN2JP2QL42bGxs7NPZSWhV2669NkMSh70nFsYusbGxsY9l5w3USbP2qTZwEns378fGxsbGnkx6topc+QqjgU5sbGzsP89+qtnQO/wk24qNjY3919j54iZF+d4RYhJjb08f2NjY2IvY1fZqNTZ68VONyck7sbGxsY9l/wPFQPcTtTQD+gAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

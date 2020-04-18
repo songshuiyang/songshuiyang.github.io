@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringCloud(Ribbon)与SpringCloud集成简单示例 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Cloud">
+    <meta name="description" content="前言 Spring Cloud Ribbon是为客户端提供负载均衡功能的服务，简单来说，就是从注册中心Eureka、Consul获取可用服务实例列表，然后将请求根据某种策略发到这些实例上面执行  简单示例1、集成ribbon1234&amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;  &amp;lt;ar">
+<meta name="keywords" content="Spring,Spring Cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud(Ribbon)与SpringCloud集成简单示例">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 Spring Cloud Ribbon是为客户端提供负载均衡功能的服务，简单来说，就是从注册中心Eureka、Consul获取可用服务实例列表，然后将请求根据某种策略发到这些实例上面执行  简单示例1、集成ribbon1234&amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;  &amp;lt;ar">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/LoadBalancerClient.png">
+<meta property="og:updated_time" content="2019-09-16T13:11:05.914Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloud(Ribbon)与SpringCloud集成简单示例">
+<meta name="twitter:description" content="前言 Spring Cloud Ribbon是为客户端提供负载均衡功能的服务，简单来说，就是从注册中心Eureka、Consul获取可用服务实例列表，然后将请求根据某种策略发到这些实例上面执行  简单示例1、集成ribbon1234&amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;  &amp;lt;ar">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/LoadBalancerClient.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringCloud(Ribbon)与SpringCloud集成简单示例</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringCloud(Ribbon)与SpringCloud集成简单示例</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-06T16:03:01.000Z" itemprop="datePublished" class="page-time">
+  2019-08-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#简单示例"><span class="post-toc-number">2.</span> <span class="post-toc-text">简单示例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、集成ribbon"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1、集成ribbon</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、消费方"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2、消费方</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3、服务方"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">3、服务方</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#3-1-服务方1-以9011端口启动"><span class="post-toc-number">2.0.3.1.</span> <span class="post-toc-text">3.1 服务方1 以9011端口启动</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#3-2-服务方2-以9023端口启动"><span class="post-toc-number">2.0.3.2.</span> <span class="post-toc-text">3.2 服务方2 以9023端口启动</span></a></li></ol></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4、测试结果"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">4、测试结果</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LoadBalanced注解解析"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">@LoadBalanced注解解析</span></a></li></ol><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringCloud(Ribbon)与SpringCloud集成简单示例</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-07 00:03:01" datetime="2019-08-06T16:03:01.000Z" itemprop="datePublished">2019-08-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><ul>
+<li><code>Spring Cloud Ribbon</code>是为客户端提供负载均衡功能的服务，简单来说，就是从注册中心<code>Eureka、Consul</code>获取可用服务实例列表，然后将请求根据某种策略发到这些实例上面执行</li>
+</ul>
+<h3 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h3><h5 id="1、集成ribbon"><a href="#1、集成ribbon" class="headerlink" title="1、集成ribbon"></a>1、集成ribbon</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-ribbon<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h5 id="2、消费方"><a href="#2、消费方" class="headerlink" title="2、消费方"></a>2、消费方</h5><ul>
+<li><p>定义消费方调用方法，通过<code>@LoadBalanced</code>注解开启客户端负债均衡</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoController</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主要用来调用REST服务，本身并不具备调用分布式服务的能力，但通过<span class="doctag">@LoadBalanced</span>注解开启客户端负债均衡</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">getRestTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/router"</span>, method = RequestMethod.GET,</span><br><span class="line">            produces = MediaType.APPLICATION_JSON_VALUE)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">router</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        RestTemplate restTpl = getRestTemplate();</span><br><span class="line">        <span class="comment">// 根据应用名称调用服务</span></span><br><span class="line">        String json = restTpl.getForObject(<span class="string">"http://eureka-provider/person/1"</span>, String.class);</span><br><span class="line">        <span class="keyword">return</span> json;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>消费方配置文件</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: <span class="number">9050</span></span><br><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: eureka-consumer</span><br><span class="line">eureka:</span><br><span class="line">  instance:</span><br><span class="line">    hostname: localhost</span><br><span class="line">  client:</span><br><span class="line">    service-url:</span><br><span class="line">      defaultZone: http:<span class="comment">//localhost:9010/eureka/,http://localhost:9020/eureka/</span></span><br></pre></td></tr></table></figure>
+<h5 id="3、服务方"><a href="#3、服务方" class="headerlink" title="3、服务方"></a>3、服务方</h5><ul>
+<li><p>服务提供方法, 这里就是简单模拟了一下根据personId获取人员信息，并返回对应服务的端口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/person/&#123;personId&#125;"</span>, method = RequestMethod.GET,</span><br><span class="line">         produces = MediaType.APPLICATION_JSON_VALUE)</span><br><span class="line"> <span class="function"><span class="keyword">public</span> Person <span class="title">findPerson</span><span class="params">(@PathVariable(<span class="string">"personId"</span>)</span> Integer personId, HttpServletRequest request) </span>&#123;</span><br><span class="line">     Person person = <span class="keyword">new</span> Person(personId, <span class="string">"songsy"</span>, <span class="number">18</span>);</span><br><span class="line">     person.setName(person.getName() + <span class="string">"端口："</span> + IpConfigurationUtils.getPort());</span><br><span class="line">     <span class="keyword">return</span> person;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: eureka-provider</span><br><span class="line">eureka:</span><br><span class="line">  instance:</span><br><span class="line">    hostname: localhost</span><br><span class="line">  client:</span><br><span class="line">    service-url:</span><br><span class="line">      defaultZone: http://localhost:9010/eureka/,http://localhost:9020/eureka/</span><br></pre></td></tr></table></figure>
+<h6 id="3-1-服务方1-以9011端口启动"><a href="#3-1-服务方1-以9011端口启动" class="headerlink" title="3.1 服务方1 以9011端口启动"></a>3.1 服务方1 以9011端口启动</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> SpringApplicationBuilder(Slave1ProviderApplication.class).properties(<span class="string">"server.port=9011"</span>).run(args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="3-2-服务方2-以9023端口启动"><a href="#3-2-服务方2-以9023端口启动" class="headerlink" title="3.2 服务方2 以9023端口启动"></a>3.2 服务方2 以9023端口启动</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> SpringApplicationBuilder(Slave1ProviderApplication.class).properties(<span class="string">"server.port=9023"</span>).run(args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="4、测试结果"><a href="#4、测试结果" class="headerlink" title="4、测试结果"></a>4、测试结果</h5><ul>
+<li>连续访问 <code>http://localhost:9050/router</code> 会得到不同的结果， 可以看到已经实现了负载均衡</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;"id":1,"name":"songsy端口：9023","age":18&#125;</span><br><span class="line"></span><br><span class="line">&#123;"id":1,"name":"songsy端口：9011","age":18&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="LoadBalanced注解解析"><a href="#LoadBalanced注解解析" class="headerlink" title="@LoadBalanced注解解析"></a><code>@LoadBalanced</code>注解解析</h4><ul>
+<li>上一章节<code>Ribbon</code>实现客户端负债均衡是通过<code>@LoadBalanced</code>注解来开启的，下面是<code>@LoadBalanced</code> 注解，查看注释可以看到该注解具体发挥作用的是<code>LoadBalancerClient</code>类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 使用 LoadBalancerClient 该类来配置</span></span><br><span class="line"><span class="comment"> * Annotation to mark a RestTemplate bean to be configured to use a LoadBalancerClient</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target</span>(&#123; ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD &#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Qualifier</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> LoadBalanced &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看<code>LoadBalancerClient.java</code>类可以看到主要有三种方法，这三种方法就是<code>Ribbon</code>的具体要做的事情<ul>
+<li><code>choose()</code> 根据传入的服务实例名<code>serviceId</code>，从负债均衡中挑选一个对应服务的实例</li>
+<li><code>reconstructURI()</code>将 <code>http://myservice/path/to/service</code>构建一个真实的<code>host:port</code>形式的<code>url</code></li>
+<li><code>execute()</code> 根据挑选出来服务实例执行请求</li>
+</ul>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/LoadBalancerClient.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><code>ServiceInstanceChooser.java</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ServiceInstanceChooser</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    *  根据传入的服务实例名serviceId，从负债均衡中挑选一个对应服务的实例</span></span><br><span class="line"><span class="comment">     * Choose a ServiceInstance from the LoadBalancer for the specified service</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> serviceId the service id to look up the LoadBalancer</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> a ServiceInstance that matches the serviceId</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">ServiceInstance <span class="title">choose</span><span class="params">(String serviceId)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>LoadBalancerClient.java</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Represents a client side load balancer</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoadBalancerClient</span> <span class="keyword">extends</span> <span class="title">ServiceInstanceChooser</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 根据挑选出来服务实例执行请求</span></span><br><span class="line"><span class="comment">	 * execute request using a ServiceInstance from the LoadBalancer for the specified</span></span><br><span class="line"><span class="comment">	 * service</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> serviceId the service id to look up the LoadBalancer</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> request allows implementations to execute pre and post actions such as</span></span><br><span class="line"><span class="comment">	 * incrementing metrics</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the result of the LoadBalancerRequest callback on the selected</span></span><br><span class="line"><span class="comment">	 * ServiceInstance</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	&lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(String serviceId, LoadBalancerRequest&lt;T&gt; request)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 根据服务实例执行请求</span></span><br><span class="line"><span class="comment">	 * execute request using a ServiceInstance from the LoadBalancer for the specified</span></span><br><span class="line"><span class="comment">	 * service</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> serviceId the service id to look up the LoadBalancer</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> serviceInstance the service to execute the request to</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> request allows implementations to execute pre and post actions such as</span></span><br><span class="line"><span class="comment">	 * incrementing metrics</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the result of the LoadBalancerRequest callback on the selected</span></span><br><span class="line"><span class="comment">	 * ServiceInstance</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	&lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(String serviceId, ServiceInstance serviceInstance, LoadBalancerRequest&lt;T&gt; request)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 将 http://myservice/path/to/service 构建一个真实的host:port形式的url</span></span><br><span class="line"><span class="comment">	 * Create a proper URI with a real host and port for systems to utilize.</span></span><br><span class="line"><span class="comment">	 * Some systems use a URI with the logical serivce name as the host,</span></span><br><span class="line"><span class="comment">	 * such as http://myservice/path/to/service.  This will replace the</span></span><br><span class="line"><span class="comment">	 * service name with the host:port from the ServiceInstance.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> instance</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> original a URI with the host as a logical service name</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> a reconstructed URI</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">URI <span class="title">reconstructURI</span><span class="params">(ServiceInstance instance, URI original)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>它内部提供了一个叫做<code>ILoadBalance</code>的接口代表负载均衡器的操作，比如有添加服务器操作、选择服务器操作、获取所有的服务器列表、获取可用的服务器列表等等。</li>
+</ul>
+<ul>
+<li>连接服务实例超时怎么办，连接服务实例后读取内容超时怎么处理</li>
+<li>断路器是怎么处理的</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>负载均衡器的目的主要是根据负责均衡策略选取合适的服务端实例</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/zhxdick/article/details/79449146" target="_blank" rel="noopener">https://blog.csdn.net/zhxdick/article/details/79449146</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/&title=《SpringCloud(Ribbon)与SpringCloud集成简单示例》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/&title=《SpringCloud(Ribbon)与SpringCloud集成简单示例》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Ribbon)与SpringCloud集成简单示例》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析一/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringCloud(Ribbon)工作原理及源码分析一</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)负载均衡介绍/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringCloud(Ribbon)负载均衡介绍</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/&title=《SpringCloud(Ribbon)与SpringCloud集成简单示例》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/&title=《SpringCloud(Ribbon)与SpringCloud集成简单示例》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Ribbon)与SpringCloud集成简单示例》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)与SpringCloud集成简单示例/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEe0lEQVR42u3aQXLbQAwEQP//087ZB4kzAJ3S0q1TyqapZTNVuxjg6yv+fL/4vLry/U+S65NPu/JkPasPJkyYMGH6SKZkKbOf5At9f03yYnKIV3e+eA2YMGHChOlwpuR2+W/bvXX2t+3LzleOCRMmTJgw5dv8ZgvflMH5IQYTJkyYMGHaPNLmELDhy1eFCRMmTJj+AlN+u02Ym7cwk++dHQV+PQvHhAkTJkwfxtRuzE/696/MN2HChAkTpo9h+i4/s016tjHPWo/tlh89NSZMmDBhOpYp3yDbsZi7Sso8wM352ufFhAkTJkynM/12rTd7vPaa/BiRD/RgwoQJE6bTmd6XqXnU247a5H917yEjKcvrP8OECRMmTB/PNBvEyUvf/OFnd84HevLhoR/XYMKECROmY5nazTLfUPO2ZV5UJw+2H0W6OKZgwoQJE6YDmWYhaV7otsSbqDd/eXlViwkTJkyYzmVqy9SWddbCnEXG7ZX1WQkTJkyYMB3LdNdGm8epG8R7w9/ocIAJEyZMmI5lypt/bZswgZ6V1rPgeN/axIQJEyZMJzLNxmX2zcX8UYebd1xaRy8YEyZMmDAdy5RD7Jc+G8RpS9nNUNHFPTFhwoQJ04FM+fafx6n7bX5ThG9e58vXgAkTJkyYDmeaFbFJ8dm2Eu8aEspfQBRGY8KECROmY5nyoZl9KzEf05k1HTdDP9H1mDBhwoTpEUzt0tuAdXO3vFgtEu68tMaECRMmTMcy3dWenDUv8xJ0dnDZR9WYMGHChOlcptngSz5qk2+xe5r2nsVBARMmTJgwHcs0a/Ul8eimiG0fo6VMnqs4FmDChAkTpg9m2oSh/yd4bQde98Fu9P8IEyZMmDAdxXRXeDorLGesyUbeRsYvr8eECRMmTIcz7ZeSLHTTbswPH/lmXwwqYcKECROmY5n2G/+GYNMcbQ8BeUh9sU5MmDBhwnQU02xcph3racvdtuU5G+gpDgeYMGHChOlwps0wTQKdLygZBtofQeqAGBMmTJgwPYJpFgEnZLN75ndOftKW2ZgwYcKE6UlMec/u/dfMFtRGxvlryJu1F0cWTJgwYcL0aKb2KJAXse1A6oYpP/pcdHoxYcKECdNRTKuCcBTs3tWMzCPadsAoIsOECRMmTI9g2rQwk3vOpmJmozybQwYmTJgwYXoe02wRLVxbfuevNg+Uh0+NCRMmTJgOYboLJQ9w2zK4Xdtwg38fBGPChAkTpkcw5bFpu/3n0e1dEfAm3sWECRMmTE9imi13MxzTbtJJ9LxhHX4wYcKECdMhTJuRl/dLaZPmenQm5th814+QFxMmTJgwHci0D0Dvimtz1vZbkvvfdozAhAkTJkwfybQ5BMzamZuSOw+aZ4ePi0QcEyZMmDAdyzQLc9vH3m/tyQrvipUxYcKECROm/FE3fcO7CunVoQQTJkyYMP0Zpjb2bcvjfdSbN1yL1WLChAkTpsOZNsFoGxnngzXtC2sL3WK1mDBhwoTpWKZZ6JmXl7NSsw2I29d8AwomTJgwYfp0pn8WuhDxU34DNgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

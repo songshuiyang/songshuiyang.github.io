@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="前言 回到doCreateBean(...) 方法，这个方法主要用于完成 bean 的创建和初始化工作，我们可以将其分为一下几个过程  createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args) 方法，实例化 bean 。 populateBean(String beanName, RootBeanDefin">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 回到doCreateBean(...) 方法，这个方法主要用于完成 bean 的创建和初始化工作，我们可以将其分为一下几个过程  createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args) 方法，实例化 bean 。 populateBean(String beanName, RootBeanDefin">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-01-04T12:21:52.195Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory">
+<meta name="twitter:description" content="前言 回到doCreateBean(...) 方法，这个方法主要用于完成 bean 的创建和初始化工作，我们可以将其分为一下几个过程  createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args) 方法，实例化 bean 。 populateBean(String beanName, RootBeanDefin">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-06-19T14:01:46.000Z" itemprop="datePublished" class="page-time">
+  2019-06-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-06-19 22:01:46" datetime="2019-06-19T14:01:46.000Z" itemprop="datePublished">2019-06-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>回到<code>doCreateBean(...)</code> 方法，这个方法主要用于完成 <code>bean</code> 的创建和初始化工作，我们可以将其分为一下几个过程</p>
+<ul>
+<li><code>createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args)</code> 方法，实例化 <code>bean</code> 。</li>
+<li><code>populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper bw)</code> 方法，进行属性填充。</li>
+<li><code>initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd)</code> 方法，初始化 <code>Bean</code> 。</li>
+</ul>
+</li>
+<li><p>我们关心第三步的<code>initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd)</code> 方法，这个方法是用来初始化 <code>Bean</code></p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Initialize the given bean instance, applying factory callbacks</span></span><br><span class="line"><span class="comment"> * as well as init methods and bean post processors.</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Called from &#123;<span class="doctag">@link</span> #createBean&#125; for traditionally defined beans,</span></span><br><span class="line"><span class="comment"> * and from &#123;<span class="doctag">@link</span> #initializeBean&#125; for existing bean instances.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> beanName the bean name in the factory (for debugging purposes)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> bean the new bean instance we may need to initialize</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> mbd the bean definition that the bean was created with</span></span><br><span class="line"><span class="comment"> * (can also be &#123;<span class="doctag">@code</span> null&#125;, if given an existing bean instance)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the initialized bean instance (potentially wrapped)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> BeanNameAware</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> BeanClassLoaderAware</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> BeanFactoryAware</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #applyBeanPostProcessorsBeforeInitialization</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #invokeInitMethods</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #applyBeanPostProcessorsAfterInitialization</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">initializeBean</span><span class="params">(<span class="keyword">final</span> String beanName, <span class="keyword">final</span> Object bean, RootBeanDefinition mbd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (System.getSecurityManager() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        AccessController.doPrivileged(<span class="keyword">new</span> PrivilegedAction&lt;Object&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Object <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                invokeAwareMethods(beanName, bean);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, getAccessControlContext());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 对特殊的bean处理 BeanNameAware、BeanClassLoaderAware、BeanFactoryAware</span></span><br><span class="line">        invokeAwareMethods(beanName, bean);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开始三步走：</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Object wrappedBean = bean;</span><br><span class="line">    <span class="comment">// 第一步： 执行BeanPostProcessor实例化后初始化前处理方法 org.springframework.beans.factory.config.BeanPostProcessor.postProcessBeforeInitialization</span></span><br><span class="line">    <span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">        <span class="comment">// 方法调用前处理方法</span></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 1、会调用下面这些 AwareInterfaces 比如熟悉的 EnvironmentAware ApplicationContextAware</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@see</span> org.springframework.context.support.ApplicationContextAwareProcessor#invokeAwareInterfaces(java.lang.Object)</span></span><br><span class="line"><span class="comment">         * 2、TODO 其他的BeanPostProcessor还没发掘</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 第二步核心：激活用户自定义的init方法 1、InitializingBean接口afterPropertiesSet方法 2、bean 定义的init-method=""方法</span></span><br><span class="line">        invokeInitMethods(beanName, wrappedBean, mbd);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(</span><br><span class="line">                (mbd != <span class="keyword">null</span> ? mbd.getResourceDescription() : <span class="keyword">null</span>),</span><br><span class="line">                beanName, <span class="string">"Invocation of init method failed"</span>, ex);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 第三步： 执行BeanPostProcessor实例化后初始化后处理方法 org.springframework.beans.factory.config.BeanPostProcessor.postProcessAfterInitialization</span></span><br><span class="line">    <span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> wrappedBean;</span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">* 这个方法主要逻辑：</span><br><span class="line">    * <span class="number">1</span>、执行实现了 `BeanNameAware、BeanClassLoaderAware、BeanFactoryAware`的`Bean`的接口方法</span><br><span class="line">    * <span class="number">2</span>、执行`BeanPostProcessor`的前置处理方法</span><br><span class="line">    * <span class="number">3</span>、执行用户自定义的`init`方法，有下面两种类型 </span><br><span class="line">        * <span class="number">1</span>、`InitializingBean`接口`afterPropertiesSet`方法 </span><br><span class="line">        * <span class="number">2</span>、`bean` 定义的`init-method=<span class="string">""</span>`方法</span><br><span class="line">    * <span class="number">4</span>、执行`BeanPostProcessor`的后置处理方法</span><br><span class="line">         * <span class="number">1</span>、会调用下面这些 AwareInterfaces</span><br><span class="line">            * 比如熟悉的 EnvironmentAware ApplicationContextAware</span><br><span class="line">            * @see org.springframework.context.support.ApplicationContextAwareProcessor#invokeAwareInterfaces(java.lang.Object)</span><br><span class="line">         * <span class="number">2</span>、TODO 其他的BeanPostProcessor还没发掘</span><br><span class="line"></span><br><span class="line">* 上面可以看到中间夹了个`invokeInitMethods(beanName, wrappedBean, mbd);`方法，这个方法用于初始化`bean`，也就是用于激活用户自定义的初始化方法</span><br><span class="line">    * 进入`invokeInitMethods(beanName, wrappedBean, mbd);`方法，可以看到下面是检测当前 `bean` 对象是否实现了 `InitializingBean`接口。如果是，则会调用其 `#afterPropertiesSet()` 方法，进一步调整 `bean` 实例对象的状态。</span><br><span class="line">    ```java</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">invokeInitMethods</span><span class="params">(String beanName, <span class="keyword">final</span> Object bean, RootBeanDefinition mbd)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">		<span class="comment">// 检测当前 bean 对象是否实现了 InitializingBean 接口。如果是，则会调用其 #afterPropertiesSet() 方法，进一步调整 bean 实例对象的状态。</span></span><br><span class="line">		<span class="keyword">boolean</span> isInitializingBean = (bean <span class="keyword">instanceof</span> InitializingBean);</span><br><span class="line">		<span class="keyword">if</span> (isInitializingBean &amp;&amp; (mbd == <span class="keyword">null</span> || !mbd.isExternallyManagedInitMethod(<span class="string">"afterPropertiesSet"</span>))) &#123;</span><br><span class="line">			<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">				logger.debug(<span class="string">"Invoking afterPropertiesSet() on bean with name '"</span> + beanName + <span class="string">"'"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (System.getSecurityManager() != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					<span class="comment">// 调用afterPropertiesSet方法</span></span><br><span class="line">					AccessController.doPrivileged(<span class="keyword">new</span> PrivilegedExceptionAction&lt;Object&gt;() &#123;</span><br><span class="line">						<span class="meta">@Override</span></span><br><span class="line">						<span class="function"><span class="keyword">public</span> Object <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">							((InitializingBean) bean).afterPropertiesSet();</span><br><span class="line">							<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;, getAccessControlContext());</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">catch</span> (PrivilegedActionException pae) &#123;</span><br><span class="line">					<span class="keyword">throw</span> pae.getException();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="comment">// 属性初始化的处理</span></span><br><span class="line">				((InitializingBean) bean).afterPropertiesSet();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (mbd != <span class="keyword">null</span>) &#123;</span><br><span class="line">			String initMethodName = mbd.getInitMethodName();</span><br><span class="line">			<span class="keyword">if</span> (initMethodName != <span class="keyword">null</span> &amp;&amp; !(isInitializingBean &amp;&amp; <span class="string">"afterPropertiesSet"</span>.equals(initMethodName)) &amp;&amp;</span><br><span class="line">					!mbd.isExternallyManagedInitMethod(initMethodName)) &#123;</span><br><span class="line">				<span class="comment">// 调用自定义初始化方法</span></span><br><span class="line">				invokeCustomInitMethod(beanName, bean, mbd);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>* 然后，再检查是否也指定了 `init-method`，如果指定了则通过反射机制调用指定的 `init-method` 方法。
+    * 但是如果真的让我们的业务对象来实现这个`InitializingBean`接口就显得不是那么的友好了，`Spring` 的一个核心理念就是无侵入性，但是如果我们业务类实现这个接口就显得 `Spring` 容器具有侵入性了。所以 Spring 还提供了另外一种实现的方式：`init-method` 方法
+    * 使用`init-method``完全可以达到和 `InitializingBean` 一样的效果，而且在代码中我们没有看到丝毫 `Spring` 侵入的现象。所以通过 `init-method` 我们可以使用业务对象中定义的任何方法来实现 `bean` 实例对象的初始化定制化，而不再受制于 `InitializingBean的 #afterPropertiesSet()` 方法。同时我们可以使用 `&lt;beans&gt;` 标签的 `default-init-method` 属性来统一指定初始化方法，这样就省了需要在每个 `&lt;bean&gt;` 标签中都设置 `init-method` 这样的繁琐工作了
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>AbstractAutowireCapableBeanFactory#initializeBean</code>方法用于初始化<code>bean</code>，这时候的对象以及被实例化创建了，也属性填充了，对已经构造好的对象<code>Spring</code>提供了<code>InitializingBean</code>接口<code>afterPropertiesSet</code>方法 及 <code>init-method=&quot;&quot;</code>方法 可以自定义初始化方法，处理一些额外的事情</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《Spring 源码深度解析》</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/&title=《Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/&title=《Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二十)Aware接口分析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring系列(二十)Aware接口分析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/06/19/backend/framework/spring/analysis/Spring系列(十一)@Autowired注解原理AutowiredAnnotationBeanPostProcessor/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring系列(十一)@Autowired注解原理AutowiredAnnotationBeanPostProcessor</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/&title=《Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/&title=《Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT4AAAE+CAAAAAAxUyPsAAAFRElEQVR42u3bwY4bNxAE0P3/n3aQ3IxE46rqWSNI3pwMeaQhHwWoWc39+oqvH39dz//76Ure9elz8lH9/f78lfyJ44UPHz58+PCVk39+PYF+HujzJ7+7JPnToy8EPnz48OHDN/ElZUECl0DkKM8TuxRe7ew+vo4PHz58+PB9G1/74MtUt+Lm3U/Ahw8fPnz4/s18z4POo/+tHElKkzzIwIcPHz58+L6bLwnrLxHDPZpvmwp5mfWbeh348OHDhw/fuUT4r/775QsfPnz48OELfp4vQUDblk628e3k23Kk1sCHDx8+fPgmjS2w3iaZN8Xbo2Z5NLCVKUXigg8fPnz48MXjzCP7tnTYht628NtmfNvyH0MEfPjw4cOHbwro20DhrSZ3cme+YPejbPjw4cOHD9+dLw/l78F6WzxtRUyyqK+FGvjw4cOHD18Z018m/C7oVpQkW/28eIpmhA8fPnz48JV8OWIeCrSFQlI0JEFGEnPk4UhxLAAfPnz48OGL+S5H0/INdr2eZfmStxC2FsXH5cSHDx8+fPjOfHlZ0MYE7YTvrfQ8yh+/Ovjw4cOHD99UdbTN4/tWPI8kxp7/q3xF+YIPHz58+PClrxR/ZtyWCzl6TtNG9lsjvxgbPnz48OHDV+55kzdvbey2NX655xJqbAUWPnz48OHD1/IlQ8wffD98tg16K7zaoipfWnz48OHDh+/TvLZBJ03uBLotldpI/fm5l6Ny+PDhw4cPX8u3fXTbSN6Or70bH7SRRzQSfPjw4cOHb+8Cj3+i3E4+D9Pzsuk07XeTFXz48OHDh+/xXUnUnk8m+fnfFiaZWNtO2Nr2P70XHz58+PDhm/rdOVPeAcijgbeeeL8fHz58+PDh+518l5A9b5znx7/acL9t2+dAdXCADx8+fPjwxb3dfIueL8Cl4f3ucy+fVhxQw4cPHz58+B758tZ1G4tfPudSGF0i+2JU+PDhw4cPX8nXFgr51roNGvK4/BJYbFH+L+7Ehw8fPnz4Yr52A38J2dvy4t1dedt4iBDx4cOHDx++l/guZccWMWyfkJc1yWjx4cOHDx++7+ZLio97qbE1ztsiIy9u3joqhw8fPnz48G18eXB/h7gfHcvHdgnok8Y/Pnz48OHD1/LlzeZL43k7mta25POtfvLe6HV8+PDhw4ev5Ms31XkRkz84OdyWH0FLZtQeBYiKM3z48OHDhy/m2wa9BQE/pisvPtpY4ZKy/BQZ4MOHDx8+fBNfe5BrCwLaKbWUW6A/Li0+fPjw4cN34MvLggtfC33Z6rexQn3qDB8+fPjw4Tvw5UfQik11uTDtAbW2SLocnvuHe/Dhw4cPH76pEhh/tg8HyzbQC3RCPy42Pnz48OHDF48t38znDelnuK2AuIf+W6yPDx8+fPjwvcvXRvNtrHDZ2G/hRT7O/J6vfE3w4cOHDx++CfGt0Dwhe5cv/1rcv0b48OHDhw9fy9eWHUmQfQnft1jh0hhoYwV8+PDhw4fvztc+eCt6LiXFpcy6hwK/ON+HDx8+fPjwHfier/xdyZ1bo70tpPJSqS3X8OHDhw8fvpbv3VLj3UIhjxW2I3H5c7fSCh8+fPjw4XtukOclyPZz3rYB8hLnUqxE0cCl+sOHDx8+fPg+8F1+yJ8fnCO24ft3LE8d+uPDhw8fPnzfxtc2zjfQt4KDrWSpFxsfPnz48OH7Zr42Lr+3yZPGQB4c5G2GRAYfPnz48OHb+NqjZlsc0G7pt0IqL1DGgP7SJseHDx8+fP97vvbw1lbKtBv4LYa4lEd5c72mxIcPHz58+P68/gAhhcNzOaQNpwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mysql-Sql-经典面试题 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,Mysql">
+    <meta name="description" content="前言 很多查询都可以用经典的学生－课程－成绩案例来表示，下面是一些笔试或面试中遇到的经典题型  表结构  学生表student(id,name)                                                                                                            课程表course(id,name)">
+<meta name="keywords" content="数据库,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-Sql-经典面试题">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 很多查询都可以用经典的学生－课程－成绩案例来表示，下面是一些笔试或面试中遇到的经典题型  表结构  学生表student(id,name)                                                                                                            课程表course(id,name)">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/sql/table2.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/sql/table1.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/sql/table3.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/sql/table4.jpg">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-Sql-经典面试题">
+<meta name="twitter:description" content="前言 很多查询都可以用经典的学生－课程－成绩案例来表示，下面是一些笔试或面试中遇到的经典题型  表结构  学生表student(id,name)                                                                                                            课程表course(id,name)">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/sql/table2.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mysql-Sql-经典面试题</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mysql-Sql-经典面试题</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-02T16:08:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题"><span class="post-toc-number">2.</span> <span class="post-toc-text">问题</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#答案"><span class="post-toc-number">3.</span> <span class="post-toc-text">答案</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/mysql/Mysql-Sql-经典面试题" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mysql-Sql-经典面试题</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-03 00:08:00" datetime="2018-03-02T16:08:00.000Z" itemprop="datePublished">2018-03-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>很多查询都可以用经典的学生－课程－成绩案例来表示，下面是一些笔试或面试中遇到的经典题型</p>
+</li>
+<li><p>表结构</p>
+<ul>
+<li>学生表student(id,name) <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/sql/table2.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+<li>课程表course(id,name) <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/sql/table1.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+<li>学生课程表student_course(sid,cid,score) <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/sql/table3.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+<li>队伍表team(name))<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/sql/table4.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+</ul>
+</li>
+<li><p>sql 文件</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">NAMES</span> utf8mb4;</span><br><span class="line"><span class="keyword">SET</span> FOREIGN_KEY_CHECKS = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Table structure for course</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`course`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`course`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">char</span>(<span class="number">20</span>) <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_general_ci <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>) <span class="keyword">USING</span> BTREE</span><br><span class="line">) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span> AUTO_INCREMENT = <span class="number">3</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_general_ci ROW_FORMAT = Dynamic;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Records of course</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`course`</span> <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">'语文'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`course`</span> <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">'数学'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Table structure for student</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`student`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`student`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">char</span>(<span class="number">10</span>) <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_general_ci <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>) <span class="keyword">USING</span> BTREE</span><br><span class="line">) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span> AUTO_INCREMENT = <span class="number">6</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_general_ci ROW_FORMAT = Dynamic;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Records of student</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student`</span> <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">'张三'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student`</span> <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">'李四'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student`</span> <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">'张三'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student`</span> <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">'王五'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student`</span> <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">'李好'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Table structure for student_course</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`student_course`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`student_course`</span>  (</span><br><span class="line">  <span class="string">`sid`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`cid`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`score`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`sid`</span>, <span class="string">`cid`</span>) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">INDEX</span> <span class="string">`cid`</span>(<span class="string">`cid`</span>) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">CONSTRAINT</span> <span class="string">`student_course_ibfk_1`</span> FOREIGN <span class="keyword">KEY</span> (<span class="string">`sid`</span>) <span class="keyword">REFERENCES</span> <span class="string">`student`</span> (<span class="string">`id`</span>) <span class="keyword">ON</span> <span class="keyword">DELETE</span> RESTRICT <span class="keyword">ON</span> <span class="keyword">UPDATE</span> RESTRICT,</span><br><span class="line">  <span class="keyword">CONSTRAINT</span> <span class="string">`student_course_ibfk_2`</span> FOREIGN <span class="keyword">KEY</span> (<span class="string">`cid`</span>) <span class="keyword">REFERENCES</span> <span class="string">`course`</span> (<span class="string">`id`</span>) <span class="keyword">ON</span> <span class="keyword">DELETE</span> RESTRICT <span class="keyword">ON</span> <span class="keyword">UPDATE</span> RESTRICT</span><br><span class="line">) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_general_ci ROW_FORMAT = Dynamic;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Records of student_course</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="number">1</span>, <span class="number">80</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="number">2</span>, <span class="number">90</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="number">1</span>, <span class="number">90</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="number">2</span>, <span class="number">70</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="number">1</span>, <span class="number">50</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="number">2</span>, <span class="number">10</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="number">1</span>, <span class="number">66</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="number">2</span>, <span class="number">65</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="number">1</span>, <span class="number">23</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`student_course`</span> <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="number">2</span>, <span class="number">59</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Table structure for team</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`team`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`team`</span>  (</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_general_ci <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="literal">NULL</span></span><br><span class="line">) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_general_ci ROW_FORMAT = Dynamic;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="comment">-- Records of team</span></span><br><span class="line"><span class="comment">-- ----------------------------</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`team`</span> <span class="keyword">VALUES</span> (<span class="string">'a'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`team`</span> <span class="keyword">VALUES</span> (<span class="string">'b'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`team`</span> <span class="keyword">VALUES</span> (<span class="string">'c'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`team`</span> <span class="keyword">VALUES</span> (<span class="string">'d'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SET</span> FOREIGN_KEY_CHECKS = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li><p>1、查询student表中重名的学生，结果包含id和name，按name,id升序</p>
+</li>
+<li><p>2、在student_course表中查询平均分不及格的学生，列出学生id和平均分</p>
+</li>
+<li><p>3、在student_course表中查询每门课成绩都不低于80的学生id</p>
+</li>
+<li><p>4、查询每个学生的总成绩，结果列出学生姓名和总成绩</p>
+</li>
+<li><p>5、总成绩最高的学生，结果列出学生id和总成绩</p>
+</li>
+<li><p>6、在student_course表查询课程1成绩第2高的学生，如果第2高的不止一个则列出所有的学生</p>
+</li>
+<li><p>7、在student_course表查询各科成绩最高的学生，结果列出学生id、课程id和对应的成绩</p>
+</li>
+<li><p>8、在student_course表中查询每门课的前2名，结果按课程id升序，同一课程按成绩降序 这个问题也就是取每组的前N条纪录</p>
+</li>
+<li><p>9、一个叫team的表，里面只有一个字段name,一共有4条纪录，分别是a,b,c,d,对应四个球队，两两进行比赛，用一条sql语句显示所有可能的比赛组合</p>
+</li>
+<li><p>10、题目：数据库中有一张如下所示的表</p>
+<ul>
+<li><p>表名为sales</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">年	季度	销售</span><br><span class="line">1991	1	11</span><br><span class="line">1991	2	12</span><br><span class="line">1991	3	13</span><br><span class="line">1991	4	14</span><br><span class="line">1992	1	21</span><br><span class="line">1992	2	22</span><br><span class="line">1992	3	23</span><br><span class="line">1992	4	24</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>要求：写一个SQL语句查询出如下所示的结果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">年	一季度	二季度	三季度	四季度</span><br><span class="line">1991	11	   12	    13	   14</span><br><span class="line">1992	21	   22	    23	   24</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h2><ul>
+<li><p>1、查询student表中<code>重名</code>的学生，结果包含id和name，按name,id升序</p>
+<ul>
+<li>我们经常需要查询某一列重复的行，一般通过group by(有重复的列)然后取count&gt;1的值<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    <span class="keyword">id</span>, <span class="keyword">NAME</span> </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    <span class="keyword">NAME</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> <span class="keyword">NAME</span> <span class="keyword">FROM</span> student <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">NAME</span> <span class="keyword">HAVING</span> <span class="keyword">count</span>( * ) &gt; <span class="number">1</span> ) </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">    <span class="keyword">NAME</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>2、在student_course表中查询平均分不及格的学生，列出学生id和平均分</p>
+<ul>
+<li>group by和having是最常考的。 where子句中不能用聚集函数作为条件表达式，但是having短语可以</li>
+<li>where和having的区别在于对用对象不同，where作用于记录，having作用于组<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    <span class="keyword">sid</span>,</span><br><span class="line">    <span class="keyword">avg</span>( score ) <span class="keyword">AS</span> avg_score </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">    <span class="keyword">sid</span> </span><br><span class="line"><span class="keyword">HAVING</span></span><br><span class="line">    avg_score &lt; <span class="number">60</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>3、在student_course表中查询<code>每门课成绩都</code>不低于80的学生id</p>
+<ul>
+<li>用到反向思想<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span></span><br><span class="line">    <span class="keyword">sid</span> </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    <span class="keyword">sid</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> <span class="keyword">sid</span> <span class="keyword">FROM</span> student_course <span class="keyword">WHERE</span> score &lt; <span class="number">80</span> );</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>4、查询每个学生的总成绩，结果列出学生姓名和总成绩</p>
+<ul>
+<li><p>如果使用下面的sql会过滤掉没有成绩的人</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">NAME</span></span><br><span class="line">    ,</span><br><span class="line">    <span class="keyword">sum</span>( score ) total </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student,</span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    student.id = student_course.sid </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">    <span class="keyword">sid</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更保险的做法应该是使用 左外连接</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">NAME</span></span><br><span class="line">	,</span><br><span class="line">	<span class="keyword">sum</span>( score ) </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	student</span><br><span class="line">	<span class="keyword">LEFT</span> <span class="keyword">JOIN</span> student_course <span class="keyword">ON</span> student.id = student_course.sid </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">	<span class="keyword">sid</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>5、总成绩最高的学生，结果列出学生id和总成绩</p>
+<ul>
+<li>sql<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    <span class="keyword">sid</span>,</span><br><span class="line">    <span class="keyword">sum</span>( score ) <span class="keyword">AS</span> sum_score </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">    <span class="keyword">sid</span> </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">    sum_score <span class="keyword">DESC</span> </span><br><span class="line">    <span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>6、在student_course表查询课程1成绩第2高的学生，如果第2高的不止一个则列出所有的学生</p>
+<ul>
+<li><p>这是个查询 第N大数 的问题。 我们先查出第2高的成绩：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    score </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    cid = <span class="number">1</span> </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">    score </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">    score <span class="keyword">DESC</span> </span><br><span class="line">    <span class="keyword">LIMIT</span> <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用这种方式是错的，因为作用的先后顺序是group by-&gt;min-&gt;order by-&gt;limit，mysql提供了limit offset,size这种方式来取第N大的值，因此正确的做法是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    score </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    cid = <span class="number">1</span> </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">    score </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span> </span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">1</span>,<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后再取出该成绩对应的学生：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    * </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    student_course </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    cid = <span class="number">1</span> </span><br><span class="line">    <span class="keyword">AND</span> score = ( <span class="keyword">SELECT</span> score <span class="keyword">FROM</span> student_course <span class="keyword">WHERE</span> cid = <span class="number">1</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> score <span class="keyword">ORDER</span> <span class="keyword">BY</span> score <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> <span class="number">1</span>, <span class="number">1</span> );</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>7、在student_course表查询各科成绩最高的学生，结果列出学生id、课程id和对应的成绩</p>
+<ul>
+<li>嵌套查询<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> student_course <span class="keyword">as</span> x <span class="keyword">where</span> score&gt;=</span><br><span class="line">(<span class="keyword">select</span> <span class="keyword">max</span>(score) <span class="keyword">from</span> student_course <span class="keyword">as</span> y <span class="keyword">where</span> cid=x.cid);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>8、在student_course表中查询每门课的前2名，结果按课程id升序，同一课程按成绩降序 这个问题也就是取每组的前N条纪录<br>  *</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> student_course x <span class="keyword">where</span></span><br><span class="line"><span class="number">2</span>&gt;(<span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span>(score)) <span class="keyword">from</span> student_course y <span class="keyword">where</span> y.cid=x.cid <span class="keyword">and</span> y.score&gt;x.score)</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> cid,score <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>9、一个叫team的表，里面只有一个字段name,一共有4条纪录，分别是a,b,c,d,对应四个球队，两两进行比赛，用一条sql语句显示所有可能的比赛组合</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	a.NAME,</span><br><span class="line">	b.NAME </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	team a,</span><br><span class="line">	team b </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	a.NAME &lt; b.NAME</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>10、题目：数据库中有一张如下所示的表</p>
+<ul>
+<li><p>表名为sales</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">年	季度	销售</span><br><span class="line">1991	1	11</span><br><span class="line">1991	2	12</span><br><span class="line">1991	3	13</span><br><span class="line">1991	4	14</span><br><span class="line">1992	1	21</span><br><span class="line">1992	2	22</span><br><span class="line">1992	3	23</span><br><span class="line">1992	4	24</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>要求：写一个SQL语句查询出如下所示的结果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">年	一季度	二季度	三季度	四季度</span><br><span class="line">1991	11	   12	    13	   14</span><br><span class="line">1992	21	   22	    23	   24</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sql</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> 年, </span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span> 季度=<span class="number">1</span> <span class="keyword">then</span> 销售量 <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) <span class="keyword">as</span> 一季度, </span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span> 季度=<span class="number">2</span> <span class="keyword">then</span> 销售量 <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) <span class="keyword">as</span> 二季度, </span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span> 季度=<span class="number">3</span> <span class="keyword">then</span> 销售量 <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) <span class="keyword">as</span> 三季度, </span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span> 季度=<span class="number">4</span> <span class="keyword">then</span> 销售量 <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) <span class="keyword">as</span> 四季度 </span><br><span class="line"><span class="keyword">from</span> sales <span class="keyword">group</span> <span class="keyword">by</span> 年;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+<li><a href="https://www.yanxurui.cc/posts/mysql/2016-11-10-10-sql-interview-questions/" target="_blank" rel="noopener">https://www.yanxurui.cc/posts/mysql/2016-11-10-10-sql-interview-questions/</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/&title=《Mysql-Sql-经典面试题》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/&title=《Mysql-Sql-经典面试题》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-Sql-经典面试题》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-Sql-EXPLAIN命令/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql-Sql-EXPLAIN命令</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-锁-锁机制/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql-锁-锁机制</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/&title=《Mysql-Sql-经典面试题》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/&title=《Mysql-Sql-经典面试题》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-Sql-经典面试题》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-经典面试题/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADOUlEQVR42u3awW4iMRAEUP7/p9lrpF1MVXuyYsybU0QyjJ+RqHS3H4/4ev64Xv12fdfPv8lff/Xcv+96/MaFjY2NfRN28rD149u7Xi13/T6v3nO2cdjY2NjnsdfLWi/xqhhbb9M6iXILNjY2NnYbLXmkJduRhxk2NjY2dt64WTd9diLw2hDFxsbGPpudRMVsuXlBkhcb/7WXho2Njf3x7J3Gzaf9/CvzbWxsbOwPZj/LKy8DZktsV/IcXdjY2NgnsfMASLagHffmwTMbCaw/JGxsbOwz2LPRabL0tuWUb037btFHj42NjX1zdj64nS332njLw68uQrCxsbFvyM7DLI+rpHjY2bIkUItCBRsbG/vm7Dxm8nZSy2uHEPmzXr6OjY2NfRA7+T6fteb3i5x8+6JGUnsKCRsbG/tW7FnTPy8D8uM+7aGcmQ4bGxv7JHb+sNkBmvXikrvyUmf99/8oQrCxsbGPYO/8i3/tgtpyqO3zvxkVYGNjY9+cfW2MJfi8kGhbWkWbCRsbG/sI9mwRbXTl7f6dLciDFhsbG/skdtv6mRUeM3x7DLQ+PIqNjY19EDsnzYqNnXbV7Ln50SJsbGzsM9izptL+2GD/ANBWeYONjY39Bez9YW0bTnlrKR8V1OeVsLGxsW/FThhXLShvCbWtpTpcsbGxsQ9l7xcPvxd4bcETDQOwsbGxj2C/OdSysfRZ6ycJsHx4/Oa32NjY2Aex87Z+vqCdkiP/APbHw9jY2Nh3Z7ft9XovkwgJNjR/VvQO2NjY2AexZ2VJ20jKI6e9ZgeJsLGxsU9lXxtRSSMpHy23o99hdGFjY2Pflr3Tgm/Ht/k4th1U5BuEjY2NfSp7J1RyxqxRtRN1L5+IjY2NfRx71qzJF51E2k4jqb4XGxsb+wj2TnTNwma9TbOYrIfB2NjY2Aex26/+q5Zelw1lsylfPzY2NvYZ7J1Raw7IDwDlI4Q2UB9t0mJjY2Pfip0ETBtCedMqicC25HizfmxsbOwvZl8VYC14f4VvpiLY2NjYX8xuS5pZ7O0MA7CxsbG/gX3VcDcZHrQlxLUxho2NjX0eOw+AWfumLU5mx4xmwwNsbGzsm7P/ANBepYEa0X4zAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

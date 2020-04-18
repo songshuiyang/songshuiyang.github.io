@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringBoot(六)Starter解析及自己定制实现 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Boot">
+    <meta name="description" content="前言 SpringBoot 能够快速的接入各种框架的关键是靠各种Starter来实现的，比如我们想搭建一个Web应用，只要在POM依赖中添加spring-boot-starter-web就可以完成，它会帮我们自动引入各种Web应用所需的依赖并完成Bean的自动注册  Starter 主要用来简化依赖用的，Spring Boot 通过starter依赖为项目的依赖管理提供帮助，starter依赖起始">
+<meta name="keywords" content="Spring,Spring Boot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot(六)Starter解析及自己定制实现">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 SpringBoot 能够快速的接入各种框架的关键是靠各种Starter来实现的，比如我们想搭建一个Web应用，只要在POM依赖中添加spring-boot-starter-web就可以完成，它会帮我们自动引入各种Web应用所需的依赖并完成Bean的自动注册  Starter 主要用来简化依赖用的，Spring Boot 通过starter依赖为项目的依赖管理提供帮助，starter依赖起始">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-boot/startes.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-boot/starter-web.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-boot/cloud-starter.jpg">
+<meta property="og:updated_time" content="2020-01-04T12:21:52.216Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot(六)Starter解析及自己定制实现">
+<meta name="twitter:description" content="前言 SpringBoot 能够快速的接入各种框架的关键是靠各种Starter来实现的，比如我们想搭建一个Web应用，只要在POM依赖中添加spring-boot-starter-web就可以完成，它会帮我们自动引入各种Web应用所需的依赖并完成Bean的自动注册  Starter 主要用来简化依赖用的，Spring Boot 通过starter依赖为项目的依赖管理提供帮助，starter依赖起始">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-boot/startes.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringBoot(六)Starter解析及自己定制实现</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringBoot(六)Starter解析及自己定制实现</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-05T16:06:00.000Z" itemprop="datePublished" class="page-time">
+  2019-08-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#spring-boot-starter-web-解析"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">spring-boot-starter-web 解析</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#自己定制实现Starter"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">自己定制实现Starter</span></a></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringBoot(六)Starter解析及自己定制实现</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-06 00:06:00" datetime="2019-08-05T16:06:00.000Z" itemprop="datePublished">2019-08-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p><code>SpringBoot</code> 能够快速的接入各种框架的关键是靠各种<code>Starter</code>来实现的，比如我们想搭建一个<code>Web</code>应用，只要在<code>POM</code>依赖中添加<code>spring-boot-starter-web</code>就可以完成，它会帮我们自动引入各种<code>Web</code>应用所需的依赖并完成<code>Bean</code>的自动注册</p>
+</li>
+<li><p><code>Starter</code> 主要用来简化依赖用的，<code>Spring Boot</code> 通过<code>starter</code>依赖为项目的依赖管理提供帮助，<code>starter</code>依赖起始就是特殊的<code>maven</code>依赖，利用了传递依赖解析，把常用库聚合在一起,组成了几个为特定功能而定制的依赖</p>
+</li>
+<li><p><code>SpringBoot</code>自带的<code>Starter</code>见下图，因为太多了所以只截了部分</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-boot/startes.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="spring-boot-starter-web-解析"><a href="#spring-boot-starter-web-解析" class="headerlink" title="spring-boot-starter-web 解析"></a>spring-boot-starter-web 解析</h4><ul>
+<li><p>查看<code>spring-boot-starter-web</code>的源码，见下图可以发现就两个文件，<code>pom.xml</code>定义了会自动导入哪些依赖，<code>spring.provides</code>也是告诉我们，通过在我们的构建中包含 <code>spring-webmvc,spring-web,jackson-databind</code> 作为依赖</p>
+</li>
+<li><p>为什么<code>spring.provides</code>定义了依赖又要在<code>pom.xml</code>再次定义？这个问题还需研究</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-boot/starter-web.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<blockquote>
+<p>META-INF/spring.provides</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">provides: spring-webmvc,spring-web,jackson-databind</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>spring-boot-starters/spring-boot-starter-web/pom.xml</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starters<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>Spring Boot Web Starter<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span>Starter for building web, including RESTful, applications using Spring</span><br><span class="line">		MVC. Uses Tomcat as the default embedded container<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url</span>&gt;</span>http://projects.spring.io/spring-boot/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">organization</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>Pivotal Software, Inc.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">url</span>&gt;</span>http://www.spring.io<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">organization</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">main.basedir</span>&gt;</span>$&#123;basedir&#125;/../..<span class="tag">&lt;/<span class="name">main.basedir</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.hibernate<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hibernate-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-webmvc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="自己定制实现Starter"><a href="#自己定制实现Starter" class="headerlink" title="自己定制实现Starter"></a>自己定制实现Starter</h3><ul>
+<li><p>我们知道<code>spring-boot-actuator</code> 中已经内置了非常多的 <code>Endpoint</code>比如<code>health、info、beans、metrics、httptrace、shutdown</code>，只要添加<code>spring-boot-actuator</code>依赖就可以获得这些功能</p>
+</li>
+<li><p>如果要我们自己来实现这些功能要怎么实现呢，下面我们将创建自己<code>Starter</code>来实现一个简单的功能，比如实现一个 <code>可以获取系统应用状态</code>的功能，只要在应用中导入<code>Starter</code>依赖并开启注解就可以使用该功能</p>
+</li>
+<li><p>创建项目，项目结构如下图所示：</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-boot/cloud-starter.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>我们这里为了方便，所以将<code>Starter</code>的定义及实现（添加了几个类）放到了一个包下，一般是<code>Starter</code>里面就一个<code>META-INF/spring.factories</code>及<code>pom.xml</code>文件</p>
+</li>
+<li><p><code>META-INF/spring.factories</code> 这里配置了一个自动配置的类，只要导入了<code>Starter Pom</code>依赖，启动<code>SpringBoot</code>应用的时候就会自动注册这个类<code>com.songsy.springcloud.plus.starter.CloudAutoConfiguration</code></p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">com.songsy.springcloud.plus.starter.CloudAutoConfiguration</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>CloudAutoConfiguration.java</code>此类定义了一个<code>Bean</code>，这个<code>Bean</code>是个<code>Controller</code>，可以看到调用此链接<code>/system/info</code>就返回了一些应用信息，这里只是为了测试功能所以就返回了固定值</p>
+<ul>
+<li><code>@Configuration</code> 标识此类是<code>Spring</code>的配置类，相当于一个<code>bean.xml</code>文件</li>
+<li><code>@ConditionalOnBean(CloudMarkerConfiguration.Marker.class)</code> 标识只有当前<code>Spring</code>容器注册了<code>CloudMarkerConfiguration.Marker</code>这个<code>Bean</code>的时候此<code>CloudAutoConfiguration</code>配置类才生效</li>
+</ul>
+</li>
+<li><p><code>CloudAutoConfiguration.java</code></p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnBean</span>(CloudMarkerConfiguration.Marker.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RestController</span></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/system"</span>)</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">SystemController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@GetMapping</span>(<span class="string">"/info"</span>)</span><br><span class="line">        <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">getInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            Map&lt;String, Object&gt; objectMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;(<span class="number">8</span>);</span><br><span class="line">            objectMap.put(<span class="string">"appName"</span>,<span class="string">"spring-cloud-plus-parent"</span>);</span><br><span class="line">            objectMap.put(<span class="string">"groupId"</span>,<span class="string">"com.songsy.springcloud.plus"</span>);</span><br><span class="line">            objectMap.put(<span class="string">"artifactId"</span>,<span class="string">"cloud-parent"</span>);</span><br><span class="line">            objectMap.put(<span class="string">"version"</span>,<span class="string">"1.0-SNAPSHOT"</span>);</span><br><span class="line">            objectMap.put(<span class="string">"currentTimeMillis"</span>,System.currentTimeMillis());</span><br><span class="line">            <span class="keyword">return</span> objectMap;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>CloudMarkerConfiguration.Marker</code> 这个是个标识类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注册Marker标记bean，使&#123;<span class="doctag">@link</span> CloudAutoConfiguration&#125;配置类生效</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/8/15 18:09</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudMarkerConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Marker <span class="title">zuulProxyMarkerBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Marker();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Marker</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>@EnableCloudAutoConfig</code> 注解是开启此功能的开关，可以看到只要使用了此注解，就会注册<code>CloudMarkerConfiguration.class</code> 这个<code>Bean</code>，有了此<code>Bean</code>之后<code>CloudAutoConfiguration.java</code>的条件(<code>@ConditionalOnBean(CloudMarkerConfiguration.Marker.class</code>))就成立了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 开启自动配置</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/8/15 18:15</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Import</span>(CloudMarkerConfiguration.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableCloudAutoConfig &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>如何使用</p>
+<ul>
+<li>把上面的<code>Starter</code>打成<code>maven</code> <code>jar</code>包</li>
+<li><p>在其他应用中导入<code>pom</code>依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.songsy.springcloud.plus<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动类加上<code>@EnableCloudAutoConfig</code>注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableCloudAutoConfig</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(ZuulApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动访问<code>/system/info</code>链接，可以看到可以得到结果</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"artifactId"</span>: <span class="string">"cloud-parent"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"1.0-SNAPSHOT"</span>,</span><br><span class="line">    <span class="attr">"appName"</span>: <span class="string">"spring-cloud-plus-parent"</span>,</span><br><span class="line">    <span class="attr">"groupId"</span>: <span class="string">"com.songsy.springcloud.plus"</span>,</span><br><span class="line">    <span class="attr">"currentTimeMillis"</span>: <span class="number">1565939848850</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>Starter</code>可以说是<code>SpringBoot</code>的灵魂，官方已经将一些常用的功能封装了，要什么就添加什么，万物皆可配置，我们也可以根据自己业务需求实现自己的<code>Starter</code></li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2>
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/&title=《SpringBoot(六)Starter解析及自己定制实现》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/&title=《SpringBoot(六)Starter解析及自己定制实现》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot(六)Starter解析及自己定制实现》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(七)内嵌Tomcat启动原理解析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringBoot(七)内嵌Tomcat启动原理解析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(五)@Conditional按条件注册Bean/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringBoot(五)@Conditional按条件注册Bean</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/&title=《SpringBoot(六)Starter解析及自己定制实现》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/&title=《SpringBoot(六)Starter解析及自己定制实现》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot(六)Starter解析及自己定制实现》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(六)Starter解析及自己定制实现/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEjUlEQVR42u3ay3KjQAwF0Pz/T2e2qRobX0lQQeR4lbJJ0xwWrdfXV/z5Pvz8f83Pb96tdnxNspPk13xXJ3wwYcKECdMtmaoEx9cc3+XdlZP15zs5vi8mTJgwYXoG0+TBjm+Zn7DHezj+r+SbPBzBhAkTJkx/mWmediYPcF2ggAkTJkyYMFWZegfzuSXd4932iDFhwoQJ05OY8uXy9LJ3eM9XS7AurIVjwoQJE6abMeUH8/P+vmS+CRMmTJgw3Ybpu/jpDcFUE+ZecbnaZC08NSZMmDBhWsuUH5B5Y7I3KFM9i/MScD4k9KG4jAkTJkyYFjJNjvwcItlcLxDphRHV9icmTJgwYdrLlJR0z6qF5lvsVVnnZevyapgwYcKE6fZM+VE9/6Y66DPZVbJaIVDAhAkTJkyPY6o2BfO2YvXgzxuZvSJ1tD4mTJgwYVrLlCR+Z6EkyXDvxUzujgkTJkyY/hrTpCV51jjOJKG9vPKNCRMmTJjWMuXH/GSwpnrwz8OI/Mj/cD0mTJgwYXoQU9IsLDcFg3S62i6trlxtjr5IfTFhwoQJ0yqm+RFbTZKvCz6q6X3eTMWECRMmTHuZRqlgq3iaBAqTAZ3qK2mGFJgwYcKEaRVTXq7NW6FXNxqru01e/4ekHRMmTJgwrWVq/kO83UlwMNlJdf0oQMGECRMmTKuYkq3kR+xZQUNy/XzEp/B6MGHChAnTcqZqylptec4LtQlEdfRnVC3GhAkTJkxLmJIjPz+eqylrD7rXWO2NIkW1cEyYMGHCtIRpPriTH+G9IZvqQM/kuTBhwoQJ0/OYegltlWZ+r95oUbVR+mJNTJgwYcK0kKlXDM2TzHydK+41Key+jZgwYcKECdNypmr/Lj+Sq79Wx3qS0KRa/H0bEGDChAkTpiVMSUm0N6xTTXGTRHryAnpl4kLlGBMmTJgw3ZIpOdQLoy3FFLTabuwVlyet0BdxEyZMmDBhWsXUO4CrCXASHExantUXkzRcv+ZxCiZMmDBhuhlTr9SbJ8Y5x+T19FL0y5uamDBhwoTpl5gmG+09QDUUyFuVecG6/D0mTJgwYVrLlAQBk7Jv/ti9HHOSZpdHdjBhwoQJ00KmfItJm3Ce4uZ37O2nOZCECRMmTJjWMiUpZS9xTY7n5LTt3aU30PPhRWLChAkTpoVMV6SOeYG4OqaTE0zaotHIDiZMmDBhWsjUO7yr7c8JXHXYtJcSf6gQYMKECROmxzFVR05z0GoYUU1f85calXcxYcKECdNypiuO2xwuf7zqOpOkGhMmTJgwbWf63e3Oj+r5PpsfTJgwYcK0hGnSLJw0FHsjPnlZOSnpFhJ4TJgwYcK0lumsI3keFuTNxV75OP97ErhgwoQJE6Z7MuWF0d4t8+Zlfk3e+KwGH5gwYcKE6alMyehML77oFWeruOeWdzFhwoQJ019myku9x6XhZHO9cZ/eHk4OCDBhwoQJ01qmfOhzslrOl0BUU+4XT4EJEyZMmJYznVUYzR9g8hgJYpJsJy8VEyZMmDBtZ6oWPas0eVgwCRGqezthmgkTJkyYMN2d6R9Ly3eYZjBqoQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

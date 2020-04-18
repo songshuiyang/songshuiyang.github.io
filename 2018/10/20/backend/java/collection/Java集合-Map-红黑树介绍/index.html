@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java集合-Map-红黑树介绍 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java集合">
+    <meta name="description" content="前言 上一章节我们知道JDK1.8的HashMap链表长度大于8的话就将此链表变成红黑树，使用红黑树可以提高查询效率  介绍红黑树介绍二叉查找树介绍 在介绍红黑树之前我们要先理解二叉查找树的数据结构，下面简单介绍一下。">
+<meta name="keywords" content="Java,Java集合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合-Map-红黑树介绍">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 上一章节我们知道JDK1.8的HashMap链表长度大于8的话就将此链表变成红黑树，使用红黑树可以提高查询效率  介绍红黑树介绍二叉查找树介绍 在介绍红黑树之前我们要先理解二叉查找树的数据结构，下面简单介绍一下。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/3804905-337fecca8fc5b285.jpeg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/hhs2.jpeg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/hhs3.jpeg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/hhs4.jpeg">
+<meta property="og:updated_time" content="2020-01-04T12:21:52.245Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合-Map-红黑树介绍">
+<meta name="twitter:description" content="前言 上一章节我们知道JDK1.8的HashMap链表长度大于8的话就将此链表变成红黑树，使用红黑树可以提高查询效率  介绍红黑树介绍二叉查找树介绍 在介绍红黑树之前我们要先理解二叉查找树的数据结构，下面简单介绍一下。">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/3804905-337fecca8fc5b285.jpeg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java集合-Map-红黑树介绍</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java集合-Map-红黑树介绍</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-19T16:03:03.000Z" itemprop="datePublished" class="page-time">
+  2018-10-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#介绍"><span class="post-toc-number">2.</span> <span class="post-toc-text">介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#红黑树介绍"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">红黑树介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#二叉查找树介绍"><span class="post-toc-number">2.0.1.1.</span> <span class="post-toc-text">二叉查找树介绍</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#红黑树介绍-1"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">红黑树介绍</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/collection/Java集合-Map-红黑树介绍" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java集合-Map-红黑树介绍</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-20 00:03:03" datetime="2018-10-19T16:03:03.000Z" itemprop="datePublished">2018-10-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>上一章节我们知道<code>JDK1.8</code>的<code>HashMap</code>链表长度大于<code>8</code>的话就将此链表变成红黑树，使用红黑树可以提高查询效率</li>
+</ul>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><h4 id="红黑树介绍"><a href="#红黑树介绍" class="headerlink" title="红黑树介绍"></a>红黑树介绍</h4><h5 id="二叉查找树介绍"><a href="#二叉查找树介绍" class="headerlink" title="二叉查找树介绍"></a>二叉查找树介绍</h5><ul>
+<li>在介绍红黑树之前我们要先理解二叉查找树的数据结构，下面简单介绍一下。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/3804905-337fecca8fc5b285.jpeg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>上面这张图就是一个二叉查找树。二叉查找树有如下几条特性</p>
+<ul>
+<li>（1）.左子树上所有结点的值均小于或等于它的根结点的值。</li>
+<li>（2）.右子树上所有结点的值均大于或等于它的根结点的值。</li>
+<li>（3）.左、右子树也分别为二叉排序树</li>
+</ul>
+</li>
+<li><p>那既然他名字中是有“查找”的，那么他是怎么查找的呢？比如我们要查找<code>10</code>这个元素，查找过程为：首先找到根节点，然后根据二叉查找树的第一二条特性，我们知道要查找的<code>10 &gt; 9</code>所以是在根节点的右边去查找，找到<code>13</code>，<code>10 &lt; 13</code>,所以接着在<code>13</code>的左边找，找到<code>11</code>,<code>10 &lt; 11</code>,继续在<code>11</code>的左边查找，这样就找到了<code>10</code>.这其实就是二分查找的思想。最后我们要查出结果所需的最大次数就是二叉树的高度！（二分查找的思想:找到数组的中间位置的元素<code>v</code>，将数组分成<code>&gt;v</code>和<code>&lt;v</code>两部分，然后将<code>v</code>和要查找的数据进行一个比较，如果大于<code>v</code>那么就在<code>&gt;v</code>的部分再次进行二分查找，否则就在<code>&lt;v</code>的部分进行二分查找，直到找到对应的元素。）</p>
+</li>
+<li><p>那既然要查出结果所需的最大次数就是二叉树的高度，那这个高度会不会有时候很长呢？</p>
+</li>
+<li><p>比如我们依次插入 根节点为9如下五个节点：<code>7,6,5,4,3</code>。依照二叉查找树的特性，结果会变成什么样呢？<code>7,6,5,4,3</code>一个比一个小，那么就会成一条直线，也就是成为了线性的查询，时间复杂度变成了<code>O（N）</code>级别。为了解决这种情况，该红黑树出场了。</p>
+</li>
+</ul>
+<h4 id="红黑树介绍-1"><a href="#红黑树介绍-1" class="headerlink" title="红黑树介绍"></a>红黑树介绍</h4><ul>
+<li><p>红黑树其实就是一种<code>自平衡</code>的二叉查找树，，是在计算机科学中用到的一种数据结构，典型的用途是实现关联数组，他这个自平衡的特性就是对<code>HashMap</code>中链表可能会很长做出的优化。</p>
+</li>
+<li><p>红黑树是每个节点都带有颜色属性的二叉查找树，颜色或红色或黑色。在二叉查找树强制一般要求以外，对于任何有效的红黑树我们增加了如下的额外要求:</p>
+<ul>
+<li>性质1. 节点是红色或黑色。</li>
+<li>性质2. 根节点是黑色。</li>
+<li>性质3 每个叶节点（NIL节点，空节点）是黑色的。</li>
+<li>性质4 每个红色节点的两个子节点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色节点)</li>
+<li>性质5. 从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点。</li>
+</ul>
+</li>
+<li>下面这棵树就是一个典型的红黑树</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/hhs2.jpeg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>红黑树那么多规则，那么在插入和删除元素会不会破坏红黑树的规则呢？什么情况下会破坏？什么情况下不会？</p>
+</li>
+<li><p>比如我们向原红黑树插入为14的新节点就不会破坏规则</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/hhs3.jpeg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>向原红黑树插入值为21的新节点就破坏了规则</li>
+</ul>
+<p><img src="/images/server/java/jdk/collection/hhs4.jpeg" alt=""></p>
+<ul>
+<li><p>那么红黑树是怎么维护这个二叉查找树的自平衡性的呢？</p>
+</li>
+<li><p>红黑树通过<code>变色</code>和<code>旋转</code>来维护红黑树的规则，变色就是让黑的变成红的，红的变成黑的，旋转又分为“左旋转”和“右旋转”。这个比较复杂，容易晕，我们就只要知道红黑树就是通过这种方式来实现它的自平衡性就行了。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>为什么要使用红黑树呢，当然是提高查找效率<ul>
+<li>当元素小于8个，<code>HashMap</code>使用的是链表存放数据，链表查询成本高，新增成本低</li>
+<li>至于为什么选 8 这个值呢？通过概率统计所得，这个值是综合查询成本和新增元素成本得出的最好的一个值。</li>
+<li>当如果元素大于8个时<code>HashMap</code>会将链表转化成红黑树，虽然插入元素可能需要左旋右旋变色繁杂操作，但带来的效果是提高了查询效率</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.jianshu.com/p/2c7a4a4e1f53" target="_blank" rel="noopener">https://www.jianshu.com/p/2c7a4a4e1f53</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java集合/">Java集合</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/&title=《Java集合-Map-红黑树介绍》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/&title=《Java集合-Map-红黑树介绍》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java集合-Map-红黑树介绍》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Map-LinkedHashMap源码解析及原理/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java集合-Map-LinkedHashMap源码解析及原理</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Map-HashMap源码解析及原理/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Java集合-Map-HashMap源码解析及原理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/&title=《Java集合-Map-红黑树介绍》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/&title=《Java集合-Map-红黑树介绍》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java集合-Map-红黑树介绍》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Map-红黑树介绍/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKUlEQVR42u3awU7DMBAE0P7/T5crEiKaWacoNi8nhNLEz5VYPLuvV3y9v13Jb37+/ren/bz/t+cnq7r5wsbGxt6E/b681heabM312pI15xZsbGzsU9nXr7z39ckW5yvJ14mNjY2NnRebZDuSzyafwsbGxsZu2dE/+sGLrxfdhlPY2NjY2PnxYBbctyUtL40fz9KwsbGxH8/Ou6LP//kj/W1sbGzsB7Nn8X3eMGiX9f6TCxsbG/skdhv9z8Z0VqKoWdgUrR8bGxv7UPZspKY9KuQDQPmGRi2BNqnCxsbG3pY9G9O5BqyD84GeoiuCjY2NvTk7b+uuD/TMwCst4WJYBxsbG3tzdv7h64cm5WrWhMiPH5ELGxsb+yB2GzANC8bo+bPiOpxawsbGxj6CnYfy7YvzA0a70bNhIGxsbOyT2CsHjJyRNwZWak1RILGxsbGPY8+KQd4kWAmY8hCqKKvY2NjYB7HzgZhZDNSWpSLQLxsD9QENGxsbe1t2fvxYbwPnRTQvSG0RxcbGxj6Jncf6+RBkO4LTblP7ZGxsbOz/wF5vtbYvzuOnnF1UbGxsbOzN2XnUPouTZoOb+Tc2bB5jY2NjH8SeJecz0qy83Rt41RuBjY2N/Xh2DlgpdbMS2JbSpVMXNjY29nHs2WEjb/S2zYCVJw9DJWxsbOwN2W3LNjl4rB8qooIUvGVIwsbGxt6EnTx0Ftm3BSzfyrbBjI2NjX0qu11uXoRWSuD1ZrVFFBsbG/tsdluK8sNAXmCGx4lPfMPY2NjYG7LzID6J9ZO2QXtn/vW0ozzY2NjYJ7GTw8N6VDQrgcn97TqxsbGxT2VHwy4LUVQ+6NkWp2EghY2NjX0o+9OBUTskNGzfJivHxsbGPoL9Lq+cmj9h5WDTNoNfbRKGjY2N/Xh2+6c/H7Vsw6m8RN017omNjY19Erttu7bt1dmds80tji7Y2NjYx7Fn0f8sYMqPMW1olW8WNjY2NvYsMErekm/BrM2MjY2Njd1GSCsHlYQ0DMWwsbGxj2MnoVI+apOT8gbArNBGk0rY2NjYm7PzAjBrFdxVhGZd6xv629jY2NjPZX8BJk4WEcjYKwQAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

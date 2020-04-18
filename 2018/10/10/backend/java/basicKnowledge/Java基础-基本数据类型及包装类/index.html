@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java基础-基本数据类型及包装类 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java基础">
+    <meta name="description" content="前言 我们知道Java有两大类型 8大基本数据类型 整数类型 byte   占1个字节，范围为-128(-2^7)到127(2^7-1)，在变量初始化的时候，byte类型的默认值为0 short  占2个字节，范围为-32,768 (-2^15)到32,767 (2^15-1)，在变量初始化的时候，short类型的默认值为0 int    占4个字节，范围为-2,147,483,648 (-2^3">
+<meta name="keywords" content="Java,Java基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础-基本数据类型及包装类">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 我们知道Java有两大类型 8大基本数据类型 整数类型 byte   占1个字节，范围为-128(-2^7)到127(2^7-1)，在变量初始化的时候，byte类型的默认值为0 short  占2个字节，范围为-32,768 (-2^15)到32,767 (2^15-1)，在变量初始化的时候，short类型的默认值为0 int    占4个字节，范围为-2,147,483,648 (-2^3">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-27T15:11:32.563Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java基础-基本数据类型及包装类">
+<meta name="twitter:description" content="前言 我们知道Java有两大类型 8大基本数据类型 整数类型 byte   占1个字节，范围为-128(-2^7)到127(2^7-1)，在变量初始化的时候，byte类型的默认值为0 short  占2个字节，范围为-32,768 (-2^15)到32,767 (2^15-1)，在变量初始化的时候，short类型的默认值为0 int    占4个字节，范围为-2,147,483,648 (-2^3">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java基础-基本数据类型及包装类</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java基础-基本数据类型及包装类</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-09T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2018-10-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#自动拆箱与自动装箱"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">自动拆箱与自动装箱</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#基本数据类型及包装类大小比较"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">基本数据类型及包装类大小比较</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Integer缓存"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">Integer缓存</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">3.</span> <span class="post-toc-text">补充</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#为什么byte取值-128-127"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">为什么byte取值-128~127</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/basicKnowledge/Java基础-基本数据类型及包装类" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java基础-基本数据类型及包装类</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-10 00:00:00" datetime="2018-10-09T16:00:00.000Z" itemprop="datePublished">2018-10-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>我们知道<code>Java</code>有两大类型<ul>
+<li>8大基本数据类型<ul>
+<li>整数类型<ul>
+<li><code>byte</code>   占1个字节，范围为<code>-128(-2^7)</code>到<code>127(2^7-1)</code>，在变量初始化的时候，<code>byte</code>类型的默认值为<code>0</code></li>
+<li><code>short</code>  占2个字节，范围为<code>-32,768 (-2^15)</code>到<code>32,767 (2^15-1)</code>，在变量初始化的时候，short类型的默认值为<code>0</code></li>
+<li><code>int</code>    占4个字节，范围为<code>-2,147,483,648 (-2^31)</code>到<code>2,147,483,647 (2^31-1)</code>，在变量初始化的时候，int类型的默认值为<code>0</code></li>
+<li><code>long</code>   占8个字节，范围为<code>-9,223,372,036,854,775,808</code>(-2^63)到<code>9,223,372,036, 854,775,807 (2^63-1)</code>，在变量初始化的时候，<code>long</code>类型的默认值为<code>0L</code>或<code>0l</code></li>
+</ul>
+</li>
+<li>浮点类型<ul>
+<li><code>flout</code>  占4个字节，单精度浮点数 根据<code>IEEE754-1985</code>标准，默认值为<code>0.0f</code></li>
+<li><code>double</code> 占8个字节，双精度浮点数 根据<code>IEEE754-1985</code>标准，默认值为<code>0.0d</code></li>
+</ul>
+</li>
+<li>布尔类型<ul>
+<li><code>boolean</code> 默认值为<code>false</code></li>
+</ul>
+</li>
+<li>字符类型<ul>
+<li><code>char</code>   占2个字节，默认值为<code>\u0000</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>引用数据类型</li>
+</ul>
+</li>
+<li><p>数字超出范围怎么办？</p>
+<ul>
+<li><p>上面说过了，整型中，每个类型都有一定的表示范围，但是，在程序中有些计算会导致超出表示范围，即溢出。如以下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = Integer.MAX_VALUE;</span><br><span class="line"><span class="keyword">int</span> j = Integer.MAX_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> k = i + j;</span><br><span class="line">System.out.println(<span class="string">"i ("</span> + i + <span class="string">") + j ("</span> + j + <span class="string">") = k ("</span> + k + <span class="string">")"</span>);</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 输出结果：i (2147483647) + j (2147483647) = k (-2)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这就是发生了溢出，溢出的时候并不会抛异常，也没有任何提示。所以，在程序中，使用同类型的数据进行运算的时候，一定要注意数据溢出的问题。</p>
+</li>
+</ul>
+</li>
+<li><p>为什么要分基本数据类型和引用数据类型？</p>
+<ul>
+<li>我们都知道在<code>Java</code>语言中，<code>new</code>一个对象是存储在堆里的，我们通过栈中的引用来使用这些对象，所以，对象本身来说是比较消耗资源的。</li>
+<li>对于经常用到的类型，如<code>int</code>等，如果我们每次使用这种变量的时候都需要<code>new</code>一个<code>Java</code>对象的话，就会比较笨重。所以，和<code>C++</code>一样，<code>Java</code>提供了基本数据类型，这种数据的变量不需要使用<code>new</code>创建，他们不会在堆上创建，而是直接在栈内存中存储，因此会更加高效。</li>
+</ul>
+</li>
+<li><p>有了基本数据类型之外为什么还要包装类型呢？</p>
+<ul>
+<li><code>Java</code>语言是一个面向对象的语言，但是<code>Java</code>中的基本数据类型却是不面向对象的，这在实际使用时存在很多的不便</li>
+<li>为了解决这个不足，在设计类时为每个基本数据类型设计了一个对应的类进行代表，这样八个和基本数据类型对应的类统称为包装类<code>(Wrapper Class)</code>。</li>
+<li>为了让基本类型也具有对象的特征，就出现了包装类型，它相当于将基本类型“包装起来”，使得它具有了对象的性质，并且为其添加了属性和方法，丰富了基本类型的操作。</li>
+</ul>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><ul>
+<li>包装类均位于java.lang包，包装类和基本数据类型的对应关系如下表所示:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">基本数据类型</th>
+<th style="text-align:left">包装类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">byte</td>
+<td style="text-align:left">Byte</td>
+</tr>
+<tr>
+<td style="text-align:left">short</td>
+<td style="text-align:left">Boolean</td>
+</tr>
+<tr>
+<td style="text-align:left">int</td>
+<td style="text-align:left">Short</td>
+</tr>
+<tr>
+<td style="text-align:left">long</td>
+<td style="text-align:left">Long</td>
+</tr>
+<tr>
+<td style="text-align:left">flout</td>
+<td style="text-align:left">Float</td>
+</tr>
+<tr>
+<td style="text-align:left">double</td>
+<td style="text-align:left">Double</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">Boolean</td>
+</tr>
+<tr>
+<td style="text-align:left">char</td>
+<td style="text-align:left">Character</td>
+</tr>
+</tbody>
+</table>
+<h4 id="自动拆箱与自动装箱"><a href="#自动拆箱与自动装箱" class="headerlink" title="自动拆箱与自动装箱"></a>自动拆箱与自动装箱</h4><ul>
+<li><p>在<code>Java SE5</code>中，为了减少开发人员的工作，<code>Java</code>提供了自动拆箱与自动装箱功能。</p>
+<ul>
+<li>自动装箱: 就是将基本数据类型自动转换成对应的包装类。 </li>
+<li>自动拆箱：就是将包装类自动转换成对应的基本数据类型。</li>
+</ul>
+</li>
+<li><p>示例</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Integer i =<span class="number">10</span>;  <span class="comment">// 自动装箱</span></span><br><span class="line"><span class="keyword">int</span> b= i;       <span class="comment">// 自动拆箱</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>实现原理</p>
+<ul>
+<li><p>自动拆装箱的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</span><br><span class="line">    Integer integer=<span class="number">1</span>; <span class="comment">//装箱</span></span><br><span class="line">    <span class="keyword">int</span> i=integer; <span class="comment">//拆箱</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对以上代码进行反编译后可以得到以下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</span><br><span class="line">    Integer integer=Integer.valueOf(<span class="number">1</span>); </span><br><span class="line">    <span class="keyword">int</span> i=integer.intValue(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从上面反编译后的代码可以看出，<code>int</code>的自动装箱都是通过<code>Integer.valueOf()</code>方法来实现的，<code>Integer</code>的自动拆箱都是通过<code>integer.intValue</code>来实现的</p>
+</li>
+<li>将八种类型都反编译一遍 ，你会发现以下规律：自动装箱都是通过包装类的<code>valueOf()</code>方法来实现的.自动拆箱都是通过包装类对象的<code>xxxValue()</code>来实现的。</li>
+</ul>
+</li>
+<li><p>由于自动拆箱，如果包装类对象为<code>null</code>，那么自动拆箱时就有可能抛出<code>NPE</code></p>
+</li>
+<li><p>如果一个<code>for</code>循环中有大量拆装箱操作，会浪费很多资源。</p>
+</li>
+</ul>
+<h4 id="基本数据类型及包装类大小比较"><a href="#基本数据类型及包装类大小比较" class="headerlink" title="基本数据类型及包装类大小比较"></a>基本数据类型及包装类大小比较</h4><ul>
+<li><code>Integer</code> 用 <code>==</code>比较的时候往往非常容易出错，先看题</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lizi.basic;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntegerDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Integer a = <span class="keyword">new</span> Integer(<span class="number">3</span>);</span><br><span class="line">        Integer b = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">int</span> c = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(a == b); </span><br><span class="line">        System.out.println(a == c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>分析思路</p>
+<ul>
+<li>基本数据类类型存的是数值本身，基本类型通过 <code>==</code> 比较的是他们的值大小</li>
+<li>引用类型变量在内存放的是数据的引用，引用类型比较的是他们的引用地址</li>
+</ul>
+</li>
+<li><p>分析</p>
+<ul>
+<li><code>a == b</code>结果分析<ul>
+<li><code>Integer b = 3</code>; 这里自动拆箱操作调用<code>Integer.valueOf(3)</code> 返回一个<code>Integer</code>的对象， 这个对象存放到<code>cache</code>中的</li>
+<li>而 <code>Integer a = new Integer(3)</code>;这里创建了一个新的对象<code>Integer</code> 所以 <code>a == b</code> 返回的是<code>false</code></li>
+</ul>
+</li>
+<li><code>a == c</code>结果分析<ul>
+<li>一个<code>Integer</code> 与 <code>int</code>比较，先将<code>Integer</code>转换成<code>int</code>类型，再做值比较，所以返回的是<code>true</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>结果</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">false</span></span><br><span class="line"><span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+<h4 id="Integer缓存"><a href="#Integer缓存" class="headerlink" title="Integer缓存"></a><code>Integer</code>缓存</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Integer f1 = <span class="number">100</span>, f2 = <span class="number">100</span>, f3 = <span class="number">150</span>, f4 = <span class="number">150</span>;</span><br><span class="line">System.out.println(f1 == f2);</span><br><span class="line">System.out.println(f3 == f4);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上面涉及到自动装箱，实际上的操作是</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当我们给一个Integer赋予一个int类型的时候会调用Integer的静态方法valueOf。</span></span><br><span class="line">Integer f1 = Integer.valueOf(<span class="number">100</span>); </span><br><span class="line">Integer f2 = Integer.valueOf(<span class="number">100</span>); </span><br><span class="line">Integer f3 = Integer.valueOf(<span class="number">150</span>); </span><br><span class="line">Integer f4 = Integer.valueOf(<span class="number">150</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>思考：那么<code>Integer.valueOf()</code>返回的<code>Integer</code>是不是是重新<code>new Integer(num)</code>来创建的呢？<ul>
+<li>如果是这样的话，那么<code>==</code> 比较返回都是<code>false</code>，因为他们引用的堆地址不一样</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>具体来看看<code>Integer.valueOf()</code>的源码，可以看到下面这里并不是重新<code>new Integer(num)</code>来创建，而是做了一个判断，如果当前数值是在缓存数据之内，则返回的缓存的构造的数据</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">valueOf</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)</span><br><span class="line">        <span class="keyword">return</span> IntegerCache.cache[i + (-IntegerCache.low)];</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Integer(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>IntegerCache</code>类解析<ul>
+<li>下面可以看到，在<code>IntegerCache</code>中<code>cache</code>数组初始化如下，存入了<code>-128 - 127</code>的值，最小值为<code>-128</code>，最大值可以通过属性来配置，如果没有配置则默认为<code>127</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IntegerCache</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 最小值-128</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> low = -<span class="number">128</span>;</span><br><span class="line">        <span class="comment">// 最大值默认为127，可以通过属性来配置</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> high;</span><br><span class="line">        <span class="comment">// 缓存值</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> Integer cache[];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">static</span> &#123;</span><br><span class="line">            <span class="comment">// 最大值可以通过属性来配置</span></span><br><span class="line">            <span class="comment">// high value may be configured by property</span></span><br><span class="line">            <span class="keyword">int</span> h = <span class="number">127</span>;</span><br><span class="line">            String integerCacheHighPropValue =</span><br><span class="line">                sun.misc.VM.getSavedProperty(<span class="string">"java.lang.Integer.IntegerCache.high"</span>);</span><br><span class="line">            <span class="keyword">if</span> (integerCacheHighPropValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">int</span> i = parseInt(integerCacheHighPropValue);</span><br><span class="line">                    i = Math.max(i, <span class="number">127</span>);</span><br><span class="line">                    <span class="comment">// Maximum array size is Integer.MAX_VALUE</span></span><br><span class="line">                    h = Math.min(i, Integer.MAX_VALUE - (-low) -<span class="number">1</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span>( NumberFormatException nfe) &#123;</span><br><span class="line">                    <span class="comment">// If the property cannot be parsed into an int, ignore it.</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            high = h;</span><br><span class="line"></span><br><span class="line">            cache = <span class="keyword">new</span> Integer[(high - low) + <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">int</span> j = low;</span><br><span class="line">            <span class="comment">// for循环构造</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; cache.length; k++)</span><br><span class="line">                cache[k] = <span class="keyword">new</span> Integer(j++);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 最大值必须大于或等于127</span></span><br><span class="line">            <span class="comment">// range [-128, 127] must be interned (JLS7 5.1.7)</span></span><br><span class="line">            <span class="keyword">assert</span> IntegerCache.high &gt;= <span class="number">127</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">IntegerCache</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* 从上面我们可以知道给`Integer` 赋予的<span class="keyword">int</span>数值在`-<span class="number">128</span> - <span class="number">127</span>`的时候，直接从`cache`中获取，这些`cache`引用对`Integer`对象地址是不变的，但是不在这个范围内的数字，则`<span class="keyword">new</span> Integer(i) `这个地址是新的地址，不可能一样的</span><br><span class="line"></span><br><span class="line">* 注意这里是个坑</span><br><span class="line"></span><br><span class="line">* 结果</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="keyword">true</span></span><br><span class="line"><span class="keyword">false</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h4 id="为什么byte取值-128-127"><a href="#为什么byte取值-128-127" class="headerlink" title="为什么byte取值-128~127"></a>为什么byte取值-128~127</h4><ul>
+<li>计算机系统中是用补码来存储的，首位为0表示正数，首位为1表示负数，所以有以下结论：<ul>
+<li>最大的补码用二进制表示为：01111111 = 127</li>
+<li>最小的补码用二进制表示为：10000000 = -128</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://my.oschina.net/90888/blog/861131" target="_blank" rel="noopener">https://my.oschina.net/90888/blog/861131</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java基础/">Java基础</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/&title=《Java基础-基本数据类型及包装类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/&title=《Java基础-基本数据类型及包装类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java基础-基本数据类型及包装类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-常用类-String/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java基础-常用类-String</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-hashcode和equals的区别/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Java基础-hashcode和equals的区别</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/&title=《Java基础-基本数据类型及包装类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/&title=《Java基础-基本数据类型及包装类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java基础-基本数据类型及包装类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD3UlEQVR42u3aS24bUQwEQN//0g6QVYBEUjdJ2QZSs9JCHj3WGODw8/ERX5+/r0ef/7ye3yH/zqNfeX6qR+c8vnDgwIEDRxDqoyvnaBHzUyXnTGie/xUOHDhw4LjlyIPJw2uJNwl1lnRx4MCBA8f3cuQJbFb4JSh5ysSBAwcOHD+f43nSTcq5vGH3PLykFMSBAwcOHN/L0bbbZk3DNt226b99IcCBAwcOHO/g2C80/PzPX7rfgQMHDhz/Mcfn6LoqzPLWXjv6GsaFAwcOHDjWHLOQrgZR7Z3b/NguN+DAgQMHjj3HfkEhH/xsBkiz51zHhQMHDhw4jji+MuPMhkaz1Yf6BQIHDhw4cJxy5OFt1hRa9M3J6wePAwcOHDiOODbNu1lhNkuxt4+kqGhx4MCBA0fJkZdD+2BmpVq+WrEpWXHgwIEDxxXHrOjKG4ttatwsUrQDqodLcjhw4MCBY8TRptjZukBO3y5AJPRtcYgDBw4cOPYcybHadtusRZifoYUumHDgwIEDx4IjWRrIm4Obdl5+t9th2MP/Cxw4cODAseDIVwFmawf71JiMrFp6HDhw4MDxDo5kSJMMojaDpWTUlCwotGXni4ETDhw4cOAYccwOl6wOtIOfTSMyaVBGy3M4cODAgWPNMRsL5QsQm0RYrLWtH0PUMcWBAwcOHDFH20RrB0ibZYhNKt0T48CBAweOGUe7HlcXRYvmXdtSzEdoL947cODAgQPHguO2OXgLmt951nwcPlscOHDgwBEsNGzSYXLQfYmY/9aqgMSBAwcOHAuO9ofzNJmnwHZ5+iqp/+P7OHDgwIHjbRxX4eUh5esReeuwHnHhwIEDB441Rzvm+crAZkVj8gBeDKJw4MCBA8eaox3P5MsEbQtvP7LajLJw4MCBA8eeo005OUQ+8pmNu86e+d9jJxw4cODAccqxCbWlvCrekkcVvTTgwIEDB44jjjyVJjRXywdtQZhE9OKvcODAgQPHmqMNrF0UaO+cp/98YNbS4MCBAweODUcbapIUZ8Xh7aLDrB2JAwcOHDiuONqFhjzFzoLPgWbrEThw4MCB430c7Urc7LibJYM2fW5W6HDgwIEDx55jn7ra5l270LAfXOXfwYEDBw4ce45ZQkqAcqyrRYT8PLNHiwMHDhw4co582LNv9rVpePa5TbTRLA4HDhw4cJQceSJsVwraduFsreGqsMSBAwcOHD+NYxb8bOy0GVl9UaLFgQMHDhyLhuBmqJM3/tohWdtSxIEDBw4cVxyzkmmTMhO4JJg2zb94PDhw4MCBY80xW2hoE+2mzNvfczaUwoEDBw4cJccvNHLYu2qtWukAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

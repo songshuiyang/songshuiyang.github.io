@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java集合-Queue-BlockingQueue阻塞队列接口 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java集合">
+    <meta name="description" content="前言 前面两个章节介绍了PriorityQueue及ConcurrentLinkedQueue队列，这两个队列是非阻塞队列，那么什么是阻塞队列呢？主要有下面两点  就是在队列为空时从队头取数据线程将会被阻塞，因为此时还没有数据可取，一旦队列中有数据了，取到数据之后线程就会得到释放 如果队列有容量限制且满了，那么插入数据的线程将会阻塞，直到队列中有空闲位置可以插入数据了，线程才会释放   代码采用J">
+<meta name="keywords" content="Java,Java集合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合-Queue-BlockingQueue阻塞队列接口">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 前面两个章节介绍了PriorityQueue及ConcurrentLinkedQueue队列，这两个队列是非阻塞队列，那么什么是阻塞队列呢？主要有下面两点  就是在队列为空时从队头取数据线程将会被阻塞，因为此时还没有数据可取，一旦队列中有数据了，取到数据之后线程就会得到释放 如果队列有容量限制且满了，那么插入数据的线程将会阻塞，直到队列中有空闲位置可以插入数据了，线程才会释放   代码采用J">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/BlockingQueue.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/BlockingQueueMethod.jpg">
+<meta property="og:updated_time" content="2019-09-22T02:01:38.825Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合-Queue-BlockingQueue阻塞队列接口">
+<meta name="twitter:description" content="前言 前面两个章节介绍了PriorityQueue及ConcurrentLinkedQueue队列，这两个队列是非阻塞队列，那么什么是阻塞队列呢？主要有下面两点  就是在队列为空时从队头取数据线程将会被阻塞，因为此时还没有数据可取，一旦队列中有数据了，取到数据之后线程就会得到释放 如果队列有容量限制且满了，那么插入数据的线程将会阻塞，直到队列中有空闲位置可以插入数据了，线程才会释放   代码采用J">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/BlockingQueue.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java集合-Queue-BlockingQueue阻塞队列接口</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java集合-Queue-BlockingQueue阻塞队列接口</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-19T16:02:03.000Z" itemprop="datePublished" class="page-time">
+  2018-10-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#类继承关系图"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">类继承关系图</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#BlockingQueue-方法"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">BlockingQueue 方法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#各个实现类"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">各个实现类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#ArrayBlockingQueue"><span class="post-toc-number">2.0.3.1.</span> <span class="post-toc-text">ArrayBlockingQueue</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#LinkedBlockingQueue"><span class="post-toc-number">2.0.3.2.</span> <span class="post-toc-text">LinkedBlockingQueue</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#PriorityBlockingQueue"><span class="post-toc-number">2.0.3.3.</span> <span class="post-toc-text">PriorityBlockingQueue</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#LinkedBlockingDeque"><span class="post-toc-number">2.0.3.4.</span> <span class="post-toc-text">LinkedBlockingDeque</span></a></li></ol></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java集合-Queue-BlockingQueue阻塞队列接口</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-20 00:02:03" datetime="2018-10-19T16:02:03.000Z" itemprop="datePublished">2018-10-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>前面两个章节介绍了<code>PriorityQueue</code>及<code>ConcurrentLinkedQueue</code>队列，这两个队列是非阻塞队列，那么什么是阻塞队列呢？主要有下面两点</p>
+<ul>
+<li>就是在队列为空时从队头取数据线程将会被阻塞，因为此时还没有数据可取，一旦队列中有数据了，取到数据之后线程就会得到释放</li>
+<li>如果队列有容量限制且满了，那么插入数据的线程将会阻塞，直到队列中有空闲位置可以插入数据了，线程才会释放</li>
+</ul>
+</li>
+<li><p>代码采用<code>JDK 1.8</code>版本</p>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><ul>
+<li><code>BlockingQueue</code>是阻塞队列的顶层接口</li>
+</ul>
+<h4 id="类继承关系图"><a href="#类继承关系图" class="headerlink" title="类继承关系图"></a>类继承关系图</h4><ul>
+<li>整个<code>BlockingQueue</code>的结构都是在<code>Queue</code>的接口上扩展的</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/BlockingQueue.png" alt="类继承关系图" title="">
+                </div>
+                <div class="image-caption">类继承关系图</div>
+            </figure>
+<ul>
+<li><code>BlockingQueue</code>在<code>Queue</code>接口的基础上对入队和出队两个操作分别又增加了阻塞方法，如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">阻塞入队</th>
+<th style="text-align:left">阻塞出队</th>
+<th style="text-align:left">定时入队</th>
+<th style="text-align:left">定时出队</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">put(E e)</td>
+<td style="text-align:left">E take()</td>
+<td style="text-align:left">offer(E e,long timeout,TimeUnit unit)</td>
+<td style="text-align:left">E poll(long timeout,TimeUnit unit)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="BlockingQueue-方法"><a href="#BlockingQueue-方法" class="headerlink" title="BlockingQueue 方法"></a><code>BlockingQueue</code> 方法</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/BlockingQueueMethod.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h4 id="各个实现类"><a href="#各个实现类" class="headerlink" title="各个实现类"></a>各个实现类</h4><h5 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h5><ul>
+<li>一个基于数组实现的有界阻塞队列，必须设置容量</li>
+</ul>
+<h5 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h5><ul>
+<li>基于链表实现的阻塞队列，容量可以选择进行设置，不设置的话，将是一个无边界的阻塞队列</li>
+</ul>
+<h5 id="PriorityBlockingQueue"><a href="#PriorityBlockingQueue" class="headerlink" title="PriorityBlockingQueue"></a>PriorityBlockingQueue</h5><ul>
+<li>一个无界的阻塞队列，使用的排序规则和PriorityQueue类似并提供了阻塞操作</li>
+</ul>
+<h5 id="LinkedBlockingDeque"><a href="#LinkedBlockingDeque" class="headerlink" title="LinkedBlockingDeque"></a>LinkedBlockingDeque</h5><ul>
+<li>一个基于双端链表的双端阻塞队列，容量可以选择进行设置</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>Java</code>提供的线程安全的<code>Queue</code>可以分为阻塞队列和非阻塞队列，其中阻塞队列的典型例子是<code>BlockingQueue</code>，非阻塞队列的典型例子是<code>ConcurrentLinkedQueue</code>，在实际应用中要根据实际需要选用阻塞队列或者非阻塞队列。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://my.oschina.net/90888/blog/1604266" target="_blank" rel="noopener">https://my.oschina.net/90888/blog/1604266</a></li>
+<li><a href="https://www.cnblogs.com/Joe-Go/p/9757394.html" target="_blank" rel="noopener">https://www.cnblogs.com/Joe-Go/p/9757394.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java集合/">Java集合</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/&title=《Java集合-Queue-BlockingQueue阻塞队列接口》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/&title=《Java集合-Queue-BlockingQueue阻塞队列接口》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java集合-Queue-BlockingQueue阻塞队列接口》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Queue-ArrayBlockingQueue阻塞队列/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java集合-Queue-ArrayBlockingQueue阻塞队列</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Java集合-Queue-ConcurrentLinkedQueue源码解析及原理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/&title=《Java集合-Queue-BlockingQueue阻塞队列接口》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/&title=《Java集合-Queue-BlockingQueue阻塞队列接口》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java集合-Queue-BlockingQueue阻塞队列接口》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD6ElEQVR42u3b2U7dQBAFQP7/p8lzdGX7nO4xJFLdJ+SYWQqkppd8fcWf74/P1fP7f/18fv/k/jxXJ0xWWH1w4MCBA0d51fa4yQr5oe+/6+qSOffDajhw4MCB4xBHskF+gX0sey8OPpwcBw4cOHD8Kseepg2x9yE8OT8OHDhw4Pg3OdpgNgulOVx+fhw4cODA8TMcSVKUb9y2mvJC3htv4sCBAweOsxxtcvU/fv3KfAcOHDhw4ChbOJumzv37eSq4b0QVt8OBAwcOHGuO2Zaz0tt+6CE/1aoQiQMHDhw4Fhx5gJxdflOAazny3R+qpDhw4MCBY82RN2Nm7ZwkeZsNRswC7eUvAQ4cOHDgWHPsw207spDQtz+SNkV8KFziwIEDB441R75ZHrrao59KJpOksUgvceDAgQNHyXEq0dokYLP0rC0CJqvhwIEDB45THLPLtM9nKda+AVbcFAcOHDhwrDnaYtys/Lcv8OUJ3mZgDgcOHDhwnOLI06HN0EC+Wps6tu9EPwYcOHDgwHGIY9aIygtzmyTw69AnWhkHDhw4cIw43hg4aAcLkjA8K/wl5/nrOQ4cOHDgWHO0289aPm0Ta0+2+RMBBw4cOHBsOPYJ0qZEOCsdntqlvgwOHDhw4Cg33oTDtnHVXjXnWJUXceDAgQPHmiMpseUpUx4482tsUr7ZXjhw4MCBY7PXbBCtLQK26Vk7PD2siX6eCgcOHDhwrDk2QXQzNj1b/2xx86H5hAMHDhw41hz3IbAdlZsVJTcNp/ycw1wWBw4cOHAE72+u0TLN0sW86TVLIB8yWhw4cODAcZRjE2KT1G6ThuXr5A0tHDhw4MCx52hTrFnyljeEZijtoEPblMKBAwcOHPkZknSrHQt4o+00C7F5q6zIPnHgwIEDR3ejYvA6b1bl35s3itrLDwM8Dhw4cOAYcbRlu1kQzS/QRr3NExw4cODAcZYj0hqVCPOC3WwkbtNSujwbDhw4cOB4maO9UlKqmzW0NsN8xco4cODAgeMQR1tBPFXsy8+QlB3bNy9TOBw4cODAseY4NaDQDi60Rck8ZOb3qv8KwIEDBw4cz+sf+G88+UDDbFQuLwLOkj0cOHDgwHGK47v85AF1NloXBcLROxETDhw4cOBYc+SfvBj3UIALWkR5GXG2fkuPAwcOHDhajlWrZn3c2QBEHuyT9XHgwIEDxxsc+Zb3cHnwS8p2s9bUpviIAwcOHDh+niNJ6toLt+MRbxQ0ceDAgQPH73LkK+SXmaVk7ZjFw/lx4MCBA8chjuSImzGFTVo4KzUOhydw4MCBA8eaIy+ltSW8PP3bF/jOpog4cODAgWPE8QenZM2Aa3IyDQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

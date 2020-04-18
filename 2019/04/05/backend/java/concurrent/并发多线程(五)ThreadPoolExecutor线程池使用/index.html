@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>并发多线程(五)ThreadPoolExecutor线程池使用 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java并发">
+    <meta name="description" content="概述使用示例ThreadPoolExecutor 使用示例1234567891011121314151617181920212223242526272829303132333435public class ThreadPoolExecutorTest &amp;#123;    public static void main(String[] args) &amp;#123;        ThreadPoolE">
+<meta name="keywords" content="Java,Java并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发多线程(五)ThreadPoolExecutor线程池使用">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概述使用示例ThreadPoolExecutor 使用示例1234567891011121314151617181920212223242526272829303132333435public class ThreadPoolExecutorTest &amp;#123;    public static void main(String[] args) &amp;#123;        ThreadPoolE">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-18T05:15:04.317Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发多线程(五)ThreadPoolExecutor线程池使用">
+<meta name="twitter:description" content="概述使用示例ThreadPoolExecutor 使用示例1234567891011121314151617181920212223242526272829303132333435public class ThreadPoolExecutorTest &amp;#123;    public static void main(String[] args) &amp;#123;        ThreadPoolE">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">并发多线程(五)ThreadPoolExecutor线程池使用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">并发多线程(五)ThreadPoolExecutor线程池使用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-05T14:00:01.000Z" itemprop="datePublished" class="page-time">
+  2019-04-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用示例"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用示例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ThreadPoolExecutor-使用示例"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">ThreadPoolExecutor 使用示例</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Executors提供四种线程池的创建实现"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Executors提供四种线程池的创建实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#newCachedThreadPool"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">newCachedThreadPool</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#newFixedThreadPool"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">newFixedThreadPool</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#newScheduledThreadPool"><span class="post-toc-number">2.2.3.</span> <span class="post-toc-text">newScheduledThreadPool</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#newSingleThreadExecutor"><span class="post-toc-number">2.2.4.</span> <span class="post-toc-text">newSingleThreadExecutor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#正确使用例子："><span class="post-toc-number">2.2.5.</span> <span class="post-toc-text">正确使用例子：</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">并发多线程(五)ThreadPoolExecutor线程池使用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-05 22:00:01" datetime="2019-04-05T14:00:01.000Z" itemprop="datePublished">2019-04-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="ThreadPoolExecutor-使用示例"><a href="#ThreadPoolExecutor-使用示例" class="headerlink" title="ThreadPoolExecutor 使用示例"></a>ThreadPoolExecutor 使用示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadPoolExecutorTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ThreadPoolExecutor executor = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">10</span>, <span class="number">200</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                <span class="keyword">new</span> ArrayBlockingQueue&lt;Runnable&gt;(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">15</span>; i++) &#123;</span><br><span class="line">            MyTask myTask = <span class="keyword">new</span> MyTask(i);</span><br><span class="line">            executor.execute(myTask);</span><br><span class="line">            System.out.println(</span><br><span class="line">                    <span class="string">"线程池中线程数目："</span> + executor.getPoolSize() + </span><br><span class="line">                    <span class="string">"，队列中等待执行的任务数目："</span> + executor.getQueue().size() + </span><br><span class="line">                    <span class="string">"，已执行玩别的任务数目："</span> + executor.getCompletedTaskCount());</span><br><span class="line">        &#125;</span><br><span class="line">        executor.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> taskNum;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyTask</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.taskNum = num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"正在执行task "</span> + taskNum);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.currentThread().sleep(<span class="number">4000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"task "</span> + taskNum + <span class="string">"执行完毕"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>输出结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">线程池中线程数目：<span class="number">1</span>，队列中等待执行的任务数目：<span class="number">0</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">2</span>，队列中等待执行的任务数目：<span class="number">0</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">3</span>，队列中等待执行的任务数目：<span class="number">0</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">4</span>，队列中等待执行的任务数目：<span class="number">0</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">2</span></span><br><span class="line">正在执行task <span class="number">1</span></span><br><span class="line">线程池中线程数目：<span class="number">5</span>，队列中等待执行的任务数目：<span class="number">0</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">5</span>，队列中等待执行的任务数目：<span class="number">1</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">3</span></span><br><span class="line">线程池中线程数目：<span class="number">5</span>，队列中等待执行的任务数目：<span class="number">2</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">4</span></span><br><span class="line">线程池中线程数目：<span class="number">5</span>，队列中等待执行的任务数目：<span class="number">3</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">5</span>，队列中等待执行的任务数目：<span class="number">4</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">5</span>，队列中等待执行的任务数目：<span class="number">5</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">6</span>，队列中等待执行的任务数目：<span class="number">5</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">10</span></span><br><span class="line">线程池中线程数目：<span class="number">7</span>，队列中等待执行的任务数目：<span class="number">5</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">11</span></span><br><span class="line">线程池中线程数目：<span class="number">8</span>，队列中等待执行的任务数目：<span class="number">5</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">线程池中线程数目：<span class="number">9</span>，队列中等待执行的任务数目：<span class="number">5</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">12</span></span><br><span class="line">正在执行task <span class="number">13</span></span><br><span class="line">线程池中线程数目：<span class="number">10</span>，队列中等待执行的任务数目：<span class="number">5</span>，已执行玩别的任务数目：<span class="number">0</span></span><br><span class="line">正在执行task <span class="number">14</span></span><br><span class="line">task <span class="number">1</span>执行完毕</span><br><span class="line">task <span class="number">0</span>执行完毕</span><br><span class="line">task <span class="number">4</span>执行完毕</span><br><span class="line">task <span class="number">2</span>执行完毕</span><br><span class="line">正在执行task <span class="number">7</span></span><br><span class="line">task <span class="number">3</span>执行完毕</span><br><span class="line">正在执行task <span class="number">6</span></span><br><span class="line">正在执行task <span class="number">5</span></span><br><span class="line">正在执行task <span class="number">8</span></span><br><span class="line">正在执行task <span class="number">9</span></span><br><span class="line">task <span class="number">12</span>执行完毕</span><br><span class="line">task <span class="number">14</span>执行完毕</span><br><span class="line">task <span class="number">10</span>执行完毕</span><br><span class="line">task <span class="number">11</span>执行完毕</span><br><span class="line">task <span class="number">13</span>执行完毕</span><br><span class="line">task <span class="number">7</span>执行完毕</span><br><span class="line">task <span class="number">5</span>执行完毕</span><br><span class="line">task <span class="number">8</span>执行完毕</span><br><span class="line">task <span class="number">6</span>执行完毕</span><br><span class="line">task <span class="number">9</span>执行完毕</span><br><span class="line"></span><br><span class="line">Process finished with exit code <span class="number">0</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从执行结果可以看出，当线程池中线程的数目大于5时，便将任务放入任务缓存队列里面，当任务缓存队列满了之后，便创建新的线程。如果上面程序中，将for循环中改成执行20个任务，就会抛出任务拒绝异常了。</p>
+</li>
+</ul>
+<h3 id="Executors提供四种线程池的创建实现"><a href="#Executors提供四种线程池的创建实现" class="headerlink" title="Executors提供四种线程池的创建实现"></a>Executors提供四种线程池的创建实现</h3><ul>
+<li>将线程放入线程池的两种方法<ul>
+<li>1、ExecutorService 类中的 submit(Runnable task)  submit(Callable<t> task)</t></li>
+<li>2、Executor 接口中的execute(Runnable command)</li>
+</ul>
+</li>
+</ul>
+<h4 id="newCachedThreadPool"><a href="#newCachedThreadPool" class="headerlink" title="newCachedThreadPool"></a><code>newCachedThreadPool</code></h4><ul>
+<li>创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。线程池的规模不存在限制。</li>
+<li>缓存线程池，缓存的线程默认存活60秒。线程的核心池corePoolSize大小为0，核心池最大为Integer.MAX_VALUE,阻塞队列使用的是SynchronousQueue。是一个直接提交的阻塞队列，    他总会迫使线程池增加新的线程去执行新的任务。在没有任务执行时，当线程的空闲时间超过keepAliveTime（60秒），则工作线程将会终止被回收，当提交新任务时，如果没有空闲线程，则创建新线程执行任务，会导致一定的系统开销。如果同时又大量任务被提交，而且任务执行的时间不是特别快，那么线程池便会新增出等量的线程池处理任务，这很可能会很快耗尽系统的资源。</li>
+<li><p>构造ThreadPoolExecutor</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newCachedThreadPool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                                  <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                                  <span class="keyword">new</span> SynchronousQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewCachedThreadPoolTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ExecutorService cachedThreadPool = Executors.newCachedThreadPool();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> index = i;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(index * <span class="number">1000</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 1- 在未来某个时间执行给定的命令。</span></span><br><span class="line">            <span class="comment">// 该命令可能在新的线程、已入池的线程或者正调用的线程中执行，这由 Executor 实现决定。</span></span><br><span class="line">            cachedThreadPool.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    System.out.println(index);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 2- 提交一个 Runnable 任务用于执行，并返回一个表示该任务的 Future。</span></span><br><span class="line">            <span class="comment">// 该 Future 的 get 方法在成功完成时将会返回给定的结果</span></span><br><span class="line">            cachedThreadPool.submit(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    System.out.println(index);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        cachedThreadPool.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="newFixedThreadPool"><a href="#newFixedThreadPool" class="headerlink" title="newFixedThreadPool"></a><code>newFixedThreadPool</code></h4><ul>
+<li>创建一个固定长度线程池，可控制线程最大并发数，超出的线程会在队列中等待。</li>
+<li>构造ThreadPoolExecutor<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newFixedThreadPool</span><span class="params">(<span class="keyword">int</span> nThreads)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                  <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                  <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="newScheduledThreadPool"><a href="#newScheduledThreadPool" class="headerlink" title="newScheduledThreadPool"></a><code>newScheduledThreadPool</code></h4><ul>
+<li>创建一个固定长度线程池，支持定时及周期性任务执行，这个在实际项目中基本不会被用到</li>
+<li>构造ThreadPoolExecutor<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ScheduledExecutorService <span class="title">newScheduledThreadPool</span><span class="params">(<span class="keyword">int</span> corePoolSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ScheduledThreadPoolExecutor(corePoolSize);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ScheduledThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(corePoolSize, Integer.MAX_VALUE, <span class="number">0</span>, NANOSECONDS,</span><br><span class="line">          <span class="keyword">new</span> DelayedWorkQueue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="newSingleThreadExecutor"><a href="#newSingleThreadExecutor" class="headerlink" title="newSingleThreadExecutor"></a><code>newSingleThreadExecutor</code></h4><ul>
+<li>创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。</li>
+<li>构造ThreadPoolExecutor<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newSingleThreadExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FinalizableDelegatedExecutorService</span><br><span class="line">        (<span class="keyword">new</span> ThreadPoolExecutor(<span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">                                <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="正确使用例子："><a href="#正确使用例子：" class="headerlink" title="正确使用例子："></a>正确使用例子：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Positive example <span class="number">1</span>：</span><br><span class="line">  <span class="comment">//org.apache.commons.lang3.concurrent.BasicThreadFactory</span></span><br><span class="line">  ScheduledExecutorService executorService = <span class="keyword">new</span> ScheduledThreadPoolExecutor(<span class="number">1</span>,</span><br><span class="line">      <span class="keyword">new</span> BasicThreadFactory.Builder().namingPattern(<span class="string">"example-schedule-pool-%d"</span>).daemon(<span class="keyword">true</span>).build());</span><br><span class="line">     </span><br><span class="line">      </span><br><span class="line">          </span><br><span class="line">Positive example <span class="number">2</span>：</span><br><span class="line">  ThreadFactory namedThreadFactory = <span class="keyword">new</span> ThreadFactoryBuilder()</span><br><span class="line">      .setNameFormat(<span class="string">"demo-pool-%d"</span>).build();</span><br><span class="line"></span><br><span class="line">  <span class="comment">//Common Thread Pool</span></span><br><span class="line">  ExecutorService pool = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">200</span>,</span><br><span class="line">      <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">      <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(<span class="number">1024</span>), namedThreadFactory, <span class="keyword">new</span> ThreadPoolExecutor.AbortPolicy());</span><br><span class="line"></span><br><span class="line">  pool.execute(()-&gt; System.out.println(Thread.currentThread().getName()));</span><br><span class="line">  pool.shutdown();<span class="comment">//gracefully shutdown</span></span><br><span class="line">     </span><br><span class="line">      </span><br><span class="line">          </span><br><span class="line">Positive example <span class="number">3</span>：</span><br><span class="line">  &lt;bean id=<span class="string">"userThreadPool"</span></span><br><span class="line">      <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"</span>&gt;</span><br><span class="line">      &lt;property name=<span class="string">"corePoolSize"</span> value=<span class="string">"10"</span> /&gt;</span><br><span class="line">      &lt;property name=<span class="string">"maxPoolSize"</span> value=<span class="string">"100"</span> /&gt;</span><br><span class="line">      &lt;property name=<span class="string">"queueCapacity"</span> value=<span class="string">"2000"</span> /&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property name=<span class="string">"threadFactory"</span> value= threadFactory /&gt;</span><br><span class="line">      &lt;property name=<span class="string">"rejectedExecutionHandler"</span>&gt;</span><br><span class="line">          &lt;ref local=<span class="string">"rejectedExecutionHandler"</span> /&gt;</span><br><span class="line">      &lt;/property&gt;</span><br><span class="line">  &lt;/bean&gt;</span><br><span class="line">  <span class="comment">//in code</span></span><br><span class="line">  userThreadPool.execute(thread);</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>从Executors提供四种线程池具体实现来看，它们实际上也是调用了ThreadPoolExecutor，只不过参数都已配置好了。</p>
+</li>
+<li><p>虽然jdk提供了以上线程池的创建实现，但在实际项目中不推荐使用，在阿里巴巴编码规范插件中是这么提示的：线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。 </p>
+</li>
+<li><p>说明：Executors各个方法的弊端：</p>
+<ul>
+<li><p>1）newCachedThreadPool和newScheduledThreadPool:</p>
+<p>主要问题是线程数最大数是Integer.MAX_VALUE，可能会创建数量非常多的线程，甚至OOM。</p>
+</li>
+<li><p>2）newFixedThreadPool和newSingleThreadExecutor:</p>
+<p>主要问题是堆积的请求处理队列可能会耗费非常大的内存，甚至OOM。</p>
+</li>
+</ul>
+</li>
+<li><p>线程池正确的使用方式应该是需要指定下面这几个参数，而不是让其裸奔（没有限制maxPoolSize及队列长度）</p>
+<ul>
+<li>corePoolSize</li>
+<li>maxPoolSize</li>
+<li>queueCapacity</li>
+<li>rejectedExecutionHandler</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
+<li><a href="https://www.cnblogs.com/dolphin0520/p/3932921.html" target="_blank" rel="noopener">https://www.cnblogs.com/dolphin0520/p/3932921.html</a></li>
+<li><a href="https://blog.csdn.net/tanghui270270/article/details/80595961" target="_blank" rel="noopener">https://blog.csdn.net/tanghui270270/article/details/80595961</a></li>
+<li><a href="https://www.cnblogs.com/superfj/p/7544971.html" target="_blank" rel="noopener">https://www.cnblogs.com/superfj/p/7544971.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java并发/">Java并发</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/&title=《并发多线程(五)ThreadPoolExecutor线程池使用》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/&title=《并发多线程(五)ThreadPoolExecutor线程池使用》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(五)ThreadPoolExecutor线程池使用》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池原理分析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">并发多线程(五)ThreadPoolExecutor线程池原理分析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/04/backend/java/concurrent/并发多线程(四)Lock同步锁/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">并发多线程(四)Lock同步锁</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/&title=《并发多线程(五)ThreadPoolExecutor线程池使用》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/&title=《并发多线程(五)ThreadPoolExecutor线程池使用》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(五)ThreadPoolExecutor线程池使用》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程池使用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD9ElEQVR42u3aO3LjQAwFQN7/0toqRxtI9HvAUOWgGalkejjTDCB8riu+Xj/X5vvXf9f9N58+3695v9rhCwcOHDhwBEfdLP0KrnuaT5SfUJLd5v+LAwcOHDie4Di1reTYyXZnO0lC+C9nx4EDBw4cX+SYJWZJYN6E8/ukEQcOHDhw/GWOUwlYXp3LV853ggMHDhw4vsMxK7flJb88AWux2v0fq5XiwIEDB47uuVcb5P7y5wfnO3DgwIEDRzmIkISldmCubTW1YXt2Ohw4cODAsedoy3b7ZlVbHJwNQ6z2gAMHDhw4Fhzt0pti4tkxiKRA2ZLhwIEDB449x2akYHb/ZqChDeSb5BAHDhw4cDzHkQe/ZHObkYX8r3naGaWvOHDgwIHjKEcewDbtoiQ05m2q2f04cODAgWPPsQ9ps3SrHYB4IjF7cz8OHDhw4DjEsR8LmJUR8xRxli62yScOHDhw4NhztM2k/SjDLKdsi3qbgI0DBw4cODYceQUxH57LU8RZ2TEP4floxZvfHThw4MCBY8SxaQLNyDbtpRYi2VtUIsSBAwcOHDHHcHRscWeSBD6RQEbpIg4cOHDgeIyjjdVtEN0MPeSHzIuPOHDgwIHjFEc0QNYOBJRhOD/krGg42z8OHDhw4Njsf19f3KRVs0ZR+0qKgQkcOHDgwLHgyM32W0naQskYRNsGS4J09CsDBw4cOHDEHEmA3KdS7frt02eDDm8CLQ4cOHDgOMRxra9ThcL88MlgRPHacODAgQPHoam22RDbbLghTwvzkJmUI4ud4MCBAweOBcfZQttzQbotZbYpJQ4cOHDgOMUxK/ZtovrZcYf9T4HIFQcOHDhwlBz5TfkWk5LfZsAuLxHmK+PAgQMHjj1H0exfH28TaOswGbeyPlZJceDAgQPHiKM9TP6Ath01a0ptRuhw4MCBA8fTHHkQ3dO0wwqzxlI+rvFL2wkHDhw4cMQcm1Cat6ny5lNb7Mu/j14VDhw4cOBYc+ShqD1wDtcOwLUFyuS1fayY4sCBAweOkiM5fFu8S9pLm5ZSm7bVMx04cODAgWPNsVl01qxqRx/apG6WmuLAgQMHjj3HZigtHziIglzZiEp+FsyeggMHDhw4Nhyv8soTqrwJlKwwKy/W+8eBAwcOHGuONiydGkdoRw1mzbB8IAMHDhw4cJzlyAtwyZjCrIGUN7HaQ7ZDGDhw4MCB4xRHe7y8pNiWCDeJ5f414MCBAweO73O0iVmeXB0o28UnWv0zDhw4cOA4xJGMEcwCYVvay/dWV0lx4MCBA8chjra1kydXbZo3SyPbIuMwg8SBAwcOHPM86GoXbQfX2vLiDGI2qIcDBw4cOEYc/wDZ7VMl0wMLrAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

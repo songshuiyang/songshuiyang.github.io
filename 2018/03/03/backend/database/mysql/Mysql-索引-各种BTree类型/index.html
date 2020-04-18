@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mysql-索引-各种BTree类型 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,Mysql">
+    <meta name="description" content="前言 BTree是为了磁盘或其它存储设备而设计的一种数据结构，因为Mysql索引数据使用了此数据结构，BTree在网上搜索可以看到有各种类型，所以有必要对此进行归纳整理  目的 任何一种数据结构都不是凭空产生的，一定会有它的背景和使用场景，我们需要这种数据结构能够做些什么？  我们知道数据库的数据都是存放在电脑硬盘里面的，如果要提高查找速度，那么每次查找数据时把磁盘IO次数控制在一个很小的数量级，">
+<meta name="keywords" content="数据库,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-索引-各种BTree类型">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 BTree是为了磁盘或其它存储设备而设计的一种数据结构，因为Mysql索引数据使用了此数据结构，BTree在网上搜索可以看到有各种类型，所以有必要对此进行归纳整理  目的 任何一种数据结构都不是凭空产生的，一定会有它的背景和使用场景，我们需要这种数据结构能够做些什么？  我们知道数据库的数据都是存放在电脑硬盘里面的，如果要提高查找速度，那么每次查找数据时把磁盘IO次数控制在一个很小的数量级，">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree_1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree2.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree_2.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree_3.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree_4.png">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.779Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-索引-各种BTree类型">
+<meta name="twitter:description" content="前言 BTree是为了磁盘或其它存储设备而设计的一种数据结构，因为Mysql索引数据使用了此数据结构，BTree在网上搜索可以看到有各种类型，所以有必要对此进行归纳整理  目的 任何一种数据结构都不是凭空产生的，一定会有它的背景和使用场景，我们需要这种数据结构能够做些什么？  我们知道数据库的数据都是存放在电脑硬盘里面的，如果要提高查找速度，那么每次查找数据时把磁盘IO次数控制在一个很小的数量级，">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/btree_1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mysql-索引-各种BTree类型</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mysql-索引-各种BTree类型</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-02T16:05:01.000Z" itemprop="datePublished" class="page-time">
+  2018-03-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#目的"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">目的</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#二叉树"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">二叉树</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#B-树-（Balance-Binary-Tree-）多叉平衡树-–AVL树"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">B-树 （Balance Binary Tree)）多叉平衡树 –AVL树</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#B-树"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">B+树</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#B-树-1"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">B*树</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/mysql/Mysql-索引-各种BTree类型" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mysql-索引-各种BTree类型</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-03 00:05:01" datetime="2018-03-02T16:05:01.000Z" itemprop="datePublished">2018-03-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><code>BTree</code>是为了磁盘或其它存储设备而设计的一种数据结构，因为<code>Mysql</code>索引数据使用了此数据结构，<code>BTree</code>在网上搜索可以看到有各种类型，所以有必要对此进行归纳整理</li>
+</ul>
+<h4 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h4><ul>
+<li><p>任何一种数据结构都不是凭空产生的，一定会有它的背景和使用场景，我们需要这种数据结构能够做些什么？</p>
+<ul>
+<li>我们知道数据库的数据都是存放在电脑硬盘里面的，如果要提高查找速度，那么每次查找数据时把磁盘<code>IO</code>次数控制在一个很小的数量级，目的是在最少磁盘<code>IO</code>次数下能定位到数据</li>
+<li>那么我们就想到如果一个高度可控的多路搜索树是否能满足需求呢？就这样，<code>BTree</code>树应运而生。</li>
+</ul>
+</li>
+<li><p>总结一下目的就是在最少磁盘<code>IO</code>次数下能定位到数据，从而提高数据的查找定位速度</p>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><ul>
+<li><code>BTree</code>分为<code>B-</code>树、<code>B+</code>树、<code>B*</code>树几种类型，是不是开始晕了，下面将介绍这几种<code>BTree</code></li>
+</ul>
+<h4 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/btree_1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>介绍<code>BTree</code>之前先看下二叉树，<code>BTree</code>是在二叉树的演变下而诞生的</p>
+</li>
+<li><p>二叉树特性</p>
+<ul>
+<li>(1)所有非叶子结点至多拥有两个儿子(Left和Right);</li>
+<li>(2)所有结点存储一个关键字</li>
+<li>(3)非叶子结点的左指针指向小于其关键字的子树，右指针指向大于其关键字的子树;(简单说，左边比自己小，右边比自己大)</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>从上图可以看到同样是二叉树，但结构不一样</p>
+<ul>
+<li>左图是 平衡二叉树，平衡是指，它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树</li>
+<li>右图是 普通二叉树</li>
+</ul>
+</li>
+<li><p>从二叉树的查找过程可以知道，如果要定位<code>65</code>这个数据的话，左图是 平衡二叉树 需要查找3次，右图是 普通二叉树 需要查找6次，所以最坏的情况下磁盘<code>IO</code>的次数由树的高度来决定。</p>
+</li>
+<li><p>从二叉树分析情况来看，减少磁盘<code>IO</code>的次数就必须要压缩树的高度，让瘦高的树尽量变成矮胖的树，所以<code>B-Tree</code>就在这样伟大的时代背景下诞生了。</p>
+</li>
+<li><p>数的高度计算如下图所示： <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/btree2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+</ul>
+<h4 id="B-树-（Balance-Binary-Tree-）多叉平衡树-–AVL树"><a href="#B-树-（Balance-Binary-Tree-）多叉平衡树-–AVL树" class="headerlink" title="B-树 （Balance Binary Tree)）多叉平衡树 –AVL树"></a><code>B-</code>树 （Balance Binary Tree)）多叉平衡树 –AVL树</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/btree_2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>上面的二叉树每个节点最多只能拥有2个子节点，而<code>B-</code>树的每个节点可以拥有2个以上的子节点</p>
+</li>
+<li><p>多叉是指<code>B-</code>树每个内结点有多个分支，即多叉，上图可以看到根节点有三个叉，P1指向小于17的数据，P2指向大于17小于35的数据，P3指向大于35的数据</p>
+</li>
+<li><p>特性：</p>
+<ul>
+<li>(1)根节点的左子树和右子树的深度最多相差1(确保了不会出现上图右边的极端现象) </li>
+<li>(2)根节点的左子树和右子树叶都是一棵平衡二叉树。</li>
+<li>(3)所有结点都有存储关键字; 无论插入的序列是怎么样，我们都能通过调整构建一棵平衡二叉树，保证二叉树中的每个节点的平衡因子都不会大于1</li>
+</ul>
+</li>
+<li><p>多叉平衡树保证了树的深度达到最浅，从而比较的次数就会更少，时间复杂度就会降低</p>
+</li>
+</ul>
+<h4 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a><code>B+</code>树</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/btree_3.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>B+</code>树的搜索与<code>B-</code>树也基本相同，区别是<code>B+</code>树只有达到叶子结点才命中(<code>B-</code>树可以在非叶子结点命中)</p>
+</li>
+<li><p>特性：</p>
+<ul>
+<li>(1)所有关键字都出现在叶子结点的链表中(稠密索引)，且链表中的关键字恰好是有序的;(只有根节点存储关键字最后树的末梢才有值) </li>
+<li>(2)非叶子结点相当于是叶子结点的索引(稀疏索引)，叶子结点相当于是存储(关键字)数据的数据层。(非根节点，存储的其实是指向根节点的索引) </li>
+<li>(3) 因为前两点，所以不可能在非叶子结点存数据。(区别B-的第三条) </li>
+<li>(4)根节点横向也有链指针(方便快速顺藤摸瓜嘛，没这个指针，就算下一个取的值是挨着的邻居，也得跑个圈才能拿到)</li>
+</ul>
+</li>
+<li><p>注意，我们一般用到的索引结果，或者通常指的B-TREE结构，大部分就是在说B+结构啦~~</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/btree.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>如上图，是一颗b+树</p>
+<ul>
+<li>浅蓝色的块我们称之为一个磁盘块，可以看到每个磁盘块包含几个数据项（深蓝色所示）和指针（黄色所示）</li>
+<li>如磁盘块1包含数据项17和35，包含指针P1、P2、P3，P1表示小于17的磁盘块，P2表示在17和35之间的磁盘块，P3表示大于35的磁盘块。</li>
+<li>真实的数据存在于叶子节点即3、5、9、10、13、15、28、29、36、60、75、79、90、99。</li>
+<li>非叶子节点只不存储真实的数据，只存储指引搜索方向的数据项，如17、35并不真实存在于数据表中。</li>
+</ul>
+</li>
+<li><p>来模拟下查找文件29的过程：</p>
+<ul>
+<li>(1) 根据根结点指针找到文件目录的根磁盘块1，将其中的信息导入内存。【磁盘IO操作1次】</li>
+<li>(2) 此时内存中有两个文件名17，35和三个存储其他磁盘页面地址的数据。根据算法我们发现17&lt;29&lt;35，因此我们找到指针p2。</li>
+<li>(3) 根据p2指针，我们定位到磁盘块3，并将其中的信息导入内存。【磁盘IO操作2次】</li>
+<li>(4) 此时内存中有两个文件名26，30和三个存储其他磁盘页面地址的数据。根据算法我们发现26&lt;29&lt;30，因此我们找到指针p2。</li>
+<li>(5) 根据p2指针，我们定位到磁盘块8，并将其中的信息导入内存。【磁盘IO操作3次】</li>
+<li>(6) 此时内存中有两个文件名28，29。根据算法我们查找到文件29，并定位了该文件内存的磁盘地址。</li>
+</ul>
+</li>
+<li><p>上面我们知道使用b+树来查找文件29数据总计进行了三次IO，也就是说是大大减少了硬盘的工作量</p>
+<ul>
+<li>3层的b+树可以表示上百万的数据，如果上百万的数据查找只需要三次IO，性能提高将是巨大的</li>
+<li>如果没有索引，每个数据项都要发生一次IO，那么总共需要百万次的IO，显然成本非常非常高</li>
+</ul>
+</li>
+<li><p>通常在 B+Tree 上有两个头指针，一个指向根节点，另一个指向关键字最小的叶子节点，而且所有叶子节点（即数据节点）之间是一种链式环结构。因此可以对 B+Tree 进行两种查找运算：</p>
+<ul>
+<li>一种是对于主键的范围查找和分页查找</li>
+<li>另一种是从根节点开始，进行随机查找。</li>
+</ul>
+</li>
+<li><p>实际情况中每个节点可能不能填充满，因此在数据库中，B+Tree 的高度一般都在 2~4 层。MySQL 的 InnoDB 存储引擎在设计时是将根节点常驻内存的，也就是说查找某一键值的行记录时最多只需要 1~3 次磁盘 I/O 操作。</p>
+</li>
+</ul>
+<p>##### </p>
+<h4 id="B-树-1"><a href="#B-树-1" class="headerlink" title="B*树"></a><code>B*</code>树</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/btree_4.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>B*</code>树 是B+树的变体，</p>
+</li>
+<li><p>特性</p>
+<ul>
+<li>(1)B+树的非根和非叶子结点再增加指向兄弟的指针;(对比上边B+的第4条，在非根节点也添加横向链表)</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>各种<code>BTree</code>树所有值（被索引的列）都是排过序的，为了查找更为方便快速，所以演化出了<code>B-</code>树、<code>B+</code>树、<code>B*</code>树</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://blog.csdn.net/huxing998/article/details/77104731" target="_blank" rel="noopener">https://blog.csdn.net/huxing998/article/details/77104731</a></li>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/&title=《Mysql-索引-各种BTree类型》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/&title=《Mysql-索引-各种BTree类型》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-索引-各种BTree类型》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql-索引-详细介绍</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-索引-索引的使用/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql-索引-索引的使用</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/&title=《Mysql-索引-各种BTree类型》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/&title=《Mysql-索引-各种BTree类型》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-索引-各种BTree类型》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADMElEQVR42u3aQW7jQAwEQP//01kg16zkJikDFlU6BYkzmhofiGny9Yqfn9/n6Dc/p8/f//r7+6M3nq9ztLfLHmxsbOybsJNN99jn28oPKHmqXwA2Njb2PvZ50YoWumi1vBDmxQwbGxsbe4LJkedrVv+KjY2NjX1OSq4o+ebyYKgXMGFjY2M/gT0pM1VMcv3Ij+PjWRo2Njb217OrZeObf/5gfxsbGxv7K9m9GCgJd/J3JYzeyodvxMbGxl7E7l0hevFTXg6vuoq8WQEbGxt7KfsTcX8vbEoKZ/VLOixg2NjY2LdlTwZlklh/Pr5Z3WF0ZNjY2NhL2dXykxetecTfG7J809nGxsbGXsHOw/38yjEpOfne5uNE2NjY2JvY1dJSHanMAUnMNP8ysLGxsTexk0XzsZjedvNrT680Ns8SGxsb+ybsajPgqnKVYJJWRPXz2NjY2PvYvbGY3kBktRD24qqoBGJjY2OvYycbmrRUJwWyOqATHSs2Njb2OvYkAKqO2vTaDL2ryOERY2NjYy9l582DZFvVTL5QfuJw6vAIsLGxsR/Drsb682Zw9fpRDbywsbGx97F74zhXjU7m1HzEp1BQsbGxsRexL/iHwcjmvKlQPVZsbGzsTexJoFMN9KtBf75OuVGNjY2NvZqdt0vzVus80M/3E5U3bGxs7NXspNhUhyOrF4nkijIqpdjY2NhL2dWCUU2tEvYkhCqUW2xsbOxF7Hxb1UJSbTPkh9JrJLzpcmNjY2Pflj3pDE9i/WT0Z9KoeHOg2NjY2EvZ1UZvr53Qi/h7w0DY2NjYT2Dnl5A80C+/vlgOe5eowwsJNjY29s3ZvdLSe2VvECcHF9bHxsbGXsfOA/c8fspHf5J5yCSWKjQwsLGxsdexrx2UqW63ev1ILkKvfKPY2NjYN2fPi0F1mKYaQs2Hh0aFEBsbG/sm7MlwTHLByFfoHWXz4LCxsbHXsZPCkG8of331iHuXnP98HhsbG/uR7OqdpkedtxaiiAobGxv7wexJrFMtaZOS+Wbn2NjY2OvYeVifv2bSMK5egT7YHsDGxsb+evZVjd5qMJSH/jmgWcywsbGx78r+B6n084dEoEPvAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringBoot(八)配置Mybatis多数据源 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Boot">
+    <meta name="description" content="背景 同一个项目数据操作有时会涉及到多个数据库，所以需要在后台配置多个数据源，通过特定的设置选择指定的数据库  目的 可以配置多个数据源，项目默认使用master数据源，当有新的数据源需求时，可以通过注解的形式动态切换数据源  实现 源码: https://github.com/songshuiyang/iframe   application.yml 配置数据源12345678910111213">
+<meta name="keywords" content="Spring,Spring Boot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot(八)配置Mybatis多数据源">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="背景 同一个项目数据操作有时会涉及到多个数据库，所以需要在后台配置多个数据源，通过特定的设置选择指定的数据库  目的 可以配置多个数据源，项目默认使用master数据源，当有新的数据源需求时，可以通过注解的形式动态切换数据源  实现 源码: https://github.com/songshuiyang/iframe   application.yml 配置数据源12345678910111213">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-09-16T13:11:05.664Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot(八)配置Mybatis多数据源">
+<meta name="twitter:description" content="背景 同一个项目数据操作有时会涉及到多个数据库，所以需要在后台配置多个数据源，通过特定的设置选择指定的数据库  目的 可以配置多个数据源，项目默认使用master数据源，当有新的数据源需求时，可以通过注解的形式动态切换数据源  实现 源码: https://github.com/songshuiyang/iframe   application.yml 配置数据源12345678910111213">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringBoot(八)配置Mybatis多数据源</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringBoot(八)配置Mybatis多数据源</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-05T16:08:00.000Z" itemprop="datePublished" class="page-time">
+  2019-08-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">背景</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#目的"><span class="post-toc-number">2.</span> <span class="post-toc-text">目的</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#实现"><span class="post-toc-number">3.</span> <span class="post-toc-text">实现</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringBoot(八)配置Mybatis多数据源</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-06 00:08:00" datetime="2019-08-05T16:08:00.000Z" itemprop="datePublished">2019-08-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringBoot/">SpringBoot</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>同一个项目数据操作有时会涉及到多个数据库，所以需要在后台配置多个数据源，通过特定的设置选择指定的数据库</li>
+</ul>
+<h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ul>
+<li>可以配置多个数据源，项目默认使用master数据源，当有新的数据源需求时，可以通过注解的形式动态切换数据源</li>
+</ul>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ul>
+<li>源码: <code>https://github.com/songshuiyang/iframe</code></li>
+</ul>
+<blockquote>
+<p><code>application.yml</code> 配置数据源<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: iframe</span><br><span class="line"># 主数据库</span><br><span class="line">master:</span><br><span class="line">  datasource:</span><br><span class="line">    use-jndi: false</span><br><span class="line">    jndi-name: jdbc/datasource</span><br><span class="line">    url: jdbc:mysql://127.0.0.1:3306/iframe?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=true&amp;useSSL=false</span><br><span class="line">    username: root</span><br><span class="line">    password: root</span><br><span class="line">    driver-class: com.mysql.jdbc.Driver</span><br><span class="line">    initial-size: 0</span><br><span class="line">    min-idle: 10</span><br><span class="line">    max-active: 100</span><br><span class="line">    max-wait: 20000</span><br><span class="line"># 从数据库</span><br><span class="line">slave:</span><br><span class="line">  datasource:</span><br><span class="line">    use-jndi: false</span><br><span class="line">    jndi-name: jdbc/datasource</span><br><span class="line">    url: jdbc:mysql://127.0.0.1:3306/iframe?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=true&amp;useSSL=false</span><br><span class="line">    username: root</span><br><span class="line">    password: root</span><br><span class="line">    driver-class: com.mysql.jdbc.Driver</span><br><span class="line">    initial-size: 0</span><br><span class="line">    min-idle: 10</span><br><span class="line">    max-active: 100</span><br><span class="line">    max-wait: 20000</span><br></pre></td></tr></table></figure></p>
+<p><code>Config.java</code> 解析数据源配置</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承TransactionManagementConfigurer可以自定义事务管理器</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2018/11/7 17:09</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableTransactionManagement</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> <span class="keyword">implements</span> <span class="title">TransactionManagementConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(Config.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    Environment env;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实现接口 TransactionManagementConfigurer 方法，其返回值代表在拥有多个事务管理器的情况下默认使用的事务管理器</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PlatformTransactionManager <span class="title">annotationDrivenTransactionManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> transactionManager();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据源</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"dataSource"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DynamicDataSource <span class="title">dataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Map&lt;Object, Object&gt; targetDataSources = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String prefix : DATA_SOURCE_PREFIX) &#123;</span><br><span class="line">            targetDataSources.put(prefix, createDataSource(prefix));</span><br><span class="line">        &#125;</span><br><span class="line">        DynamicDataSource dynamicDataSource = <span class="keyword">new</span> DynamicDataSource();</span><br><span class="line">        dynamicDataSource.setTargetDataSources(targetDataSources);</span><br><span class="line">        dynamicDataSource.setDefaultTargetDataSource(targetDataSources.get(MASTER_DATA_SOURCE_PREFIX));</span><br><span class="line">        <span class="keyword">return</span> dynamicDataSource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建事务管理器</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PlatformTransactionManager <span class="title">transactionManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DataSourceTransactionManager txManager = <span class="keyword">new</span> DataSourceTransactionManager();</span><br><span class="line">        txManager.setDataSource(dataSource());</span><br><span class="line">        <span class="keyword">return</span> txManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建数据源</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> prefix</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> DataSource <span class="title">createDataSource</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 是否使用数据源</span></span><br><span class="line">        <span class="keyword">boolean</span> useJndi = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.use-jndi"</span>, Boolean.class, <span class="keyword">false</span>);</span><br><span class="line">        <span class="comment">// 数据源名称</span></span><br><span class="line">        String jndiName = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.jndi-name"</span>, <span class="string">""</span>);</span><br><span class="line">        <span class="comment">// 数据库链接</span></span><br><span class="line">        String url = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.url"</span>, <span class="string">""</span>);</span><br><span class="line">        String username = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.username"</span>, <span class="string">""</span>);</span><br><span class="line">        String password = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.password"</span>, <span class="string">""</span>);</span><br><span class="line">        String driverClass = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.driver-class"</span>, <span class="string">""</span>);</span><br><span class="line">        <span class="comment">// 数据源默认初始链接数</span></span><br><span class="line">        <span class="keyword">int</span> initialSize = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.initial-size"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_INIT_SIZE);</span><br><span class="line">        <span class="comment">// 数据源最大连接数</span></span><br><span class="line">        <span class="keyword">int</span> maxActive = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.max-active"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_MAX_ACTIVE);</span><br><span class="line">        <span class="comment">// 数据源最小连接数</span></span><br><span class="line">        <span class="keyword">int</span> minIdle = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.min-idle"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_MIN_IDLE);</span><br><span class="line">        <span class="comment">// 配置获取连接等待超时的时间</span></span><br><span class="line">        <span class="keyword">int</span> maxWait = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.max-wait"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_MAX_WAIT);</span><br><span class="line">        <span class="keyword">if</span> (useJndi) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                logger.debug(<span class="string">"get datasource from jndi - [&#123;&#125;]."</span>, jndiName);</span><br><span class="line">                Context context = <span class="keyword">new</span> InitialContext();</span><br><span class="line">                DataSource dataSource = (DataSource) context.lookup(jndiName);</span><br><span class="line">                <span class="keyword">return</span> dataSource;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                logger.error(e.getMessage(), e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            logger.debug(<span class="string">"create druid datasource."</span>);</span><br><span class="line">            logger.debug(<span class="string">"url - &#123;&#125;."</span>, url);</span><br><span class="line">            logger.debug(<span class="string">"username - &#123;&#125;."</span>, username);</span><br><span class="line">            logger.debug(<span class="string">"password - &#123;&#125;."</span>, password);</span><br><span class="line">            logger.debug(<span class="string">"driverClass - &#123;&#125;."</span>, driverClass);</span><br><span class="line">            logger.debug(<span class="string">"initialSize - &#123;&#125;."</span>, initialSize);</span><br><span class="line">            logger.debug(<span class="string">"maxActive - &#123;&#125;."</span>, maxActive);</span><br><span class="line">            logger.debug(<span class="string">"minIdle - &#123;&#125;."</span>, minIdle);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                DruidDataSource datasource = <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">                datasource.setUrl(url);</span><br><span class="line">                datasource.setDriverClassName(driverClass);</span><br><span class="line">                datasource.setUsername(username);</span><br><span class="line">                datasource.setPassword(password);</span><br><span class="line">                datasource.setInitialSize(initialSize);</span><br><span class="line">                datasource.setMaxActive(maxActive);</span><br><span class="line">                datasource.setMinIdle(minIdle);</span><br><span class="line">                datasource.setMaxWait(maxWait);</span><br><span class="line">                datasource.setFilters(<span class="string">"stat,slf4j"</span>);</span><br><span class="line">                datasource.setProxyFilters(getDruidFilters());</span><br><span class="line">                <span class="keyword">return</span> datasource;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Filter&gt; <span class="title">getDruidFilters</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Slf4jLogFilter slf4jLogFilter = <span class="keyword">new</span> Slf4jLogFilter();</span><br><span class="line">        slf4jLogFilter.setDataSourceLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setStatementLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setStatementExecutableSqlLogEnable(<span class="keyword">true</span>);</span><br><span class="line">        slf4jLogFilter.setResultSetLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setResultSetCloseAfterLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setConnectionLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        List&lt;Filter&gt; filters = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        filters.add(<span class="keyword">new</span> StatFilter());</span><br><span class="line">        filters.add(slf4jLogFilter);</span><br><span class="line">        <span class="keyword">return</span> filters;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>新增 <code>@BindingDataSources</code> 注解，通过该注解实现数据源切换</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定数据源注解</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2018/11/7 17:33</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.METHOD, ElementType.TYPE&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindingDataSources &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> "master"</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>新增 <code>DynamicDataSource.java</code> 实现切换数据源</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承AbstractRoutingDataSource实现determineCurrentLookupKey方法，该方法可以实现数据库的动态切换</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2018/11/7 17:17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicDataSource</span> <span class="keyword">extends</span> <span class="title">AbstractRoutingDataSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Object <span class="title">determineCurrentLookupKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> DynamicDataSourceHolder.getDataSource();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>新增 <code>DynamicDataSourceHolder.java</code> 保存当前线程绑定的数据源信息<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 保存当前线程绑定的数据源信息</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2018/11/7 17:18</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicDataSourceHolder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;String&gt; dataSourceHolder = <span class="keyword">new</span> ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDataSource</span><span class="params">(String dataSource)</span> </span>&#123;</span><br><span class="line">        Assert.notNull(dataSource, <span class="string">"dataSource cannot be null"</span>);</span><br><span class="line">        dataSourceHolder.set(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> dataSourceHolder.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">removeDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        dataSourceHolder.remove();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过 <code>DynamicDataSourceAspect.java</code> AOP切面来获取数据源注解信息并设置到 <code>private static final ThreadLocal&lt;String&gt; dataSourceHolder = new ThreadLocal&lt;&gt;();</code> 变量中，那么<code>determineCurrentLookupKey</code> 方法就可以根据当前线程数据源key值去动态切换数据源</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 配置数据源切面</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songsy</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2018/11/7 17:35</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Order</span>(-<span class="number">1</span>)<span class="comment">// 保证该AOP在@Transactional之前执行</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicDataSourceAspect</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(DynamicDataSourceAspect.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"@annotation(com.songsy.iframe.core.persistence.datasource.annotation.BindingDataSources)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pointcut</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"pointcut() &amp;&amp; @annotation(bindingDataSources)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDynamicDataSource</span><span class="params">(JoinPoint point, BindingDataSources bindingDataSources)</span> </span>&#123;</span><br><span class="line">        Object target = point.getTarget();</span><br><span class="line">        Method method = ((MethodSignature) point.getSignature()).getMethod();</span><br><span class="line">        logger.debug(<span class="string">"切换数据源:  类名 - &#123;&#125;"</span>, target.getClass().getCanonicalName());</span><br><span class="line">        logger.debug(<span class="string">"切换数据源: 方法名 - &#123;&#125;"</span>, method.getName());</span><br><span class="line">        String key = bindingDataSources.value();</span><br><span class="line">        DynamicDataSourceHolder.setDataSource(key);</span><br><span class="line">        logger.debug(<span class="string">"切换数据源：[&#123;&#125;] 数据源切换成功."</span>, DynamicDataSourceHolder.getDataSource());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@After</span>(<span class="string">"pointcut()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clearDynamicDataSource</span><span class="params">(JoinPoint point)</span> </span>&#123;</span><br><span class="line">        DynamicDataSourceHolder.removeDataSource();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/&title=《SpringBoot(八)配置Mybatis多数据源》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/&title=《SpringBoot(八)配置Mybatis多数据源》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot(八)配置Mybatis多数据源》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Netflix)SpringCloudNetflix/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringCloud()SpringCloudNetflix</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(七)内嵌Tomcat启动原理解析/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringBoot(七)内嵌Tomcat启动原理解析</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/&title=《SpringBoot(八)配置Mybatis多数据源》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/&title=《SpringBoot(八)配置Mybatis多数据源》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot(八)配置Mybatis多数据源》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(八)配置Mybatis多数据源/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEfElEQVR42u3aW27jMBAEwL3/pbMnkN09owCiUvoyIlsiiwHIefz7F18/8fX5t1d383dd/TZ/+9U3b7gwYcKECdMjmZJh5Xdng/v8/Q3l54UpnoMJEyZMmA5nSh6XTGxDM9uX8/G0xwhMmDBhwvQ3mT5/TrBy0Nnz9wuJCRMmTJgw5d+cBah5gjgJm2fEmDBhwoTpTUyzx+VbflvC/DzhdlRt8hoTJkyYML2JKd+Y3/f5V/qbMGHChAnTY5h+yispE+6f2U4vL2oOR4gJEyZMmI5lyjfIfAJ5OnizF7cBdhvWYsKECROmdzBt0rttEXRDM+NrE8qXdzFhwoQJ07FMbXmyLX8m5cbZNzelxxUNJkyYMGE6immf0p2FqW2qd7+Qs2aj+tyECRMmTJgezPQlExw38dRlwjKhPEsZrwqlmDBhwoTpWKbkSxuszSTvbfdJEruYMGHChOl9THkJMw+GN5nmWXK5TezWT8CECRMmTK9j+ry155t9jpKHpm3LzuZYgwkTJkyY3sGUk7VYbQjdUu5bgqLSJiZMmDBhegXTvU0wbZB8V7Hz3jJqkSrHhAkTJkwPZmrDwk2yOOHbjGFG+WUumDBhwoTpcKa2XWZf+2sh2lab/C0RHyZMmDBhegVT3rjTRoWrUmIZZucLUPwrYMKECROmlzIlLTJtA81dhck8mTs7oHyp+mLChAkTpkOYZm0uRctL3KCTMyWp5LvevuoGwoQJEyZMj2SaFSnb1GqeYM2PEe1hJTmmXB4IMGHChAnTgUybtG8+rLztpqWZJZGLhDImTJgwYXopU71x3pS0zZ/cUg4PH5gwYcKE6UCm2VTbguVsO2+PHfmBoE5eY8KECROmVzDNypz7UmIeKrcbeX59WQZMmDBhwnQsU46yH1bSjpPfzYPeTeq5/t/BhAkTJkwPY2qDz7bMmQfJ+d0EYsYxPDdhwoQJE6bHM+UNLpvX5+FuW/LMd/D8yBJF55gwYcKE6fFMbQq1PRa0rTl5YrctWG6Cc0yYMGHCdC5TO+hNITNft2Sp9lt7PhJMmDBhwnQ6013xXVuGTCawORDMyqJFLhwTJkyYMB3C1LbCtC07s9TtbxQyhyE6JkyYMGF6BdNs49z8PSmvtoXVdnmG+W9MmDBhwnQgUz7h2dBnBctNSTI/0HwJyDFhwoQJ0+FM+xB01tbTJo7zBO6wbPk59MWECRMmTC9laoe1aZRpA+PN8aJYGEyYMGHC9AqmtuVllhquhxhwb8qcUSCNCRMmTJiOZdoMt00ZJ5NsR7VnHV6YMGHChOkQprtaXlqmfYtPzpG/6zIBjQkTJkyYjmXabPb7/TQZ3KZBJynK5nyYMGHChOlcptkhYDPhWcidv7FN8mLChAkTpr/A9DmYzJlmJcbZQSS5u8nrYsKECRMmTPcmTGfPzAPd5GBx+VtMmDBhwvRnmNqG1GTas4A2h8hD7svlxIQJEyZMhzPtE6Nt8Jk/c0M2C61XuXBMmDBhwvQwpjbp2bbFJEeBfFPfN+5sWoIwYcKECdNRTP8BS+hOz/mwm1MAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

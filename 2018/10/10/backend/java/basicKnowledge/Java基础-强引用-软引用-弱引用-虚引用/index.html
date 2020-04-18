@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java基础-强引用-软引用-弱引用-虚引用 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java基础">
+    <meta name="description" content="概览 JDK1.2 以后，Java 对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用、虚引用四种（引用强度逐渐减弱）  介绍强引用 强引用，就是我们最常见的普通对象引用，我们 new 出来的对象就是强引用，只要尚且存在强引用指向某一个对象，那就能表明该对象还存活，GC 不能去回收这种对象。需要回收强引用指向的对象，可以等待超出引用区域，或者是显式设置对象为 null，就可以通知让 GC 回">
+<meta name="keywords" content="Java,Java基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础-强引用-软引用-弱引用-虚引用">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概览 JDK1.2 以后，Java 对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用、虚引用四种（引用强度逐渐减弱）  介绍强引用 强引用，就是我们最常见的普通对象引用，我们 new 出来的对象就是强引用，只要尚且存在强引用指向某一个对象，那就能表明该对象还存活，GC 不能去回收这种对象。需要回收强引用指向的对象，可以等待超出引用区域，或者是显式设置对象为 null，就可以通知让 GC 回">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadlocal.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadLocal1.png">
+<meta property="og:updated_time" content="2020-03-16T11:43:55.420Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java基础-强引用-软引用-弱引用-虚引用">
+<meta name="twitter:description" content="概览 JDK1.2 以后，Java 对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用、虚引用四种（引用强度逐渐减弱）  介绍强引用 强引用，就是我们最常见的普通对象引用，我们 new 出来的对象就是强引用，只要尚且存在强引用指向某一个对象，那就能表明该对象还存活，GC 不能去回收这种对象。需要回收强引用指向的对象，可以等待超出引用区域，或者是显式设置对象为 null，就可以通知让 GC 回">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadlocal.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java基础-强引用-软引用-弱引用-虚引用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java基础-强引用-软引用-弱引用-虚引用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-09T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2018-10-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概览"><span class="post-toc-number">1.</span> <span class="post-toc-text">概览</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#介绍"><span class="post-toc-number">2.</span> <span class="post-toc-text">介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#强引用"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">强引用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#软引用"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">软引用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#弱引用"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">弱引用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#虚引用"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">虚引用</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java基础-强引用-软引用-弱引用-虚引用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-10 00:00:00" datetime="2018-10-09T16:00:00.000Z" itemprop="datePublished">2018-10-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><ul>
+<li>JDK1.2 以后，Java 对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用、虚引用四种（引用强度逐渐减弱）</li>
+</ul>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><h4 id="强引用"><a href="#强引用" class="headerlink" title="强引用"></a>强引用</h4><ul>
+<li><p>强引用，就是我们最常见的普通对象引用，我们 new 出来的对象就是强引用，只要尚且存在强引用指向某一个对象，那就能表明该对象还存活，GC 不能去回收这种对象。需要回收强引用指向的对象，可以等待超出引用区域，或者是显式设置对象为 null，就可以通知让 GC 回收，当然实际的回收时间要看 GC 策略。</p>
+</li>
+<li><p>如果一个对象具有强引用，那就类似于必不可少的生活用品，垃圾回收器绝不会回收它。当内存空间不足，Java 虚拟机宁愿抛出 OutOfMemoryError 错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足问题。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建一个对象，new出来的对象都是分配在java堆中的</span></span><br><span class="line">        Sample sample = <span class="keyword">new</span> Sample();   <span class="comment">// sample这个引用就是强引用</span></span><br><span class="line">        </span><br><span class="line">        sample = <span class="keyword">null</span>;                  <span class="comment">// 将这个引用指向空指针,</span></span><br><span class="line">                                        <span class="comment">// 那么上面那个刚new来的对象就没用任何其它有效的引用指向它了</span></span><br><span class="line">                                        <span class="comment">// 也就说该对象对于垃圾收集器是符合条件的</span></span><br><span class="line">                                        <span class="comment">// 因此在接下来某个时间点 GC进行收集动作的时候, 该对象将会被销毁，内存被释放</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>也可以画个简单的图理解一下：</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/Concurrent/threadlocal.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h4 id="软引用"><a href="#软引用" class="headerlink" title="软引用"></a>软引用</h4><ul>
+<li><p>当内存资源充足的时候，垃圾回收器不会回收软引用对应的对象的内存空间；但当内存资源紧张时，软引用所对应的对象就会被垃圾回收器回收。</p>
+</li>
+<li><p>软引用可用来实现内存敏感的高速缓存,比如网页缓存、图片缓存等。使用软引用能防止内存泄露，增强程序的健壮性。   SoftReference的特点是它的一个实例保存对一个Java对象的软引用， 该软引用的存在不妨碍垃圾收集线程对该Java对象的回收。</p>
+</li>
+<li><p>也就是说，一旦SoftReference保存了对一个Java对象的软引用后，在垃圾线程对 这个Java对象回收前，SoftReference类所提供的get()方法返回Java对象的强引用。另外，一旦垃圾线程回收该Java对象之 后，get()方法将返回null。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建一个对象，new出来的对象都是分配在java堆中的</span></span><br><span class="line">        Sample sample = <span class="keyword">new</span> Sample();   <span class="comment">//sample这个引用就是强引用</span></span><br><span class="line">        <span class="comment">// 创建一个软引用指向这个对象   那么此时就有两个引用指向Sample对象</span></span><br><span class="line">        SoftReference&lt;Sample&gt; softRef = <span class="keyword">new</span> SoftReference&lt;Sample&gt;(sample);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 将强引用指向空指针 那么此时只有一个软引用指向Sample对象</span></span><br><span class="line">        <span class="comment">// 注意：softRef这个引用也是强引用，它是指向SoftReference这个对象的</span></span><br><span class="line">        <span class="comment">// 那么这个软引用在哪呢？ 可以跟一下java.lang.Reference的源码 </span></span><br><span class="line">        <span class="comment">// private T referent; 这个才是软引用， 只被jvm使用</span></span><br><span class="line">        sample = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 可以重新获得Sample对象，并用一个强引用指向它</span></span><br><span class="line">        sample = softRef.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/Concurrent/threadLocal1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>利用软引用解决OOM问题<ul>
+<li>下面举个例子，假如有一个应用需要读取大量的本地图片，如果每次读取图片都从硬盘读取，则会严重影响性能，但是如果全部加载到内存当中，又有可能造成内存溢出，此时使用软引用可以解决这个问题。</li>
+<li>示例代码<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Map&lt;String, SoftReference&lt;Bitmap&gt;&gt; imageCache = <span class="keyword">new</span> HashMap&lt;String, SoftReference&lt;Bitmap&gt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBitmapToCache</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 强引用的Bitmap对象</span></span><br><span class="line">    Bitmap bitmap = BitmapFactory.decodeFile(path);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 软引用的Bitmap对象</span></span><br><span class="line">    SoftReference&lt;Bitmap&gt; softBitmap = <span class="keyword">new</span> SoftReference&lt;Bitmap&gt;(bitmap);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 添加该对象到Map中使其缓存</span></span><br><span class="line">    imageCache.put(path, softBitmap);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Bitmap <span class="title">getBitmapByPath</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 从缓存中取软引用的Bitmap对象</span></span><br><span class="line">    SoftReference&lt;Bitmap&gt; softBitmap = imageCache.get(path);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是否存在软引用</span></span><br><span class="line">    <span class="keyword">if</span> (softBitmap == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 取出Bitmap对象，如果由于内存不足Bitmap被回收，将取得空</span></span><br><span class="line">    Bitmap bitmap = softBitmap.get();</span><br><span class="line">    <span class="keyword">return</span> bitmap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="弱引用"><a href="#弱引用" class="headerlink" title="弱引用"></a>弱引用</h4><ul>
+<li>弱引用会被Jvm忽略，也就说在GC进行垃圾收集的时候，如果一个对象只有弱引用指向它，那么和没有引用指向它是一样的效果，jvm都会对它就行果断的销毁，释放内存。</li>
+<li>那么，ThreadLocalMap中的key使用弱引用的原因也是如此。当一条线程中的ThreadLocal对象使用完毕，没有强引用指向它的时候，垃圾收集器就会自动回收这个Key，从而达到节约内存的目的。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WeakReference&lt;Person&gt; wr = <span class="keyword">new</span> WeakReference&lt;Person&gt;(<span class="keyword">new</span> Person());</span><br></pre></td></tr></table></figure>
+<h4 id="虚引用"><a href="#虚引用" class="headerlink" title="虚引用"></a>虚引用</h4><ul>
+<li><p>“虚引用”顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收。</p>
+</li>
+<li><p>虚引用主要用来跟踪对象被垃圾回收的活动，为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知</p>
+</li>
+<li><p>虚引用与软引用和弱引用的一个区别在于：</p>
+<ul>
+<li>虚引用必须和引用队列（ReferenceQueue）联合使用</li>
+<li>当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存之前，把这个虚引用加入到与之关联的引用队列中</li>
+<li>程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收</li>
+<li>程序如果发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动</li>
+</ul>
+</li>
+<li><p>在 JDK1.2 之后，用 PhantomReference 类来表示，通过查看这个类的源码，发现它只有一个构造函数和一个 get() 方法，而且它的 get() 方法仅仅是返回一个null，也就是说将永远无法通过虚引用来获取对象，虚引用必须要和 ReferenceQueue 引用队列一起使用。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>JDK设计这些引用是能让开发来控制其新建对象的生命周期，这样可以提高运行效率，减少资源消耗</p>
+</li>
+<li><p>特别注意，在程序设计中一般很少使用弱引用与虚引用，使用软引用的情况较多，这是因为软引用可以加速 JVM 对垃圾内存的回收速度，可以维护系统的运行安全，防止内存溢出（OutOfMemory）等问题的产生。</p>
+</li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
+<li><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/JVM垃圾回收" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/JVM垃圾回收</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java基础/">Java基础</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/&title=《Java基础-强引用-软引用-弱引用-虚引用》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/&title=《Java基础-强引用-软引用-弱引用-虚引用》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java基础-强引用-软引用-弱引用-虚引用》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-笔记/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java基础-笔记</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-常用类-String/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Java基础-常用类-String</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/&title=《Java基础-强引用-软引用-弱引用-虚引用》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/&title=《Java基础-强引用-软引用-弱引用-虚引用》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java基础-强引用-软引用-弱引用-虚引用》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD90lEQVR42u3bS27jQAwFQN//0h5gtomU98hWYCCllWE7re7SguYnr1d8vf9fV6+vrq8rfH3/6jtXd7nf1dU+D184cODAgSM46v2REo526/mu7vfZ7ur+seHAgQMHjlMceXBtt74J2MlOkrsnZ8SBAwcOHL/Pcf/NPHlLjp3nVvdMOHDgwIHjkzmSQ85AkzJiHnpx4MCBA8cncCRhrG0pbdbMG2Cz/R+oleLAgQMHju6+rzbIffLrX53vwIEDB44/zPFeXLPCYhu883fa4PrN3XHgwIEDx5qjLdu129oXB2ffnw034MCBAweOPUcylFYHqrKBlGPNBiCKYQgcOHDgwLHm2GyuDcazTW8C//AUOHDgwIHjEEe+aD7KNhsp2KRks5AfFQdx4MCBA0fAMRsFeDp5a+lnAfsyo8WBAwcOHIc42gZSdINyQCFfs10tYsWBAwcOHIc4kuPN0rC84Jh/mjykfFf1JnDgwIEDR8zRFvJalBnirLGUp3OXgRYHDhw4cCw4NqMGp4bb8nRu1qaKXuPAgQMHjkMcswDZDhzkSde+GdY2qIolcODAgQNHwDHLX/bheZZA5n9Vt69w4MCBA8dRjs2R8g3tG1TtwERRiMSBAwcOHIc4ksJcfs1GFp4uLEZMOHDgwIHjKMesqJckeHm7aBOS20+/WRkHDhw4cKw58pCZJG/HinRlaTJPRFdBGgcOHDhwxByzIYNZGG4DbVHaGw1JFL04HDhw4MAx2eGw0LZKjRYBMk/ShmVKHDhw4MAx4shLe5tx6jyF25QX2/GL4ncHDhw4cOAIOGYDbW3wS4Jxft82eSvuiwMHDhw41hxJ0jVLjdqBuU1JMQ/ANRwOHDhw4Cg58vG4WdhrQ92+fZWPX1yOMuDAgQMHjgVHjrJp8LQDB22J8FQrCwcOHDhw7DnazeWBc5ZubRpUM6bLthMOHDhw4JjHneKfZ97x1Talcrh9M+yHtBAHDhw4cCw4Nt2qTVKXDyXkj2T/OHHgwIEDx55jUyLM62mz5lZCPAvz0b1w4MCBA8eIY3PUTWFu02qavRP9OMCBAwcOHIc4ZulWO6yWHHgzVNGmlDhw4MCB4wmONuzliLNPN2XBY2NzOHDgwIFjwbEfL5gF0TbE1k+4XOeH4iAOHDhw4Jj0X+rglLyTFP7aZLJtNeVpJA4cOHDgOMUxG1zIS4SzQNiWGmflwqIXhwMHDhw4So59kW42ZNCG1VlB88BYAw4cOHDgeIyjBWpD6Qa05Ss6Yzhw4MCB4wGOJE3KS36z0uEs4SzSURw4cODAcYgjT5nyEYe2BdWWEfNAXqR5OHDgwIFjzXE2EObHnpULZ+vMmlI4cODAgaPcyT/L1eKVBCy5HgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

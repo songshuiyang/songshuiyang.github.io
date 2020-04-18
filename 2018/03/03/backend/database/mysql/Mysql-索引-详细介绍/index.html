@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mysql-索引-详细介绍 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,Mysql">
+    <meta name="description" content="前言 MySQL支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，上一章节我们知道索引按照不同角度可以划分为不同的索引  解析一、从数据结构角度划分1、hash索引 只有memory（内存）存储引擎支持哈希索引，哈希索引用索引列的值计算该值的hashCode，然后在hashCode相应的位置存放该值所在行数据的物理位置， 因为使用散列算法，计算一次就可以定位，不像B-Tree 索引需要从根节">
+<meta name="keywords" content="数据库,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-索引-详细介绍">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 MySQL支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，上一章节我们知道索引按照不同角度可以划分为不同的索引  解析一、从数据结构角度划分1、hash索引 只有memory（内存）存储引擎支持哈希索引，哈希索引用索引列的值计算该值的hashCode，然后在hashCode相应的位置存放该值所在行数据的物理位置， 因为使用散列算法，计算一次就可以定位，不像B-Tree 索引需要从根节">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/hashindex.png">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.814Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-索引-详细介绍">
+<meta name="twitter:description" content="前言 MySQL支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，上一章节我们知道索引按照不同角度可以划分为不同的索引  解析一、从数据结构角度划分1、hash索引 只有memory（内存）存储引擎支持哈希索引，哈希索引用索引列的值计算该值的hashCode，然后在hashCode相应的位置存放该值所在行数据的物理位置， 因为使用散列算法，计算一次就可以定位，不像B-Tree 索引需要从根节">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/hashindex.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mysql-索引-详细介绍</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mysql-索引-详细介绍</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-02T16:05:02.000Z" itemprop="datePublished" class="page-time">
+  2018-03-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#一、从数据结构角度划分"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">一、从数据结构角度划分</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、hash索引"><span class="post-toc-number">2.0.1.1.</span> <span class="post-toc-text">1、hash索引</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、FULLTEXT索引"><span class="post-toc-number">2.0.1.2.</span> <span class="post-toc-text">2、FULLTEXT索引</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3、Spatial-R-Tree-（空间）索引"><span class="post-toc-number">2.0.1.3.</span> <span class="post-toc-text">3、Spatial (R-Tree)（空间）索引</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4、BTree及B-Tree索引"><span class="post-toc-number">2.0.1.4.</span> <span class="post-toc-text">4、BTree及B+Tree索引</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#二、从物理存储角度划分"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">二、从物理存储角度划分</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、聚集索引（clustered-index）"><span class="post-toc-number">2.0.2.1.</span> <span class="post-toc-text">1、聚集索引（clustered index）</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、非聚集索引（non-clustered-index）"><span class="post-toc-number">2.0.2.2.</span> <span class="post-toc-text">2、非聚集索引（non-clustered index）</span></a></li></ol></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析-1"><span class="post-toc-number">3.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#索引的类型"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">索引的类型</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/mysql/Mysql-索引-详细介绍" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mysql-索引-详细介绍</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-03 00:05:02" datetime="2018-03-02T16:05:02.000Z" itemprop="datePublished">2018-03-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><code>MySQL</code>支持诸多存储引擎，而各种存储引擎对索引的支持也各不相同，上一章节我们知道索引按照不同角度可以划分为不同的索引</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="一、从数据结构角度划分"><a href="#一、从数据结构角度划分" class="headerlink" title="一、从数据结构角度划分"></a>一、从数据结构角度划分</h4><h5 id="1、hash索引"><a href="#1、hash索引" class="headerlink" title="1、hash索引"></a>1、hash索引</h5><ul>
+<li>只有<code>memory</code>（内存）存储引擎支持哈希索引，哈希索引用索引列的值计算该值的<code>hashCode</code>，然后在<code>hashCode</code>相应的位置存放该值所在行数据的物理位置，<ul>
+<li>因为使用散列算法，计算一次就可以定位，不像<code>B-Tree</code> 索引需要从根节点到枝节点，因此访问速度非常快</li>
+<li>但是一个值只能对应一个<code>hashCode</code>，而且是散列的分布方式，因此哈希索引不支持范围查找和排序的功能，<code>Hash</code> 索引仅仅能满足<code>&quot;=&quot;,&quot;IN&quot;</code>和<code>&quot;&lt;=&gt;&quot;</code>查询</li>
+</ul>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/mysql/hashindex.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h5 id="2、FULLTEXT索引"><a href="#2、FULLTEXT索引" class="headerlink" title="2、FULLTEXT索引"></a>2、FULLTEXT索引</h5><ul>
+<li><p>在生成<code>FULLTEXT</code>索引时，会为文本生成一份单词的清单，在查找数据的时候会根据这个单词的清单来索引</p>
+</li>
+<li><p>现在<code>MyISAM</code>和<code>InnoDB</code>引擎都支持了</p>
+</li>
+</ul>
+<h5 id="3、Spatial-R-Tree-（空间）索引"><a href="#3、Spatial-R-Tree-（空间）索引" class="headerlink" title="3、Spatial (R-Tree)（空间）索引"></a>3、Spatial (R-Tree)（空间）索引</h5><ul>
+<li>用于对<code>GIS</code>数据类型创建<code>SPATIAL</code>索引，只有<code>MyISAM</code>引擎支持，并且支持的不好。可以忽略。</li>
+</ul>
+<h5 id="4、BTree及B-Tree索引"><a href="#4、BTree及B-Tree索引" class="headerlink" title="4、BTree及B+Tree索引"></a>4、<code>BTree</code>及<code>B+Tree</code>索引</h5><ul>
+<li>B-Tree 索引是 MySQL 数据库中使用最为频繁的索引类型，除了 Archive 存储引擎之外的其他所有的存储引擎都支持 B-Tree 索引。不仅仅在 MySQL 中是如此，实际上在其他的很多数据库管理系统中B-Tree 索引也同样是作为最主要的索引类型，这主要是因为B-Tree 索引的存储结构在数据库的数据检索中有非常优异的表现。 </li>
+<li>一般来说， MySQL 中的 B-Tree 索引的物理文件大多都是以 Balance Tree 的结构来存储的，也就是所有实际需要的数据都存放于 Tree 的 Leaf Node ，而且到任何一个 Leaf Node 的最短路径的长度都是完全相同的，所以我们大家都称之为 B-Tree 索引当然，可能各种数据库（或 MySQL 的各种存储引擎）在存放自己的 B-Tree 索引的时候会对存储结构稍作改造。如 Innodb 存储引擎的 B-Tree 索引实际使用的存储结构实际上是 B+Tree ，也就是在 B-Tree 数据结构的基础上做了很小的改造，在每一个Leaf Node 上面出了存放索引键的相关信息之外，还存储了指向与该 Leaf Node 相邻的后一个 LeafNode 的指针信息，这主要是为了加快检索多个相邻 Leaf Node 的效率考虑。 </li>
+<li>B+树是一个平衡的多叉树，从根节点到每个叶子节点的高度差值不超过1，而且同层级的节点间有指针相互链接。</li>
+<li>在B+树上的常规检索，从根节点到叶子节点的搜索效率基本相当，不会出现大幅波动，而且基于索引的顺序扫描时，也可以利用双向指针快速左右移动，效率非常高。</li>
+</ul>
+<h4 id="二、从物理存储角度划分"><a href="#二、从物理存储角度划分" class="headerlink" title="二、从物理存储角度划分"></a>二、从物理存储角度划分</h4><h5 id="1、聚集索引（clustered-index）"><a href="#1、聚集索引（clustered-index）" class="headerlink" title="1、聚集索引（clustered index）"></a>1、聚集索引（clustered index）</h5><h5 id="2、非聚集索引（non-clustered-index）"><a href="#2、非聚集索引（non-clustered-index）" class="headerlink" title="2、非聚集索引（non-clustered index）"></a>2、非聚集索引（non-clustered index）</h5><h2 id="解析-1"><a href="#解析-1" class="headerlink" title="解析"></a>解析</h2><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn/" target="_blank" rel="noopener">http://www.iocoder.cn/</a></li>
+<li><a href="https://blog.csdn.net/tongdanping/article/details/79878302" target="_blank" rel="noopener">https://blog.csdn.net/tongdanping/article/details/79878302</a></li>
+<li><a href="https://blog.csdn.net/oChangWen/article/details/54024063" target="_blank" rel="noopener">https://blog.csdn.net/oChangWen/article/details/54024063</a></li>
+<li><a href="https://blog.csdn.net/endlu/article/details/51720299" target="_blank" rel="noopener">https://blog.csdn.net/endlu/article/details/51720299</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/&title=《Mysql-索引-详细介绍》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/&title=《Mysql-索引-详细介绍》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-索引-详细介绍》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-索引-索引失效的场景统计/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql-索引-索引失效的场景统计</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-索引-各种BTree类型/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql-索引-各种BTree类型</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/&title=《Mysql-索引-详细介绍》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/&title=《Mysql-索引-详细介绍》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-索引-详细介绍》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-索引-详细介绍/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADNElEQVR42u3aUY7iMBAE0Ln/pdkDsEBVGyTSvHyhIcR+jjQtV/vvL75ud9f9t4/+8ujb+78/Gqt9/tsubGxs7Iuwb0+vZCr5ncli5c/PR//PHLCxsbHXsZ9Pa4ZMilC+TM8rUW7BxsbGxs43ACdbl7asYmNjY2PPCkOyVcijpfNwChsbG/uX2bPYKC9veRFql/XjWRo2Njb217NPgptv+/yR/jY2Njb2F7Nv5ZVvA2ZTbGdyG13Y2NjYm9izoL+NftqjPCdbkaJRgY2Njb2CnTyuPYhz0iTOC2fb3qhXERsbG/uC7ITabiE+Ud7yBkOxCcHGxsa+ODsPa5KtQn6IZ7Zk7VhRZxsbGxt7BbvOot56mCZvQuRL+SJUwsbGxl7BPi9F+ZIlC3EePNXHd7CxsbEXsdtAJz9MkzcM2kM5Mx02Njb2JvasldsGRue1I8+CIgU2Njb2InY+iZOoKH9C3tbNP794DdjY2Ngr2LMylm8w8sKWbGbaEevShY2NjX0pdhvQnDRc22Iz25ZEpRcbGxt7ETuPftolyLcWs3goeQEvfoWNjY29iH0yrbyEzGKjtjEwPMqDjY2NfXF2UorOW7mzEjg7+hm9Z2xsbOwV7LxN224PZuWtLZyz9jM2Njb2JvaszMwmlEdCJ5j8tWFjY2PvYM9IJ43eWcHLS2mRnGFjY2OvYJ8EPXnxaBsD7eGevFH9hlwNGxsb+yvZsx3MrDWbL00++rBpjY2Njb2IfdKmzYfP78lfQ75ABR4bGxv7guy2gLVBUl6i2uuopYGNjY29iD3bTrT3JEFS3u6dPRkbGxt7K3sWwbdblGHEU5bGfFGwsbGx97HbK9nGnMdD+ZPb+WBjY2PvY5+ENSeN3vOxhiEUNjY29gr2rGgl1PwJ7dGcYWbWThQbGxv7Iuz2X39OSoKkd/0qD8WODmJiY2NjfzG7DY/ywz3P78zHff6WZmUSGxsbex/7XY3VfMnyY0B5ySwKGzY2NvbPs9vylo+SF7B2hi+6ItjY2Ng/xm6Dpzbcz0dpQzFsbGzsrex8urMDOvmBm7aJm78ebGxs7K3svADM4pu2PTxrOZ/ciY2NjX1Z9j8yE6WB7qQdbwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

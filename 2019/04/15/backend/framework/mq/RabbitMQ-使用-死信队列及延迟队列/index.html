@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>RabbitMQ-使用-死信队列及延迟队列 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="消息队列,RabbitMQ">
+    <meta name="description" content="前言死信队列 DLX(Dead-Letter-Exchange)，当消息在一个队列中变成死信之后，它能被重新被发送到另一个交换器中，这个交换器叫做DLX，而绑定DLX的队列叫死信队列  消息变成死信有下面几种情况  消息被拒绝(Basic.Reject/Basic.Nack) ，井且设置 requeue 参数为 false; 消息过期 队列达到最大长度   对于 RabbitMQ 来说， DLX">
+<meta name="keywords" content="消息队列,RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ-使用-死信队列及延迟队列">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言死信队列 DLX(Dead-Letter-Exchange)，当消息在一个队列中变成死信之后，它能被重新被发送到另一个交换器中，这个交换器叫做DLX，而绑定DLX的队列叫死信队列  消息变成死信有下面几种情况  消息被拒绝(Basic.Reject/Basic.Nack) ，井且设置 requeue 参数为 false; 消息过期 队列达到最大长度   对于 RabbitMQ 来说， DLX">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq-dead.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq-sixing.png">
+<meta property="og:updated_time" content="2020-04-12T05:53:21.620Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ-使用-死信队列及延迟队列">
+<meta name="twitter:description" content="前言死信队列 DLX(Dead-Letter-Exchange)，当消息在一个队列中变成死信之后，它能被重新被发送到另一个交换器中，这个交换器叫做DLX，而绑定DLX的队列叫死信队列  消息变成死信有下面几种情况  消息被拒绝(Basic.Reject/Basic.Nack) ，井且设置 requeue 参数为 false; 消息过期 队列达到最大长度   对于 RabbitMQ 来说， DLX">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq-dead.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RabbitMQ-使用-死信队列及延迟队列</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RabbitMQ-使用-死信队列及延迟队列</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-14T16:03:02.000Z" itemprop="datePublished" class="page-time">
+  2019-04-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#死信队列"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">死信队列</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#实例介绍"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">实例介绍</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#延迟队列TTL"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">延迟队列TTL</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、设置消息的TTL"><span class="post-toc-number">1.0.3.1.</span> <span class="post-toc-text">1、设置消息的TTL</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、设置队列的TTL"><span class="post-toc-number">1.0.3.2.</span> <span class="post-toc-text">2、设置队列的TTL</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#优先级队列"><span class="post-toc-number">1.0.4.</span> <span class="post-toc-text">优先级队列</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">2.</span> <span class="post-toc-text">补充</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RabbitMQ-使用-死信队列及延迟队列</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-15 00:03:02" datetime="2019-04-14T16:03:02.000Z" itemprop="datePublished">2019-04-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h4 id="死信队列"><a href="#死信队列" class="headerlink" title="死信队列"></a>死信队列</h4><ul>
+<li><p>DLX(Dead-Letter-Exchange)，当消息在一个队列中变成死信之后，它能被重新被发送到另一个交换器中，这个交换器叫做DLX，而绑定DLX的队列叫死信队列</p>
+</li>
+<li><p>消息变成死信有下面几种情况</p>
+<ul>
+<li>消息被拒绝(Basic.Reject/Basic.Nack) ，井且设置 requeue 参数为 false;</li>
+<li>消息过期</li>
+<li>队列达到最大长度</li>
+</ul>
+</li>
+<li><p>对于 RabbitMQ 来说， DLX 个非常有用的特性，它可以处理异常情况下，消息不能够被消费者正确消费(消费者调用了 Basic.Nack 或者 Basic.Reject) 而被置入死信队列中的情况，后续分析程序可以通过消费这个死信队列中的内容来分析当时所遇到的异常情况，进而可以改善和优化系统。 DLX 配合 TTL 使用还可以实现延迟队列的功能，</p>
+</li>
+</ul>
+<h4 id="实例介绍"><a href="#实例介绍" class="headerlink" title="实例介绍"></a>实例介绍</h4><ul>
+<li>下面代码配置了两套交换器及队列【测试死信队列-正常队列、测试死信队列-死信队列】，同时通过参数配置将队列【测试死信队列-死信队列】设置为【测试死信队列-正常队列】死信队列</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Queue <span class="title">receiveDeadQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Queue(<span class="string">"测试死信队列-死信队列"</span>, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Queue <span class="title">receiveNormalQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;String,Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="comment">// 绑定死信队列 通过队列属性设置，队列中所有消息都有相同的过期时间。</span></span><br><span class="line">    <span class="comment">// map.put("x-message-ttl", 20000);</span></span><br><span class="line">    map.put(<span class="string">"x-dead-letter-exchange"</span>,<span class="string">"测试死信队列-dead-exchange"</span>);</span><br><span class="line">    map.put(<span class="string">"x-dead-letter-routing-key"</span>, <span class="string">"测试死信队列-dead-routing-key"</span>);</span><br><span class="line">    <span class="comment">// return new Queue("",true,false,false,map);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> QueueBuilder.durable(<span class="string">"测试死信队列-正常队列"</span>)</span><br><span class="line">            .withArguments(map).build();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> DirectExchange <span class="title">receiveNormalExchange</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DirectExchange(<span class="string">"测试死信队列-normal-exchange"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> DirectExchange <span class="title">receiveDeadExchange</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DirectExchange(<span class="string">"测试死信队列-dead-exchange"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Binding <span class="title">receiveDeadBinding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> BindingBuilder.bind(receiveDeadQueue()).to(receiveDeadExchange()).with(<span class="string">"测试死信队列-dead-routing-key"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Binding <span class="title">receiveNormalBinding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> BindingBuilder.bind(receiveNormalQueue()).to(receiveNormalExchange()).with(<span class="string">"测试死信队列-normal-routing-key"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>下面通过两个场景来介绍死信队列</p>
+<ul>
+<li><p>1、消息被拒绝(Basic.Reject/Basic.Nack)场景进入死信队列</p>
+<ul>
+<li><p>消费者代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RabbitListener</span>(queues = <span class="string">"测试死信队列-正常队列"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rabbitMessageProcess1</span><span class="params">(Channel channel, Message message, OrderMO orderMO, @Header(AmqpHeaders.DELIVERY_TAG)</span> <span class="keyword">long</span> deliveryTag) <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    String messageString = <span class="keyword">new</span> String(message.getBody());</span><br><span class="line">    logger.info(<span class="string">"收到测试死信队列-正常队列mq消息:&#123;&#125; deliveryTag:&#123;&#125; "</span>, messageString, deliveryTag);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 提交订单的处理 模拟异常场景</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"1"</span>.equals(orderMO.getOrderNo())) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"参数异常"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"2"</span>.equals(orderMO.getOrderNo())) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">20000</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        MessageProperties messageProperties = message.getMessageProperties();</span><br><span class="line">        <span class="comment">// 消息手动确认</span></span><br><span class="line">        channel.basicAck(deliveryTag, <span class="keyword">false</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        logger.error(<span class="string">"异常"</span>, e);</span><br><span class="line">        channel.basicReject(deliveryTag,<span class="keyword">false</span>); <span class="comment">// 消息拒绝</span></span><br><span class="line">        <span class="comment">//channel.basicNack(deliveryTag,false,false); // 和basicReject效果一样不过可以批量拒绝消息</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生产者代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 向队列中发送消息 抛异常</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendDelayMessage2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     OrderMO orderMO = <span class="keyword">new</span> OrderMO();</span><br><span class="line">     orderMO.setOrderNo(<span class="string">"1"</span>);</span><br><span class="line">     rabbitTemplate.convertAndSend(</span><br><span class="line">             <span class="string">"测试死信队列-normal-exchange"</span>,</span><br><span class="line">             <span class="string">"测试死信队列-normal-routing-key"</span>,</span><br><span class="line">             orderMO</span><br><span class="line">     );</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行上面的测试类，消费者代码会抛异常然后走catch逻辑，之后将消息<code>channel.basicReject(deliveryTag,false)</code>拒绝</p>
+</li>
+<li>结果可以看到消息进到死信队列了 <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rabbitmq-dead.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+</ul>
+</li>
+<li><p>2、消息过期场景进入死信队列</p>
+<ul>
+<li><p>将上面队列配置的这行<code>map.put(&quot;x-message-ttl&quot;, 20000);</code>注释给去掉，这里的意思是如果队列【测试死信队列-正常队列】收到消息后20秒之后没有消费，就会把这个消息转发到队列【测试死信队列-死信队列】中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Queue <span class="title">receiveNormalQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;String,Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="comment">// 绑定死信队列 通过队列属性设置，队列中所有消息都有相同的过期时间。</span></span><br><span class="line">    <span class="comment">// map.put("x-message-ttl", 20000);</span></span><br><span class="line">    map.put(<span class="string">"x-dead-letter-exchange"</span>,<span class="string">"测试死信队列-dead-exchange"</span>);</span><br><span class="line">    map.put(<span class="string">"x-dead-letter-routing-key"</span>, <span class="string">"测试死信队列-dead-routing-key"</span>);</span><br><span class="line">    <span class="comment">// return new Queue("",true,false,false,map);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> QueueBuilder.durable(<span class="string">"测试死信队列-正常队列"</span>)</span><br><span class="line">            .withArguments(map).build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注释消费者代码，等20秒后结果<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rabbitmq-sixing.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="延迟队列TTL"><a href="#延迟队列TTL" class="headerlink" title="延迟队列TTL"></a>延迟队列TTL</h4><h5 id="1、设置消息的TTL"><a href="#1、设置消息的TTL" class="headerlink" title="1、设置消息的TTL"></a>1、设置消息的TTL</h5><ul>
+<li>是对消息本身进行单独设置，每条消息的 TTL 可以不同</li>
+</ul>
+<h5 id="2、设置队列的TTL"><a href="#2、设置队列的TTL" class="headerlink" title="2、设置队列的TTL"></a>2、设置队列的TTL</h5><ul>
+<li><p>针对队列来说，可以使用<code>x-message-ttl</code>参数设置当前队列中所有消息的过期时间，即当前队列中所有的消息过期时间都一样；</p>
+</li>
+<li><p>上面有示例代码</p>
+</li>
+</ul>
+<h4 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h4><ul>
+<li><p>可通过<code>x-max-priority</code>参数来设置队列的优先级，具有优先级别高的队列具有高的优先权，优先级高的消息具体优先被消费的特权</p>
+</li>
+<li><p>如果在消费者的消费数据大于生产者消费的速度且Broker中没有消息堆积的情况下，对于发送的消息设置优先级并没有什么实际意义，一条消息怎么判断优先级</p>
+</li>
+</ul>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>但是基于TTL的延时队列存在一个问题，就是同一个队列里的消息延时时间最好一致，比如说队列里的延时时间都是1小时，千万不能队列里的消息延时时间乱七八糟多久的都有，这样的话先入队的消息如果延时时间过长会堵着后入队延时时间小的消息，导致后面的消息到时也无法变成死信转发出去，很坑！！！<br>举个栗子：延时队列里先后进入A,B,C三条消息，存活时间是3h,2h,1h，结果到了1小时C不会死，到了2hB不会死，到了3小时A死了，同时B,C也死了，意味着3h后A,B,C才能消费，很坑！！！<br>我本来使用时候以为会像redis的存活时间一样，内部维护一个定时器去扫描死亡时间然后变成死信转发，结果不是。。。<br>至于怎么解决这个问题，一个队列里可以放不同死亡时间的消息，还能够异步死亡转发，请看下回分解:<br>springboot整合rabbitmq实现延时队列之rabbitmq_delayed_message<em>exchange插件方式<br>————————————————<br>版权声明：本文为CSDN博主「是guava不是瓜娃啊」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a href="https://blog.csdn.net/eumenides" target="_blank" rel="noopener">https://blog.csdn.net/eumenides</a></em>/java/article/details/86025773</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>RabbitMQ实战指南</li>
+<li><a href="https://www.cnblogs.com/vipstone/p/9295625.html" target="_blank" rel="noopener">https://www.cnblogs.com/vipstone/p/9295625.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息队列/">消息队列</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/&title=《RabbitMQ-使用-死信队列及延迟队列》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/&title=《RabbitMQ-使用-死信队列及延迟队列》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-使用-死信队列及延迟队列》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-配置管理/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RabbitMQ-配置管理</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RabbitMQ-使用-消息发送确认及消息接收确认</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/&title=《RabbitMQ-使用-死信队列及延迟队列》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/&title=《RabbitMQ-使用-死信队列及延迟队列》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-使用-死信队列及延迟队列》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKUlEQVR42u3awY6cQAwE0Pz/T0+knCJtllTZs9LQPE4RCwOvOThd9q9f8fH6cyRn/j7/9ZqvV369/vqu/PwbDmxsbOybsF+XR/LT3716wvjumtm9iQUbGxv7VPbPYfLl2zyrLnLY2NjYj2S3Reh6+fLSmBQqbGxsbOzZ6373yLaM5cHQ9b3Y2NjYT2YnL5qUqxyzKUjJx3hbloaNjY398ey2bHzyv3+wv42NjY39kexXeeQlarZ1yTcqr8WBjY2NfRK7jXjyx2/K4awxXP8CNjY29hHsPNzfNwDasnc9lDn7SNjY2NinsvchTlu62hGfpFAVbQZsbGzsg9iz5ussb99E/LOhn+FuDBsbG/tW7HbksR18zIdp8o1H8kn+cwYbGxv7IPas/LRbkfyuDT7/GNjY2Njnsdv/7l+/7ntbBXkrN1k+bGxs7OewZyM47Zhm2wbYjO8Mqzc2Njb2rdj7YZr28bP2Q8sryhg2Njb2bdntz82Cp30LIdl4FIuLjY2NfRx7s52YTQm1oVVbrqIuNzY2NvbN2UmIPytj+6CqbdnmFmxsbOzz2LOy0VJn8dBsoAcbGxv7OezNaE4bA+Whf9IAzt88ag9gY2Nj35adFJJ2RDIP6JMAK1mC+m2xsbGxj2MnxzC+WWxp8iZEO9CJjY2NfR67Hb4sgptF2DQDr/Ze2NjY2Ddkt1uCpGDkzYY8WkqemNyLjY2NfSq7LUKz1u/sdzbjPslnw8bGxr47e1+0Zu3bfQi1aSRgY2Njn8Rug5s6iB+N2uzPRM0MbGxs7CPY+SZhFvfvY6z3LhY2Njb2eew6bVpsSN7bTp5tQrCxsbHPY28KyWzgph3Kyc8X12BjY2Mfx25LRX5X/ULxdih5LjY2NvZz2JtBmeT6olNRLtDwk2BjY2MfxG4LT1uW8qbsJujfLzE2Njb23dmzIpSXn/1y5JEWNjY29pPZbbgzG6nJm7XXH6ANlf5xPTY2NvYj2bPtRx5FzTYh+V+xsbGxsd+VXeUB02YzUwzuYGNjYx/BbotBO3azb0VsPs8qS8PGxsb+eHb7KrOty6yk5aQkcsLGxsY+jv0bYfNY3PYIaSoAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

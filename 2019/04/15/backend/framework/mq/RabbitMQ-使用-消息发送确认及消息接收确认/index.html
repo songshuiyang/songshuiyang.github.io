@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>RabbitMQ-使用-消息发送确认及消息接收确认 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="消息队列,RabbitMQ">
+    <meta name="description" content="前言消息发送确认 在默认情况下生产者是不知道消息有没有正确的到达服务器，如果消息到达服务器之前已经丢失，持久化操作也解决不了这个问题，针对这个问题，RabbitMQ提供了两种解决方法：  1、通过事务机制实现 这种模式下是通过channel txSelect、channel txCommit、channel txRollback3个事务控制方法来实现的  事务确实能够解决消息发送方和 Rabbit">
+<meta name="keywords" content="消息队列,RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ-使用-消息发送确认及消息接收确认">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言消息发送确认 在默认情况下生产者是不知道消息有没有正确的到达服务器，如果消息到达服务器之前已经丢失，持久化操作也解决不了这个问题，针对这个问题，RabbitMQ提供了两种解决方法：  1、通过事务机制实现 这种模式下是通过channel txSelect、channel txCommit、channel txRollback3个事务控制方法来实现的  事务确实能够解决消息发送方和 Rabbit">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-12T06:06:07.690Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ-使用-消息发送确认及消息接收确认">
+<meta name="twitter:description" content="前言消息发送确认 在默认情况下生产者是不知道消息有没有正确的到达服务器，如果消息到达服务器之前已经丢失，持久化操作也解决不了这个问题，针对这个问题，RabbitMQ提供了两种解决方法：  1、通过事务机制实现 这种模式下是通过channel txSelect、channel txCommit、channel txRollback3个事务控制方法来实现的  事务确实能够解决消息发送方和 Rabbit">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RabbitMQ-使用-消息发送确认及消息接收确认</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RabbitMQ-使用-消息发送确认及消息接收确认</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-14T16:03:01.000Z" itemprop="datePublished" class="page-time">
+  2019-04-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#消息发送确认"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">消息发送确认</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、通过事务机制实现"><span class="post-toc-number">1.0.1.1.</span> <span class="post-toc-text">1、通过事务机制实现</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、-通过发送方确认（publisher-confirm）"><span class="post-toc-number">1.0.1.2.</span> <span class="post-toc-text">2、 通过发送方确认（publisher confirm）</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#消息接收确认"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">消息接收确认</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RabbitMQ-使用-消息发送确认及消息接收确认</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-15 00:03:01" datetime="2019-04-14T16:03:01.000Z" itemprop="datePublished">2019-04-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/消息队列/">消息队列</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h4 id="消息发送确认"><a href="#消息发送确认" class="headerlink" title="消息发送确认"></a>消息发送确认</h4><ul>
+<li>在默认情况下生产者是不知道消息有没有正确的到达服务器，如果消息到达服务器之前已经丢失，持久化操作也解决不了这个问题，针对这个问题，RabbitMQ提供了两种解决方法：</li>
+</ul>
+<h5 id="1、通过事务机制实现"><a href="#1、通过事务机制实现" class="headerlink" title="1、通过事务机制实现"></a>1、通过事务机制实现</h5><ul>
+<li><p>这种模式下是通过<code>channel txSelect</code>、<code>channel txCommit</code>、<code>channel txRollback</code>3个事务控制方法来实现的</p>
+</li>
+<li><p>事务确实能够解决消息发送方和 RabbitMQ 之间消息确认的问题，只有消息成功被RabbitMQ 接收，事务才能提交成功，否则便可在捕获异常之后进行事务回滚 ，与此同时可以进行消息重发</p>
+</li>
+<li><p>但这种模式下回严重影响性能，所以<code>RabbitMQ</code> 提供了下面这种改进方案</p>
+</li>
+</ul>
+<h5 id="2、-通过发送方确认（publisher-confirm）"><a href="#2、-通过发送方确认（publisher-confirm）" class="headerlink" title="2、 通过发送方确认（publisher confirm）"></a>2、 通过发送方确认（publisher confirm）</h5><ul>
+<li><p>这个是轻量级解决方法，异步处理</p>
+</li>
+<li><p>如果不知道消息有没有正确的到达服务器，那么就需要一个确认操作，<code>RabbitMQ</code>提供了<code>ConfirmCallback</code>和<code>ReturnCallback</code>来检测消息是否已经到达对应队列</p>
+</li>
+<li><p>例子说明：</p>
+<ul>
+<li>先自定义配置<code>RabbitTemplateConfig</code><ul>
+<li><code>confrim</code>回调能检测到消息是否到达 <code>broker</code>，通过<code>ack</code>变量来判断，但不能保证消息准确投递到目标 <code>queue</code></li>
+<li><code>return</code>回调能检测到消息是否到达 <code>queue</code>，如果没有到达指定队列就会触发下面的逻辑</li>
+</ul>
+</li>
+<li><p>代码: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RabbitTemplateConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger log = LoggerFactory.getLogger(RabbitTemplateConfig.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * confrim回调能检测到消息是否到达 broker，通过ack变量来判断，但不能保证消息准确投递到目标 queue</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> RabbitTemplate.ConfirmCallback confirmCallback= <span class="keyword">new</span> RabbitTemplate.ConfirmCallback() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">confirm</span><span class="params">(CorrelationData correlationData, <span class="keyword">boolean</span> ack, String cause)</span> </span>&#123;</span><br><span class="line">            log.info(<span class="string">"ConfirmCallback &gt;&gt; correlationData:&#123;&#125;, ack:&#123;&#125;, cause:&#123;&#125;"</span>, correlationData , ack, cause);</span><br><span class="line">            <span class="keyword">if</span>(!ack)&#123;</span><br><span class="line">                log.info(<span class="string">"异常处理...."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * return回调能检测到消息是否到达 queue，如果没有到达指定队列就会触发下面的逻辑</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> RabbitTemplate.ReturnCallback returnCallback = <span class="keyword">new</span> RabbitTemplate.ReturnCallback() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">returnedMessage</span><span class="params">(org.springframework.amqp.core.Message message, <span class="keyword">int</span> replyCode, String replyText, String exchange, String routingKey)</span> </span>&#123;</span><br><span class="line">            log.info(<span class="string">"ReturnCallback &gt;&gt; return exchange: &#123;&#125;, routingKey: &#123;&#125;, replyCode: &#123;&#125;, replyText: &#123;&#125;"</span>, exchange, routingKey, replyCode, replyText);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"rabbitTemplate"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> RabbitTemplate <span class="title">rabbitTemplate</span><span class="params">(ConnectionFactory connectionFactory)</span> </span>&#123;</span><br><span class="line">        RabbitTemplate template = <span class="keyword">new</span> RabbitTemplate(connectionFactory);</span><br><span class="line">        <span class="comment">// 开启 mandatory</span></span><br><span class="line">        template.setMandatory(<span class="keyword">true</span>);</span><br><span class="line">        template.setConfirmCallback(confirmCallback);</span><br><span class="line">        template.setReturnCallback(returnCallback);</span><br><span class="line">        template.setMessageConverter(<span class="keyword">new</span> Jackson2JsonMessageConverter());</span><br><span class="line">        <span class="keyword">return</span> template;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 给错误的交换器及路由键发消息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    OrderMO orderMO = <span class="keyword">new</span> OrderMO();</span><br><span class="line">    orderMO.setOrderNo(<span class="string">"给错误的交换器及路由键发消息"</span>);</span><br><span class="line">    rabbitTemplate.convertAndSend(<span class="string">"错误exchange_submit_order"</span>, <span class="string">"错误routing_key_submit_order"</span>, orderMO);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 给错误的交换器发消息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    OrderMO orderMO = <span class="keyword">new</span> OrderMO();</span><br><span class="line">    orderMO.setOrderNo(<span class="string">"给错误的交换器发消息"</span>);</span><br><span class="line">    rabbitTemplate.convertAndSend(<span class="string">"错误exchange_submit_order"</span>, <span class="string">"routing_key_submit_order"</span>, orderMO);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 给错误的路由键发消息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    OrderMO orderMO = <span class="keyword">new</span> OrderMO();</span><br><span class="line">    orderMO.setOrderNo(<span class="string">"给错误的路由键发消息"</span>);</span><br><span class="line">    rabbitTemplate.convertAndSend(<span class="string">"exchange_submit_order"</span>, <span class="string">"错误routing_key_submit_order"</span>, orderMO);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 给正确的路由键发消息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test4</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    OrderMO orderMO = <span class="keyword">new</span> OrderMO();</span><br><span class="line">    orderMO.setOrderNo(<span class="string">"给正确的路由键发消息"</span>);</span><br><span class="line">    rabbitTemplate.convertAndSend(<span class="string">"exchange_submit_order"</span>, <span class="string">"routing_key_submit_order"</span>, orderMO);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="消息接收确认"><a href="#消息接收确认" class="headerlink" title="消息接收确认"></a>消息接收确认</h4><ul>
+<li><p>为了保证消息从队列可靠地达到消费者， <code>RabbitMQ</code> 提供了消息确认机制</p>
+</li>
+<li><p>如果 <code>RabbitMQ</code> 一直没有收到消费者的确认信号，并且消费此消息的消费者己经断开连接，则<code>RabbitMQ</code> 会安排该消息重新进入队列，等待投递给下一个消费者</p>
+</li>
+<li><p>方法参数说明</p>
+<ul>
+<li>deliveryTag 可以看作消息的编号</li>
+<li>multiple 参数设置为 true 则表示对 deliveryTag 编号之前所有的消息未被ack都有效</li>
+<li>如果 requeue 参数设置为 true ，则 RabbitMQ 会重新将这条消息存入队列，以便可以发送给下 个订阅的消费者<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 消息确认 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">basicAck</span><span class="params">(<span class="keyword">long</span> deliveryTag, <span class="keyword">boolean</span> multiple)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 消息拒绝</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">basicReject</span><span class="params">(<span class="keyword">long</span> deliveryTag, <span class="keyword">boolean</span> requeue)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 消息拒绝 和basicReject效果一样不过可以批量拒绝序号为deliveryTag之前消息，</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">basicNack</span><span class="params">(<span class="keyword">long</span> deliveryTag, <span class="keyword">boolean</span> multiple, <span class="keyword">boolean</span> requeue)</span></span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>RabbitMQ 提供了消息发送确认机制及消息接受机制来保证消息传递的可靠性</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>RabbitMQ实战指南</li>
+<li><a href="https://www.cnblogs.com/vipstone/p/9295625.html" target="_blank" rel="noopener">https://www.cnblogs.com/vipstone/p/9295625.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息队列/">消息队列</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/&title=《RabbitMQ-使用-消息发送确认及消息接收确认》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/&title=《RabbitMQ-使用-消息发送确认及消息接收确认》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-使用-消息发送确认及消息接收确认》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-使用-死信队列及延迟队列/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RabbitMQ-使用-死信队列及延迟队列</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-使用-消费信息模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RabbitMQ-使用</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/&title=《RabbitMQ-使用-消息发送确认及消息接收确认》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/&title=《RabbitMQ-使用-消息发送确认及消息接收确认》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RabbitMQ-使用-消息发送确认及消息接收确认》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-使用-消息发送确认及消息接收确认/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD4ElEQVR42u3aS27jQAwFwLn/pTPbASaR3yPpwIvSKrDkdncpAMHPnz/x9fXPld/9eryen0lW/mmF/585vnDgwIEDR3zUzbae10y+9dPd59WegfIz4sCBAweOW47kBzbbTbaVhMbkVeVBFwcOHDhwfA5HfqSro+aBNnmFOHDgwIHjczjyol4bhmdFySQVxIEDBw4cv8+RH68ut8VBtE0RZ+2rs1opDhw4cOCYRLqiUPjJf79lvgMHDhw4cIyaQJsRtLxoOGtxJcMWxelw4MCBA8eaIz9enoAlofp9lPtGFw4cOHDguOKYjREkIwX777bjFCssHDhw4MBxxLEZCEiSrtkwxCbla1NNHDhw4MDxOxx5uNoEv9UBFt8tMlocOHDgwBFzJOlNPqCWU7Zhsh2qSwheIOLAgQMHjlOO9khJcpXw5TuZFQGLNA8HDhw4cJQc+eb2W0wCW3KAzecvEHHgwIEDx5ojP+qs5ZN8si8Fbvhw4MCBA8c7OGZpW8vRBte2adSmjsP/Cxw4cODAUXLkPzMbJmhbTfurDsk4cODAgWPNMWvhtAN2s0Rrtk7e7ioSORw4cODAMeLYJGNtWXDWmtoXBKMAjwMHDhw4FhxtEpWU2IpkaVSszAfm8vVx4MCBA8ctRzIYlxxsFlbbEuTVayv6YDhw4MCBI+DIg+XV37Pm0+w91yN9OHDgwIFjzZEkXUmAnA0obEqEyfM5Ig4cOHDguOIoRpPLcYFZ+peXCPfDdt+shgMHDhw4jjjyol7b/tkPGbQo+VBd1H/DgQMHDhwjjufkJw+6bYCcpXNtiliUC3HgwIEDxynHVRFwdpjnrW+OWnDjwIEDB441R9vCaQfsNijtHmbf/eYuDhw4cOBYc+RL70t1s7ZQO7iQJIovwjkOHDhw4BhxzBKnPLi2d2dhewb6InnDgQMHDhxrjs2QQR3VY+KiaVQWEH+sleLAgQMHjgXHps2TJ1HtUXOmWassSfZw4MCBA8cVx2zQLQ+rm3CYrNAGexw4cODAccuxD5CbcLsZlWifiVBw4MCBA8cRx+Z4+U+2IxEJ1qawGHXhcODAgQNHydE2fpImUD7osEnJ2hZUvj4OHDhw4Nis/1VekW7M0SZ7m5cRFS5x4MCBA8eao20OJRCz9Cwnm7WUZq8TBw4cOHDMOGbBdXP4PBDm5ctZoMWBAwcOHO/jmKVJyZNXxbvblKzuxeHAgQMHjl/hqMfR1olWHrCHxUccOHDgwPEBHO0nbcExSQKTT6L0EgcOHDhwHHEkxcH9uMPsyZam3S0OHDhw4LjlyEtpm7uzTeRBdLNnHDhw4MBxxPEXIvtTJXpBStYAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

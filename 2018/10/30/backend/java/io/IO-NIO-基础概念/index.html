@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>IO-NIO-基础概念 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Io">
+    <meta name="description" content="概念 NIO ( New I/O 也称为 Non-blocking I/O) 是从 Java 1.4 版本开始引入的一种同步 + 非阻塞的通信模式 IO API，可以替代标准的Java IO API，NIO和原来的IO有相同的作用和目的，但使用方式完全不一样，NIO将以更高效的方式进行文件的读写操作  NIO 相对于 BIO 来说一大进步，和BIO的区别就是 阻塞变成了非阻塞   解析为什么会出现">
+<meta name="keywords" content="Java,Io">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IO-NIO-基础概念">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概念 NIO ( New I/O 也称为 Non-blocking I/O) 是从 Java 1.4 版本开始引入的一种同步 + 非阻塞的通信模式 IO API，可以替代标准的Java IO API，NIO和原来的IO有相同的作用和目的，但使用方式完全不一样，NIO将以更高效的方式进行文件的读写操作  NIO 相对于 BIO 来说一大进步，和BIO的区别就是 阻塞变成了非阻塞   解析为什么会出现">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/io/nio1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/io/nio2.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/io/nio3.png">
+<meta property="og:updated_time" content="2020-03-16T11:43:55.472Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IO-NIO-基础概念">
+<meta name="twitter:description" content="概念 NIO ( New I/O 也称为 Non-blocking I/O) 是从 Java 1.4 版本开始引入的一种同步 + 非阻塞的通信模式 IO API，可以替代标准的Java IO API，NIO和原来的IO有相同的作用和目的，但使用方式完全不一样，NIO将以更高效的方式进行文件的读写操作  NIO 相对于 BIO 来说一大进步，和BIO的区别就是 阻塞变成了非阻塞   解析为什么会出现">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/io/nio1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">IO-NIO-基础概念</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">IO-NIO-基础概念</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-29T16:01:00.000Z" itemprop="datePublished" class="page-time">
+  2018-10-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概念"><span class="post-toc-number">1.</span> <span class="post-toc-text">概念</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么会出现？"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">为什么会出现？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#怎么实现非阻塞的？"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">怎么实现非阻塞的？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#阻塞与非阻塞-IO"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">阻塞与非阻塞 IO</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">3.</span> <span class="post-toc-text">补充</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BIO、NIO-有什么区别"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">BIO、NIO 有什么区别</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/io/IO-NIO-基础概念" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">IO-NIO-基础概念</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-30 00:01:00" datetime="2018-10-29T16:01:00.000Z" itemprop="datePublished">2018-10-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li><p>NIO ( New I/O 也称为 Non-blocking I/O) 是从 Java 1.4 版本开始引入的一种<code>同步 + 非阻塞</code>的通信模式 IO API，可以替代标准的Java IO API，NIO和原来的IO有相同的作用和目的，但使用方式完全不一样，NIO将以更高效的方式进行文件的读写操作</p>
+</li>
+<li><p>NIO 相对于 BIO 来说一大进步，和BIO的区别就是 <code>阻塞</code>变成了<code>非阻塞</code></p>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="为什么会出现？"><a href="#为什么会出现？" class="headerlink" title="为什么会出现？"></a>为什么会出现？</h3><ul>
+<li><p>Java IO 的各种流是阻塞的 IO 操作。这就意味着，当一个线程执行读或写 IO 操作时，该线程会被阻塞，直到有一些数据被读取，或者数据完全写入</p>
+</li>
+<li><p>那为什么会阻塞呢？ </p>
+<ul>
+<li>因为在一般的 Java IO 操作中，我们以流式的方式，顺序的从一个 Stream 中读取一个或者多个字节，直至读取所有字节。因为它没有缓存区，所以我们就不能随意改变读取指针的位置。</li>
+</ul>
+</li>
+</ul>
+<h3 id="怎么实现非阻塞的？"><a href="#怎么实现非阻塞的？" class="headerlink" title="怎么实现非阻塞的？"></a>怎么实现非阻塞的？</h3><ul>
+<li>由上面我们知道BIO 是面向字节流或者字符流的，而在 NIO 中，它摒弃了传统的 IO 流，而是引入了下面三个概念：<ul>
+<li>通道Channel（可以比作铁轨，用于连接两地）<ul>
+<li>客户端和服务器之间通过 Channel 通信，和流 Stream 不同，通道是双向的。NIO可以通过 Channel 进行数据的读、写和同时读写操作。 <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/io/nio1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+<li>Channel 可以非阻塞的读写 IO 操作，而 Stream 只能阻塞的读写 IO 操作。</li>
+<li>Channel 必须配合 Buffer 使用，总是先读取到一个 Buffer 中，又或者是向一个 Buffer 写入。也就是说，我们无法绕过 Buffer ，直接向 Channel 写入数据。</li>
+<li>Channel 有非常多的实现类，最为重要的四个 Channel 实现类如下：<ul>
+<li>SocketChannel ：一个客户端用来发起 TCP 的 Channel 。</li>
+<li>ServerSocketChannel ：一个服务端用来监听新进来的连接的 TCP 的 Channel 。对于每一个新进来的连接，都会创建一个对应的 SocketChannel 。</li>
+<li>DatagramChannel ：通过 UDP 读写数据。</li>
+<li>FileChannel ：从文件中，读写数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>缓冲区Buffer（可以比作火车，用于装货）<ul>
+<li>Buffer ，本质上是内存中的一块，我们可以将数据写入这块内存，之后从这块内存获取数据。通过将这块内存封装成 NIO Buffer 对象，并提供了一组常用的方法，方便我们对该块内存的读写。</li>
+<li>BIO 是将数据直接写入或读取到流 Stream 对象中。</li>
+<li>NIO 的数据操作都是在 Buffer 中进行的。Buffer 实际上是一个数组。Buffer 最常见的类型是ByteBuffer，另外还有 CharBuffer，ShortBuffer，IntBuffer，LongBuffer，FloatBuffer，DoubleBuffer</li>
+</ul>
+</li>
+<li>多路复用器Selector<ul>
+<li>它是 Java NIO 得以实现非阻塞 IO 操作的最最最关键。</li>
+<li>Channel 都会被注册在 Selector 多路复用器上。Selector 通过一个线程不停的轮询这些 Channel ，找出已经准备就绪的 Channel 执行 IO 操作，这样就可以接入成千上万个客户端，这就是 JDK NIO 库的巨大进步。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="阻塞与非阻塞-IO"><a href="#阻塞与非阻塞-IO" class="headerlink" title="阻塞与非阻塞 IO"></a>阻塞与非阻塞 IO</h4><ul>
+<li><p>Java IO 的各种流是阻塞的 IO 操作。这就意味着，当一个线程执行读或写 IO 操作时，该线程会被阻塞，直到有一些数据被读取，或者数据完全写入。</p>
+</li>
+<li><p>Java NIO 可以让我们非阻塞的使用 IO 操作。例如：</p>
+<ul>
+<li>当一个线程执行从 Channel 执行读取 IO 操作时，当此时有数据，则读取数据并返回；当此时无数据，则直接返回而不会阻塞当前线程。</li>
+<li>当一个线程执行向 Channel 执行写入 IO 操作时，不需要阻塞等待它完全写入，这个线程同时可以做别的事情。</li>
+<li>也就是说，线程可以将非阻塞 IO 的空闲时间用于在其他 Channel 上执行 IO 操作。所以，一个单独的线程，可以管理多个 Channel 的读取和写入 IO 操作。</li>
+</ul>
+</li>
+</ul>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h3 id="BIO、NIO-有什么区别"><a href="#BIO、NIO-有什么区别" class="headerlink" title="BIO、NIO 有什么区别"></a>BIO、NIO 有什么区别</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">BIO</th>
+<th style="text-align:left">NIO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">面向流( Stream )</td>
+<td style="text-align:left">面向缓冲区( Buffer )</td>
+</tr>
+<tr>
+<td style="text-align:left">阻塞的</td>
+<td style="text-align:left">非阻塞的</td>
+</tr>
+<tr>
+<td style="text-align:left">Socket 是单向的（不能同时读写）</td>
+<td style="text-align:left">Channel 是双向的 （可以同时读写）</td>
+</tr>
+<tr>
+<td style="text-align:left">一个连接一个线程，客户端有连接请求时服务器端就需要启动一个线程进行处理。所以，线程开销大。可改良为用线程池的方式代替新创建线程，被称为伪异步 IO 。</td>
+<td style="text-align:left">一个请求一个线程，但客户端发送的连接请求都会注册到多路复用器上，多路复用器轮询到连接有新的 I/O 请求时，才启动一个线程进行处理。可改良为一个线程处理多个请求，基于 多 Reactor 模型。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>它的特点是要不断主动地去询问数据有没有处理完，一般只适用于连接数目较大但连接时间短的应用，如聊天应用等。</p>
+</li>
+<li><p>对于低负载、低并发的应用程序，可以使用同步阻塞I/O来提升开发速率和更好的维护性；对于高负载、高并发的（网络）应用，应使用 NIO 的非阻塞模式来开发</p>
+</li>
+<li><p>Java提供的NIO的api使用比较复杂，一般建议使用像netty这样的框架，而不要使用jdk自带的api。</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/io/nio2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/io/nio3.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>芋道源码 <a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Io/">Io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/&title=《IO-NIO-基础概念》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/&title=《IO-NIO-基础概念》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《IO-NIO-基础概念》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/30/backend/java/io/IO-NIO-缓冲区Buffer/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">IO-NIO-缓冲区Buffer</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/10/30/backend/java/io/IO-BIO-基础概念/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">IO-BIO-基础概念</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/&title=《IO-NIO-基础概念》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/&title=《IO-NIO-基础概念》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《IO-NIO-基础概念》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-NIO-基础概念/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvElEQVR42u3aQW7DMAwEwPz/0y3QU4HUzpIUCx/GpyBxY40KSMyKr1d8ff1c7+/8fv/sPVd3vjYuPDw8vNbQr673r766pzpB95ir5+ZjxsPDw9vmJV99v8Tnw7of4v3U52PGw8PDewKvVy5Xp6A6TXh4eHhP5iXIpFDuleZ4eHh4T+MlYUR10HksW33uStaCh4eHF/OqIewTXi+e7+Hh4eENTtV7JW+vOM7L5cJo8fDw8BZ41fg1P6BKhpWHxaMDOTw8PLwFXv6zv7cx9LacyaYVJS54eHh4Y17vwClvJsgHlG8G+T14eHh4Z3nV46WkOM6L6V7LV/JEPDw8vG3epImqN/RqdHvs7A4PDw/vaK9RtQErD39720YeMVzmK3h4eHhrvOpCn4QLebk8/4Y/PsXDw8Nb4E1q0Wo424sn8tC2UHbj4eHhjXm9MnreapAPt9o0cJlS4+Hh4Y15SRDQK22TLSFvRGhOIh4eHt4Crzrc+QaQw6r3RCPBw8PDG/OSivtU0DApmpuNCHh4eHhrvOpP/eoWUl3uE0YU5uLh4eEt8Ca9SZPiuzdN+XP/+B/i4eHh/QuvGqr2pqbajFXtCsDDw8Pb5uVF9jy2mJxb3U9uuYMMDw8Pr8ibhwXVKageuSXbw4ftBA8PD+8QLw8X8iV+0lIw30IKuS8eHh7egFc94ioEAfGm0mN/GC0eHh7eAi8PI/Ih5n9VaJ9qBSV4eHh4G7zeYj1vh6re00xo8fDw8JZ5+bKbZ8N5IT4Jdj80DeDh4eEd5U0O7/NPJ1OZhyOjCw8PD6/ImzwmiRsm28CkcMfDw8Pb5uXNTL1DrEl021v58fDw8J7Aqy7o8yCjFyg3NwY8PDy8NV6+WFfD2d7x2IfJwsPDw1vjVdutqsOdh7/NIh4PDw9vgddrbDpViOeBxcrJHh4eHl6N9w2Jc1S5TAxlrwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

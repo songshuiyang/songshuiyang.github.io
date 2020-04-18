@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java集合-Queue-ConcurrentLinkedQueue源码解析及原理 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java集合">
+    <meta name="description" content="前言 上一章节中PriorityQueue是非线程安全队列，这里的ConcurrentLinkedQueue是线程安全队列集合，此类是基于链接节点的无界线程安全队列，这个队列排列元素FIFO（先进先出）  代码采用JDK 1.8版本   解析简单示例类继承关系图 下图是ConcurrentLinkedQueue的类继承关系图，可以看到也是继承了AbstractQueue类，继承了一些队列操作方法">
+<meta name="keywords" content="Java,Java集合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合-Queue-ConcurrentLinkedQueue源码解析及原理">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 上一章节中PriorityQueue是非线程安全队列，这里的ConcurrentLinkedQueue是线程安全队列集合，此类是基于链接节点的无界线程安全队列，这个队列排列元素FIFO（先进先出）  代码采用JDK 1.8版本   解析简单示例类继承关系图 下图是ConcurrentLinkedQueue的类继承关系图，可以看到也是继承了AbstractQueue类，继承了一些队列操作方法">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/ConcurrentLinkedQueue.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/ConcurrentLinkedQueueNull.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/concurrentLinkedQueueOffer.png">
+<meta property="og:updated_time" content="2019-09-19T12:25:24.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合-Queue-ConcurrentLinkedQueue源码解析及原理">
+<meta name="twitter:description" content="前言 上一章节中PriorityQueue是非线程安全队列，这里的ConcurrentLinkedQueue是线程安全队列集合，此类是基于链接节点的无界线程安全队列，这个队列排列元素FIFO（先进先出）  代码采用JDK 1.8版本   解析简单示例类继承关系图 下图是ConcurrentLinkedQueue的类继承关系图，可以看到也是继承了AbstractQueue类，继承了一些队列操作方法">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/ConcurrentLinkedQueue.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java集合-Queue-ConcurrentLinkedQueue源码解析及原理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java集合-Queue-ConcurrentLinkedQueue源码解析及原理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-19T16:02:02.000Z" itemprop="datePublished" class="page-time">
+  2018-10-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#简单示例"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">简单示例</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#类继承关系图"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">类继承关系图</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#类成员变量"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">类成员变量</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#构造函数"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">构造函数</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#主要方法解析"><span class="post-toc-number">2.0.5.</span> <span class="post-toc-text">主要方法解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#添加元素"><span class="post-toc-number">2.0.5.1.</span> <span class="post-toc-text">添加元素</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#offer-E-e-入队操作"><span class="post-toc-number">2.0.5.1.1.</span> <span class="post-toc-text">offer(E e)入队操作</span></a></li></ol></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#删除元素"><span class="post-toc-number">2.0.5.2.</span> <span class="post-toc-text">删除元素</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#poll-出队操作"><span class="post-toc-number">2.0.5.2.1.</span> <span class="post-toc-text">poll()出队操作</span></a></li></ol></li></ol></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java集合-Queue-ConcurrentLinkedQueue源码解析及原理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-20 00:02:02" datetime="2018-10-19T16:02:02.000Z" itemprop="datePublished">2018-10-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>上一章节中<code>PriorityQueue</code>是非线程安全队列，这里的<code>ConcurrentLinkedQueue</code>是线程安全队列集合，此类是基于链接节点的无界线程安全队列，这个队列排列元素<code>FIFO</code>（先进先出）</p>
+</li>
+<li><p>代码采用<code>JDK 1.8</code>版本</p>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h4><h4 id="类继承关系图"><a href="#类继承关系图" class="headerlink" title="类继承关系图"></a>类继承关系图</h4><ul>
+<li>下图是<code>ConcurrentLinkedQueue</code>的类继承关系图，可以看到也是继承了<code>AbstractQueue</code>类，继承了一些队列操作方法</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/ConcurrentLinkedQueue.png" alt="类继承关系图" title="">
+                </div>
+                <div class="image-caption">类继承关系图</div>
+            </figure>
+<h4 id="类成员变量"><a href="#类成员变量" class="headerlink" title="类成员变量"></a>类成员变量</h4><ul>
+<li>由下面可以看到<code>ConcurrentLinkedQueue</code>是基于链表结构来实现数据存储的<ul>
+<li><code>Node&lt;E&gt;</code>此类代表链表元素节点<ul>
+<li><code>volatile E item;</code>用于保存存放的元素</li>
+<li><code>Node&lt;E&gt; next</code>用于存放下一个元素</li>
+<li>可以看到<code>Node&lt;E&gt;</code>里面的方法都是基于<code>sun.misc.Unsafe</code>来操作实现的</li>
+</ul>
+</li>
+<li><code>Node&lt;E&gt; head</code> 用于存放链表头节点</li>
+<li><code>Node&lt;E&gt; tail</code> 用于存放链表尾节点</li>
+<li><code>sun.misc.Unsafe UNSAFE</code> 作用：<ul>
+<li><code>sun.misc.Unsafe</code>类可以用来在任意内存地址位置处读写数据，可见，对于普通用户来说，使用起来还是比较危险的</li>
+<li>除了获取内存偏移量以外，提供的最重要的功能了——因为<code>Java</code>中很多基于“无同步锁”方式的功能实现原理都是基于<code>CAS</code>过程，它是<code>Java</code>中对大多数锁机制实现的最基础类</li>
+<li><code>CAS</code>操作的方法：<code>compareAndSwapInt，compareAndSwapLong</code>等，主要逻辑是将内存值与预期值作比较，判断是否相等，相等的话，写入数据，不相等不做操作，返回旧数据；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcurrentLinkedQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Queue</span>&lt;<span class="title">E</span>&gt;, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">196745693267521676L</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 存放元素 用volatile进行修饰的，以保证内存可见性</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">volatile</span> E item;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * next指针</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">volatile</span> Node&lt;E&gt; next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Constructs a new node.  Uses relaxed write because item can</span></span><br><span class="line"><span class="comment">         * only be seen after publication via casNext.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        Node(E item) &#123;</span><br><span class="line">            UNSAFE.putObject(<span class="keyword">this</span>, itemOffset, item);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">boolean</span> <span class="title">casItem</span><span class="params">(E cmp, E val)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> UNSAFE.compareAndSwapObject(<span class="keyword">this</span>, itemOffset, cmp, val);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">lazySetNext</span><span class="params">(Node&lt;E&gt; val)</span> </span>&#123;</span><br><span class="line">            UNSAFE.putOrderedObject(<span class="keyword">this</span>, nextOffset, val);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">boolean</span> <span class="title">casNext</span><span class="params">(Node&lt;E&gt; cmp, Node&lt;E&gt; val)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> UNSAFE.compareAndSwapObject(<span class="keyword">this</span>, nextOffset, cmp, val);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Unsafe mechanics</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> sun.misc.Unsafe UNSAFE;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> itemOffset;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> nextOffset;</span><br><span class="line">    </span><br><span class="line">            <span class="keyword">static</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    UNSAFE = sun.misc.Unsafe.getUnsafe();</span><br><span class="line">                    Class&lt;?&gt; k = Node.class;</span><br><span class="line">                    itemOffset = UNSAFE.objectFieldOffset</span><br><span class="line">                        (k.getDeclaredField(<span class="string">"item"</span>));</span><br><span class="line">                    nextOffset = UNSAFE.objectFieldOffset</span><br><span class="line">                        (k.getDeclaredField(<span class="string">"next"</span>));</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Error(e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 链表的头部</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * A node from which the first live (non-deleted) node (if any)</span></span><br><span class="line"><span class="comment">     * can be reached in O(1) time.</span></span><br><span class="line"><span class="comment">     * Invariants:</span></span><br><span class="line"><span class="comment">     * - all live nodes are reachable from head via succ()</span></span><br><span class="line"><span class="comment">     * - head != null</span></span><br><span class="line"><span class="comment">     * - (tmp = head).next != tmp || tmp != head</span></span><br><span class="line"><span class="comment">     * Non-invariants:</span></span><br><span class="line"><span class="comment">     * - head.item may or may not be null.</span></span><br><span class="line"><span class="comment">     * - it is permitted for tail to lag behind head, that is, for tail</span></span><br><span class="line"><span class="comment">     *   to not be reachable from head!</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Node&lt;E&gt; head;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 链表的尾部</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * A node from which the last node on list (that is, the unique</span></span><br><span class="line"><span class="comment">     * node with node.next == null) can be reached in O(1) time.</span></span><br><span class="line"><span class="comment">     * Invariants:</span></span><br><span class="line"><span class="comment">     * - the last node is always reachable from tail via succ()</span></span><br><span class="line"><span class="comment">     * - tail != null</span></span><br><span class="line"><span class="comment">     * Non-invariants:</span></span><br><span class="line"><span class="comment">     * - tail.item may or may not be null.</span></span><br><span class="line"><span class="comment">     * - it is permitted for tail to lag behind head, that is, for tail</span></span><br><span class="line"><span class="comment">     *   to not be reachable from head!</span></span><br><span class="line"><span class="comment">     * - tail.next may or may not be self-pointing to tail.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Node&lt;E&gt; tail;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Unsafe mechanics</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> sun.misc.Unsafe UNSAFE;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> headOffset;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> tailOffset;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            UNSAFE = sun.misc.Unsafe.getUnsafe();</span><br><span class="line">            Class&lt;?&gt; k = ConcurrentLinkedQueue.class;</span><br><span class="line">            headOffset = UNSAFE.objectFieldOffset</span><br><span class="line">                    (k.getDeclaredField(<span class="string">"head"</span>));</span><br><span class="line">            tailOffset = UNSAFE.objectFieldOffset</span><br><span class="line">                    (k.getDeclaredField(<span class="string">"tail"</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><ul>
+<li><p>由下面可以看到有两个构造函数</p>
+<ul>
+<li><p>默认构造函数是构造一个首尾节点都指向一个空值节点(哨兵结点)，如下图：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建一个 ConcurrentLinkedQueue为空的ConcurrentLinkedQueue。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Creates a &#123;<span class="doctag">@code</span> ConcurrentLinkedQueue&#125; that is initially empty.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ConcurrentLinkedQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    head = tail = <span class="keyword">new</span> Node&lt;E&gt;(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/server/java/jdk/collection/ConcurrentLinkedQueueNull.png" alt=""></p>
+</li>
+<li>第二个构造函数是根据已有集合来构造一个队列<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建一个 ConcurrentLinkedQueue最初包含给定集合的元素，以集合的迭代器的遍历顺序添加。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Creates a &#123;<span class="doctag">@code</span> ConcurrentLinkedQueue&#125;</span></span><br><span class="line"><span class="comment"> * initially containing the elements of the given collection,</span></span><br><span class="line"><span class="comment"> * added in traversal order of the collection's iterator.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> c the collection of elements to initially contain</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException if the specified collection or any</span></span><br><span class="line"><span class="comment"> *         of its elements are null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ConcurrentLinkedQueue</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    Node&lt;E&gt; h = <span class="keyword">null</span>, t = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">for</span> (E e : c) &#123;</span><br><span class="line">        checkNotNull(e);</span><br><span class="line">        Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;E&gt;(e);</span><br><span class="line">        <span class="keyword">if</span> (h == <span class="keyword">null</span>)</span><br><span class="line">            h = t = newNode;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            t.lazySetNext(newNode);</span><br><span class="line">            t = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="keyword">null</span>)</span><br><span class="line">        h = t = <span class="keyword">new</span> Node&lt;E&gt;(<span class="keyword">null</span>);</span><br><span class="line">    head = h;</span><br><span class="line">    tail = t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="主要方法解析"><a href="#主要方法解析" class="headerlink" title="主要方法解析"></a>主要方法解析</h4><h5 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h5><h6 id="offer-E-e-入队操作"><a href="#offer-E-e-入队操作" class="headerlink" title="offer(E e)入队操作"></a><code>offer(E e)</code>入队操作</h6><ul>
+<li><p>元素的入队是在队尾插入元素，下面方法可以看到是主要逻辑是有个<code>for</code>循环自旋，如果循环体<code>CAS</code>操作成功会直接<code>return</code>返回，如果<code>CAS</code>操作失败的话就在<code>for</code>循环中不断重试直至成功</p>
+</li>
+<li><p><code>ConcurrentLinkedQueue</code>的入队操作整体逻辑如下图所示：</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/jdk/collection/concurrentLinkedQueueOffer.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Inserts the specified element at the tail of this queue.</span></span><br><span class="line"><span class="comment"> * As the queue is unbounded, this method will never return &#123;<span class="doctag">@code</span> false&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; (as specified by &#123;<span class="doctag">@link</span> Queue#offer&#125;)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException if the specified element is null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">offer</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 为null的话就直接抛出空指针异常</span></span><br><span class="line">    checkNotNull(e);</span><br><span class="line">    <span class="comment">// 将e包装成一个Node类</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;E&gt;(e);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 循环体CAS操作成功会直接return返回</span></span><br><span class="line"><span class="comment">     * 如果CAS操作失败的话就在for循环中不断重试直至成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">for</span> (Node&lt;E&gt; t = tail, p = t;;) &#123;</span><br><span class="line">        Node&lt;E&gt; q = p.next;</span><br><span class="line">        <span class="keyword">if</span> (q == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// p是最后一个节点</span></span><br><span class="line">            <span class="comment">// p is last node</span></span><br><span class="line">            <span class="keyword">if</span> (p.casNext(<span class="keyword">null</span>, newNode)) &#123;</span><br><span class="line">                <span class="comment">// Successful CAS is the linearization point</span></span><br><span class="line">                <span class="comment">// for e to become an element of this queue,</span></span><br><span class="line">                <span class="comment">// and for newNode to become "live".</span></span><br><span class="line">                <span class="keyword">if</span> (p != t) <span class="comment">// hop two nodes at a time 每两次更新一下tail</span></span><br><span class="line">                    casTail(t, newNode);  <span class="comment">// Failure is OK.</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// CAS竞争失败，再次尝试</span></span><br><span class="line">            <span class="comment">// Lost CAS race to another thread; re-read next</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p == q)</span><br><span class="line">            <span class="comment">// 遇到哨兵节点，从head开始遍历</span></span><br><span class="line">            <span class="comment">// 但是如果tail被修改，则使用tail（因为可能被修改正确了）</span></span><br><span class="line">            <span class="comment">// We have fallen off list.  If tail is unchanged, it</span></span><br><span class="line">            <span class="comment">// will also be off-list, in which case we need to</span></span><br><span class="line">            <span class="comment">// jump to head, from which all live nodes are always</span></span><br><span class="line">            <span class="comment">// reachable.  Else the new tail is a better bet.</span></span><br><span class="line">            p = (t != (t = tail)) ? t : head;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment">// 每两次更新后，确认tail更新 定位队列真正的对尾节点</span></span><br><span class="line">            <span class="comment">// Check for tail updates after two hops.</span></span><br><span class="line">            p = (p != t &amp;&amp; t != (t = tail)) ? t : q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h5><h6 id="poll-出队操作"><a href="#poll-出队操作" class="headerlink" title="poll()出队操作"></a><code>poll()</code>出队操作</h6><ul>
+<li>队列中元素的出队是从队首移除元素，出队也是和入队逻辑差不多，也是采用<code>自旋 + CAS</code>的方式处理</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">poll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    restartFromHead:</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="comment">// p节点表示首节点，即需要出队的节点</span></span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            E item = p.item;</span><br><span class="line">            <span class="comment">// 如果p节点的元素不为null，则通过CAS来设置p节点引用的元素为null，如果成功则返回p节点的元素</span></span><br><span class="line">            <span class="keyword">if</span> (item != <span class="keyword">null</span> &amp;&amp; p.casItem(item, <span class="keyword">null</span>)) &#123;</span><br><span class="line">                <span class="comment">// 如果p != h，则更新head</span></span><br><span class="line">                <span class="comment">// Successful CAS is the linearization point</span></span><br><span class="line">                <span class="comment">// for item to be removed from this queue.</span></span><br><span class="line">                <span class="keyword">if</span> (p != h) <span class="comment">// hop two nodes at a time</span></span><br><span class="line">                    updateHead(h, ((q = p.next) != <span class="keyword">null</span>) ? q : p);</span><br><span class="line">                <span class="keyword">return</span> item;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 如果头节点的元素为空或头节点发生了变化，这说明头节点已经被另外一个线程修改了。</span></span><br><span class="line">            <span class="comment">// 那么获取p节点的下一个节点，如果p节点的下一节点为null，则表明队列已经空了</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((q = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 更新头结点</span></span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// p == q，则使用新的head重新开始</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p == q)</span><br><span class="line">                <span class="keyword">continue</span> restartFromHead;</span><br><span class="line">            <span class="comment">// 如果下一个元素不为空，则将头节点的下一个节点设置成头节点</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>ConcurrentLinkedQueue</code>是线程安全队列，底层采用链表节点来存放数据，这个队列按照<code>FIFO</code>（先进先出）策略来排列元素</li>
+<li>我们查看<code>ConcurrentLinkedQueue</code>源码可以看到它并没有利用<code>Lock</code>或<code>synchronized</code>来处理线程安全问题，而是完全基于<code>自旋 + CAS</code>的方式来处理线程安全问题，虽然大大增加了程序的设计和实现的难度，但是它带来的好处就是可以得到性能的飞速提升</li>
+<li>此队列是非阻塞队列，关于阻塞队列的介绍将在下面的章节介绍</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.cnblogs.com/Joe-Go/p/9757394.html" target="_blank" rel="noopener">https://www.cnblogs.com/Joe-Go/p/9757394.html</a></li>
+<li><a href="https://segmentfault.com/a/1190000016248143" target="_blank" rel="noopener">https://segmentfault.com/a/1190000016248143</a></li>
+<li><a href="https://www.cnblogs.com/gxyandwmm/p/9418915.html" target="_blank" rel="noopener">https://www.cnblogs.com/gxyandwmm/p/9418915.html</a></li>
+<li><a href="https://www.cnblogs.com/chenpi/p/5389254.html" target="_blank" rel="noopener">https://www.cnblogs.com/chenpi/p/5389254.html</a></li>
+<li><a href="https://blog.csdn.net/qq_38293564/article/details/80798310" target="_blank" rel="noopener">https://blog.csdn.net/qq_38293564/article/details/80798310</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java集合/">Java集合</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/&title=《Java集合-Queue-ConcurrentLinkedQueue源码解析及原理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/&title=《Java集合-Queue-ConcurrentLinkedQueue源码解析及原理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java集合-Queue-ConcurrentLinkedQueue源码解析及原理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Queue-BlockingQueue阻塞队列接口/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java集合-Queue-BlockingQueue阻塞队列接口</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Queue-PriorityQueue源码解析及原理/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Java集合-Queue-PriorityQueue源码解析及原理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/&title=《Java集合-Queue-ConcurrentLinkedQueue源码解析及原理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/&title=《Java集合-Queue-ConcurrentLinkedQueue源码解析及原理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java集合-Queue-ConcurrentLinkedQueue源码解析及原理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java集合-Queue-ConcurrentLinkedQueue源码解析及原理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEe0lEQVR42u3ayw7iOBAF0P7/n2akWfUsgHurggaHkxWKQmyfLFwP//kTX49/r79//33n9fPP3vD6v89GnN3PR19dmDBhwoTpK5keL6+EKX8+WVj7qdq3tXPDhAkTJkz3YEpe93oSb4YJtvAkdMjfvwlNMGHChAnTbzJt0tf2ncVWHYPmq8CECRMmTL/J1JZxN4luNPUyRMCECRMmTL/M1C4sH3ifEueBwlWNT0yYMGHCdCem2cGde/z++PkmTJgwYcL0vzI9FleSWH6uFdoWdjfrxYQJEyZM5zJtSq75wFcFInnptp15FChgwoQJE6ZjmWaTSDb+TaF2xtfi5oEFJkyYMGE6kemqwzT5IvOkd1+izT/wm/QbEyZMmDAdy9Ru3smkZ2XWTzw5K0k/JcaECRMmTAcyJS/Kt9J2y5+lo224cAEiJkyYMGG6HVNb6t0c6GnLxzliHqy8mQkmTJgwYTqWaXaoJR9slsrmReRNALEvImPChAkTplOY8k0x3/5n9HmCvbmfhwiYMGHChOkeTLPYoS3LbqbYBijJzIdPYsKECROmY5nyFuDsyVmz89oUva4B5MNjwoQJE6avZGqLpG3DMv8M7Xza+7PC7n+6vpgwYcKE6aZMm2Muj/jaJKWzlLgoN2PChAkTpmOZkiXNCql5QzQZq22dbpJkTJgwYcJ0J6Z2w960P69inaXBsyQcEyZMmDDdg+nalue1iO3xoCSBbz8VJkyYMGE6l2m2Geftxhwr2ZjbACU/bIQJEyZMmH6ZqUXJS7ptQ3GTkLfrwoQJEyZMd2XKN842Kf1EMTc/snNtuIAJEyZMmM5imh2FuSqM2DcdE6bNKjBhwoQJ012ZNvFFUvDNU9lNmj0bHRMmTJgw3YmpnVxe6s0bnJvCbvIx2pXWcQomTJgwYfpKpnzbnm3PbcLZthg3Tc1ibpgwYcKE6Vim/M958zJvUrZty1mTcnb49WmFABMmTJgwHcu0KZheVZwdLqBMfdtCNiZMmDBhugdTm0DODus8Xl5JKNCWjzcHjDBhwoQJ0+lM7faZb8l5QLA/oJPcT4rLUSiACRMmTJiOZWoPxLQNyNkRnFmi236MNyvFhAkTJkyHM7Upbp6mtgdxNqny57AwYcKECdO5THkjcJasbgrBbfuzTebbYAITJkyYMN2VKb/aITeHdTZBSTLzp2EBJkyYMGE6imlWhJ01PpOt+irKvIWZ/AsTJkyYMN2Dqd1c24Lv5spT630JGBMmTJgw3YkpedHsKM9Vk4uy9lHTdHVhwoQJE6ZDmD6xMc+wkrHaVDYvB7/5PJgwYcKE6Vimdk/ctz/b8CJpOuZpfDLWBaEDJkyYMGH6Mqb8OE6yWW6Y2kT3qlJvlKJjwoQJE6bDma4q4151ZGfTcN2kr0//hQkTJkyYfowpDx3ad+5z94SsToYxYcKECdMPMLXJZB5MtEvKm6ybBH4YEGDChAkTpq9kyg/WtNPNCWZN1hy0LuxiwoQJE6ZbMLXJ5D5BnU2r2LzLNHufbGPChAkTpq9k+gcR3NMESWvyCAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

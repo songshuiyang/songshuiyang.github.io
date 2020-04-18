@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mybatis源码(十二)动态Sql实现之SqlSource | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="mybatis">
+    <meta name="description" content="前言从本章开始将介绍Mybatis是怎样实现动态sql的，介绍动态sql实现之前先介绍几个重要对象SqlSource，SqlNode ，BoundSql ,本章开始介绍SqlSource对象， 前面第九章及第十章介绍了SqlSource的构造过程，在xml配置的select update节点的sql将会构造成 SqlSource，其 SqlSource 由一组SqlNode组成，现在来看一下Sql">
+<meta name="keywords" content="mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis源码(十二)动态Sql实现之SqlSource">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言从本章开始将介绍Mybatis是怎样实现动态sql的，介绍动态sql实现之前先介绍几个重要对象SqlSource，SqlNode ，BoundSql ,本章开始介绍SqlSource对象， 前面第九章及第十章介绍了SqlSource的构造过程，在xml配置的select update节点的sql将会构造成 SqlSource，其 SqlSource 由一组SqlNode组成，现在来看一下Sql">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mybatis/SqlSource.gif">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mybatis/sqlSource.png">
+<meta property="og:updated_time" content="2019-12-05T12:19:35.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mybatis源码(十二)动态Sql实现之SqlSource">
+<meta name="twitter:description" content="前言从本章开始将介绍Mybatis是怎样实现动态sql的，介绍动态sql实现之前先介绍几个重要对象SqlSource，SqlNode ，BoundSql ,本章开始介绍SqlSource对象， 前面第九章及第十章介绍了SqlSource的构造过程，在xml配置的select update节点的sql将会构造成 SqlSource，其 SqlSource 由一组SqlNode组成，现在来看一下Sql">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/mybatis/SqlSource.gif">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mybatis源码(十二)动态Sql实现之SqlSource</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mybatis源码(十二)动态Sql实现之SqlSource</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-12-06T10:41:00.000Z" itemprop="datePublished" class="page-time">
+  2018-12-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Mybatis/">Mybatis</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SqlSource-分析"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">SqlSource 分析</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mybatis源码(十二)动态Sql实现之SqlSource</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-12-06 18:41:00" datetime="2018-12-06T10:41:00.000Z" itemprop="datePublished">2018-12-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Mybatis/">Mybatis</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从本章开始将介绍Mybatis是怎样实现动态sql的，介绍动态sql实现之前先介绍几个重要对象<code>SqlSource</code>，<code>SqlNode</code> ，<code>BoundSql</code> ,本章开始介绍<code>SqlSource</code>对象，</p>
+<p>前面第九章及第十章介绍了<code>SqlSource</code>的构造过程，在xml配置的select update节点的sql将会构造成 <code>SqlSource</code>，其 <code>SqlSource</code> 由一组<code>SqlNode</code>组成，现在来看一下<code>SqlSource</code>能做什么</p>
+<h3 id="SqlSource-分析"><a href="#SqlSource-分析" class="headerlink" title="SqlSource 分析"></a>SqlSource 分析</h3><ul>
+<li><p>查看<code>SqlSource</code> 是个接口，但他只有一个方法就是<code>BoundSql getBoundSql(Object parameterObject);</code> ，方法参数是sql的参数，然后根据参数来构造成<code>BoundSql</code>，所以他的作用是根据参数对象生产<code>BoundSql</code>，那么<code>BoundSql</code>有什么用呢，下一章节将介绍其作用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SqlSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">BoundSql <span class="title">getBoundSql</span><span class="params">(Object parameterObject)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下图可以看到<code>SqlSource</code> 其实现类，主要有4种类型</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mybatis/SqlSource.gif" alt="image" title="">
+                </div>
+                <div class="image-caption">image</div>
+            </figure>
+</li>
+</ul>
+<ol>
+<li>DynamicSqlSource:处理动态sql语句。</li>
+<li>RawSqlSource：处理静态sql语句，其内部装饰StaticSqlSource。</li>
+<li>StaticSqlSource：处理静态sql，无论是静态sql，还是动态sql，最终的处理结果，都是静态sql。</li>
+<li>ProviderSqlSource:处理注解Annotation形式的sql。</li>
+<li>VelocitySqlSource:只是Mybatis的一个测试类</li>
+</ol>
+<ul>
+<li><p>举个栗子，下面是一个动态sql的xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"selectSelective"</span> <span class="attr">resultType</span>=<span class="string">"org.apache.songsy.entity.User"</span> <span class="attr">parameterType</span>=<span class="string">"org.apache.songsy.entity.User"</span>&gt;</span></span><br><span class="line">    SELECT</span><br><span class="line">      *</span><br><span class="line">    FROM</span><br><span class="line">      sys_user</span><br><span class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"id != null"</span>&gt;</span></span><br><span class="line">            AND id = #&#123;id&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"username != null and username != ''"</span>&gt;</span></span><br><span class="line">            AND username = #&#123;username&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"password != null"</span>&gt;</span></span><br><span class="line">            AND password = #&#123;password&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>那么解析成<code>SqlSource</code>将会是下面的样子，<code>SqlSource</code> 是存放在<code>MappedStatement</code>对象的，可以看到<code>SqlSource</code>是一堆嵌套的<code>SqlNode</code>组成</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mybatis/sqlSource.png" alt="image" title="">
+                </div>
+                <div class="image-caption">image</div>
+            </figure>
+<ul>
+<li>从<code>DynamicSqlSource</code>可以看到主要方法就是通过参数对象<code>parameterObject</code>来获取<code>BoundSql</code>对象，<code>BoundSql</code> 存放了动态<code>sql</code>处理后的语句</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 动态SQL源码</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicSqlSource</span> <span class="keyword">implements</span> <span class="title">SqlSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Configuration configuration;</span><br><span class="line">  <span class="keyword">private</span> SqlNode rootSqlNode;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DynamicSqlSource</span><span class="params">(Configuration configuration, SqlNode rootSqlNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.configuration = configuration;</span><br><span class="line">    <span class="keyword">this</span>.rootSqlNode = rootSqlNode;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 得到绑定的SQL</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> BoundSql <span class="title">getBoundSql</span><span class="params">(Object parameterObject)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 生成一个动态上下文</span></span><br><span class="line">    DynamicContext context = <span class="keyword">new</span> DynamicContext(configuration, parameterObject);</span><br><span class="line">	<span class="comment">// 这里SqlNode.apply只是将$&#123;&#125;这种参数替换掉，并没有替换#&#123;&#125;这种参数</span></span><br><span class="line">    rootSqlNode.apply(context);</span><br><span class="line">	<span class="comment">// 调用SqlSourceBuilder</span></span><br><span class="line">    SqlSourceBuilder sqlSourceParser = <span class="keyword">new</span> SqlSourceBuilder(configuration);</span><br><span class="line">    Class&lt;?&gt; parameterType = parameterObject == <span class="keyword">null</span> ? Object.class : parameterObject.getClass();</span><br><span class="line">	<span class="comment">// SqlSourceBuilder.parse,注意这里返回的是StaticSqlSource,解析完了就把那些#&#123;password&#125;参数都替换成?了，也就是最基本的JDBC的SQL写法</span></span><br><span class="line">    SqlSource sqlSource = sqlSourceParser.parse(context.getSql(), parameterType, context.getBindings());</span><br><span class="line">	<span class="comment">// 看似是又去递归调用SqlSource.getBoundSql，其实因为是StaticSqlSource，所以没问题，不是递归调用</span></span><br><span class="line">    BoundSql boundSql = sqlSource.getBoundSql(parameterObject);</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, Object&gt; entry : context.getBindings().entrySet()) &#123;</span><br><span class="line">      boundSql.setAdditionalParameter(entry.getKey(), entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> boundSql;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>有图有栗子来理解<code>SqlSource</code> 就很形象了，有了<code>SqlSource</code>就相当于生产商品有基本原材料了，当然原材料(<code>SqlNode</code>)种类有很多，Mybatis会根据用户的需求(<code>**Mapper.xml</code>) 来采购不同的原材料</li>
+<li><code>SqlSource</code></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/&title=《Mybatis源码(十二)动态Sql实现之SqlSource》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/&title=《Mybatis源码(十二)动态Sql实现之SqlSource》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mybatis源码(十二)动态Sql实现之SqlSource》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十三)动态Sql实现之BoundSql/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mybatis源码(十三)动态Sql实现之BoundSql</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十一)MapperXML映射文件OGNL表达式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mybatis源码(十一)MapperXML映射文件OGNL表达式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/&title=《Mybatis源码(十二)动态Sql实现之SqlSource》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/&title=《Mybatis源码(十二)动态Sql实现之SqlSource》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mybatis源码(十二)动态Sql实现之SqlSource》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/12/06/backend/framework/mybatis/sourceCodeAnalysis/Mybatis源码(十二)动态Sql实现之SqlSource/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEmUlEQVR42u3aS27jSBAFQN//0hpgMJtBt+j3MtlulRRcGRJFVwUX+auvr/h6/Htd//3r/b9+++yTZ89Jnvx4cl3f//UnLkyYMGHC9JJMj8vrGU3+73OyZBvXBJsnPNsXJkyYMGF6D6bZ49o78+fnwfv6/utPileFCRMmTJg+gGnGep18tIE8eQ37MhgTJkyYMH0mU5IEzBqvm0K3fTGYMGHChOkzmTYba1OHJNjnCcRdKcJtvXBMmDBhwvRiTHcd3Dnx779wvgkTJkyYMP0g06O8ZuPD/FdJMN6E7cfowoQJEyZM5zLNtppvI08yZknJbOA6G3BiwoQJE6YTmZLH3XvIJk8INslB0iYumtqYMGHChOktmPIQ244885cxew1JyJ81rzFhwoQJ0+lMSQGcF7FtwZlveHWY5t5JLyZMmDBhOoopH0zmB0BzuA10vvnkt9+sExMmTJgwHc6UbykP6rNPNgnHvtB9+gIwYcKECdPhTNGto2KyTSnuCurtyr8Zi2LChAkTpmOZks20G5jdn7d622FkW4Q//RwTJkyYMB3INBsWtoVo2z5Ovt20g2s4TJgwYcJ0LFNeFm5K2RyiLVBnh19vwMKECRMmTIcw7QvdeynzdnO+2tmq/vctJkyYMGE6lmlffOZhO2/vtmF+P5SNEDFhwoQJ07FMeX2XbLtd7iO+ZuV6m4J888IwYcKECdNRTDlKckwnKTXb4jN/wqzhO+wQYMKECROmo5jqYytBiG0TiM05mfa3+V4wYcKECdN7MLVjv1kgnw0R82ZxS1wU1ZgwYcKE6Vim2Zhw08DdJBZtsB92u/MuOCZMmDBhenmm6wXNxpZJijADvauZ2yY6mDBhwoTpXKZNY7cdZM6avPkRnFn7ON8jJkyYMGE6kWl/PLQeDcZhvm3dJi9m1pLGhAkTJkznMuUBdfPtvh28KWvbA6/f5E2YMGHChOkoptnBnTYhaJk2wXt2wCjqDWDChAkTpsOZ8n9wnRa07df2uGre5G1Zo44vJkyYMGE6iqkdDbY0+TByPwrNw3/7qjBhwoQJ0+lMsxShDa7Jkzdbzdu+NxwAwoQJEyZMxzK1x242JfSsEG3L8ruGoJgwYcKE6V2Zku1tUoT8ZexD+OZ4ECZMmDBhOpEpHxzeW6y2v8qHjkkDN3/Of7/FhAkTJkyHM22OwmyaqrNh6oZyeKgIEyZMmDAdy9SG53aUuAHKm8j5AaO2fYwJEyZMmE5nygP57J62x7xJOxKm2ZgWEyZMmDC9B9MsALfHYtpGbZ5e5EdwHsE1/GeYMGHChOnFmGYh/0cXFMNtyvX61WLChAkTpkOYHuWVL6VtBN9VHufJSgGKCRMmTJiOZcqv2ejxrmHk7IDOZvA5xMKECRMmTC/JlCcBs9A+G0+2W8pDe9uexoQJEyZM78GUJwHJgtqyuU1N2uK2bSj/5leYMGHChOkDmHKCZAN5epEU1e3K61EuJkyYMGH6SKa7wvb+MFDetM3HrpgwYcKE6Z2Y2sW1ITn/pB2U5ivZvB5MmDBhwnQu0+bgzqY8blmLMnXRJt40oDFhwoQJ04sx/QP/iWKDdAQ70QAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

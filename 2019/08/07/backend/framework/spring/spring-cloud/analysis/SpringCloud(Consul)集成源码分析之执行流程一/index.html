@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringCloud(Consul)集成源码分析之执行流程一 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Cloud">
+    <meta name="description" content="前言 上一章节我们知道了SpringCloud集成Consul过程就是注册bean的过程，那么有了这些bean，那它们是怎样发挥作用的呢，如果要实现微服务之间的通信就是要将本地服务信息注册得到注册中心上，那SpringCloudConsul是怎么实现的，这个是我们本章要探究的。  因为SpringCloudConsul自动配置的类很多，一个一个去找十分麻烦，所以我们这里先关注它是怎么将本地服务注册">
+<meta name="keywords" content="Spring,Spring Cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud(Consul)集成源码分析之执行流程一">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 上一章节我们知道了SpringCloud集成Consul过程就是注册bean的过程，那么有了这些bean，那它们是怎样发挥作用的呢，如果要实现微服务之间的通信就是要将本地服务信息注册得到注册中心上，那SpringCloudConsul是怎么实现的，这个是我们本章要探究的。  因为SpringCloudConsul自动配置的类很多，一个一个去找十分麻烦，所以我们这里先关注它是怎么将本地服务注册">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/consul0d-dsd.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/consul-register.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/consul-auto-service.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/ConsulAutoServiceRegistration.png">
+<meta property="og:updated_time" content="2019-09-16T13:11:05.857Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloud(Consul)集成源码分析之执行流程一">
+<meta name="twitter:description" content="前言 上一章节我们知道了SpringCloud集成Consul过程就是注册bean的过程，那么有了这些bean，那它们是怎样发挥作用的呢，如果要实现微服务之间的通信就是要将本地服务信息注册得到注册中心上，那SpringCloudConsul是怎么实现的，这个是我们本章要探究的。  因为SpringCloudConsul自动配置的类很多，一个一个去找十分麻烦，所以我们这里先关注它是怎么将本地服务注册">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/consul0d-dsd.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringCloud(Consul)集成源码分析之执行流程一</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringCloud(Consul)集成源码分析之执行流程一</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-06T16:02:02.000Z" itemprop="datePublished" class="page-time">
+  2019-08-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ConsulServiceRegistry-bean注册初始化"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">ConsulServiceRegistry bean注册初始化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何注册服务的"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">如何注册服务的</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringCloud(Consul)集成源码分析之执行流程一</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-07 00:02:02" datetime="2019-08-06T16:02:02.000Z" itemprop="datePublished">2019-08-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><ul>
+<li><p>上一章节我们知道了<code>SpringCloud</code>集成<code>Consul</code>过程就是注册<code>bean</code>的过程，那么有了这些<code>bean</code>，那它们是怎样发挥作用的呢，如果要实现微服务之间的通信就是要将本地服务信息注册得到注册中心上，那<code>SpringCloudConsul</code>是怎么实现的，这个是我们本章要探究的。</p>
+</li>
+<li><p>因为<code>SpringCloudConsul</code>自动配置的类很多，一个一个去找十分麻烦，所以我们这里先关注它是怎么将本地服务注册得到注册中心上，通过之前章节可以知道只要启动应用，应用就会自动将自己注册到注册中心上，因为<code>Spring</code>有很多钩子接口及一套生命周期，所以我们看看它是怎么实现的，我们可以将<code>log</code>日志改为<code>debug</code>，通过日志来找出那些关键信息</p>
+</li>
+</ul>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><ul>
+<li>通过启动日志查看关键字<code>registe</code>我们可以定位到这行日志，这些信息就是我们在<code>SpringCloud(二)注册中心Consul</code>章节中介绍注册服务的信息是一一对应的，所以我们可以知道<code>SpringCloudConsul</code>注册服务也是通过<code>RESTful HTTP API</code>来注册服务的 </li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o.s.c.c.s.ConsulServiceRegistry          : Registering service with consul: NewService&#123;id='cloudUser-dev-2010', name='cloudUser', tags=[], address='10.135.95.34', port=2010, enableTagOverride=null, check=Check&#123;script='null', interval='10s', ttl='null', http='http://10.135.95.34:2010/health', tcp='null', timeout='null', deregisterCriticalServiceAfter='null', tlsSkipVerify=null, status='null'&#125;, checks=null&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>日志拆解</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">id=&apos;cloudUser-dev-2010&apos;,   // 服务id</span><br><span class="line">name=&apos;cloudUser&apos;,          // 服务名</span><br><span class="line">tags=[],                   // 服务的tag，自定义，可以根据这个tag来区分同一个服务名的服务</span><br><span class="line">address=&apos;10.135.95.34&apos;,    // 服务注册到consul的IP，服务发现，发现的就是这个IP</span><br><span class="line">port=2010,                 // 服务注册consul的PORT，发现的就是这个PORT</span><br><span class="line">enableTagOverride=null, </span><br><span class="line">check = Check&#123;             // 健康检查部分</span><br><span class="line">    script=&apos;null&apos;,</span><br><span class="line">           interval=&apos;10s&apos;,                   // 健康检查间隔时间，每隔10s，调用一次上面的URL</span><br><span class="line">    ttl=&apos;null&apos;, </span><br><span class="line">    http=&apos;http://10.135.95.34:2010/health&apos;,  // 指定健康检查的URL，调用后只要返回20X，consul都认为是健康的</span><br><span class="line">    tcp=&apos;null&apos;, </span><br><span class="line">    timeout=&apos;null&apos;, </span><br><span class="line">    deregisterCriticalServiceAfter=&apos;null&apos;, </span><br><span class="line">    tlsSkipVerify=null, </span><br><span class="line">    status=&apos;null&apos;</span><br><span class="line">&#125;, </span><br><span class="line">checks=null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>看日志定位到<code>org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistry</code>，这个类是在<code>spring-cloud-consul-discovery</code>包下的，上一章节有涉及到</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/consul0d-dsd.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>通过类名字及方法名我们可以知道这个类是<code>Consul</code>服务的注册及下架的处理类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsulServiceRegistry</span> <span class="keyword">implements</span> <span class="title">ServiceRegistry</span>&lt;<span class="title">ConsulRegistration</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Log log = LogFactory.getLog(ConsulServiceRegistry.class);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> ConsulClient client;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> ConsulDiscoveryProperties properties;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> TtlScheduler ttlScheduler;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> HeartbeatProperties heartbeatProperties;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ConsulServiceRegistry</span><span class="params">(ConsulClient client, ConsulDiscoveryProperties properties, TtlScheduler ttlScheduler, HeartbeatProperties heartbeatProperties)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.client = client;</span><br><span class="line">		<span class="keyword">this</span>.properties = properties;</span><br><span class="line">		<span class="keyword">this</span>.ttlScheduler = ttlScheduler;</span><br><span class="line">		<span class="keyword">this</span>.heartbeatProperties = heartbeatProperties;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(ConsulRegistration reg)</span> </span>&#123;</span><br><span class="line">		log.info(<span class="string">"Registering service with consul: "</span> + reg.getService());</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			client.agentServiceRegister(reg.getService(), properties.getAclToken());</span><br><span class="line">			<span class="keyword">if</span> (heartbeatProperties.isEnabled() &amp;&amp; ttlScheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">				ttlScheduler.add(reg.getInstanceId());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (ConsulException e) &#123;</span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">this</span>.properties.isFailFast()) &#123;</span><br><span class="line">				log.error(<span class="string">"Error registering service with consul: "</span> + reg.getService(), e);</span><br><span class="line">				ReflectionUtils.rethrowRuntimeException(e);</span><br><span class="line">			&#125;</span><br><span class="line">			log.warn(<span class="string">"Failfast is false. Error registering service with consul: "</span> + reg.getService(), e);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deregister</span><span class="params">(ConsulRegistration reg)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (ttlScheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">			ttlScheduler.remove(reg.getInstanceId());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (log.isInfoEnabled()) &#123;</span><br><span class="line">			log.info(<span class="string">"Deregistering service with consul: "</span> + reg.getInstanceId());</span><br><span class="line">		&#125;</span><br><span class="line">		client.agentServiceDeregister(reg.getInstanceId());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStatus</span><span class="params">(ConsulRegistration registration, String status)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (status.equalsIgnoreCase(OUT_OF_SERVICE.getCode())) &#123;</span><br><span class="line">			client.agentServiceSetMaintenance(registration.getInstanceId(), <span class="keyword">true</span>);</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (status.equalsIgnoreCase(UP.getCode())) &#123;</span><br><span class="line">			client.agentServiceSetMaintenance(registration.getInstanceId(), <span class="keyword">false</span>);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unknown status: "</span>+status);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">getStatus</span><span class="params">(ConsulRegistration registration)</span> </span>&#123;</span><br><span class="line">		String serviceId = registration.getServiceId();</span><br><span class="line">		Response&lt;List&lt;Check&gt;&gt; response = client.getHealthChecksForService(serviceId, QueryParams.DEFAULT);</span><br><span class="line">		List&lt;Check&gt; checks = response.getValue();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (Check check : checks) &#123;</span><br><span class="line">			<span class="keyword">if</span> (check.getServiceId().equals(registration.getInstanceId())) &#123;</span><br><span class="line">				<span class="keyword">if</span> (check.getName().equalsIgnoreCase(<span class="string">"Service Maintenance Mode"</span>)) &#123;</span><br><span class="line">					<span class="keyword">return</span> OUT_OF_SERVICE.getCode();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> UP.getCode();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面来看<code>ConsulServiceRegistry</code>是如何发挥作用的</li>
+</ul>
+<h4 id="ConsulServiceRegistry-bean注册初始化"><a href="#ConsulServiceRegistry-bean注册初始化" class="headerlink" title="ConsulServiceRegistry bean注册初始化"></a>ConsulServiceRegistry bean注册初始化</h4><ul>
+<li>点击<code>ConsulServiceRegistry</code>的引用可以进入到<code>org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistryAutoConfiguration</code>类，这个类是见名是自动配置类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnConsulEnabled</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(value = <span class="string">"spring.cloud.service-registry.enabled"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line"><span class="meta">@AutoConfigureBefore</span>(ServiceRegistryAutoConfiguration.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsulServiceRegistryAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span>(required = <span class="keyword">false</span>)</span><br><span class="line">	<span class="keyword">private</span> TtlScheduler ttlScheduler;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ConsulServiceRegistry <span class="title">consulServiceRegistry</span><span class="params">(ConsulClient consulClient, ConsulDiscoveryProperties properties,</span></span></span><br><span class="line"><span class="function"><span class="params">													   HeartbeatProperties heartbeatProperties)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ConsulServiceRegistry(consulClient, properties, ttlScheduler, heartbeatProperties);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">	<span class="meta">@ConditionalOnProperty</span>(<span class="string">"spring.cloud.consul.discovery.heartbeat.enabled"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> TtlScheduler <span class="title">ttlScheduler</span><span class="params">(ConsulClient consulClient, HeartbeatProperties heartbeatProperties)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> TtlScheduler(heartbeatProperties, consulClient);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> HeartbeatProperties <span class="title">heartbeatProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> HeartbeatProperties();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ConsulDiscoveryProperties <span class="title">consulDiscoveryProperties</span><span class="params">(InetUtils inetUtils)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ConsulDiscoveryProperties(inetUtils);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>回顾上一章节，我们知道<code>spring.factories</code>里面配置了这个类，所以这个类会被<code>Spring</code>自动注册</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">org.springframework.cloud.consul.discovery.RibbonConsulAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.consul.discovery.configclient.ConsulConfigServerAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistryAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.consul.discovery.ConsulDiscoveryClientConfiguration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">org.springframework.cloud.bootstrap.BootstrapConfiguration=\</span><br><span class="line">org.springframework.cloud.consul.discovery.configclient.ConsulDiscoveryClientConfigServiceBootstrapConfiguration</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>观察<code>ConsulServiceRegistryAutoConfiguration</code>类</p>
+<ul>
+<li><p>关注<code>@ConditionalOnProperty(value = &quot;spring.cloud.service-registry.enabled&quot;, matchIfMissing = true)</code>这个条件注解，这里是说需要配置了该属性<code>ConsulServiceRegistryAutoConfiguration</code>类才生效，这个属性名是不是很熟悉，没错就是上一章节<code>@EnableDiscoveryClient</code>注解自动注册的<code>AutoServiceRegistrationConfiguration</code>类相对应的，<code>AutoServiceRegistrationConfiguration</code>类就是配置了这个属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span>(AutoServiceRegistrationProperties.class)</span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(value = <span class="string">"spring.cloud.service-registry.auto-registration.enabled"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoServiceRegistrationConfiguration</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(<span class="string">"spring.cloud.service-registry.auto-registration"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoServiceRegistrationProperties</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在这里可以得出结论<code>@EnableDiscoveryClient</code>是开启服务自动注册类的开关，因为<code>@SpringCloudApplication</code>注解默认自带这个注解，所以在<code>SpringCloud</code>中只要添加了注册中心的依赖，就会默认开启注册中心的功能</p>
+</li>
+<li><code>TtlScheduler</code>这个<code>Bean</code>，这个是个定时器</li>
+<li><p><code>HeartbeatProperties</code> 属性配置类，对应的属性前缀：<code>spring.cloud.consul.discovery.heartbeat</code>，这个是心跳检测的属性配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.cloud.consul.discovery.heartbeat"</span>)</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@CommonsLog</span></span><br><span class="line"><span class="meta">@Validated</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeartbeatProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> change enabled to default to true when I stop seeing messages like</span></span><br><span class="line">    <span class="comment">// [WARN] agent: Check 'service:testConsulApp:xtest:8080' missed TTL, is now critical</span></span><br><span class="line">    <span class="keyword">boolean</span> enabled = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Min</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ttlValue = <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> String ttlUnit = <span class="string">"s"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DecimalMin</span>(<span class="string">"0.1"</span>)</span><br><span class="line">    <span class="meta">@DecimalMax</span>(<span class="string">"0.9"</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> intervalRatio = <span class="number">2.0</span> / <span class="number">3.0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Period heartbeatInterval;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>ConsulDiscoveryProperties</code>属性配置类，对应的属性前缀：<code>spring.cloud.consul.discovery</code>，这个是<code>Consul</code>的主要配置类，我们平常最常使用的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties</span>(<span class="string">"spring.cloud.consul.discovery"</span>)</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsulDiscoveryProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> String MANAGEMENT = <span class="string">"management"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Getter</span>(AccessLevel.PRIVATE)</span><br><span class="line">    <span class="meta">@Setter</span>(AccessLevel.PRIVATE)</span><br><span class="line">    <span class="keyword">private</span> InetUtils.HostInfo hostInfo;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;consul.token:$&#123;CONSUL_TOKEN:$&#123;spring.cloud.consul.token:$&#123;SPRING_CLOUD_CONSUL_TOKEN:&#125;&#125;&#125;&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String aclToken;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Tags to use when registering service */</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; tags = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Is service discovery enabled? */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> enabled = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Tags to use when registering management service */</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; managementTags = Arrays.asList(MANAGEMENT);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Alternate server path to invoke for health checking */</span></span><br><span class="line">    <span class="keyword">private</span> String healthCheckPath = <span class="string">"/health"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Custom health check url to override default */</span></span><br><span class="line">    <span class="keyword">private</span> String healthCheckUrl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** How often to perform the health check (e.g. 10s), defaults to 10s. */</span></span><br><span class="line">    <span class="keyword">private</span> String healthCheckInterval = <span class="string">"10s"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Timeout for health check (e.g. 10s). */</span></span><br><span class="line">    <span class="keyword">private</span> String healthCheckTimeout;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Timeout to deregister services critical for longer than timeout (e.g. 30m).</span></span><br><span class="line"><span class="comment">     * Requires consul version 7.x or higher.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String healthCheckCriticalTimeout;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** IP address to use when accessing service (must also set preferIpAddress to use) */</span></span><br><span class="line">    <span class="keyword">private</span> String ipAddress;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Hostname to use when accessing server */</span></span><br><span class="line">    <span class="keyword">private</span> String hostname;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Port to register the service under (defaults to listening port) */</span></span><br><span class="line">    <span class="keyword">private</span> Integer port;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Port to register the management service under (defaults to management port) */</span></span><br><span class="line">    <span class="keyword">private</span> Integer managementPort;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Lifecycle lifecycle = <span class="keyword">new</span> Lifecycle();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Use ip address rather than hostname during registration */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> preferIpAddress = <span class="keyword">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Source of how we will determine the address to use */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> preferAgentAddress = <span class="keyword">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> catalogServicesWatchDelay = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> catalogServicesWatchTimeout = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Service name */</span></span><br><span class="line">    <span class="keyword">private</span> String serviceName;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Unique service instance id */</span></span><br><span class="line">    <span class="keyword">private</span> String instanceId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Service instance zone */</span></span><br><span class="line">    <span class="keyword">private</span> String instanceZone;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Service instance group*/</span></span><br><span class="line">    <span class="keyword">private</span> String instanceGroup;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Service instance zone comes from metadata.</span></span><br><span class="line"><span class="comment">     * This allows changing the metadata tag name.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String defaultZoneMetadataName = <span class="string">"zone"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Whether to register an http or https service */</span></span><br><span class="line">    <span class="keyword">private</span> String scheme = <span class="string">"http"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Suffix to use when registering management service */</span></span><br><span class="line">    <span class="keyword">private</span> String managementSuffix = MANAGEMENT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Map of serviceId's -&gt; tag to query for in server list.</span></span><br><span class="line"><span class="comment">     * This allows filtering services by a single tag.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; serverListQueryTags = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Map of serviceId's -&gt; datacenter to query for in server list.</span></span><br><span class="line"><span class="comment">     * This allows looking up services in another datacenters.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; datacenters = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Tag to query for in service list if one is not listed in serverListQueryTags. */</span></span><br><span class="line">    <span class="keyword">private</span> String defaultQueryTag;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Add the 'passing` parameter to /v1/health/service/serviceName.</span></span><br><span class="line"><span class="comment">     * This pushes health check passing to the server.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> queryPassing = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Register as a service in consul. */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> register = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Disable automatic de-registration of service in consul. */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> deregister = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Register health check in consul. Useful during development of a service. */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> registerHealthCheck = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Throw exceptions during service registration if true, otherwise, log</span></span><br><span class="line"><span class="comment">     * warnings (defaults to true).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> failFast = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Skips certificate verification during service checks if true, otherwise</span></span><br><span class="line"><span class="comment">     * runs certificate verification.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Boolean healthCheckTlsSkipVerify;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ConsulDiscoveryProperties</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConsulDiscoveryProperties</span><span class="params">(InetUtils inetUtils)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.hostInfo = inetUtils.findFirstNonLoopbackHostInfo();</span><br><span class="line">        <span class="keyword">this</span>.ipAddress = <span class="keyword">this</span>.hostInfo.getIpAddress();</span><br><span class="line">        <span class="keyword">this</span>.hostname = <span class="keyword">this</span>.hostInfo.getHostname();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> serviceId The service who's filtering tag is being looked up</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> The tag the given service id should be filtered by, or null.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getQueryTagForService</span><span class="params">(String serviceId)</span></span>&#123;</span><br><span class="line">        String tag = serverListQueryTags.get(serviceId);</span><br><span class="line">        <span class="keyword">return</span> tag != <span class="keyword">null</span> ? tag : defaultQueryTag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getHostname</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.preferIpAddress ? <span class="keyword">this</span>.ipAddress : <span class="keyword">this</span>.hostname;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHostname</span><span class="params">(String hostname)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.hostname = hostname;</span><br><span class="line">        <span class="keyword">this</span>.hostInfo.override = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIpAddress</span><span class="params">(String ipAddress)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ipAddress = ipAddress;</span><br><span class="line">        <span class="keyword">this</span>.hostInfo.override = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Data</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Lifecycle</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">boolean</span> enabled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="如何注册服务的"><a href="#如何注册服务的" class="headerlink" title="如何注册服务的"></a>如何注册服务的</h4><ul>
+<li><code>Bean</code>注册完成了就要发挥作用了，我们在日志处<code>log.info(&quot;Registering service with consul: &quot; + reg.getService());</code>打断点</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(ConsulRegistration reg)</span> </span>&#123;</span><br><span class="line">	log.info(<span class="string">"Registering service with consul: "</span> + reg.getService());</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		client.agentServiceRegister(reg.getService(), properties.getAclToken());</span><br><span class="line">		<span class="keyword">if</span> (heartbeatProperties.isEnabled() &amp;&amp; ttlScheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">			ttlScheduler.add(reg.getInstanceId());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (ConsulException e) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.properties.isFailFast()) &#123;</span><br><span class="line">			log.error(<span class="string">"Error registering service with consul: "</span> + reg.getService(), e);</span><br><span class="line">			ReflectionUtils.rethrowRuntimeException(e);</span><br><span class="line">		&#125;</span><br><span class="line">		log.warn(<span class="string">"Failfast is false. Error registering service with consul: "</span> + reg.getService(), e);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看方法执行链</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/consul-register.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>下面来看看具体执行流程，可以看到还是老样子的<code>refresh()</code>方法</p>
+<ul>
+<li><p>进入<code>org.springframework.context.support.AbstractApplicationContext#refresh()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * refresh()统一入口 </span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> BeansException</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IllegalStateException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">	<span class="keyword">synchronized</span> (<span class="keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">		<span class="comment">// Prepare this context for refreshing.</span></span><br><span class="line">		<span class="comment">// 准备刷新的上下文环境，例如对系统属性或者环境变量进行准备及验证</span></span><br><span class="line">		prepareRefresh();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Tell the subclass to refresh the internal bean factory.</span></span><br><span class="line">		<span class="comment">// 初始化BeanFactory，并进行XML文件读取，这一步之后ClassPathXmlApplicationContext实际上就已经包含了BeanFactory所提供的功能</span></span><br><span class="line">		ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Prepare the bean factory for use in this context.</span></span><br><span class="line">		<span class="comment">// 进入prepareBeanFactory前，Spring已经完成了对配置的解析，而ApplicationContext在功能上的扩展也由此展开</span></span><br><span class="line">		<span class="comment">// 对BeanFactory进行各种功能组件填充 @Qualifier @Autowired这两注解功能组件就是在这步骤中增加的支持</span></span><br><span class="line">		prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">			<span class="comment">// 子类覆盖方法做额外的处理</span></span><br><span class="line">			postProcessBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			<span class="comment">// Invoke factory processors registered as beans in the context.</span></span><br><span class="line">			<span class="comment">// 调用工厂后处理器 根据反射机制从BeanDefinitionRegistry中找出所有实现了BeanFactoryPostProcessor接口的bean，</span></span><br><span class="line">			<span class="comment">// 并调用其postProcessBeanFactory接口方法</span></span><br><span class="line">			invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Register bean processors that intercept bean creation.</span></span><br><span class="line">			<span class="comment">// 注册Bean后处理器 根据反射机制从BeanDefinitionRegistry中找出所有实现了BeanPostProcessor接口的bean，</span></span><br><span class="line">			<span class="comment">// 并将它们注册到容器Bean后处理器的注册表中，这里只是注册，真正的调用在getBean时候</span></span><br><span class="line">			registerBeanPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Initialize message source for this context.</span></span><br><span class="line">			<span class="comment">// 初始化消息源 初始化容器的国际化消息资源</span></span><br><span class="line">			initMessageSource();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Initialize event multicaster for this context.</span></span><br><span class="line">			<span class="comment">// 初始化应用上下文事件广播器</span></span><br><span class="line">			initApplicationEventMulticaster();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Initialize other special beans in specific context subclasses.</span></span><br><span class="line">			<span class="comment">// 初始化其他特殊的bean，由具体子类实现，这是个钩子方法</span></span><br><span class="line">			onRefresh();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Check for listener beans and register them.</span></span><br><span class="line">			<span class="comment">// 注册事件监听器</span></span><br><span class="line">			registerListeners();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">			<span class="comment">// 重点：初始化所有单实例的Bean，使用懒加载模式的bean除外，初始化Bean后将它们放到Spring容器的缓冲池中</span></span><br><span class="line">			finishBeanFactoryInitialization(beanFactory);</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Last step: publish corresponding event.</span></span><br><span class="line">			<span class="comment">// 完成刷新并发布容器刷新事件</span></span><br><span class="line">			finishRefresh();</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以看到注册中心的注册动作是放到最后一步<code>finishRefresh()</code>来执行的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finishRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.finishRefresh();</span><br><span class="line">    EmbeddedServletContainer localContainer = <span class="keyword">this</span>.startEmbeddedServletContainer();</span><br><span class="line">    <span class="keyword">if</span> (localContainer != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 发布事件</span></span><br><span class="line">        <span class="keyword">this</span>.publishEvent(<span class="keyword">new</span> EmbeddedServletContainerInitializedEvent(<span class="keyword">this</span>, localContainer));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>我们跳入<code>org.springframework.context.event.SimpleApplicationEventMulticaster#multicastEvent()</code>方法可以看到这里出现了<code>ConsulAutoServiceRegistration</code>这个类<br><img src="/images/server/spring/spring-cloud/consul-auto-service.png" alt=""></p>
+</li>
+<li>查看<code>ConsulAutoServiceRegistration</code>这个类，我们可以看到这个类实现了<code>Spring</code>的很多接口，比如继承了<code>EventListener</code>，这里涉及到了事件监听，还有继承了<code>Lifecycle</code>，可以猜测<code>Spirng</code>容器销毁时用这个接口来向<code>consul</code>注销服务，因为这个类比较复杂，所以放到下一章节详细介绍<br><img src="/images/server/spring/spring-cloud/ConsulAutoServiceRegistration.png" alt=""></li>
+<li><p>然后跳到<code>org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistry#register)</code>方法，这个方法打印了我们上面的日志</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(ConsulRegistration reg)</span> </span>&#123;</span><br><span class="line">	log.info(<span class="string">"Registering service with consul: "</span> + reg.getService());</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		client.agentServiceRegister(reg.getService(), properties.getAclToken());</span><br><span class="line">		<span class="keyword">if</span> (heartbeatProperties.isEnabled() &amp;&amp; ttlScheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">			ttlScheduler.add(reg.getInstanceId());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (ConsulException e) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.properties.isFailFast()) &#123;</span><br><span class="line">			log.error(<span class="string">"Error registering service with consul: "</span> + reg.getService(), e);</span><br><span class="line">			ReflectionUtils.rethrowRuntimeException(e);</span><br><span class="line">		&#125;</span><br><span class="line">		log.warn(<span class="string">"Failfast is false. Error registering service with consul: "</span> + reg.getService(), e);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上面只是些执行流程，下一章节将详细介绍<code>ConsulAutoServiceRegistration</code>这个类</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>由于各种自动配置类的作用，<code>SpringCloudConsul</code>会在应用启动的时候通过<code>RESTful HTTP API</code> 向<code>consul</code>注册本地服务信息</li>
+<li>通过日志信息定位<code>ConsulServiceRegistry</code>类，这个类会进行注册操作，通过断点调试发现是由<code>ConsulAutoServiceRegistration</code>这个类来指挥的，这个类比较复杂所以放到下一章节介绍</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3>
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/&title=《SpringCloud(Consul)集成源码分析之执行流程一》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/&title=《SpringCloud(Consul)集成源码分析之执行流程一》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Consul)集成源码分析之执行流程一》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程二/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringCloud(Consul)集成源码分析之执行流程二</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之初始化/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringCloud(Consul)集成源码分析之初始化</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/&title=《SpringCloud(Consul)集成源码分析之执行流程一》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/&title=《SpringCloud(Consul)集成源码分析之执行流程一》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Consul)集成源码分析之执行流程一》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Consul)集成源码分析之执行流程一/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEjklEQVR42u3aS27jSBAFQN//0pptAx5J72VSgIoOrgw3TVYFG8hf/fzE1+Of6/fvf//87J7kXx+/rtdryJ+WrGd1YcKECROmr2R6vLxevyz/q2f37NeQfM7XnzZZISZMmDBhOp0peVy+oHy5bXjeQK+SGEyYMGHC9IeZkgXNytFHfOVvwYQJEyZMmF4z5aXj6zs/F/6TFWLChAkTpr/GlD8u2XwSqtsR5iyNmD0fEyZMmDDdiSkPzPf7+SPnmzBhwoQJ09cwPcorp8zflQTstkRvi/M3u8aECRMmTMcy5QGyLUo3oDPcWRJTNJcxYcKECdOBTG1ITkaMyVbbUeWMb3N4CBMmTJgw3ZspD+HFy9qDMqNjOm16kewdEyZMmDCdztRuNSmG92PR2eGePIkp7sGECRMmTMcy5cVkstWkcM0JZp9qfxTpTZqCCRMmTJgOZHrdrs2L3qRMff2tkqbzrCbNk5ine8eECRMmTLdgmg0Ik0CebzgvlTdjy7rdjAkTJkyYDmR6xNfsaE5bfLZDzbZ0bw8bYcKECROmOzHlB2jaQnfzzDyE5+lLnRJhwoQJE6bDmfYQM7K8SN4kKJuEAxMmTJgw3YMpH/Llr2nDdntAp31aPijFhAkTJkx3YtqMJGfLStKCugk7GovO6DFhwoQJ01lMeft1f/ylPZRzLfFqEIsJEyZMmI5lypeSN23bO9tBY7vJ2VGe/7kfEyZMmDAdy9QuvQ26+QGafNDYpimbfWHChAkTpnOZ2gC/GV7mpfUsjbjqGNAFGRMmTJgwYfoapn2wzweHs3e1reRZE/lnc2HChAkTpq9nmgXO9jnXvqtNTdq275vsCRMmTJgwHcK0D955a3XWeM0L2n1b+c3/I0yYMGHCdCxTspQ82M8g2pFkEsjbJvXT3WHChAkTpsOZZqG0JU7+Nh9GzpKYdij703a4MWHChAnTlzHNSs0kiM4Q2ybvLGUZ9sIxYcKECdMtmPLw2Rars4+RfIDZgZ48fcGECRMmTKcz7UPyfvPtkaCrDgAVRTUmTJgwYboRU35Ap225JknD6+dcULLOVosJEyZMmA5nysvXWbqQLzp/Y1vTz9IXTJgwYcJ0LlMedNue8bVFaV6Wt23oKCXChAkTJkw3Ytq0ZfOitN1ezrdpB7/JmDBhwoQJ07FMbdhuX9YC5YnIrLGbN6wxYcKECdPpTC3Bpnnatok3DeKrhrLF1BcTJkyYMH0l0ya4zsaQs2bx7KhNvos3z8eECRMmTLdgmrV6rwrtM7j9yqPPhgkTJkyYjmXKl9tudbbJ2ao+8UZMmDBhwnQPpmuPvLQba8eo+agyaekWh4QwYcKECdOxTPsGaD6qzIeO7SfJaT4xTMWECRMmTN/PlCcBswZxUqZumrzt0LT9PSZMmDBhugfT6wXNfs5L4k+E9vYQUpQQYMKECROmP8DU3jMbiObJQUKZPPPihAATJkyYMB3OlC+ufde+1bv5JE/fggkTJkyYDmfaNEY/MXqcPaE9fFP8FSZMmDBhOpZp1vTcFL3738yGqcnnHAJhwoQJE6ZvZPoPV5+/UBWzv34AAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

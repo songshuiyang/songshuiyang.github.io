@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="前言 上一章节介绍了@Autowired注解的实现原理，本章将介绍和他一样常用的@Resource注解的实现原理，注意这个注解不是Spring的，而是JSR规范定义的注解  还是回到第五章有介绍ComponentScanBeanDefinitionParser是&amp;lt;context:component-scan base-package = &amp;quot;org.springiframe.*&amp;qu">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 上一章节介绍了@Autowired注解的实现原理，本章将介绍和他一样常用的@Resource注解的实现原理，注意这个注解不是Spring的，而是JSR规范定义的注解  还是回到第五章有介绍ComponentScanBeanDefinitionParser是&amp;lt;context:component-scan base-package = &amp;quot;org.springiframe.*&amp;qu">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/bean/CommonAnnotationBeanPostProcessor.png">
+<meta property="og:updated_time" content="2020-01-04T12:21:52.197Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor">
+<meta name="twitter:description" content="前言 上一章节介绍了@Autowired注解的实现原理，本章将介绍和他一样常用的@Resource注解的实现原理，注意这个注解不是Spring的，而是JSR规范定义的注解  还是回到第五章有介绍ComponentScanBeanDefinitionParser是&amp;lt;context:component-scan base-package = &amp;quot;org.springiframe.*&amp;qu">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/analysis/bean/CommonAnnotationBeanPostProcessor.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-06-19T14:00:46.000Z" itemprop="datePublished" class="page-time">
+  2019-06-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">3.</span> <span class="post-toc-text">补充</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-06-19 22:00:46" datetime="2019-06-19T14:00:46.000Z" itemprop="datePublished">2019-06-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>上一章节介绍了<code>@Autowired</code>注解的实现原理，本章将介绍和他一样常用的<code>@Resource</code>注解的实现原理，注意这个注解不是<code>Spring</code>的，而是<code>JSR</code>规范定义的注解</p>
+</li>
+<li><p>还是回到第五章有介绍<code>ComponentScanBeanDefinitionParser</code>是<code>&lt;context:component-scan base-package = &quot;org.springiframe.*&quot;/&gt;</code>这个标签的实现类，哇这个类是万能类呀</p>
+</li>
+<li><p>查看<code>ComponentScanBeanDefinitionParser</code>类可以看到这里注册了很多解析类，比如我们常用的<code>@Configuration/@Autowired/@Value/@Required</code>注解解析类，以及<code>JSR</code>规范的<code>@PostConstruct @PreDestroy @Resource</code>注解解析类</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Register all relevant annotation post processors in the given registry.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> registry the registry to operate on</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> source the configuration source element (already extracted)</span></span><br><span class="line"><span class="comment"> * that this registration was triggered from. May be &#123;<span class="doctag">@code</span> null&#125;.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> a Set of BeanDefinitionHolders, containing all bean definitions</span></span><br><span class="line"><span class="comment"> * that have actually been registered by this call</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Set&lt;BeanDefinitionHolder&gt; <span class="title">registerAnnotationConfigProcessors</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        BeanDefinitionRegistry registry, Object source)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);</span><br><span class="line">    <span class="keyword">if</span> (beanFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(beanFactory.getDependencyComparator() <span class="keyword">instanceof</span> AnnotationAwareOrderComparator)) &#123;</span><br><span class="line">            beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!(beanFactory.getAutowireCandidateResolver() <span class="keyword">instanceof</span> ContextAnnotationAutowireCandidateResolver)) &#123;</span><br><span class="line">            beanFactory.setAutowireCandidateResolver(<span class="keyword">new</span> ContextAnnotationAutowireCandidateResolver());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Set&lt;BeanDefinitionHolder&gt; beanDefs = <span class="keyword">new</span> LinkedHashSet&lt;BeanDefinitionHolder&gt;(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册@Configuration`解析类</span></span><br><span class="line">    <span class="keyword">if</span> (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition(ConfigurationClassPostProcessor.class);</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册`@Autowired/@Value`解析类</span></span><br><span class="line">    <span class="keyword">if</span> (!registry.containsBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition(AutowiredAnnotationBeanPostProcessor.class);</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册`@Required`解析类</span></span><br><span class="line">    <span class="keyword">if</span> (!registry.containsBeanDefinition(REQUIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition(RequiredAnnotationBeanPostProcessor.class);</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, REQUIRED_ANNOTATION_PROCESSOR_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check for JSR-250 support, and if present add the CommonAnnotationBeanPostProcessor.</span></span><br><span class="line">    <span class="comment">// 注册@PostConstruct @PreDestroy @Resource 及JSR-250支持注解解析类</span></span><br><span class="line">    <span class="keyword">if</span> (jsr250Present &amp;&amp; !registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, COMMON_ANNOTATION_PROCESSOR_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check for JPA support, and if present add the PersistenceAnnotationBeanPostProcessor.</span></span><br><span class="line">    <span class="comment">// 注册JPA注解解析类</span></span><br><span class="line">    <span class="keyword">if</span> (jpaPresent &amp;&amp; !registry.containsBeanDefinition(PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            def.setBeanClass(ClassUtils.forName(PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME,</span><br><span class="line">                    AnnotationConfigUtils.class.getClassLoader()));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (ClassNotFoundException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                    <span class="string">"Cannot load optional framework class: "</span> + PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME, ex);</span><br><span class="line">        &#125;</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition(EventListenerMethodProcessor.class);</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) &#123;</span><br><span class="line">        RootBeanDefinition def = <span class="keyword">new</span> RootBeanDefinition(DefaultEventListenerFactory.class);</span><br><span class="line">        def.setSource(source);</span><br><span class="line">        beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_FACTORY_BEAN_NAME));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> beanDefs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过上面的代码我们可以定位到<code>CommonAnnotationBeanPostProcessor</code>这个类，下面是这个类的继承关系图，可以看到这个类和<code>AutowiredAnnotationBeanPostProcessor</code>类一样实现了<code>InstantiationAwareBeanPostProcessor</code>接口，所以猜测应该和<code>@Autowired</code>注解的实现差不多</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/bean/CommonAnnotationBeanPostProcessor.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>类成员</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> org.springframework.beans.factory.config.BeanPostProcessor&#125; implementation</span></span><br><span class="line"><span class="comment"> * that supports common Java annotations out of the box, in particular the JSR-250</span></span><br><span class="line"><span class="comment"> * annotations in the &#123;<span class="doctag">@code</span> javax.annotation&#125; package. These common Java</span></span><br><span class="line"><span class="comment"> * annotations are supported in many Java EE 5 technologies (e.g. JSF 1.2),</span></span><br><span class="line"><span class="comment"> * as well as in Java 6's JAX-WS.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;This post-processor includes support for the &#123;<span class="doctag">@link</span> javax.annotation.PostConstruct&#125;</span></span><br><span class="line"><span class="comment"> * and &#123;<span class="doctag">@link</span> javax.annotation.PreDestroy&#125; annotations - as init annotation</span></span><br><span class="line"><span class="comment"> * and destroy annotation, respectively - through inheriting from</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> InitDestroyAnnotationBeanPostProcessor&#125; with pre-configured annotation types.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;The central element is the &#123;<span class="doctag">@link</span> javax.annotation.Resource&#125; annotation</span></span><br><span class="line"><span class="comment"> * for annotation-driven injection of named beans, by default from the containing</span></span><br><span class="line"><span class="comment"> * Spring BeanFactory, with only &#123;<span class="doctag">@code</span> mappedName&#125; references resolved in JNDI.</span></span><br><span class="line"><span class="comment"> * The &#123;<span class="doctag">@link</span> #setAlwaysUseJndiLookup "alwaysUseJndiLookup" flag&#125; enforces JNDI lookups</span></span><br><span class="line"><span class="comment"> * equivalent to standard Java EE 5 resource injection for &#123;<span class="doctag">@code</span> name&#125; references</span></span><br><span class="line"><span class="comment"> * and default names as well. The target beans can be simple POJOs, with no special</span></span><br><span class="line"><span class="comment"> * requirements other than the type having to match.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;The JAX-WS &#123;<span class="doctag">@link</span> javax.xml.ws.WebServiceRef&#125; annotation is supported too,</span></span><br><span class="line"><span class="comment"> * analogous to &#123;<span class="doctag">@link</span> javax.annotation.Resource&#125; but with the capability of creating</span></span><br><span class="line"><span class="comment"> * specific JAX-WS service endpoints. This may either point to an explicitly defined</span></span><br><span class="line"><span class="comment"> * resource by name or operate on a locally specified JAX-WS service class. Finally,</span></span><br><span class="line"><span class="comment"> * this post-processor also supports the EJB 3 &#123;<span class="doctag">@link</span> javax.ejb.EJB&#125; annotation,</span></span><br><span class="line"><span class="comment"> * analogous to &#123;<span class="doctag">@link</span> javax.annotation.Resource&#125; as well, with the capability to</span></span><br><span class="line"><span class="comment"> * specify both a local bean name and a global JNDI name for fallback retrieval.</span></span><br><span class="line"><span class="comment"> * The target beans can be plain POJOs as well as EJB 3 Session Beans in this case.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;The common annotations supported by this post-processor are available in</span></span><br><span class="line"><span class="comment"> * Java 6 (JDK 1.6) as well as in Java EE 5/6 (which provides a standalone jar for</span></span><br><span class="line"><span class="comment"> * its common annotations as well, allowing for use in any Java 5 based application).</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;For default usage, resolving resource names as Spring bean names,</span></span><br><span class="line"><span class="comment"> * simply define the following in your application context:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;pre class="code"&gt;</span></span><br><span class="line"><span class="comment"> * &amp;lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/&amp;gt;&lt;/pre&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * For direct JNDI access, resolving resource names as JNDI resource references</span></span><br><span class="line"><span class="comment"> * within the Java EE application's "java:comp/env/" namespace, use the following:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;pre class="code"&gt;</span></span><br><span class="line"><span class="comment"> * &amp;lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"&amp;gt;</span></span><br><span class="line"><span class="comment"> *   &amp;lt;property name="alwaysUseJndiLookup" value="true"/&amp;gt;</span></span><br><span class="line"><span class="comment"> * &amp;lt;/bean&amp;gt;&lt;/pre&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@code</span> mappedName&#125; references will always be resolved in JNDI,</span></span><br><span class="line"><span class="comment"> * allowing for global JNDI names (including "java:" prefix) as well. The</span></span><br><span class="line"><span class="comment"> * "alwaysUseJndiLookup" flag just affects &#123;<span class="doctag">@code</span> name&#125; references and</span></span><br><span class="line"><span class="comment"> * default names (inferred from the field name / property name).</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;&lt;b&gt;<span class="doctag">NOTE:</span>&lt;/b&gt; A default CommonAnnotationBeanPostProcessor will be registered</span></span><br><span class="line"><span class="comment"> * by the "context:annotation-config" and "context:component-scan" XML tags.</span></span><br><span class="line"><span class="comment"> * Remove or turn off the default annotation configuration there if you intend</span></span><br><span class="line"><span class="comment"> * to specify a custom CommonAnnotationBeanPostProcessor bean definition!</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;&lt;b&gt;<span class="doctag">NOTE:</span>&lt;/b&gt; Annotation injection will be performed &lt;i&gt;before&lt;/i&gt; XML injection; thus</span></span><br><span class="line"><span class="comment"> * the latter configuration will override the former for properties wired through</span></span><br><span class="line"><span class="comment"> * both approaches.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Juergen Hoeller</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2.5</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #setAlwaysUseJndiLookup</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #setResourceFactory</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"serial"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommonAnnotationBeanPostProcessor</span> <span class="keyword">extends</span> <span class="title">InitDestroyAnnotationBeanPostProcessor</span></span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">InstantiationAwareBeanPostProcessor</span>, <span class="title">BeanFactoryAware</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Common Annotations 1.1 Resource.lookup() available? Not present on JDK 6...</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Method lookupAttribute = ClassUtils.getMethodIfAvailable(Resource.class, <span class="string">"lookup"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Class&lt;? extends Annotation&gt; webServiceRefClass = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Class&lt;? extends Annotation&gt; ejbRefClass = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">			Class&lt;? extends Annotation&gt; clazz = (Class&lt;? extends Annotation&gt;)</span><br><span class="line">					ClassUtils.forName(<span class="string">"javax.xml.ws.WebServiceRef"</span>, CommonAnnotationBeanPostProcessor.class.getClassLoader());</span><br><span class="line">			webServiceRefClass = clazz;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (ClassNotFoundException ex) &#123;</span><br><span class="line">			webServiceRefClass = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">			Class&lt;? extends Annotation&gt; clazz = (Class&lt;? extends Annotation&gt;)</span><br><span class="line">					ClassUtils.forName(<span class="string">"javax.ejb.EJB"</span>, CommonAnnotationBeanPostProcessor.class.getClassLoader());</span><br><span class="line">			ejbRefClass = clazz;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (ClassNotFoundException ex) &#123;</span><br><span class="line">			ejbRefClass = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; ignoredResourceTypes = <span class="keyword">new</span> HashSet&lt;String&gt;(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> fallbackToDefaultTypeMatch = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> alwaysUseJndiLookup = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">transient</span> BeanFactory jndiFactory = <span class="keyword">new</span> SimpleJndiBeanFactory();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">transient</span> BeanFactory resourceFactory;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">transient</span> BeanFactory beanFactory;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">transient</span> StringValueResolver embeddedValueResolver;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">final</span> Map&lt;String, InjectionMetadata&gt; injectionMetadataCache =</span><br><span class="line">			<span class="keyword">new</span> ConcurrentHashMap&lt;String, InjectionMetadata&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Create a new CommonAnnotationBeanPostProcessor,</span></span><br><span class="line"><span class="comment">	 * with the init and destroy annotation types set to</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> javax.annotation.PostConstruct&#125; and &#123;<span class="doctag">@link</span> javax.annotation.PreDestroy&#125;,</span></span><br><span class="line"><span class="comment">	 * respectively.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">CommonAnnotationBeanPostProcessor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		setOrder(Ordered.LOWEST_PRECEDENCE - <span class="number">3</span>);</span><br><span class="line">		setInitAnnotationType(PostConstruct.class);</span><br><span class="line">		setDestroyAnnotationType(PreDestroy.class);</span><br><span class="line">		ignoreResourceType(<span class="string">"javax.xml.ws.WebServiceContext"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><ul>
+<li>此类实现了<code>InstantiationAwareBeanPostProcessor</code>接口，我们看看它是怎么实现的，果然和<code>@Autowired</code>注解注入的实现一样是将需要注入的属性封装成<code>InjectionMetadata</code>，然后调用<code>inject(bean, beanName, pvs)</code>进行注入</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PropertyValues <span class="title">postProcessPropertyValues</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line"></span><br><span class="line">    InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        metadata.inject(bean, beanName, pvs);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(beanName, <span class="string">"Injection of resource dependencies failed"</span>, ex);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pvs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面构造<code>InjectionMetadata</code>对象的逻辑也很简单，就是循环扫描成员变量及成员方法，如果扫到加了符合条件的注解就构造<code>Element</code>对象，我们这关心的是<code>Resource</code>注解修饰的成员被封装为<code>ResourceElement</code>对象了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> InjectionMetadata <span class="title">buildResourceMetadata</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">    LinkedList&lt;InjectionMetadata.InjectedElement&gt; elements = <span class="keyword">new</span> LinkedList&lt;InjectionMetadata.InjectedElement&gt;();</span><br><span class="line">    Class&lt;?&gt; targetClass = clazz;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> LinkedList&lt;InjectionMetadata.InjectedElement&gt; currElements =</span><br><span class="line">                <span class="keyword">new</span> LinkedList&lt;InjectionMetadata.InjectedElement&gt;();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 扫描成员变量注解</span></span><br><span class="line">        ReflectionUtils.doWithLocalFields(targetClass, <span class="keyword">new</span> ReflectionUtils.FieldCallback() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWith</span><span class="params">(Field field)</span> <span class="keyword">throws</span> IllegalArgumentException, IllegalAccessException </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (webServiceRefClass != <span class="keyword">null</span> &amp;&amp; field.isAnnotationPresent(webServiceRefClass)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (Modifier.isStatic(field.getModifiers())) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@WebServiceRef annotation is not supported on static fields"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// WebService相关注解</span></span><br><span class="line">                    currElements.add(<span class="keyword">new</span> WebServiceRefElement(field, field, <span class="keyword">null</span>));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (ejbRefClass != <span class="keyword">null</span> &amp;&amp; field.isAnnotationPresent(ejbRefClass)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (Modifier.isStatic(field.getModifiers())) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@EJB annotation is not supported on static fields"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// Ejb相关注解</span></span><br><span class="line">                    currElements.add(<span class="keyword">new</span> EjbRefElement(field, field, <span class="keyword">null</span>));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (field.isAnnotationPresent(Resource.class)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (Modifier.isStatic(field.getModifiers())) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@Resource annotation is not supported on static fields"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// Resource注解</span></span><br><span class="line">                    <span class="keyword">if</span> (!ignoredResourceTypes.contains(field.getType().getName())) &#123;</span><br><span class="line">                        currElements.add(<span class="keyword">new</span> ResourceElement(field, field, <span class="keyword">null</span>));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 扫描成员方法注解</span></span><br><span class="line">        ReflectionUtils.doWithLocalMethods(targetClass, <span class="keyword">new</span> ReflectionUtils.MethodCallback() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWith</span><span class="params">(Method method)</span> <span class="keyword">throws</span> IllegalArgumentException, IllegalAccessException </span>&#123;</span><br><span class="line">                Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);</span><br><span class="line">                <span class="keyword">if</span> (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) &#123;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (webServiceRefClass != <span class="keyword">null</span> &amp;&amp; bridgedMethod.isAnnotationPresent(webServiceRefClass)) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (Modifier.isStatic(method.getModifiers())) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@WebServiceRef annotation is not supported on static methods"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (method.getParameterTypes().length != <span class="number">1</span>) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@WebServiceRef annotation requires a single-arg method: "</span> + method);</span><br><span class="line">                        &#125;</span><br><span class="line">                        PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);</span><br><span class="line">                        currElements.add(<span class="keyword">new</span> WebServiceRefElement(method, bridgedMethod, pd));</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (ejbRefClass != <span class="keyword">null</span> &amp;&amp; bridgedMethod.isAnnotationPresent(ejbRefClass)) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (Modifier.isStatic(method.getModifiers())) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@EJB annotation is not supported on static methods"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (method.getParameterTypes().length != <span class="number">1</span>) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@EJB annotation requires a single-arg method: "</span> + method);</span><br><span class="line">                        &#125;</span><br><span class="line">                        PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);</span><br><span class="line">                        currElements.add(<span class="keyword">new</span> EjbRefElement(method, bridgedMethod, pd));</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (bridgedMethod.isAnnotationPresent(Resource.class)) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (Modifier.isStatic(method.getModifiers())) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@Resource annotation is not supported on static methods"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        Class&lt;?&gt;[] paramTypes = method.getParameterTypes();</span><br><span class="line">                        <span class="keyword">if</span> (paramTypes.length != <span class="number">1</span>) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"@Resource annotation requires a single-arg method: "</span> + method);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (!ignoredResourceTypes.contains(paramTypes[<span class="number">0</span>].getName())) &#123;</span><br><span class="line">                            PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);</span><br><span class="line">                            currElements.add(<span class="keyword">new</span> ResourceElement(method, bridgedMethod, pd));</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        elements.addAll(<span class="number">0</span>, currElements);</span><br><span class="line">        targetClass = targetClass.getSuperclass();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (targetClass != <span class="keyword">null</span> &amp;&amp; targetClass != Object.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> InjectionMetadata(clazz, elements);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>InjectionMetadata#inject(bean, beanName, pvs)</code>方法上一章节也有所介绍</li>
+</ul>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><ul>
+<li><p><code>@Resource</code>注解和<code>@Autowired</code>注解的作用差不多，都可以完成依赖注入，但不同的是<code>@Resource</code>注解不是<code>Spring</code>的，而是<code>JSR</code>规范定义的注解，为什么要实现这个注解的注入了，我想这就是<code>Spring</code>包罗万象的做法</p>
+</li>
+<li><p><code>@Autowired</code>和<code>@Qualifier</code>一起用，<code>@Resource</code>单独用。当然没有冲突的话<code>@Autowired</code>也可以单独用。值得注意的是<code>Spring</code>官方并不建议直接在类的<code>field</code>上使用<code>@Autowired</code>注解，<a href="http://olivergierke.de/2013/11/why-field-injection-is-evil/" target="_blank" rel="noopener">参考《Why field injection is evil》</a></p>
+</li>
+<li><p><code>@Autowired</code>和<code>@Resource</code>这两个注解是我们开发过程中经常使用的注解</p>
+<ul>
+<li><code>@Autowired</code>默认按类型装配，默认情况下必须要求依赖对象必须存在，如果要允许<code>null</code>值，可以设置它的<code>required</code>属性为<code>false</code>，例如：<code>@Autowired(required=false)</code> ，如果我们想使用名称装配可以结合<code>@Qualifier</code>注解进行使用</li>
+<li><code>@Resource</code>默认按名称进行装配，名称可以通过<code>name</code>属性进行指定，如果没有指定<code>name</code>属性，当注解写在字段上时，默认取字段名进行安装名称查找，如果注解写在setter方法上默认取属性名进行装配。当找不到与名称匹配的<code>bean</code>时才按照类型进行装配。但是需要注意的是，如果<code>name</code>属性一旦指定，就只会按照名称进行装配。</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2></li>
+<li>《Spring 源码深度解析》</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/&title=《Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/&title=《Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/06/19/backend/framework/spring/analysis/Spring系列(十一)@Autowired注解原理AutowiredAnnotationBeanPostProcessor/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring系列(十一)@Autowired注解原理AutowiredAnnotationBeanPostProcessor</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/06/18/backend/framework/spring/analysis/Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/&title=《Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/&title=《Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEiUlEQVR42u3ay24iMRAF0Pn/n85Io9klkHurGgk3h1UUgts+RKqX//yJX1//Xs/fTV7fV3u08vdPtU9/tE6y5vCFCRMmTJjekmlzsIQvOUy7n3bNdlc/rIMJEyZMmA5nuvaQSWhvV2iPnayW7wETJkyYMH0CUxtQk0/Nas/kN5syGBMmTJgwfSZTsWiwrU2ZOmsWY8KECROmT2bKQ2k+2nz+lPzdpKhuG8cv7IVjwoQJE6Y3Y2ov7tzp5xfeb8KECRMmTG/A9FW+2pbrpkDdDCOvOu//9TFhwoQJ07FM7UWZFuIV48yrGr7tgBMTJkyYMN2Dadbu3AxEZy3X2SWh1T8EJkyYMGE6kOmqseK+wTobf7ZXhfLdYsKECROmezDlwbUNum2Zui+SZ39TlN+YMGHChOlAprbd2YImQ9A2/OepRpLWPGf6IW/ChAkTJkwHMuWbbpOAZIiYb3dD3I4/Hxa9mDBhwoTpQKa24NwMF/cN2ZbggotHmDBhwoTpWKa2DZo3cDdjxfYwyXNn14aG3WJMmDBhwvRmTHU4LMeiLdAmQZmV4tF5MWHChAnTLZj2hWK7iVnSkBxsM878JSHAhAkTJkyHMO2v3eyvzrQFc55qXPZ1YsKECROmw5nyV3L4Tak8K4+LKzgx6MP7TZgwYcKE6XCmTVE6u5qTfzGbKzurkSomTJgwYTqcqW3dtp+aDUrbUjz/m6SFjQkTJkyY7sGUN2TrcnG0xTaQz1KQ/AITJkyYMGE6nSlv5iaDw9kQNAfdXN/ZNJcxYcKECdO5TEk4zy/lJO3aPBi3V3/aNevmNSZMmDBhOpCpDfab0nT/rCQtyL/yovzGhAkTJkyHM20OnGxr1tjNU5a8tB6eCxMmTJgwHc40uxyTDClfMbBMStZkV8WQFRMmTJgwHcs0C8Dt5marbQrjTUv6sjwFEyZMmDC9GdP+WkyeEGyGizP6fJ1fyDBhwoQJ01FM+yDdlscJUxvaZ+sUA1dMmDBhwnQsUx7Uc4LN4DPfyeaLHCYomDBhwoTpcKa2aMxLzdnf5IPVtuE7LN0xYcKECdOBTG0Qfe5dT02DcePsePuEo2jyYsKECROmQ5jyNmi+0TZgt0nAJuTn5T0mTJgwYTqXKU8LZsE4L5sT0DyxaK/yRJ/ChAkTJkyHM82Sg/0mZsPUNrGoO9/76hwTJkyYML0lU3vNtD1S/tx8n8kIs/3if0kIMGHChAnTIUz7x7Tl66btu4FeNYgxYcKECdMtmDaP3zdnZy3j2c7rBAgTJkyYMB3LtAneeaAdbmUxztyUvtGnMGHChAnTIUxf5atNAvJN52nHrH3c/isMu+CYMGHChOnNmNqi9Nqgm/+8TyM2P2PChAkTptOZ2iRgE/gT+iTYzwr12XgVEyZMmDDdg2mWBLSH3A87Z8Vtm0ZgwoQJE6bPZNqPP1cbLb+ezddQvI0JEyZMmG7KNBsKzq4EPX/6ZsxZ32nChAkTJkzHMiVN3mS7s7CdPz1p++bnSkAxYcKECdPpTLOysA3YyWptaT17d18kY8KECROmQ5j+AmYGJKXacdnpAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

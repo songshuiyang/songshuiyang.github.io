@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>分布式-分布式事务解决方案 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="分布式">
+    <meta name="description" content="前言 建议可以先看分布式-分布式事务理论这一章节再来梳理这一章节，毕竟先有理论后有实践   分布式事务的实现主要有以下 6 种方案： XA 方案 TCC补偿性事务解决方案 可靠消息最终一致性方案 本地消息表 SAGA方案  分布式事务解决方案1、XA 方案 我们知道在单个数据库应用中一般就一个事务管理器及一个资源管理器(数据源)，这种情况下使用Spring的Transactional可以很方便的处">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式-分布式事务解决方案">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 建议可以先看分布式-分布式事务理论这一章节再来梳理这一章节，毕竟先有理论后有实践   分布式事务的实现主要有以下 6 种方案： XA 方案 TCC补偿性事务解决方案 可靠消息最终一致性方案 本地消息表 SAGA方案  分布式事务解决方案1、XA 方案 我们知道在单个数据库应用中一般就一个事务管理器及一个资源管理器(数据源)，这种情况下使用Spring的Transactional可以很方便的处">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/1pc1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/2pc.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/2pc1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/2pc2.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/2pc3.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/XA.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/3pc1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/3pc2.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/3pc3.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/tcc.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/mq/localMessage.png">
+<meta property="og:updated_time" content="2019-11-19T12:31:03.246Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式-分布式事务解决方案">
+<meta name="twitter:description" content="前言 建议可以先看分布式-分布式事务理论这一章节再来梳理这一章节，毕竟先有理论后有实践   分布式事务的实现主要有以下 6 种方案： XA 方案 TCC补偿性事务解决方案 可靠消息最终一致性方案 本地消息表 SAGA方案  分布式事务解决方案1、XA 方案 我们知道在单个数据库应用中一般就一个事务管理器及一个资源管理器(数据源)，这种情况下使用Spring的Transactional可以很方便的处">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/distributed/1pc1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">分布式-分布式事务解决方案</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">分布式-分布式事务解决方案</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-28T16:01:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分布式/">分布式</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#分布式事务的实现主要有以下-6-种方案："><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">分布式事务的实现主要有以下 6 种方案：</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分布式事务解决方案"><span class="post-toc-number">2.</span> <span class="post-toc-text">分布式事务解决方案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、XA-方案"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、XA 方案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-1-、1PC一阶段提交"><span class="post-toc-number">2.1.0.1.</span> <span class="post-toc-text">1.1 、1PC一阶段提交</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-2-、2PC二阶段提交"><span class="post-toc-number">2.1.0.2.</span> <span class="post-toc-text">1.2 、2PC二阶段提交</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#工作流程"><span class="post-toc-number">2.1.0.3.</span> <span class="post-toc-text">工作流程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#第一阶段：请求-表决阶段"><span class="post-toc-number">2.1.0.3.1.</span> <span class="post-toc-text">第一阶段：请求/表决阶段</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#第二阶段：提交-执行阶段"><span class="post-toc-number">2.1.0.3.2.</span> <span class="post-toc-text">第二阶段：提交/执行阶段</span></a></li></ol></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#示例"><span class="post-toc-number">2.1.0.4.</span> <span class="post-toc-text">示例</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#存在的问题："><span class="post-toc-number">2.1.0.5.</span> <span class="post-toc-text">存在的问题：</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-3-、3PC二阶段提交"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1.3 、3PC二阶段提交</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#工作流程-1"><span class="post-toc-number">2.1.1.1.</span> <span class="post-toc-text">工作流程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#第一阶段：CanCommit阶段"><span class="post-toc-number">2.1.1.1.1.</span> <span class="post-toc-text">第一阶段：CanCommit阶段</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#第二阶段：PreCommit阶段"><span class="post-toc-number">2.1.1.1.2.</span> <span class="post-toc-text">第二阶段：PreCommit阶段</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#第三阶段：DoCommit阶段"><span class="post-toc-number">2.1.1.1.3.</span> <span class="post-toc-text">第三阶段：DoCommit阶段</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">总结</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、TCC补偿性事务解决方案"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、TCC补偿性事务解决方案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#示例-1"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">示例</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、可靠消息最终一致性方案"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3、可靠消息最终一致性方案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-1、基于-RocketMQ-消息队列中间件"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">3.1、基于 RocketMQ 消息队列中间件</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#分布式事务产品"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">分布式事务产品</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结-1"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4、本地消息表"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">4、本地消息表</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5、Saga-方案"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">5、Saga 方案</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/distributed/transaction/分布式-分布式事务解决方案" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">分布式-分布式事务解决方案</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-01 00:01:00" datetime="2018-02-28T16:01:00.000Z" itemprop="datePublished">2018-03-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分布式/">分布式</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>建议可以先看<a href="http://www.songshuiyang.com/2018/03/01/backend/distributed/分布式-分布式事务理论/">分布式-分布式事务理论</a>这一章节再来梳理这一章节，毕竟先有理论后有实践 </li>
+</ul>
+<h4 id="分布式事务的实现主要有以下-6-种方案："><a href="#分布式事务的实现主要有以下-6-种方案：" class="headerlink" title="分布式事务的实现主要有以下 6 种方案："></a>分布式事务的实现主要有以下 6 种方案：</h4><ul>
+<li><code>XA</code> 方案</li>
+<li><code>TCC</code>补偿性事务解决方案</li>
+<li>可靠消息最终一致性方案</li>
+<li>本地消息表</li>
+<li><code>SAGA</code>方案</li>
+</ul>
+<h2 id="分布式事务解决方案"><a href="#分布式事务解决方案" class="headerlink" title="分布式事务解决方案"></a>分布式事务解决方案</h2><h3 id="1、XA-方案"><a href="#1、XA-方案" class="headerlink" title="1、XA 方案"></a>1、<code>XA</code> 方案</h3><ul>
+<li><p>我们知道在单个数据库应用中一般就一个事务管理器及一个资源管理器(数据源)，这种情况下使用<code>Spring</code>的<code>Transactional</code>可以很方便的处理事务问题，因为单数据源的情况下开启事务只要保证业务操作是同一个数据库<code>Connection</code>及关闭自动提交功能就可以实现事务，但如果出现了多个数据源，这种情况下<code>Spring</code>的<code>Transactional</code>就处理不了这个问题了，因为涉及到多个数据源，有多个数据源就有多个连接，这种情况怎么处理呢？</p>
+</li>
+<li><p>所以就有人这么想，设计一个全局的事务管理器来统一管理这些多个数据源的事务，事务提交、回滚都由它来控制，但是数据库有好多类型（<code>SQLServer,MYSQL,ORACLE,DB2,Sybase</code>），这样怎么来实现统一管理呢，所以就需要指定一个规范</p>
+</li>
+<li><p>那么分布式事务协议<code>XA</code>就这么出来了，<code>XA</code> 是 <code>X/Open DTP</code> 组织 <code>1994</code> 年定义的分布式事务协议</p>
+<ul>
+<li>大家只要按照这个规范去设计实现就能实现多个资源（如数据库，应用服务器，消息队列，等等）在同一事务中访问</li>
+<li><code>XA</code>规范是描述了全局的事务管理器与局部的资源管理器之间的接口，<code>XA</code>规范的目的是允许多个资源（如数据库，应用服务器，消息队列，等等）在同一事务中访问，这样可以使<code>ACID</code>属性跨越应用程序而保持有效。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><code>XA</code>协议包括：</p>
+<ul>
+<li>一阶段提交<code>（1PC）</code> </li>
+<li>二阶段提交<code>（2PC）</code> （二阶段提交是 <code>XA</code> 的标准实现）</li>
+<li>三阶段提交<code>（3PC）</code>两种实现</li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h5 id="1-1-、1PC一阶段提交"><a href="#1-1-、1PC一阶段提交" class="headerlink" title="1.1 、1PC一阶段提交"></a>1.1 、1PC一阶段提交</h5><ul>
+<li>下图是<code>（1PC）</code> 一阶段提交的工作流程图</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/1pc1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><code>（1PC）</code> 一阶段提交通过去掉 <code>XA</code> 的<code>Prepare</code> 阶段，也称<code>弱XA</code>，以达到减少资源锁定范围而提升并发性能的效果，典型的实现为在一个业务线程中，遍历所有的数据库连接，依次做 <code>commit</code> 或者 <code>rollback</code> 。</li>
+<li><code>（1PC）</code> 一阶段提交同本地事务相比，性能损耗低，但在事务提交的执行过程中，若出现网络故障、数据库宕机等预期之外的异常，将会造成数据不一致，且无法进行回滚。</li>
+<li>基于<code>（1PC）</code> 一阶段提交的事务无需额外的实现成本，相对容易。目前支持的有：<ul>
+<li>1、<code>MyCAT</code> </li>
+<li>2、<code>Sharding-Sphere</code>默认支持</li>
+</ul>
+</li>
+</ul>
+<h5 id="1-2-、2PC二阶段提交"><a href="#1-2-、2PC二阶段提交" class="headerlink" title="1.2 、2PC二阶段提交"></a>1.2 、2PC二阶段提交</h5><ul>
+<li>下图是<code>（2PC）</code> 二阶段提交的工作流程图</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/2pc.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>2PC</code>二阶段提交是 <code>XA</code> 的标准实现，也称<code>强XA</code>，<code>2PC</code>二阶段提交是几乎所有分布式事务算法的基础，后续的分布式事务算法几乎都由此改进而来。</p>
+</li>
+<li><p><code>2PC</code>二阶段协议遵循 <code>OSI（Open System Interconnection</code>，开放系统互联）/<code>DTP</code> 标准，虽然它比标准本身早若干年出现。</p>
+</li>
+<li><p><code>2PC</code>二阶段提交<code>（two-phase commit protocol）</code>,<code>2PC</code>是一个非常经典的强一致、中心化的原子提交协议。</p>
+<ul>
+<li>这里所说的中心化是指协议中有两类节点：<ul>
+<li>一个中心化协调者节点<code>（coordinator）</code></li>
+<li><code>N</code>个参与者节点<code>（partcipant）</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h5><h6 id="第一阶段：请求-表决阶段"><a href="#第一阶段：请求-表决阶段" class="headerlink" title="第一阶段：请求/表决阶段"></a>第一阶段：请求/表决阶段</h6><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/2pc1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>既然称为二阶段提交，说明在这个过程中是大致存在两个阶段的处理流程。第一个阶段如👆图所示，这个阶段被称之为请求/表决阶段。是个什么意思呢？</p>
+</li>
+<li><p>就是在分布式事务的发起方在向分布式事务协调者<code>（Coordinator）</code>发送请求时，<code>Coordinator</code>首先会分别向参与者<code>（Partcipant）</code>节点A、参与这节点<code>（Partcipant）</code>节点B分别发送事务预处理请求，称之为<code>Prepare</code>，有些资料也叫<code>Vote Request</code>。</p>
+</li>
+<li><p>说的直白点就是问一下这些参与节点<code>这件事你们能不能处理成功了</code>，此时这些参与者节点一般来说就会打开本地数据库事务，然后开始执行数据库本地事务，但在执行完成后并不会立马提交数据库本地事务，而是先向<code>Coordinator</code>报告说：<code>我这边可以处理了/我这边不能处理</code>。</p>
+</li>
+<li><p>如果所有的参与这节点都向协调者作了<code>Vote Commit</code>的反馈的话，那么此时流程就会进入第二个阶段了。</p>
+</li>
+</ul>
+<h6 id="第二阶段：提交-执行阶段"><a href="#第二阶段：提交-执行阶段" class="headerlink" title="第二阶段：提交/执行阶段"></a>第二阶段：提交/执行阶段</h6><blockquote>
+<p>正常流程</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/2pc2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>如果所有参与者节点都向协调者报告说<code>我这边可以处理</code>，那么此时协调者就会向所有参与者节点发送<code>全局提交确认通知（global_commit）</code>，即你们都可以进行本地事务提交了</p>
+</li>
+<li><p>此时参与者节点就会完成自身本地数据库事务的提交，并最终将提交结果回复<code>ack</code>消息给<code>Coordinator</code>，然后<code>Coordinator</code>就会向调用方返回分布式事务处理完成的结果。</p>
+</li>
+</ul>
+<blockquote>
+<p>异常流程</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/2pc3.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>相反，在第二阶段除了所有的参与者节点都反馈<code>我这边可以处理了</code>的情况外，也会有节点反馈说<code>我这边不能处理</code>的情况发生，此时参与者节点就会向协调者节点反馈<code>Vote_Abort</code>的消息。</p>
+</li>
+<li><p>此时分布式事务协调者节点就会向所有的参与者节点发起事务回滚的消息<code>global_rollback</code>，此时各个参与者节点就会回滚本地事务，释放资源，并且向协调者节点发送<code>ack</code>确认消息，协调者节点就会向调用方返回分布式事务处理失败的结果。</p>
+</li>
+</ul>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><ul>
+<li><p>一个描述二阶段提交很好的类比是典型的结婚仪式，每个参与者（结婚典礼中的新郎和新娘）都必须服从安排，在正式步入婚姻生活之前说“我愿意”。考虑有的杯具情形，“参与者”之一在做出承诺前的最后一刻反悔。二阶段提交之于此的结果也成立，虽然不具备那么大的破坏性。</p>
+</li>
+<li><p>大家想一个场景，在做单应用的时候，有的同学连过两个库吧？在一个事务中会同时向两个系统插入数据。但是对于普通事务来讲，是管不了的。</p>
+</li>
+<li><p>看下图（只是举例这种操作的套路，不局限于下面的业务）：</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/XA.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>一个服务里面要去操作两个库，如何保证事务成功呢。</p>
+</li>
+<li><p>具体实现见 <a href="http://www.songshuiyang.com/2018/03/01/backend/distributed/分布式-Atomikos处理多数据源事务/">分布式-Atomikos处理多数据源事务</a> 章节</p>
+</li>
+</ul>
+<h5 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h5><ul>
+<li><p>实际上分布式事务是一件非常复杂的事情，二阶段提交只是通过增加了事务协调者<code>（Coordinator）</code>的角色来通过2个阶段的处理流程来解决分布式系统中一个事务需要跨多个服务节点的数据一致性问题。但是从异常情况上考虑，这个流程也并不是那么的无懈可击。</p>
+</li>
+<li><p>以下几点是<code>XA</code>-二阶段提交协议中会遇到的一些问题：</p>
+<ul>
+<li>性能问题<ul>
+<li>从流程上我们可以看得出，其最大缺点就在于它的执行过程中间，节点都处于阻塞状态。各个操作数据库的节点此时都占用着数据库资源，只有当所有节点准备完毕，事务协调者才会通知进行全局提交，参与者进行本地事务提交后才会释放资源。这样的过程会比较漫长，对性能影响比较大。</li>
+</ul>
+</li>
+<li>单点问题 <ul>
+<li>协调者在 <code>2PC</code> 中起到非常大的作用，发生故障将会造成很大影响。</li>
+</ul>
+</li>
+<li>数据不一致<ul>
+<li>在第二个阶段，如果发生局部网络问题，一部分事务参与者收到了提交消息，另一部分事务参与者没收到提交消息，那么就会导致节点间数据的不一致问题。</li>
+</ul>
+</li>
+<li>太过保守<ul>
+<li>任意一个节点失败就会导致整个事务失败，没有完善的容错机制。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-3-、3PC二阶段提交"><a href="#1-3-、3PC二阶段提交" class="headerlink" title="1.3 、3PC二阶段提交"></a>1.3 、3PC二阶段提交</h4><ul>
+<li><p>三阶段提交又称<code>3PC</code>，其在二阶段提交的基础上增加了<code>CanCommit</code>阶段，并引入了超时机制(这个是重点)。一旦事务参与者迟迟没有收到协调者的<code>Commit</code>请求，就会自动进行本地<code>commit</code>，这样相对有效地解决了协调者单点故障的问题。</p>
+</li>
+<li><p>但是性能问题和不一致问题仍然没有根本解决。下面我们还是一起看下三阶段流程的是什么样的？</p>
+</li>
+</ul>
+<h5 id="工作流程-1"><a href="#工作流程-1" class="headerlink" title="工作流程"></a>工作流程</h5><h6 id="第一阶段：CanCommit阶段"><a href="#第一阶段：CanCommit阶段" class="headerlink" title="第一阶段：CanCommit阶段"></a>第一阶段：CanCommit阶段</h6><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/3pc1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>这个阶段类似于<code>2PC</code>中的第二个阶段中的<code>Ready</code>阶段，是一种事务询问操作，事务的协调者向所有参与者询问“你们是否可以完成本次事务？”，如果参与者节点认为自身可以完成事务就返回“YES”，否则“NO”</p>
+</li>
+<li><p>而在实际的场景中参与者节点会对自身逻辑进行事务尝试，其实说白了就是检查下自身状态的健康性，看有没有能力进行事务操作。</p>
+</li>
+</ul>
+<h6 id="第二阶段：PreCommit阶段"><a href="#第二阶段：PreCommit阶段" class="headerlink" title="第二阶段：PreCommit阶段"></a>第二阶段：PreCommit阶段</h6><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/3pc2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>在阶段一中，如果所有的参与者都返回<code>Yes</code>的话，那么就会进入<code>PreCommit</code>阶段进行事务预提交。此时分布式事务协调者会向所有的参与者节点发送<code>PreCommit</code>请求，参与者收到后开始执行事务操作，并将<code>Undo</code>和<code>Redo</code>信息记录到事务日志中。参与者执行完事务操作后（此时属于未提交事务的状态），就会向协调者反馈<code>Ack</code>表示我已经准备好提交了，并等待协调者的下一步指令。</p>
+</li>
+<li><p>否则，如果阶段一中有任何一个参与者节点返回的结果是<code>No</code>响应，或者协调者在等待参与者节点反馈的过程中超时（<code>2PC</code>中只有协调者可以超时，参与者没有超时机制）。整个分布式事务就会中断，协调者就会向所有的参与者发送<code>abort</code>请求。</p>
+</li>
+</ul>
+<h6 id="第三阶段：DoCommit阶段"><a href="#第三阶段：DoCommit阶段" class="headerlink" title="第三阶段：DoCommit阶段"></a>第三阶段：DoCommit阶段</h6><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/3pc3.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>在阶段二中如果所有的参与者节点都可以进行<code>PreCommit</code>提交，那么协调者就会从“预提交状态”-》“提交状态”。然后向所有的参与者节点发送<code>doCommit</code>请求，参与者节点在收到提交请求后就会各自执行事务提交操作，并向协调者节点反馈“Ack”消息，协调者收到所有参与者的Ack消息后完成事务。</p>
+</li>
+<li><p>相反，如果有一个参与者节点未完成<code>PreCommit</code>的反馈或者反馈超时，那么协调者都会向所有的参与者节点发送<code>abort</code>请求，从而中断事务。</p>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li><p>看到这里，你是不是会疑惑”<code>3PC</code>相对于<code>2PC</code>而言到底优化了什么地方呢?”</p>
+</li>
+<li><p>相比较<code>2PC</code>而言，<code>3PC</code>对于协调者<code>（Coordinator）</code>和参与者<code>（Partcipant）</code>都设置了超时时间，而<code>2PC</code>只有协调者才拥有超时机制。这解决了一个什么问题呢？</p>
+<ul>
+<li>这个优化点，主要是避免了参与者在长时间无法与协调者节点通讯（协调者挂掉了）的情况下，无法释放资源的问题，</li>
+<li>因为参与者自身拥有超时机制会在超时后，自动进行本地<code>commit</code>从而进行释放资源。而这种机制也侧面降低了整个事务的阻塞时间和范围。</li>
+</ul>
+</li>
+<li><p>另外，通过<code>CanCommit、PreCommit、DoCommit</code>三个阶段的设计，相较于<code>2PC</code>而言，多设置了一个缓冲阶段保证了在最后提交阶段之前各参与节点的状态是一致的。</p>
+</li>
+<li><p>以上就是<code>3PC</code>相对于<code>2PC</code>的一个提高（相对缓解了<code>2PC</code>中的前两个问题），但是<code>3PC</code>依然没有完全解决数据不一致的问题。</p>
+</li>
+</ul>
+<h3 id="2、TCC补偿性事务解决方案"><a href="#2、TCC补偿性事务解决方案" class="headerlink" title="2、TCC补偿性事务解决方案"></a>2、TCC补偿性事务解决方案</h3><ul>
+<li><p>说起分布式事务的概念，不少人都会搞混淆，似乎好像分布式事务就是<code>TCC</code>。实际上<code>TCC</code>与<code>2PC、3PC</code>一样，只是分布式事务的一种实现方案而已。</p>
+</li>
+<li><p><code>TCC</code> 其实就是采用的补偿机制，其核心思想是：针对每个操作，都要注册一个与其对应的确认和补偿（撤销）操作。它分为三个阶段：</p>
+<ul>
+<li><code>Try</code> 阶段主要是对业务系统做检测及资源预留(比如冻结金额)，看一下数据库资源是否能工作</li>
+<li><code>Confirm</code> 阶段主要是对业务系统做确认提交，<code>Try</code> 阶段执行成功并开始执行 <code>Confirm</code> 阶段时，默认 <code>Confirm</code> 阶段是不会出错的。即：只要 <code>Try</code> 成功，<code>Confirm</code> 一定成功。</li>
+<li><code>Cancel</code> 阶段主要是在业务执行错误，需要回滚的状态下执行的业务取消，预留资源释放。</li>
+</ul>
+</li>
+<li><p>注意这里也有一个全局的事务管理器，一般是有框架来实现</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/tcc.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>TCC</code>事务的处理流程与<code>2PC</code>二阶段提交类似，不过<code>2PC</code>通常都是在跨库的<code>DB</code>层面，而<code>TCC</code>本质上就是一个应用层面的<code>2PC</code>，需要通过业务逻辑来实现。</p>
+</li>
+<li><p><code>TCC</code> 方案让应用自己定义数据库操作的粒度，使得降低锁冲突、提高吞吐量成为可能。 当然 <code>TCC</code> 方案也有不足之处，集中表现在以下两个方面： </p>
+<ul>
+<li><p>对应用的侵入性强。业务逻辑的每个分支都需要实现 <code>try、confirm、cancel</code> 三个操作，比如下面的代码，应用侵入性较强，改造成本高。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@TccTransaction</span>(propagation = DTXPropagation.SUPPORTS)</span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">rpc</span><span class="params">(String value)</span> </span>&#123;</span><br><span class="line">    Demo demo = <span class="keyword">new</span> Demo();</span><br><span class="line">    demo.setDemoField(value);</span><br><span class="line">    demo.setCreateTime(<span class="keyword">new</span> Date());</span><br><span class="line">    demo.setAppName(Transactions.getApplicationId());</span><br><span class="line">    demo.setGroupId(TracingContext.tracing().groupId());</span><br><span class="line">    demoMapper.save(demo);</span><br><span class="line">    ids.putIfAbsent(TracingContext.tracing().groupId(), Sets.newHashSet(demo.getId()));</span><br><span class="line">    ids.get(TracingContext.tracing().groupId()).add(demo.getId());</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"ok-service-c"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">confirmRpc</span><span class="params">(String value)</span> </span>&#123;</span><br><span class="line">    ids.get(TracingContext.tracing().groupId()).forEach(id -&gt; &#123;</span><br><span class="line">        log.info(<span class="string">"tcc-confirm-&#123;&#125;-&#123;&#125;"</span> + TracingContext.tracing().groupId(), id);</span><br><span class="line">        ids.get(TracingContext.tracing().groupId()).remove(id);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancelRpc</span><span class="params">(String value)</span> </span>&#123;</span><br><span class="line">    ids.get(TracingContext.tracing().groupId()).forEach(id -&gt; &#123;</span><br><span class="line">        log.info(<span class="string">"tcc-cancel-&#123;&#125;-&#123;&#125;"</span>, TracingContext.tracing().groupId(), id);</span><br><span class="line">        demoMapper.deleteByKId(id);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实现难度较大。需要按照网络状态、系统故障等不同的失败原因实现不同的回滚策略。为了满足一致性的要求，<code>confirm</code> 和 <code>cancel</code> 接口必须实现幂等。</p>
+</li>
+</ul>
+</li>
+<li><p>上述原因导致 <code>TCC</code> 方案大多被研发实力较强、有迫切需求的大公司所采用。微服务倡导服务的轻量化、易部署，而 <code>TCC</code> 方案中很多事务的处理逻辑需要应用自己编码实现，复杂且开发量大。</p>
+</li>
+</ul>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><ul>
+<li>在 <a href="http://www.songshuiyang.com/2018/03/01/backend/distributed/%E5%88%86%E5%B8%83%E5%BC%8F-TX-LCN%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%A1%86%E6%9E%B6/">分布式-TX-LCN分布式事务框架</a>这一章节有例子<code>TX-LCN</code>框架的<code>TCC</code>补偿性事务解决方案</li>
+</ul>
+<h3 id="3、可靠消息最终一致性方案"><a href="#3、可靠消息最终一致性方案" class="headerlink" title="3、可靠消息最终一致性方案"></a>3、可靠消息最终一致性方案</h3><h4 id="3-1、基于-RocketMQ-消息队列中间件"><a href="#3-1、基于-RocketMQ-消息队列中间件" class="headerlink" title="3.1、基于 RocketMQ 消息队列中间件"></a>3.1、基于 RocketMQ 消息队列中间件</h4><ul>
+<li><p>消息一致性方案是通过消息中间件保证上、下游应用数据操作的一致性。基本思路是将本地操作和发送消息放在一个事务中，保证本地操作和消息发送要么两者都成功或者都失败。下游应用向消息系统订阅该消息，收到消息后执行相应操作。</p>
+</li>
+<li><p>因此基于消息队列实现的事务是我们除了单机事务外最优先考虑使用的形态。</p>
+</li>
+<li><p>参考 <a href="http://www.songshuiyang.com/2018/03/01/backend/distributed/分布式-基于RocketMQ处理分布式事务/">分布式-基于RocketMQ处理分布式事务</a>这一章节</p>
+</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h4 id="分布式事务产品"><a href="#分布式事务产品" class="headerlink" title="分布式事务产品"></a>分布式事务产品</h4><ul>
+<li>目前国内主要的开源分布式事务框架包括：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">框架名称</th>
+<th style="text-align:left">GitHub 地址</th>
+<th style="text-align:left">star 数量(截止到20191025)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">阿里seata</td>
+<td style="text-align:left"><a href="https://github.com/seata/seata" target="_blank" rel="noopener">https://github.com/seata/seata</a></td>
+<td style="text-align:left">12243</td>
+</tr>
+<tr>
+<td style="text-align:left">tcc-transaction</td>
+<td style="text-align:left"><a href="https://github.com/changmingxie/tcc-transaction" target="_blank" rel="noopener">https://github.com/changmingxie/tcc-transaction</a></td>
+<td style="text-align:left">4194</td>
+</tr>
+<tr>
+<td style="text-align:left">tx-lcn</td>
+<td style="text-align:left"><a href="https://github.com/codingapi/tx-lcn/" target="_blank" rel="noopener">https://github.com/codingapi/tx-lcn/</a></td>
+<td style="text-align:left">2986</td>
+</tr>
+<tr>
+<td style="text-align:left">Hmily</td>
+<td style="text-align:left"><a href="https://github.com/yu199195/hmily" target="_blank" rel="noopener">https://github.com/yu199195/hmily</a></td>
+<td style="text-align:left">2560</td>
+</tr>
+<tr>
+<td style="text-align:left">ByteTCC</td>
+<td style="text-align:left"><a href="https://github.com/liuyangming/ByteTCC" target="_blank" rel="noopener">https://github.com/liuyangming/ByteTCC</a></td>
+<td style="text-align:left">2112</td>
+</tr>
+<tr>
+<td style="text-align:left">EasyTransaction</td>
+<td style="text-align:left"><a href="https://github.com/QNJR-GROUP/EasyTransaction" target="_blank" rel="noopener">https://github.com/QNJR-GROUP/EasyTransaction</a></td>
+<td style="text-align:left">1888</td>
+</tr>
+<tr>
+<td style="text-align:left">myth</td>
+<td style="text-align:left"><a href="https://github.com/yu199195/myth" target="_blank" rel="noopener">https://github.com/yu199195/myth</a></td>
+<td style="text-align:left">1381</td>
+</tr>
+</tbody>
+</table>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>不论任何一种分布式事务解决方案都会增加你系统的复杂度，这样的成本实在是太高了，千万不要因为追求某些设计，而引入不必要的成本和复杂度，在条件允许的情况下，我们应该尽可能地使用单机事务，因为单机事务里，无需额外协调其他数据源，减少了网络交互时间消耗以及协调时所需的存储 IO 消耗，在修改等量业务数据的情况下，单机事务将会有更高的性能。</p>
+</li>
+<li><p>能不用分布式事务就不用，如果非得使用的话，结合自己的业务分析，看看自己的业务比较适合哪一种，是在乎强一致，还是最终一致即可。上面对解决方案只是一些简单介绍，如果真正的想要落地，其实每种方案需要思考的地方都非常多，复杂度都比较大。</p>
+</li>
+<li><p>通过分析我们可以发现，并不存在一种事务形态能解决所有的问题，我们需要根据特定的业务场景选择合适的事务形态。甚至于有时需要混合多种事务形态才能更好的完成目标。</p>
+</li>
+<li><p>具体到分布式事务的实现上，业界主要采用了 <code>XA</code> 协议的强一致规范以及柔性事务的最终一致规范，所以，市面上的分布式事务的解决方案，除了 <code>XA</code> 协议是强一致的，其他都是最终一致的。</p>
+</li>
+<li><p>选择对应的事务形态的优先次序：<code>单机事务 &gt; 基于消息的事务 &gt; TCC 事务</code></p>
+</li>
+</ul>
+<h3 id="4、本地消息表"><a href="#4、本地消息表" class="headerlink" title="4、本地消息表"></a>4、本地消息表</h3><ul>
+<li><p>本地消息表，其实是 国外的 <code>Ebay</code> 搞出来的这么一套思想，经调研并没有大规模使用</p>
+</li>
+<li><p>具体工作流程</p>
+<ul>
+<li>1、A 系统在自己本地一个事务里操作同时，插入一条数据到消息表；</li>
+<li>2、接着 A 系统将这个消息发送到 MQ 中去；</li>
+<li>3、B 系统接收到消息之后，在一个事务里，往自己本地消息表里插入一条数据，同时执行其他的业务操作，如果这个消息已经被处理过了，那么此时这个事务会回滚，这样保证不会重复处理消息；</li>
+<li>4、B 系统执行成功之后，就会更新自己本地消息表的状态以及 A 系统消息表的状态；</li>
+<li>5、如果 B 系统处理失败了，那么就不会更新消息表状态，那么此时 A 系统会定时扫描自己的消息表，如果有未处理的消息，会再次发送到 MQ 中去，让 B 再次处理；</li>
+<li>6、这个方案保证了最终一致性，哪怕 B 事务失败了，但是 A 会不断重发消息，直到 B 那边成功为止。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/server/distributed/mq/localMessage.png" alt=""></p>
+<ul>
+<li><p>这个方案说实话最大的问题就在于严重依赖于数据库的消息表来管理事务啥的，会导致如果是高并发场景咋办呢？咋扩展呢？所以一般确实很少用。</p>
+</li>
+<li><p>本地消息队列是 BASE 理论，是最终一致模型，适用于对一致性要求不高的。实现这个模型时需要注意重试的幂等。</p>
+</li>
+</ul>
+<h3 id="5、Saga-方案"><a href="#5、Saga-方案" class="headerlink" title="5、Saga 方案"></a>5、Saga 方案</h3><ul>
+<li><code>Saga</code> 是 30 年前一篇数据库伦理提到的一个概念。其核心思想是将长事务拆分为多个本地短事务，由 <code>Saga</code> 事务协调器协调，如果正常结束那就正常完成，如果某个步骤失败，则根据相反顺序一次调用补偿操作。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://juejin.im/post/5b5a0bf9f265da0f6523913b" target="_blank" rel="noopener">https://juejin.im/post/5b5a0bf9f265da0f6523913b</a></li>
+<li><a href="http://www.justdojava.com/2019/04/17/java-distributed-transaction/" target="_blank" rel="noopener">http://www.justdojava.com/2019/04/17/java-distributed-transaction/</a></li>
+<li><a href="https://www.infoq.cn/article/xa-transactions-handle" target="_blank" rel="noopener">https://www.infoq.cn/article/xa-transactions-handle</a></li>
+<li><a href="https://cj466.top/plan/94.html" target="_blank" rel="noopener">https://cj466.top/plan/94.html</a></li>
+<li><a href="https://blog.csdn.net/sinat_36596988/article/details/82149241" target="_blank" rel="noopener">https://blog.csdn.net/sinat_36596988/article/details/82149241</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzU3NDY4NzQwNQ==&amp;mid=2247484507&amp;idx=1&amp;sn=7d59417ee1a1ba47a54186edff8460b9&amp;chksm=fd2fd599ca585c8f498a996d26bde123e50adba2445629773be975a3c658e7139d2f8c21bd18&amp;scene=21" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzU3NDY4NzQwNQ==&amp;mid=2247484507&amp;idx=1&amp;sn=7d59417ee1a1ba47a54186edff8460b9&amp;chksm=fd2fd599ca585c8f498a996d26bde123e50adba2445629773be975a3c658e7139d2f8c21bd18&amp;scene=21</a></li>
+<li><a href="https://www.infoq.cn/article/2018/08/rocketmq-4.3-release" target="_blank" rel="noopener">https://www.infoq.cn/article/2018/08/rocketmq-4.3-release</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式/">分布式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/&title=《分布式-分布式事务解决方案》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/&title=《分布式-分布式事务解决方案》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式-分布式事务解决方案》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">分布式-Atomikos处理多数据源事务</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/01/backend/distributed/分布式-无状态服务/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">分布式-无状态服务</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/&title=《分布式-分布式事务解决方案》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/&title=《分布式-分布式事务解决方案》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式-分布式事务解决方案》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD4klEQVR42u3aMXIcMQwEQP3/03Zql73UDMCtU9AbqUoSj+wNcADn6yt+fv3xPP32/Pf//vz0JJ97Xu1pV9ceHDhw4MARH/W89PkDEoLZUdtXct7/+QXgwIEDB45bHMkHtAfLi3FCkxw1eTHfnB0HDhw4cHyIIynMycHyo87gcODAgQPHz+c4F8u6ZQomdZu94cCBAweOT3HcKpz5Ovkgcob++qwUBw4cOHBMKl0xKPzJP7+S78CBAwcOHEEDtimW7Sby9ZMARFv4//PpOHDgwIFjzZEfYBZZ2NT/9pWciYtz4cCBAweOBUfyz/ux3ex6aTPymxVmHDhw4MCx52gL7QYxafnyNdvXk6yDAwcOHDj2HHmY4FYcIW8RNwGLvNV8bOFw4MCBA8eIY3P9k2+iPUZ+lVW3Z0kxxoEDBw4cVzlmBfWbiMAIazYcnJ0LBw4cOHDc4phd4eQNVXuZdCabERfhDBw4cODAsebYB9RmI79bR2rbwjauhwMHDhw4Zhy3esG2ZG4iEZtyXnz7wIEDBw4cC4763/IsXjkczKMJ+4YNBw4cOHDc5cg33bZSs3BDfpmUN6LFK8GBAwcOHG/dy6y21YbhNhdRm/205RwHDhw4cCQc+5YpD8m11z/7MWK7fxw4cODAseeYtVK3AmptLG9zPbYKNODAgQMHjjJjvBn85Q1Y0trlrdc+BvH4vQMHDhw4cCw4ZoWwDQrkBTW/NLoV3YtSHjhw4MCBI+a4FU1rNzcbDrYXTvX6OHDgwIFjzdG2Z3cjBbOGbVNWi+YNBw4cOHBc5dgcPr862vxNO3AsRpM4cODAgWPN0bZnd8MQSSnNww2zNhIHDhw4cNzi2Aza9kG6HCJv81ZfFHDgwIEDxyWOtsjlzVI+apyNFBPE4rw4cODAgWPNMVt0VnpnJXAP2gbscODAgQPHGxybw+yHhnmzt78qw4EDBw4cb3BsmrSkHObrJCUwj0QMQ3U4cODAgWPBkW9634ZtgmvtZdjwqwMOHDhw4HiBIx8Ozpq3WcnMd9s+f+0EBw4cOHBc4sivbfKyV0QHRivvAw2PhRYHDhw4cCw48mPfasnaA7es7av6ppHDgQMHDhwlx6rhKQtzG5UY5jLy27bcCQcOHDhwxBz5M7t82hfydiDYFvshFg4cOHDgOHK0xTVpolaRtZL41t/gwIEDB467HMmQrv3ITeu1v/oaNng4cODAgeOjHG0YIr9M2sfghufCgQMHDhwf4kgGdnkpzYvoLE5RfCHAgQMHDhyXON644EngZuvvL7EuzEpx4MCBA8c60NAGDvKGLS/GbePXrokDBw4cOBYcvwFSJHIUfgKmrgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mysql-用户及权限管理 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,Mysql">
+    <meta name="description" content="权限控制授权语法：1234567891011121314151617181920GRANT privileges (columns) ON what TO user IDENTIFIED BY &quot;password&quot; WITH GRANT OPTION权限列表:ALTER: 修改表和索引。CREATE: 创建数据库和表。DELETE: 删除表中已有的记录。DROP: 抛弃(删除)数据库和表。INDE">
+<meta name="keywords" content="数据库,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-用户及权限管理">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="权限控制授权语法：1234567891011121314151617181920GRANT privileges (columns) ON what TO user IDENTIFIED BY &quot;password&quot; WITH GRANT OPTION权限列表:ALTER: 修改表和索引。CREATE: 创建数据库和表。DELETE: 删除表中已有的记录。DROP: 抛弃(删除)数据库和表。INDE">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.777Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-用户及权限管理">
+<meta name="twitter:description" content="权限控制授权语法：1234567891011121314151617181920GRANT privileges (columns) ON what TO user IDENTIFIED BY &quot;password&quot; WITH GRANT OPTION权限列表:ALTER: 修改表和索引。CREATE: 创建数据库和表。DELETE: 删除表中已有的记录。DROP: 抛弃(删除)数据库和表。INDE">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mysql-用户及权限管理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mysql-用户及权限管理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-02T16:02:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#权限控制"><span class="post-toc-number">1.</span> <span class="post-toc-text">权限控制</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#用户"><span class="post-toc-number">2.</span> <span class="post-toc-text">用户</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/mysql/Mysql-用户及权限管理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mysql-用户及权限管理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-03 00:02:00" datetime="2018-03-02T16:02:00.000Z" itemprop="datePublished">2018-03-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="权限控制"><a href="#权限控制" class="headerlink" title="权限控制"></a>权限控制</h3><p>授权语法：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">privileges</span> (<span class="keyword">columns</span>) <span class="keyword">ON</span> what <span class="keyword">TO</span> <span class="keyword">user</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">"password"</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span></span><br><span class="line"></span><br><span class="line">权限列表:</span><br><span class="line"><span class="keyword">ALTER</span>: 修改表和索引。</span><br><span class="line"><span class="keyword">CREATE</span>: 创建数据库和表。</span><br><span class="line"><span class="keyword">DELETE</span>: 删除表中已有的记录。</span><br><span class="line"><span class="keyword">DROP</span>: 抛弃(删除)数据库和表。</span><br><span class="line"><span class="keyword">INDEX</span>: 创建或抛弃索引。</span><br><span class="line"><span class="keyword">INSERT</span>: 向表中插入新行。</span><br><span class="line"><span class="keyword">REFERENCE</span>: 未用。</span><br><span class="line"><span class="keyword">SELECT</span>: 检索表中的记录。</span><br><span class="line"><span class="keyword">UPDATE</span>: 修改现存表记录。</span><br><span class="line"><span class="keyword">FILE</span>: 读或写服务器上的文件。</span><br><span class="line">PROCESS: 查看服务器中执行的线程信息或杀死线程。</span><br><span class="line">RELOAD: 重载授权表或清空日志、主机缓存或表缓存。</span><br><span class="line"><span class="keyword">SHUTDOWN</span>: 关闭服务器。</span><br><span class="line">ALL: 所有权限，ALL <span class="keyword">PRIVILEGES</span>同义词。</span><br><span class="line"><span class="keyword">USAGE</span>: 特殊的 <span class="string">"无权限"</span> 权限。</span><br><span class="line">用 户账户包括 <span class="string">"username"</span> 和 <span class="string">"host"</span> 两部分，后者表示该用户被允许从何地接入。tom@<span class="string">'%'</span> 表示任何地址，默认可以省略。还可以是 <span class="string">"tom@192.168.1.%"</span>、<span class="string">"tom@%.abc.com"</span> 等。数据库格式为 db@<span class="keyword">table</span>，可以是 <span class="string">"test.*"</span> 或 <span class="string">"*.*"</span>，前者表示 <span class="keyword">test</span> 数据库的所有表，后者表示所有数据库的所有表。</span><br><span class="line">子句 <span class="string">"WITH GRANT OPTION"</span> 表示该用户可以为其他用户分配权限。</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>实例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> mysql</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> 新建用户, 并赋予所有数据库权限</span><br><span class="line">  <span class="keyword">GRANT</span> ALL <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'username'</span>@<span class="string">'host'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'password'</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br><span class="line"></span><br><span class="line">  说明:</span><br><span class="line">    1. username - 你将创建的用户名, host - 指定该用户在哪个主机上可以登陆,如果是本地用户可用localhost, 如果想让该用户可以从任意远程主机登陆,可以使用通配符%. password - 该用户的登陆密码,密码可以为空,如果为空则该用户可以不需要密码登陆服务器.</span><br><span class="line">    2. 指定helloworld数据库: <span class="keyword">GRANT</span> ALL <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> helloword.* <span class="keyword">TO</span> <span class="string">'username'</span>@<span class="string">'host'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'password'</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br><span class="line"></span><br><span class="line">2. 指定该用户只能执行 <span class="keyword">select</span> 和 <span class="keyword">update</span> 命令</span><br><span class="line">  <span class="keyword">GRANT</span> <span class="keyword">SELECT</span>, <span class="keyword">UPDATE</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'username'</span>@<span class="string">'%'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'password'</span>;</span><br><span class="line"></span><br><span class="line">3. 另外每当调整权限后，通常需要执行以下语句刷新权限：</span><br><span class="line">  <span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br><span class="line"></span><br><span class="line">4. <span class="keyword">grant</span> 普通数据用户，查询、插入、更新、删除 数据库中所有表数据的权利。</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> testdb.* <span class="keyword">to</span> common_user@’%’</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">insert</span> <span class="keyword">on</span> testdb.* <span class="keyword">to</span> common_user@’%’</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">update</span> <span class="keyword">on</span> testdb.* <span class="keyword">to</span> common_user@’%’</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">delete</span> <span class="keyword">on</span> testdb.* <span class="keyword">to</span> common_user@’%’</span><br><span class="line">  或者，用一条 MySQL 命令来替代：</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">select</span>, <span class="keyword">insert</span>, <span class="keyword">update</span>, <span class="keyword">delete</span> <span class="keyword">on</span> testdb.* <span class="keyword">to</span> common_user@’%’</span><br></pre></td></tr></table></figure>
+<h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">1. 删除刚才创建的用户：</span><br><span class="line">  <span class="keyword">DROP</span> <span class="keyword">USER</span> username@localhost;</span><br><span class="line"></span><br><span class="line">2. 查看用户创建是否成功</span><br><span class="line">  <span class="keyword">select</span> <span class="keyword">user</span>,host <span class="keyword">from</span> <span class="keyword">user</span> ;</span><br><span class="line">  </span><br><span class="line">  +<span class="comment">-----------+-----------+</span></span><br><span class="line">  | user      | host      |</span><br><span class="line">  +<span class="comment">-----------+-----------+</span></span><br><span class="line">  | root      | %         |</span><br><span class="line">  | <span class="keyword">select</span>    | %         |</span><br><span class="line">  | <span class="keyword">server</span>    | %         |</span><br><span class="line">  | shuiyang  | %         |</span><br><span class="line">  | <span class="keyword">user</span>      | %         |</span><br><span class="line">  | mysql.sys | localhost |</span><br><span class="line">  +<span class="comment">-----------+-----------+</span></span><br><span class="line">  </span><br><span class="line"><span class="number">3.</span> 查看<span class="keyword">select</span>用户的授权</span><br><span class="line"> <span class="keyword">show</span> <span class="keyword">grants</span> <span class="keyword">for</span> <span class="keyword">select</span>;</span><br><span class="line"> </span><br><span class="line"> MySQL [mysql]&gt;  show grants for `select`;</span><br><span class="line"> +<span class="comment">---------------------------------------------+</span></span><br><span class="line"> | Grants for <span class="keyword">select</span>@%                         |</span><br><span class="line"> +<span class="comment">---------------------------------------------+</span></span><br><span class="line"> | <span class="keyword">GRANT</span> <span class="keyword">SELECT</span>, <span class="keyword">UPDATE</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'select'</span>@<span class="string">'%'</span> |</span><br><span class="line"> +<span class="comment">---------------------------------------------+</span></span><br><span class="line"> <span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"> </span><br><span class="line"><span class="number">4.</span> 设置与更改用户密码</span><br><span class="line"></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">PASSWORD</span> <span class="keyword">FOR</span> <span class="string">'username'</span>@<span class="string">'host'</span> = <span class="keyword">PASSWORD</span>(<span class="string">'newpassword'</span>)</span><br><span class="line"></span><br><span class="line">如果是当前登陆用户用</span><br><span class="line"></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">PASSWORD</span> = <span class="keyword">PASSWORD</span>(<span class="string">"newpassword"</span>);</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/&title=《Mysql-用户及权限管理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/&title=《Mysql-用户及权限管理》 — 宋水阳个人博客&source=权限控制授权语法：1234567891011121314151617181920GRANT privileges (columns) ON what TO..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-用户及权限管理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-数据类型/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql-数据类型</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/03/backend/distributed/dobbo/分布式-Dubbo-概念介绍/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">分布式-Dubbo-概念介绍</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/&title=《Mysql-用户及权限管理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/&title=《Mysql-用户及权限管理》 — 宋水阳个人博客&source=权限控制授权语法：1234567891011121314151617181920GRANT privileges (columns) ON what TO..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-用户及权限管理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-用户及权限管理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADOElEQVR42u3awW7rMAwEwP7/T/ddeijQF3eXTIBYHZ8KJ5Y0MlBGJD8+4uszuL5/8+ezyZjJXD/HfDT+Ey5sbGzsm7Dzaa7vXH/z+jv5CPmnjyzY2NjYp7IfTd8GoXbLkq181jqxsbGxsZOnkkB1fScKP3GwxMbGxsbODwPXC90cWjYjYGNjY/8ddpuOn7Hb48db5NKwsbGx356dV0Xf/++X1LexsbGx35j9WV7XoSgPMPv1zNb/9Sw2Njb2Qex9oj8vGGyOB/lRpFg/NjY29kHsTTDIG3TygsSszNBuFjY2NvYZ7P0EbWp+A54Vd6M3jI2NjX1b9qyMmh8/kuk3BeZ8U345gWFjY2PfnJ3z2ik3qf/rMZO5VhVsbGxs7Fuxk+NE+6O/DUibxNPT3jM2Njb2bdmztH4ycf5325TTIqO8GjY2NvYN2Xk6vr3fHl3aYm2+6Q+zaNjY2NhHsPMf8Zuy63VKaFbWbcsYD+9jY2NjH8duC6tts84sXLVljCLNhI2NjX1zdgvb/JJ/Qi16VB74zxqwsbGxD2LnA23KvW2xeZNOKp7CxsbGPoi9SSGtasujJFR7HCpeADY2NvYN2bNGmfYo0oLzN5aMUJxmsLGxsW/Ink15ncSfJX02pYh8hb+UCrCxsbFvzk4SQ7NmyjYllAM2wRUbGxv7DPbskDBLMOUNPclhJgmiD43Y2NjYB7FniaFnHQAS/L7pBxsbG/svsPMp9wvap/5fWCHBxsbGPojdhp9VCHlZIIyOTNjY2Ng3ZyeBpN2aTYiaXfnIX/exsbGxD2InCfc8OM3S/flWJmsbNutgY2Nj35zdpv43BYZ8zHyWWZMoNjY29nnsvC1y00aTj5AnsNpmTWxsbOxT2e0WbMrDbbo//7QIgdjY2NhHsD/La9asswljs7RUpMfGxsY+gt3+69+EqzZJlD+Vv4Z6U7CxsbFvwm6DVhJO8i3LG4DaV/LLCNjY2NjHsfftOHlbzytKC/n6sbGxsbFnaaN8ltlhpl4DNjY29h9mt8097YFk076TrwcbGxv7PHa76NkSZ0eIWRiLOpWwsbGxj2DPEkNJCj5vA9qUnGeHHGxsbOwj2P8AfG58uNl5mhUAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

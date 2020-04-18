@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>分库分表-分库分表中间件 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,分库分表">
+    <meta name="description" content="背景 在将数据库进行分库分表之后，我们一般会引入分库分表的中间件，目标就是操作多库多表能像操作单库单表那样方便  分库分表中间件 🦅 目前，市面上提供的分库分表的中间件，主要有两种实现方式： Client 模式 Proxy 模式    1）Cobar 阿里 b2b团队开发和开源的，属于 Proxy 层方案。  早些年还可以用，但是最近几年都没更新了，基本没啥人用，差不多算是被抛弃的状态吧。而且不">
+<meta name="keywords" content="数据库,分库分表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分库分表-分库分表中间件">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="背景 在将数据库进行分库分表之后，我们一般会引入分库分表的中间件，目标就是操作多库多表能像操作单库单表那样方便  分库分表中间件 🦅 目前，市面上提供的分库分表的中间件，主要有两种实现方式： Client 模式 Proxy 模式    1）Cobar 阿里 b2b团队开发和开源的，属于 Proxy 层方案。  早些年还可以用，但是最近几年都没更新了，基本没啥人用，差不多算是被抛弃的状态吧。而且不">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.829Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分库分表-分库分表中间件">
+<meta name="twitter:description" content="背景 在将数据库进行分库分表之后，我们一般会引入分库分表的中间件，目标就是操作多库多表能像操作单库单表那样方便  分库分表中间件 🦅 目前，市面上提供的分库分表的中间件，主要有两种实现方式： Client 模式 Proxy 模式    1）Cobar 阿里 b2b团队开发和开源的，属于 Proxy 层方案。  早些年还可以用，但是最近几年都没更新了，基本没啥人用，差不多算是被抛弃的状态吧。而且不">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">分库分表-分库分表中间件</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">分库分表-分库分表中间件</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-04T16:00:01.000Z" itemprop="datePublished" class="page-time">
+  2018-03-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">背景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分库分表中间件"><span class="post-toc-number">2.</span> <span class="post-toc-text">分库分表中间件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1）Cobar"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1）Cobar</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2）MyCAT"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2）MyCAT</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3）Atlas"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3）Atlas</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4）TDDL"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">4）TDDL</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5）Sharding-Sphere"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">5）Sharding Sphere</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#如何选择？"><span class="post-toc-number">3.</span> <span class="post-toc-text">如何选择？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/sharding/分库分表-分库分表中间件" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">分库分表-分库分表中间件</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-05 00:00:01" datetime="2018-03-04T16:00:01.000Z" itemprop="datePublished">2018-03-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>在将数据库进行分库分表之后，我们一般会引入分库分表的中间件，目标就是操作多库多表能像操作单库单表那样方便</li>
+</ul>
+<h2 id="分库分表中间件"><a href="#分库分表中间件" class="headerlink" title="分库分表中间件"></a>分库分表中间件</h2><ul>
+<li>🦅 目前，市面上提供的分库分表的中间件，主要有两种实现方式：<ul>
+<li><code>Client</code> 模式</li>
+<li><code>Proxy</code> 模式</li>
+</ul>
+</li>
+</ul>
+<h3 id="1）Cobar"><a href="#1）Cobar" class="headerlink" title="1）Cobar"></a>1）Cobar</h3><ul>
+<li><p>阿里 <code>b2b</code>团队开发和开源的，属于 <code>Proxy</code> 层方案。</p>
+</li>
+<li><p>早些年还可以用，但是最近几年都没更新了，基本没啥人用，差不多算是被抛弃的状态吧。而且不支持读写分离、存储过程、跨库 <code>join</code> 和分页等操作。</p>
+</li>
+</ul>
+<h3 id="2）MyCAT"><a href="#2）MyCAT" class="headerlink" title="2）MyCAT"></a>2）MyCAT</h3><ul>
+<li><p>基于 <code>Cobar</code> 改造的，属于 <code>Proxy</code>层方案，支持的功能非常完善，而且目前应该是非常火的而且不断流行的数据库中间件</p>
+</li>
+<li><p>社区很活跃，也有一些公司开始在用了。但是确实相比于 <code>Sharding Sphere</code> 来说，年轻一些，经历的锤炼少一些。</p>
+</li>
+</ul>
+<h3 id="3）Atlas"><a href="#3）Atlas" class="headerlink" title="3）Atlas"></a>3）Atlas</h3><ul>
+<li><code>360</code> 开源的，属于 <code>Proxy</code> 层方案，以前是有一些公司在用的，但是确实有一个很大的问题就是社区最新的维护都在 <code>5</code> 年前了。所以，现在用的公司基本也很少了。</li>
+</ul>
+<h3 id="4）TDDL"><a href="#4）TDDL" class="headerlink" title="4）TDDL"></a>4）TDDL</h3><ul>
+<li>淘宝团队开发的，属于 <code>client</code> 层方案。支持基本的<code>crud</code> 语法和读写分离，但不支持 <code>join</code>、多表查询等语法。目前使用的也不多，因为还依赖淘宝的 <code>diamond</code>配置管理系统。</li>
+</ul>
+<h3 id="5）Sharding-Sphere"><a href="#5）Sharding-Sphere" class="headerlink" title="5）Sharding Sphere"></a>5）Sharding Sphere</h3><ul>
+<li><p><code>Sharding Sphere</code>可能是目前最好的开源的分库分表解决方案，目前已经进入 <code>Apache</code> 孵化。</p>
+</li>
+<li><p><code>Sharding Sphere</code> 提供三种模式：</p>
+<ul>
+<li><code>Sharding-JDBC</code></li>
+<li><code>Sharding-Proxy</code></li>
+<li><code>Sharding-Sidecar</code> 计划开发中。 </li>
+</ul>
+</li>
+<li><p>其中，<code>Sharding-JDBC</code> 属于 <code>client</code> 层方案，被大量互联网公司所采用。例如，当当、京东金融、中国移动等等。</p>
+</li>
+</ul>
+<h2 id="如何选择？"><a href="#如何选择？" class="headerlink" title="如何选择？"></a>如何选择？</h2><ul>
+<li><p>综上，现在其实建议考量的，就是 <code>Sharding Sphere</code> ，这个可以满足我们的诉求。</p>
+</li>
+<li><p><code>Sharding Sphere</code> 的 <code>Sharding-JDBC</code> 方案，这种 <code>Client</code> 层方案的优点在于<code>不用部署，运维成本低，不需要代理层的二次转发请求，性能很高</code>，但是如果遇到升级啥的需要各个系统都重新升级版本再发布，各个系统都需要耦合 <code>sharding-jdbc</code> 的依赖。</p>
+</li>
+<li><p><code>Sharding Sphere</code> 的 <code>Sharding-Proxy</code> 方案，这种 <code>Proxy</code> 层方案，可以解决我们平时查询数据库的需求。我们只需要连接一个 <code>Sharding-Proxy</code> ，就可以查询分库分表中的数据。另外，如果我们有跨语言的需求，例如 <code>PHP、GO</code> 等，也可以使用它。</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+<li><a href="https://shardingsphere.apache.org/document/current/cn/features/sharding/" target="_blank" rel="noopener">https://shardingsphere.apache.org/document/current/cn/features/sharding/</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分库分表/">分库分表</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/&title=《分库分表-分库分表中间件》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/&title=《分库分表-分库分表中间件》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分库分表-分库分表中间件》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/05/backend/database/sharding/分库分表-分库分表后如何部署上线/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">分库分表-分库分表后如何部署上线</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/05/backend/database/sharding/分库分表-基础理论/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">分库分表-基础理论</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/&title=《分库分表-分库分表中间件》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/&title=《分库分表-分库分表中间件》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分库分表-分库分表中间件》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/05/backend/database/sharding/分库分表-分库分表中间件/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADO0lEQVR42u3a0W7cQAgF0Pz/T29fKzW2L+BUNjnzVFne2TlEKjvA11e8Pn+tf58fvZl8avLO0RluW9jY2NgvYX9O19E7yZ7ngDxkR+dJ9j88MzY2NvY6dn7088RWTWlJQBNYbsHGxsbGTniT60qUfuKgY2NjY2MnJZ7q5aGa/CY7YGNjY/8e9uQnfn6g8+d5ieq/1tKwsbGxH8/Ou6LP//eP9LexsbGxH8z+FNf8GpAkqmq7t6zAxsbGXsTOE0DvctIr+k+uIvn5sbGxsXewqwX66ihPvmceml6wmnNG2NjY2C9h52X66uWhGqbJmE7+HBsbG3sT+65qeX6sKjjZp9eixsbGxt7Bngy4VBPGXU2IPJRRUQkbGxt7Ebt3JZiP/iQByoeHolNhY2NjL2Xn14DeKE9SZrqrOVFo9GJjY2O/nJ2kll5QyteD+P0k+eWnwsbGxt7B7m3XaxJUk1BvnyiU2NjY2CvYCWbeak2qOsnzatHqotGLjY2NvYLdSxt3HX1SQqqOEEUhwMbGxn4h+/wnew6bDPr0VjXdftMVwcbGxl7Hriab6hF745WTQZ9DETY2NvZSdvVaUr2c9Hbu/TEuvh0bGxt7Nbt6OckPXS1O9VoL5wnv8AaGjY2NvYLd+3FfHcqcJL9PvC6Cjo2Njb2UnXeDJ2WdPPlVS06F0hU2Njb2Uvb8KHkp/66iUlIauxjZwcbGxn45u3rQvBFbLSHl5aecemHBxsbGXsHOrxOTpDIPYvLHKIz+YGNjY/8CdvJzv3qIaor6iec3fDE2Njb2w9jVcn9O6pWN8oZu9bsOLyTY2NjYi9g5NS8MVQtJSZGr1074Bo+NjY29mt1ru+ZDM5PklLcNLvbHxsbGXs3uDdPkn5q8WSgbnRebsLGxsVewP8WVN197yaw3DJQ3g8u5FBsbG/vx7Op//ZOWQNKQKBeGiiNE5aBgY2Njv4RdLf33Lhjzxm2ehqN9sLGxsdex80QyCUS1JHRXUQkbGxsbO3knLxsl4csbCfmlBRsbGxu7WkKaNBt6jYdCILCxsbHXsefN3SQc+WfnGefiAoONjY29iF0tyuSF/uRTX8VV3Wf0jdjY2NhPZ/8BAZWRzXzhA1MAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

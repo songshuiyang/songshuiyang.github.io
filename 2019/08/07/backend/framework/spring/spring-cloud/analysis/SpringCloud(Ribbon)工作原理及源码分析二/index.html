@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringCloud(Ribbon)工作原理及源码分析二 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Cloud">
+    <meta name="description" content="回顾 由前面章节我们知道Ribbon功能主要是将负载（工作任务）进行平衡、分摊到多个操作单元上进行运行，那么如果要实现负载均衡，具体是要做哪些事呢？  1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况 2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例 3、然后就是将执行请求，响应处理 4、如果调用失败是不是要重试   下面将从Ribbon的源码来按">
+<meta name="keywords" content="Spring,Spring Cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud(Ribbon)工作原理及源码分析二">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="回顾 由前面章节我们知道Ribbon功能主要是将负载（工作任务）进行平衡、分摊到多个操作单元上进行运行，那么如果要实现负载均衡，具体是要做哪些事呢？  1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况 2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例 3、然后就是将执行请求，响应处理 4、如果调用失败是不是要重试   下面将从Ribbon的源码来按">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/ribbon/IRule.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/ribbon/IClient.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/ribbon/ribbonHttpClient.png">
+<meta property="og:updated_time" content="2019-09-16T13:11:05.926Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloud(Ribbon)工作原理及源码分析二">
+<meta name="twitter:description" content="回顾 由前面章节我们知道Ribbon功能主要是将负载（工作任务）进行平衡、分摊到多个操作单元上进行运行，那么如果要实现负载均衡，具体是要做哪些事呢？  1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况 2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例 3、然后就是将执行请求，响应处理 4、如果调用失败是不是要重试   下面将从Ribbon的源码来按">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/ribbon/IRule.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringCloud(Ribbon)工作原理及源码分析二</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringCloud(Ribbon)工作原理及源码分析二</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-06T16:03:03.000Z" itemprop="datePublished" class="page-time">
+  2019-08-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#回顾"><span class="post-toc-number">1.</span> <span class="post-toc-text">回顾</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、1-定义服务实例Server"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1、1 定义服务实例Server</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1、2-定义服务器列表ServerList"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">1、2 定义服务器列表ServerList</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、1-负责选取Server的接口ILoadBalancer"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">2、1 负责选取Server的接口ILoadBalancer</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2、2-负债均衡策略IRule"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">2、2 负债均衡策略IRule</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、然后就是将执行请求，响应处理"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3、然后就是将执行请求，响应处理</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-1-执行请求客户端AbstractLoadBalancerAwareClient"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">3.1 执行请求客户端AbstractLoadBalancerAwareClient</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-2-执行命令-LoadBalancerCommand"><span class="post-toc-number">2.3.2.</span> <span class="post-toc-text">3.2 执行命令 LoadBalancerCommand</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、如果调用失败是不是要重试"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">4、如果调用失败是不是要重试</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringCloud(Ribbon)工作原理及源码分析二</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-07 00:03:03" datetime="2019-08-06T16:03:03.000Z" itemprop="datePublished">2019-08-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h3><ul>
+<li><p>由前面章节我们知道<code>Ribbon</code>功能主要是将负载（工作任务）进行平衡、分摊到多个操作单元上进行运行，那么如果要实现负载均衡，具体是要做哪些事呢？</p>
+<ul>
+<li>1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况</li>
+<li>2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例</li>
+<li>3、然后就是将执行请求，响应处理</li>
+<li>4、如果调用失败是不是要重试</li>
+</ul>
+</li>
+<li><p>下面将从<code>Ribbon</code>的源码来按照上面的步骤来分析其具体实现, 源码版本：</p>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- https:<span class="comment">//mvnrepository.com/artifact/com.netflix.ribbon/ribbon-core --&gt;</span></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.netflix.ribbon&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;ribbon-core&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.2.4&lt;/version&gt;</span><br><span class="line">    &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面将继续接上一章节的内容</li>
+</ul>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><h4 id="1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况"><a href="#1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况" class="headerlink" title="1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况"></a>1、第一步是要维护哪些服务实例可用，需要处理临时新增了服务或者某个服务不可用了情况</h4><h5 id="1、1-定义服务实例Server"><a href="#1、1-定义服务实例Server" class="headerlink" title="1、1 定义服务实例Server"></a>1、1 定义服务实例<code>Server</code></h5><h5 id="1、2-定义服务器列表ServerList"><a href="#1、2-定义服务器列表ServerList" class="headerlink" title="1、2 定义服务器列表ServerList"></a>1、2 定义服务器列表<code>ServerList</code></h5><h4 id="2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例"><a href="#2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例" class="headerlink" title="2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例"></a>2、有了服务实例之后就是根据请求以及某种负载均衡规则选择服务实例</h4><h5 id="2、1-负责选取Server的接口ILoadBalancer"><a href="#2、1-负责选取Server的接口ILoadBalancer" class="headerlink" title="2、1 负责选取Server的接口ILoadBalancer"></a>2、1 负责选取<code>Server</code>的接口<code>ILoadBalancer</code></h5><hr>
+<h5 id="2、2-负债均衡策略IRule"><a href="#2、2-负债均衡策略IRule" class="headerlink" title="2、2 负债均衡策略IRule"></a>2、2 负债均衡策略<code>IRule</code></h5><ul>
+<li><code>Ribbon</code>对于负债均衡策略的实现是通过<code>IRule</code>来定义的，比如前面我们接触了<code>RoundRobinRule</code>线性轮询策略，下面来介绍下<code>IRule</code>接口的各个实现</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Interface that defines a "Rule" for a LoadBalancer. A Rule can be thought of</span></span><br><span class="line"><span class="comment"> * as a Strategy for loadbalacing. Well known loadbalancing strategies include</span></span><br><span class="line"><span class="comment"> * Round Robin, Response Time based etc.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> stonse</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IRule</span></span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * choose one alive server from lb.allServers or</span></span><br><span class="line"><span class="comment">     * lb.upServers according to key</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * @return choosen Server object. NULL is returned if none</span></span><br><span class="line"><span class="comment">     *  server is available </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Server <span class="title">choose</span><span class="params">(Object key)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLoadBalancer</span><span class="params">(ILoadBalancer lb)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> ILoadBalancer <span class="title">getLoadBalancer</span><span class="params">()</span></span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/ribbon/IRule.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>子类实现</p>
+<ul>
+<li><p><code>AbstractLoadBalancerRule</code></p>
+<ul>
+<li>负债均衡策略的抽象类，主要是定义了负债均衡器<code>ILoadBalancer</code>对象，该对象上一章节已经介绍了<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Class that provides a default implementation for setting and getting load balancer</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> stonse</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractLoadBalancerRule</span> <span class="keyword">implements</span> <span class="title">IRule</span>, <span class="title">IClientConfigAware</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ILoadBalancer lb;</span><br><span class="line">        </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLoadBalancer</span><span class="params">(ILoadBalancer lb)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.lb = lb;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ILoadBalancer <span class="title">getLoadBalancer</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> lb;</span><br><span class="line">    &#125;      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>RandomRule</code></p>
+<ul>
+<li>随机选择策略，使用<code>rand.nextInt(serverCount);</code>作为实例列表的索引值<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@edu</span>.umd.cs.findbugs.annotations.SuppressWarnings(value = <span class="string">"RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Server <span class="title">choose</span><span class="params">(ILoadBalancer lb, Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lb == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Server server = <span class="keyword">null</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (server == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (Thread.interrupted()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;Server&gt; upList = lb.getReachableServers();</span><br><span class="line">        List&lt;Server&gt; allList = lb.getAllServers();</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">int</span> serverCount = allList.size();</span><br><span class="line">        <span class="keyword">if</span> (serverCount == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * No servers. End regardless of pass, because subsequent passes</span></span><br><span class="line"><span class="comment">             * only get more restrictive.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">int</span> index = rand.nextInt(serverCount);</span><br><span class="line">        server = upList.get(index);</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> (server == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * The only time this should happen is if the server list were</span></span><br><span class="line"><span class="comment">             * somehow trimmed. This is a transient condition. Retry after</span></span><br><span class="line"><span class="comment">             * yielding.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            Thread.yield();</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> (server.isAlive()) &#123;</span><br><span class="line">            <span class="keyword">return</span> (server);</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Shouldn't actually happen.. but must be transient or a bug.</span></span><br><span class="line">        server = <span class="keyword">null</span>;</span><br><span class="line">        Thread.yield();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> server;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Server <span class="title">choose</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> choose(getLoadBalancer(), key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>RoundRobinRule</code></p>
+<ul>
+<li>线性轮询策略，具体实现使用了<code>AtomicInteger nextServerCyclicCounter;</code>自增<code>+1</code>来取得下一个实例列表的索引值，并取模求余来归位<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Server <span class="title">choose</span><span class="params">(ILoadBalancer lb, Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lb == <span class="keyword">null</span>) &#123;</span><br><span class="line">        log.warn(<span class="string">"no load balancer"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Server server = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (server == <span class="keyword">null</span> &amp;&amp; count++ &lt; <span class="number">10</span>) &#123;</span><br><span class="line">        List&lt;Server&gt; reachableServers = lb.getReachableServers();</span><br><span class="line">        List&lt;Server&gt; allServers = lb.getAllServers();</span><br><span class="line">        <span class="keyword">int</span> upCount = reachableServers.size();</span><br><span class="line">        <span class="keyword">int</span> serverCount = allServers.size();</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> ((upCount == <span class="number">0</span>) || (serverCount == <span class="number">0</span>)) &#123;</span><br><span class="line">            log.warn(<span class="string">"No up servers available from load balancer: "</span> + lb);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">int</span> nextServerIndex = incrementAndGetModulo(serverCount);</span><br><span class="line">        server = allServers.get(nextServerIndex);</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> (server == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">/* Transient. */</span></span><br><span class="line">            Thread.yield();</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> (server.isAlive() &amp;&amp; (server.isReadyToServe())) &#123;</span><br><span class="line">            <span class="keyword">return</span> (server);</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Next.</span></span><br><span class="line">        server = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (count &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">        log.warn(<span class="string">"No available alive servers after 10 tries from load balancer: "</span></span><br><span class="line">                + lb);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> server;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Inspired by the implementation of &#123;<span class="doctag">@link</span> AtomicInteger#incrementAndGet()&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> modulo The modulo to bound the value of the counter.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> The next value.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">incrementAndGetModulo</span><span class="params">(<span class="keyword">int</span> modulo)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> current = nextServerCyclicCounter.get();</span><br><span class="line">        <span class="keyword">int</span> next = (current + <span class="number">1</span>) % modulo;</span><br><span class="line">        <span class="keyword">if</span> (nextServerCyclicCounter.compareAndSet(current, next))</span><br><span class="line">            <span class="keyword">return</span> next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>RetryRule</code></p>
+<ul>
+<li>重试策略<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Server <span class="title">choose</span><span class="params">(ILoadBalancer lb, Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> requestTime = System.currentTimeMillis();</span><br><span class="line">    <span class="keyword">long</span> deadline = requestTime + maxRetryMillis;</span><br><span class="line">    </span><br><span class="line">    Server answer = <span class="keyword">null</span>;</span><br><span class="line">    </span><br><span class="line">    answer = subRule.choose(key);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (((answer == <span class="keyword">null</span>) || (!answer.isAlive()))</span><br><span class="line">            &amp;&amp; (System.currentTimeMillis() &lt; deadline)) &#123;</span><br><span class="line">    </span><br><span class="line">        InterruptTask task = <span class="keyword">new</span> InterruptTask(deadline</span><br><span class="line">                - System.currentTimeMillis());</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">while</span> (!Thread.interrupted()) &#123;</span><br><span class="line">            answer = subRule.choose(key);</span><br><span class="line">    </span><br><span class="line">            <span class="keyword">if</span> (((answer == <span class="keyword">null</span>) || (!answer.isAlive()))</span><br><span class="line">                    &amp;&amp; (System.currentTimeMillis() &lt; deadline)) &#123;</span><br><span class="line">                <span class="comment">/* pause and retry hoping it's transient */</span></span><br><span class="line">                Thread.yield();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        task.cancel();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((answer == <span class="keyword">null</span>) || (!answer.isAlive())) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> answer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>WeightedResponseTimeRule</code></p>
+<ul>
+<li>对<code>RoundRobinRule</code>的扩展，根据权重来挑选实例</li>
+</ul>
+</li>
+<li><code>BestAvailableRule</code><ul>
+<li>找出最空闲的服务实例</li>
+</ul>
+</li>
+<li><code>ZoneAvoidanceRule</code><ul>
+<li>复合判断<code>server</code>所在区域的性能和<code>server</code>的可用性选择<code>server</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3、然后就是将执行请求，响应处理"><a href="#3、然后就是将执行请求，响应处理" class="headerlink" title="3、然后就是将执行请求，响应处理"></a>3、然后就是将执行请求，响应处理</h4><ul>
+<li>经过上面的逻辑处理，我们已经得到了对应的服务实例<code>Server</code>，所以我们现在就是要执行请求了，这个处理在<code>Ribbon</code>是通过<code>IClient</code>来定义的，可以看里面就一个<code>execute()</code>执行方法<ul>
+<li>接口上面两个泛型对象一个对应请求对象<code>ClientRequest</code>，另一个对应响应对象<code>IResponse</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * A client that can execute a single request. </span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> awang</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IClient</span>&lt;<span class="title">S</span> <span class="keyword">extends</span> <span class="title">ClientRequest</span>, <span class="title">T</span> <span class="keyword">extends</span> <span class="title">IResponse</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Execute the request and return the response. It is expected that there is no retry and all exceptions</span></span><br><span class="line"><span class="comment">     * are thrown directly.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">execute</span><span class="params">(S request, IClientConfig requestConfig)</span> <span class="keyword">throws</span> Exception</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>类继承关系图</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/ribbon/IClient.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h5 id="3-1-执行请求客户端AbstractLoadBalancerAwareClient"><a href="#3-1-执行请求客户端AbstractLoadBalancerAwareClient" class="headerlink" title="3.1 执行请求客户端AbstractLoadBalancerAwareClient"></a>3.1 执行请求客户端<code>AbstractLoadBalancerAwareClient</code></h5><ul>
+<li>这个类是<code>IClient</code>抽象实现类，主要是执行请求，还有重试及异常处理，代码使用了<code>RxJava</code>风格，所以看起来比较陌生，下面可以看到构造了一个<code>LoadBalancerCommand</code>并传入了一个<code>ServerOperation</code>对象<ul>
+<li>并<code>ServerOperation</code>实现了其<code>call</code>方法，这里是个接口，哇，第一次见，<code>call()</code>方法是具体执行请求的方法</li>
+<li><code>LoadBalancerCommand</code>的<code>submit()</code>方法是个入口统筹方法，里面不仅会调用<code>ServerOperation</code>的<code>call</code>方法，还做了重试及异常处理，这种设计方式可以学习学习</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">executeWithLoadBalancer</span><span class="params">(<span class="keyword">final</span> S request, <span class="keyword">final</span> IClientConfig requestConfig)</span> <span class="keyword">throws</span> ClientException </span>&#123;</span><br><span class="line">    <span class="comment">// 获取重试处理器，这个由其他实现类动态实现</span></span><br><span class="line">    RequestSpecificRetryHandler handler = getRequestSpecificRetryHandler(request, requestConfig);</span><br><span class="line">    <span class="comment">// 构造LoadBalancerCommand，RxJava风格</span></span><br><span class="line">    LoadBalancerCommand&lt;T&gt; command = LoadBalancerCommand.&lt;T&gt;builder()</span><br><span class="line">            .withLoadBalancerContext(<span class="keyword">this</span>)</span><br><span class="line">            .withRetryHandler(handler)</span><br><span class="line">            .withLoadBalancerURI(request.getUri())</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> command.submit(</span><br><span class="line">            <span class="keyword">new</span> ServerOperation&lt;T&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> Observable&lt;T&gt; <span class="title">call</span><span class="params">(Server server)</span> </span>&#123;</span><br><span class="line">                    <span class="comment">// 修改原始url为实际的url</span></span><br><span class="line">                    URI finalUri = reconstructURIWithServer(server, request.getUri());</span><br><span class="line">                    S requestForServer = (S) request.replaceUri(finalUri);</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="comment">// 执行请求</span></span><br><span class="line">                        <span class="keyword">return</span> Observable.just(AbstractLoadBalancerAwareClient.<span class="keyword">this</span>.execute(requestForServer, requestConfig));</span><br><span class="line">                    &#125; </span><br><span class="line">                    <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                        <span class="keyword">return</span> Observable.error(e);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .toBlocking()</span><br><span class="line">            .single();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        Throwable t = e.getCause();</span><br><span class="line">        <span class="keyword">if</span> (t <span class="keyword">instanceof</span> ClientException) &#123;</span><br><span class="line">            <span class="keyword">throw</span> (ClientException) t;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ClientException(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们看这行代码<code>Observable.just(AbstractLoadBalancerAwareClient.this.execute(requestForServer, requestConfig));</code>，进入<code>org.springframework.cloud.netflix.ribbon.apache.RibbonLoadBalancingHttpClient#execute()</code>方法，可以看到实际上是<code>CloseableHttpClient</code>来发送我们的请求</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> RibbonApacheHttpResponse <span class="title">execute</span><span class="params">(RibbonApacheHttpRequest request, IClientConfig configOverride)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Builder builder = RequestConfig.custom();</span><br><span class="line">    IClientConfig config = configOverride != <span class="keyword">null</span> ? configOverride : <span class="keyword">this</span>.config;</span><br><span class="line">    <span class="comment">// 连接超时时间</span></span><br><span class="line">    builder.setConnectTimeout(((Integer)config.get(CommonClientConfigKey.ConnectTimeout, <span class="keyword">this</span>.connectTimeout)).intValue());</span><br><span class="line">    <span class="comment">// 读取超时时间</span></span><br><span class="line">    builder.setSocketTimeout(((Integer)config.get(CommonClientConfigKey.ReadTimeout, <span class="keyword">this</span>.readTimeout)).intValue());</span><br><span class="line">    builder.setRedirectsEnabled(((Boolean)config.get(CommonClientConfigKey.FollowRedirects, <span class="keyword">this</span>.followRedirects)).booleanValue());</span><br><span class="line">    RequestConfig requestConfig = builder.build();</span><br><span class="line">    request = <span class="keyword">this</span>.getSecureRequest(request, configOverride);</span><br><span class="line">    HttpUriRequest httpUriRequest = request.toRequest(requestConfig);</span><br><span class="line">    HttpResponse httpResponse = ((CloseableHttpClient)<span class="keyword">this</span>.delegate).execute(httpUriRequest);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RibbonApacheHttpResponse(httpResponse, httpUriRequest.getURI());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调试代码可以看到实际已经拼装好了具体请求的参数，包括请求链接</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/ribbon/ribbonHttpClient.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h5 id="3-2-执行命令-LoadBalancerCommand"><a href="#3-2-执行命令-LoadBalancerCommand" class="headerlink" title="3.2 执行命令 LoadBalancerCommand"></a>3.2 执行命令 LoadBalancerCommand</h5><ul>
+<li>这个构造的<code>LoadBalancerCommand</code>是一个<code>RxJava</code>风格的，从下面可以看到具体执行流程就是通过选取<code>Server</code>的接口<code>ILoadBalancer</code>来获取<code>Server</code>，然后就是执行请求了，它包含了重试和异常处理机制、同时还记录了执行状态</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 返回一个只包含一个Server的Observable，但是每次从负载均衡器中获取一个</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Observable&lt;Server&gt; <span class="title">selectServer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Observable.create(<span class="keyword">new</span> OnSubscribe&lt;Server&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Subscriber&lt;? <span class="keyword">super</span> Server&gt; next)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Server server = loadBalancerContext.getServerFromLoadBalancer(loadBalancerURI, loadBalancerKey);   </span><br><span class="line">                next.onNext(server);</span><br><span class="line">                next.onCompleted();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                next.onError(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Observable&lt;T&gt; <span class="title">submit</span><span class="params">(<span class="keyword">final</span> ServerOperation&lt;T&gt; operation)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ExecutionInfoContext context = <span class="keyword">new</span> ExecutionInfoContext();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (listenerInvoker != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            listenerInvoker.onExecutionStart();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (AbortExecutionException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Observable.error(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取在每个服务实例重试的的次数</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> maxRetrysSame = retryHandler.getMaxRetriesOnSameServer();</span><br><span class="line">    <span class="comment">// 最多尝试几个服务实例</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> maxRetrysNext = retryHandler.getMaxRetriesOnNextServer();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对 于每个服务实例的调用逻辑</span></span><br><span class="line">    <span class="comment">// 默认field server是null，通过selectServer()方法获取一个Server</span></span><br><span class="line">    Observable&lt;T&gt; o = </span><br><span class="line">            (server == <span class="keyword">null</span> ? selectServer() : Observable.just(server))</span><br><span class="line">            .concatMap(<span class="keyword">new</span> Func1&lt;Server, Observable&lt;T&gt;&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="comment">// 对于每个Server，按顺序映射为对于每个Server包含重试逻辑的请求调用</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> Observable&lt;T&gt; <span class="title">call</span><span class="params">(Server server)</span> </span>&#123;</span><br><span class="line">                    <span class="comment">// 设置上下文</span></span><br><span class="line">                    context.setServer(server);</span><br><span class="line">                    <span class="keyword">final</span> ServerStats stats = loadBalancerContext.getServerStats(server);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 每个Server包含重试逻辑的请求调用</span></span><br><span class="line">                    Observable&lt;T&gt; o = Observable</span><br><span class="line">                            .just(server)</span><br><span class="line">                            .concatMap(<span class="keyword">new</span> Func1&lt;Server, Observable&lt;T&gt;&gt;() &#123;</span><br><span class="line">                                <span class="meta">@Override</span></span><br><span class="line">                                <span class="function"><span class="keyword">public</span> Observable&lt;T&gt; <span class="title">call</span><span class="params">(<span class="keyword">final</span> Server server)</span> </span>&#123;</span><br><span class="line">                                    context.incAttemptCount();</span><br><span class="line">                                    <span class="comment">// 增加Server正在处理的请求计数</span></span><br><span class="line">                                    loadBalancerContext.noteOpenConnection(stats);</span><br><span class="line"></span><br><span class="line">                                    <span class="comment">// 监听器</span></span><br><span class="line">                                    <span class="keyword">if</span> (listenerInvoker != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                        <span class="keyword">try</span> &#123;</span><br><span class="line">                                            listenerInvoker.onStartWithServer(context.toExecutionInfo());</span><br><span class="line">                                        &#125; <span class="keyword">catch</span> (AbortExecutionException e) &#123;</span><br><span class="line">                                            <span class="keyword">return</span> Observable.error(e);</span><br><span class="line">                                        &#125;</span><br><span class="line">                                    &#125;</span><br><span class="line"></span><br><span class="line">                                    <span class="comment">// 计时器</span></span><br><span class="line">                                    <span class="keyword">final</span> Stopwatch tracer = loadBalancerContext.getExecuteTracer().start();</span><br><span class="line">                                    <span class="comment">// operation.call(server)就是刚刚分析的AbstractLoadBalancerAwareClient传过来的ServerOperation，就是直接对这个Server调用请求</span></span><br><span class="line">                                    <span class="comment">// doOnEach的操作就是记录请求前后的一些数据用于负载均衡数据统计</span></span><br><span class="line">                                    <span class="keyword">return</span> operation.call(server).doOnEach(<span class="keyword">new</span> Observer&lt;T&gt;() &#123;</span><br><span class="line">                                        <span class="keyword">private</span> T entity;</span><br><span class="line">                                        <span class="meta">@Override</span></span><br><span class="line">                                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                                            <span class="comment">// 记录请求完成</span></span><br><span class="line">                                            recordStats(tracer, stats, entity, <span class="keyword">null</span>);</span><br><span class="line">                                        &#125;</span><br><span class="line"></span><br><span class="line">                                        <span class="meta">@Override</span></span><br><span class="line">                                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</span><br><span class="line">                                            <span class="comment">// 记录请求结束</span></span><br><span class="line">                                            recordStats(tracer, stats, <span class="keyword">null</span>, e);</span><br><span class="line">                                            logger.debug(<span class="string">"Got error &#123;&#125; when executed on server &#123;&#125;"</span>, e, server);</span><br><span class="line">                                            <span class="comment">// 发生了错误，通知listener</span></span><br><span class="line">                                            <span class="keyword">if</span> (listenerInvoker != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                                listenerInvoker.onExceptionWithServer(e, context.toExecutionInfo());</span><br><span class="line">                                            &#125;</span><br><span class="line">                                        &#125;</span><br><span class="line"></span><br><span class="line">                                        <span class="meta">@Override</span></span><br><span class="line">                                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(T entity)</span> </span>&#123;</span><br><span class="line">                                            <span class="comment">// 因为只有调用请求成功只有一个结果（只有一个请求）， 这里的entity就是结果，只要收到结果就代表请求成功</span></span><br><span class="line">                                            <span class="keyword">this</span>.entity = entity;</span><br><span class="line">                                            <span class="keyword">if</span> (listenerInvoker != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                                listenerInvoker.onExecutionSuccess(entity, context.toExecutionInfo());</span><br><span class="line">                                            &#125;</span><br><span class="line">                                        &#125;                            </span><br><span class="line"></span><br><span class="line">                                        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">recordStats</span><span class="params">(Stopwatch tracer, ServerStats stats, Object entity, Throwable exception)</span> </span>&#123;</span><br><span class="line">                                            tracer.stop();</span><br><span class="line">                                            loadBalancerContext.noteRequestCompletion(stats, entity, exception, tracer.getDuration(TimeUnit.MILLISECONDS), retryHandler);</span><br><span class="line">                                        &#125;</span><br><span class="line">                                    &#125;);</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (maxRetrysSame &gt; <span class="number">0</span>)</span><br><span class="line">                        <span class="comment">// 是否retry</span></span><br><span class="line">                        o = o.retry(retryPolicy(maxRetrysSame, <span class="keyword">true</span>));</span><br><span class="line">                    <span class="keyword">return</span> o;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (maxRetrysNext &gt; <span class="number">0</span> &amp;&amp; server == <span class="keyword">null</span>)</span><br><span class="line">        <span class="comment">// 是否retry，如果retry回调用selectServer()返回下一个Server</span></span><br><span class="line">        o = o.retry(retryPolicy(maxRetrysNext, <span class="keyword">false</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 异常处理</span></span><br><span class="line">    <span class="keyword">return</span> o.onErrorResumeNext(<span class="keyword">new</span> Func1&lt;Throwable, Observable&lt;T&gt;&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Observable&lt;T&gt; <span class="title">call</span><span class="params">(Throwable e)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (context.getAttemptCount() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// 如果超过重试次数，则抛异常</span></span><br><span class="line">                <span class="keyword">if</span> (maxRetrysNext &gt; <span class="number">0</span> &amp;&amp; context.getServerAttemptCount() == (maxRetrysNext + <span class="number">1</span>)) &#123;</span><br><span class="line">                    e = <span class="keyword">new</span> ClientException(ClientException.ErrorType.NUMBEROF_RETRIES_NEXTSERVER_EXCEEDED,</span><br><span class="line">                            <span class="string">"Number of retries on next server exceeded max "</span> + maxRetrysNext</span><br><span class="line">                            + <span class="string">" retries, while making a call for: "</span> + context.getServer(), e);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (maxRetrysSame &gt; <span class="number">0</span> &amp;&amp; context.getAttemptCount() == (maxRetrysSame + <span class="number">1</span>)) &#123;</span><br><span class="line">                    e = <span class="keyword">new</span> ClientException(ClientException.ErrorType.NUMBEROF_RETRIES_EXEEDED,</span><br><span class="line">                            <span class="string">"Number of retries exceeded max "</span> + maxRetrysSame</span><br><span class="line">                            + <span class="string">" retries, while making a call for: "</span> + context.getServer(), e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (listenerInvoker != <span class="keyword">null</span>) &#123;</span><br><span class="line">                listenerInvoker.onExecutionFailed(e, context.toFinalExecutionInfo());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> Observable.error(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4、如果调用失败是不是要重试"><a href="#4、如果调用失败是不是要重试" class="headerlink" title="4、如果调用失败是不是要重试"></a>4、如果调用失败是不是要重试</h4><ul>
+<li>下章研究</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>由这几章我们了解到<code>Ribbon</code>主要由如下几个组件组成：<ul>
+<li>服务实例列表维护机制实现的接口<code>ServerList</code></li>
+<li>负责选取<code>Server</code>的接口<code>ILoadBalancer</code></li>
+<li>服务实例列表更新机制实现的接口<code>ServerListUpdater</code></li>
+<li>服务实例列表过滤机制<code>ServerListFilter</code></li>
+<li>负载均衡选取规则实现的接口<code>IRule</code></li>
+<li>所有<code>Ribbon</code>负载均衡器需要实现的接口<code>IClient</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://blog.csdn.net/zhxdick/article/details/79717757" target="_blank" rel="noopener">https://blog.csdn.net/zhxdick/article/details/79717757</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/&title=《SpringCloud(Ribbon)工作原理及源码分析二》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/&title=《SpringCloud(Ribbon)工作原理及源码分析二》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Ribbon)工作原理及源码分析二》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析三/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringCloud(Ribbon)工作原理及源码分析三</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析一/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringCloud(Ribbon)工作原理及源码分析一</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/&title=《SpringCloud(Ribbon)工作原理及源码分析二》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/&title=《SpringCloud(Ribbon)工作原理及源码分析二》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Ribbon)工作原理及源码分析二》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析二/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEjElEQVR42u3aS3IbMQwFQN//0s42Kdvye8AoJY5aK5eikJyeBYjPx0f8+fzr8/Wb5F+/rvb178crf/1le86fdrzsgwkTJkyYXpIpOdbjzT7jT0LzeP2EJnne+pVgwoQJE6bDmZLl8sM9vgq0YX6zcnsd+fF7TJgwYcL0lkztN2062l41rkqDMWHChAnTOzPNUtDZJWDDlxejMWHChAnTOzDly+Wl2Bw633f2wlpETJgwYcJ0J6ZZC/Aefz9lvgkTJkyYML0M02f5ycdf8hGZdoV8EGf2jN+cBBMmTJgwHcuUB8i8SNoSz2JxXlbOv/+lYI0JEyZMmI5lag/XPkYevPPG56wknQ8PYcKECROmezDNjrgftWn3atPyPD2Oir+YMGHChOlwpk1wbdPR/OjtcM/snNFvMGHChAnTsUyzAugmw84JNqttRpEiDUyYMGHCdBRTG4bbdmaeJLeJcXuJaS8TmDBhwoTprkyb5fJ25jNKxm1xub4rYcKECROmo5iSMmveCJylu+3R85S7HST6JenFhAkTJkzHMkUNvLgFuCkN54nrLCUejvVgwoQJE6ZjmTaNxraduQnkOUHbEK1fOSZMmDBhOpZpts0s7cyT5FkZ96pEvaiLY8KECROml2TaF3PzMvGs/blvc+bJ7Y/nxIQJEyZMxzK1h2jvF5ti7mZgaHaZyF8SJkyYMGE6i2mWHD4j9W1f3lVF4ej3mDBhwoTpQKa8iZhHxtn14qruYc5RvBJMmDBhwnQ406wYOktiN3u1afa+hI0JEyZMmO7B1D5k/vBtyXhD065ZXBQwYcKECdOxTPtu3SylbIN0e/JNafiXQgAmTJgwYTqKaVZ+nQ2nXnVRyEvSV71CTJgwYcJ0OlMy8tKG2PyRZi3J2Rnafb8Z3MGECRMmTAcy5eniLLFsC8H5A2+GjYoVMGHChAnTsUxtgzNJF9sSahSSR7u3yXORWmPChAkTpqOY8rSzHaBpj9s+xqy8u7oEYMKECROmo5iS0LsPqG3Btx302QweRRqYMGHChOlYpk0czJuU+XGT9HUG2l4LiksDJkyYMGF6YaZZy/CqFLQN/I8T6TzpbVNxTJgwYcJ0LtOs+DtLZWcBezZIlLzsnA8TJkyYMJ3L1JY+87C6aR+2l4yrmqM/vkJMmDBhwnQsUxtQrz3opkXaJuHJS82vHZgwYcKE6SymvPSZh+f9iMymQNw2YqOnxoQJEyZMBzJtgmuS3M6uCPk1pS0Nz54CEyZMmDDdgyl/vH178iqIq07+y+6YMGHChOlYpva4edG2CLej5DZfc7YjJkyYMGG6B9NVIy///3qRc2z2+qfIiwkTJkyYDmS6KiYmZda86Zj/r7xcmw8hra4RmDBhwoTpJZnygJ23MDdhu02e8wJunkhjwoQJE6b7Mc2GYNrgvQ/t+Qn3ZWVMmDBhwvSeTG07sy3UtkM8SaLbXjgwYcKECdM7M+0vBHk43/BdNY2DCRMmTJjuwfS8YZ1ZOG9BN0Xn6H9hwoQJE6ZjmdqiZxu8k4CdlGhn5ePkl8mLx4QJEyZMBzL9AZ47d5jlxQ+VAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

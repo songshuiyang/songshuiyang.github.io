@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mysql-高性能优化规范建议 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="数据库,Mysql">
+    <meta name="description" content="前言一、数据库基本设计规范尽量控制单表数据量的大小,建议控制在 500 万以内。500 万并不是 MySQL 数据库的限制，过大会造成修改表结构，备份，恢复都会有很大的问题。 可以用历史数据归档（应用于日志数据），分库分表（应用于业务数据）等手段来控制数据量大小 二、数据库字段设计规范优先选择符合存储需要的最小的数据类型 原因：  列的字段越大，建立索引时所需要的空间也就越大，这样一页中所能存储的">
+<meta name="keywords" content="数据库,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-高性能优化规范建议">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言一、数据库基本设计规范尽量控制单表数据量的大小,建议控制在 500 万以内。500 万并不是 MySQL 数据库的限制，过大会造成修改表结构，备份，恢复都会有很大的问题。 可以用历史数据归档（应用于日志数据），分库分表（应用于业务数据）等手段来控制数据量大小 二、数据库字段设计规范优先选择符合存储需要的最小的数据类型 原因：  列的字段越大，建立索引时所需要的空间也就越大，这样一页中所能存储的">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-01-04T12:21:52.064Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-高性能优化规范建议">
+<meta name="twitter:description" content="前言一、数据库基本设计规范尽量控制单表数据量的大小,建议控制在 500 万以内。500 万并不是 MySQL 数据库的限制，过大会造成修改表结构，备份，恢复都会有很大的问题。 可以用历史数据归档（应用于日志数据），分库分表（应用于业务数据）等手段来控制数据量大小 二、数据库字段设计规范优先选择符合存储需要的最小的数据类型 原因：  列的字段越大，建立索引时所需要的空间也就越大，这样一页中所能存储的">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mysql-高性能优化规范建议</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mysql-高性能优化规范建议</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-03T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-04
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、数据库基本设计规范"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、数据库基本设计规范</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#尽量控制单表数据量的大小-建议控制在-500-万以内。"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">尽量控制单表数据量的大小,建议控制在 500 万以内。</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、数据库字段设计规范"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">二、数据库字段设计规范</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#优先选择符合存储需要的最小的数据类型"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">优先选择符合存储需要的最小的数据类型</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#避免使用-TEXT-BLOB-数据类型，最常见的-TEXT-类型可以存储-64k-的数据"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">避免使用 TEXT,BLOB 数据类型，最常见的 TEXT 类型可以存储 64k 的数据</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#尽可能把所有列定义为-NOT-NULL"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">尽可能把所有列定义为 NOT NULL</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三、索引设计规范"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">三、索引设计规范</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何选择索引列的顺序"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">如何选择索引列的顺序</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#避免建立冗余索引和重复索引（增加了查询优化器生成执行计划的时间）"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">避免建立冗余索引和重复索引（增加了查询优化器生成执行计划的时间）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#索引-SET-规范"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">索引 SET 规范</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#四、数据库-SQL-开发规范"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">四、数据库 SQL 开发规范</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#避免数据类型的隐式转换"><span class="post-toc-number">1.4.1.</span> <span class="post-toc-text">避免数据类型的隐式转换</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#充分利用表上已经存在的索引"><span class="post-toc-number">1.4.2.</span> <span class="post-toc-text">充分利用表上已经存在的索引</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#禁止使用-SELECT-必须使用-SELECT-lt-字段列表-gt-查询"><span class="post-toc-number">1.4.3.</span> <span class="post-toc-text">禁止使用 SELECT * 必须使用 SELECT &lt;字段列表&gt; 查询</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#五、数据库操作行为规范"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">五、数据库操作行为规范</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#超-100-万行的批量写-UPDATE-DELETE-INSERT-操作-要分批多次进行操作"><span class="post-toc-number">1.5.1.</span> <span class="post-toc-text">超 100 万行的批量写 (UPDATE,DELETE,INSERT) 操作,要分批多次进行操作</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">2.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/mysql/Mysql-高性能优化规范建议" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mysql-高性能优化规范建议</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-04 00:00:00" datetime="2018-03-03T16:00:00.000Z" itemprop="datePublished">2018-03-04</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="一、数据库基本设计规范"><a href="#一、数据库基本设计规范" class="headerlink" title="一、数据库基本设计规范"></a>一、数据库基本设计规范</h3><h4 id="尽量控制单表数据量的大小-建议控制在-500-万以内。"><a href="#尽量控制单表数据量的大小-建议控制在-500-万以内。" class="headerlink" title="尽量控制单表数据量的大小,建议控制在 500 万以内。"></a>尽量控制单表数据量的大小,建议控制在 500 万以内。</h4><p>500 万并不是 MySQL 数据库的限制，过大会造成修改表结构，备份，恢复都会有很大的问题。</p>
+<p>可以用历史数据归档（应用于日志数据），分库分表（应用于业务数据）等手段来控制数据量大小</p>
+<h3 id="二、数据库字段设计规范"><a href="#二、数据库字段设计规范" class="headerlink" title="二、数据库字段设计规范"></a>二、数据库字段设计规范</h3><h4 id="优先选择符合存储需要的最小的数据类型"><a href="#优先选择符合存储需要的最小的数据类型" class="headerlink" title="优先选择符合存储需要的最小的数据类型"></a>优先选择符合存储需要的最小的数据类型</h4><ul>
+<li>原因：</li>
+</ul>
+<p>列的字段越大，建立索引时所需要的空间也就越大，这样一页中所能存储的索引节点的数量也就越少也越少，在遍历时所需要的 IO 次数也就越多，索引的性能也就越差。</p>
+<ul>
+<li><p>方法：</p>
+<ul>
+<li>a.将字符串转换成数字类型存储,如:将 IP 地址转换成整形数据</li>
+<li><p>b.对于非负型的数据 (如自增 ID,整型 IP) 来说,要优先使用无符号整型来存储</p>
+<ul>
+<li>无符号相对于有符号可以多出一倍的存储空间</li>
+<li><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SIGNED INT -2147483648~2147483647</span><br><span class="line">UNSIGNED INT 0~4294967295</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>VARCHAR(N) 中的 N 代表的是字符数，而不是字节数，使用 UTF8 存储 255 个汉字 Varchar(255)=765 个字节。过大的长度会消耗更多的内存</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="避免使用-TEXT-BLOB-数据类型，最常见的-TEXT-类型可以存储-64k-的数据"><a href="#避免使用-TEXT-BLOB-数据类型，最常见的-TEXT-类型可以存储-64k-的数据" class="headerlink" title="避免使用 TEXT,BLOB 数据类型，最常见的 TEXT 类型可以存储 64k 的数据"></a>避免使用 TEXT,BLOB 数据类型，最常见的 TEXT 类型可以存储 64k 的数据</h4><ul>
+<li>a. 建议把 BLOB 或是 TEXT 列分离到单独的扩展表中<ul>
+<li>MySQL 内存临时表不支持 TEXT、BLOB 这样的大数据类型，如果查询中包含这样的数据，在排序等操作时，就不能使用内存临时表，必须使用磁盘临时表进行。而且对于这种数据，MySQL 还是要进行二次查询，会使 sql 性能变得很差，但是不是说一定不能使用这样的数据类型。</li>
+<li>如果一定要使用，建议把 BLOB 或是 TEXT 列分离到单独的扩展表中，查询时一定不要使用 select * 而只需要取出必要的列，不需要 TEXT 列的数据时不要对该列进行查询。</li>
+</ul>
+</li>
+<li>b. TEXT 或 BLOB 类型只能使用前缀索引<ul>
+<li>因为MySQL 对索引字段长度是有限制的，所以 TEXT 类型只能使用前缀索引，并且 TEXT 列上是不能有默认值的</li>
+</ul>
+</li>
+</ul>
+<h4 id="尽可能把所有列定义为-NOT-NULL"><a href="#尽可能把所有列定义为-NOT-NULL" class="headerlink" title="尽可能把所有列定义为 NOT NULL"></a>尽可能把所有列定义为 NOT NULL</h4><ul>
+<li>原因：<ul>
+<li>索引 NULL 列需要额外的空间来保存，所以要占用更多的空间</li>
+<li>进行比较和计算时要对 NULL 值做特别的处理</li>
+</ul>
+</li>
+</ul>
+<h3 id="三、索引设计规范"><a href="#三、索引设计规范" class="headerlink" title="三、索引设计规范"></a>三、索引设计规范</h3><h4 id="如何选择索引列的顺序"><a href="#如何选择索引列的顺序" class="headerlink" title="如何选择索引列的顺序"></a>如何选择索引列的顺序</h4><ul>
+<li>建立索引的目的是：希望通过索引进行数据查找，减少随机 IO，增加查询性能 ，索引能过滤出越少的数据，则从磁盘中读入的数据也就越少。<ul>
+<li>区分度最高的放在联合索引的最左侧（区分度=列中不同值的数量/列的总行数）</li>
+<li>尽量把字段长度小的列放在联合索引的最左侧（因为字段长度越小，一页能存储的数据量越大，IO 性能也就越好）</li>
+<li>使用最频繁的列放到联合索引的左侧（这样可以比较少的建立一些索引）</li>
+</ul>
+</li>
+</ul>
+<h4 id="避免建立冗余索引和重复索引（增加了查询优化器生成执行计划的时间）"><a href="#避免建立冗余索引和重复索引（增加了查询优化器生成执行计划的时间）" class="headerlink" title="避免建立冗余索引和重复索引（增加了查询优化器生成执行计划的时间）"></a>避免建立冗余索引和重复索引（增加了查询优化器生成执行计划的时间）</h4><ul>
+<li>重复索引示例：primary key(id)、index(id)、unique index(id)</li>
+<li>冗余索引示例：index(a,b,c)、index(a,b)、index(a)</li>
+</ul>
+<h4 id="索引-SET-规范"><a href="#索引-SET-规范" class="headerlink" title="索引 SET 规范"></a>索引 SET 规范</h4><ul>
+<li>尽量避免使用外键约束<ul>
+<li>不建议使用外键约束（foreign key），但一定要在表与表之间的关联键上建立索引</li>
+<li>外键可用于保证数据的参照完整性，但建议在业务端实现</li>
+<li>外键会影响父表和子表的写操作从而降低性能</li>
+</ul>
+</li>
+</ul>
+<h3 id="四、数据库-SQL-开发规范"><a href="#四、数据库-SQL-开发规范" class="headerlink" title="四、数据库 SQL 开发规范"></a>四、数据库 SQL 开发规范</h3><h4 id="避免数据类型的隐式转换"><a href="#避免数据类型的隐式转换" class="headerlink" title="避免数据类型的隐式转换"></a>避免数据类型的隐式转换</h4><ul>
+<li>隐式转换会导致索引失效如:<ul>
+<li><code>select name,phone from customer where id = &#39;111&#39;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="充分利用表上已经存在的索引"><a href="#充分利用表上已经存在的索引" class="headerlink" title="充分利用表上已经存在的索引"></a>充分利用表上已经存在的索引</h4><ul>
+<li><p>避免使用双%号的查询条件。如：a like ‘%123%’，（如果无前置%,只有后置%，是可以用到列上的索引的）</p>
+</li>
+<li><p>一个 SQL 只能利用到复合索引中的一列进行范围查询。如：有 a,b,c 列的联合索引，在查询条件中有 a 列的范围查询，则在 b,c 列上的索引将不会被用到。</p>
+</li>
+<li><p>在定义联合索引时，如果 a 列要用到范围查找的话，就要把 a 列放到联合索引的右侧，使用 left join 或 not exists 来优化 not in 操作，因为 not in 也通常会使用索引失效。</p>
+</li>
+</ul>
+<h4 id="禁止使用-SELECT-必须使用-SELECT-lt-字段列表-gt-查询"><a href="#禁止使用-SELECT-必须使用-SELECT-lt-字段列表-gt-查询" class="headerlink" title="禁止使用 SELECT * 必须使用 SELECT &lt;字段列表&gt; 查询"></a>禁止使用 SELECT * 必须使用 SELECT &lt;字段列表&gt; 查询</h4><ul>
+<li>原因：<ul>
+<li>消耗更多的 CPU 和 IO 以网络带宽资源</li>
+<li>无法使用覆盖索引</li>
+<li>可减少表结构变更带来的影响</li>
+</ul>
+</li>
+</ul>
+<h3 id="五、数据库操作行为规范"><a href="#五、数据库操作行为规范" class="headerlink" title="五、数据库操作行为规范"></a>五、数据库操作行为规范</h3><h4 id="超-100-万行的批量写-UPDATE-DELETE-INSERT-操作-要分批多次进行操作"><a href="#超-100-万行的批量写-UPDATE-DELETE-INSERT-操作-要分批多次进行操作" class="headerlink" title="超 100 万行的批量写 (UPDATE,DELETE,INSERT) 操作,要分批多次进行操作"></a>超 100 万行的批量写 (UPDATE,DELETE,INSERT) 操作,要分批多次进行操作</h4><ul>
+<li>大批量操作可能会造成严重的主从延迟<ul>
+<li>主从环境中,大批量操作可能会造成严重的主从延迟，大批量的写操作一般都需要执行一定长的时间， 而只有当主库上执行完成后，才会在其他从库上执行，所以会造成主库与从库长时间的延迟情况</li>
+</ul>
+</li>
+<li>binlog 日志为 row 格式时会产生大量的日志<ul>
+<li>大批量写操作会产生大量日志，特别是对于 row 格式二进制数据而言，由于在 row 格式中会记录每一行数据的修改，我们一次修改的数据越多，产生的日志量也就会越多，日志的传输和恢复所需要的时间也就越长，这也是造成主从延迟的一个原因</li>
+</ul>
+</li>
+<li>避免产生大事务操作<ul>
+<li>大批量修改数据，一定是在一个事务中进行的，这就会造成表中大批量数据进行锁定，从而导致大量的阻塞，阻塞会对 MySQL 的性能产生非常大的影响。</li>
+</ul>
+</li>
+</ul>
+<p>特别是长时间的阻塞会占满所有数据库的可用连接，这会使生产环境中的其他应用无法连接到数据库，因此一定要注意大批量写操作要进行分批 </p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.cnblogs.com/huchong/p/10219318.html" target="_blank" rel="noopener">https://www.cnblogs.com/huchong/p/10219318.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/&title=《Mysql-高性能优化规范建议》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/&title=《Mysql-高性能优化规范建议》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-高性能优化规范建议》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/04/backend/database/mysql/Mysql-SQL语句在MySQL中如何执行的/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql-SQL语句在MySQL中如何执行的</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/03/frontend/animate/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">animate.css</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/&title=《Mysql-高性能优化规范建议》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/&title=《Mysql-高性能优化规范建议》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql-高性能优化规范建议》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-高性能优化规范建议/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADJElEQVR42u3awW4iQQwE0Pz/T2elXFdAlT1ITPPmhAgZ+vUcjMv98xNfv39X8tffB9ej/3r0mef3efT64gsbGxv7Juzfp9eMnb/+fw3Jqp6vM9p6bGxs7OPYbVmaYTaVpd3oF0ZsbGzsr2TnC31+//ydZKOxsbGxsdsC1m5QUn7yIpcXM2xsbOxvY2/CmpaR3D+P/t+epWFjY2N/PLstG5/8+o3zbWxsbOyPZM+Gqe1odn8Ep420XiiwsbGxD2K3X5O0CrPmoY3784jq4R2wsbGxj2Pno9Y8ytls62ZsHH0SGxsb+wj2VaPcq0htkDTcemxsbOzj2G2hao/O7CP+vChGDxIbGxv7IPZ+uJsUqjbEb5OfvAmJtgAbGxv7huy2MdiUtDZ+yr83/ys2Njb2eewcnxSnfOOuGuiumhBsbGzsg9jtmZbkR/+sabl2tFBvATY2NvYN2W3U3paKvIGZtRN5LPVwyo2NjY19EDuHbdqJnNEe0CnGD9jY2NiHsmeRU9vAJO/PGpKiccLGxsY+jj1bVlts3pHqDL8RGxsb+zj2JqBJtiZ5Py9R+bEhbGxs7O9h56XiqnFvy062e3hGCRsbG/sI9myge1WIvx8Pv6UVwcbGxv549qZo7SP7BL/Z9KIJwcbGxr4t+6qvaY/4bA4G5QWsjZywsbGxz2C3rUU7Et40Em2YVRQwbGxs7KPZ+aKTBSV3mIVQrQIbGxv7JHbyU342rM0DnXZb9w8MGxsb+zx2W/ES2GxgkBS2BP/isWFjY2Mfwd4cwclD/1mg325rsQZsbGzsg9izMtOWjTx4akvXZqOxsbGxz2DvY/32t327ce0DiB4kNjY29nHsNojPr7o9iFuRzcgBGxsb+zz27KDM5jOzNiMPtuqngY2NjX1bdluK8pHArHnIebOmpd4UbGxs7JuwN+PSTbOR4GePIWppsLGxsY9jb26dF6FZuH9xqISNjY39xey85OTbkSPzIz7ROrGxsbG/np3ETPkJ0Fnc3x7rxMbGxj6b3Yb+s+OVbQtxVaFdZWnY2NjYH89u4/i2pOVLbzc6r0rY2NjYh7L/AYiSMBPoAdefAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

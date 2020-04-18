@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>分布式-Atomikos处理多数据源事务 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="分布式">
+    <meta name="description" content="前言 在Java开发过程中使用一个数据库时，使用@Transactional注解可以很方便的支持事务，但一个项目中如果使用了两个以上数据库那么再使用这个注解就不支持事务了，所以在此背景下Atomikos应运而生，Atomikos目的是为了处理多数据源事务问题  XA规范 介绍Atomikos之前先介绍XA规范， XA规范是描述了全局的事务管理器与局部的资源管理器之间的接口。XA规范的目的是允许多个">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式-Atomikos处理多数据源事务">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 在Java开发过程中使用一个数据库时，使用@Transactional注解可以很方便的支持事务，但一个项目中如果使用了两个以上数据库那么再使用这个注解就不支持事务了，所以在此背景下Atomikos应运而生，Atomikos目的是为了处理多数据源事务问题  XA规范 介绍Atomikos之前先介绍XA规范， XA规范是描述了全局的事务管理器与局部的资源管理器之间的接口。XA规范的目的是允许多个">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/XA.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/distributed/xa2.jpg">
+<meta property="og:updated_time" content="2019-11-19T12:31:03.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式-Atomikos处理多数据源事务">
+<meta name="twitter:description" content="前言 在Java开发过程中使用一个数据库时，使用@Transactional注解可以很方便的支持事务，但一个项目中如果使用了两个以上数据库那么再使用这个注解就不支持事务了，所以在此背景下Atomikos应运而生，Atomikos目的是为了处理多数据源事务问题  XA规范 介绍Atomikos之前先介绍XA规范， XA规范是描述了全局的事务管理器与局部的资源管理器之间的接口。XA规范的目的是允许多个">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/distributed/XA.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">分布式-Atomikos处理多数据源事务</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">分布式-Atomikos处理多数据源事务</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-28T16:01:02.000Z" itemprop="datePublished" class="page-time">
+  2018-03-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分布式/">分布式</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#XA规范"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">XA规范</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实现"><span class="post-toc-number">2.</span> <span class="post-toc-text">实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#普通应用实践"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">普通应用实践</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Spring应用实践"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Spring应用实践</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/distributed/transaction/分布式-Atomikos处理多数据源事务" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">分布式-Atomikos处理多数据源事务</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-01 00:01:02" datetime="2018-02-28T16:01:02.000Z" itemprop="datePublished">2018-03-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分布式/">分布式</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>在<code>Java</code>开发过程中使用一个数据库时，使用<code>@Transactional</code>注解可以很方便的支持事务，但一个项目中如果使用了两个以上数据库那么再使用这个注解就不支持事务了，所以在此背景下<code>Atomikos</code>应运而生，<code>Atomikos</code>目的是为了处理多数据源事务问题</li>
+</ul>
+<h3 id="XA规范"><a href="#XA规范" class="headerlink" title="XA规范"></a><code>XA</code>规范</h3><ul>
+<li><p>介绍<code>Atomikos</code>之前先介绍<code>XA</code>规范， <code>XA</code>规范是描述了全局的事务管理器与局部的资源管理器之间的接口。<code>XA</code>规范的目的是允许多个资源（如数据库，应用服务器，消息队列，等等）在同一事务中访问，这样可以使<code>ACID</code>属性跨越应用程序而保持有效。</p>
+</li>
+<li><p><code>XA</code> 使用 两阶段提交<code>（2PC）</code>来保证所有资源同时提交或回滚任何特定的事务。</p>
+</li>
+<li><p>两阶段提交协议<code>（The two-phase commit protocol，2PC）</code>是 <code>XA</code> 用于在全局事务中协调多个资源的机制。</p>
+<ul>
+<li>两阶段协议遵循 OSI（Open System Interconnection，开放系统互联）/DTP 标准，虽然它比标准本身早若干年出现。</li>
+<li>两阶段提交协议包含了两个阶段：<ul>
+<li>第一阶段（也称准备阶段）</li>
+<li>第二阶段（也称提交阶段）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>一个描述两阶段提交很好的类比是典型的结婚仪式，每个参与者（结婚典礼中的新郎和新娘）都必须服从安排，在正式步入婚姻生活之前说“我愿意”。考虑有的杯具情形，“参与者”之一在做出承诺前的最后一刻反悔。两阶段提交之于此的结果也成立，虽然不具备那么大的破坏性。</p>
+</li>
+<li><p>大家想一个场景，在做单应用的时候，有的同学连过两个库吧？在一个事务中会同时向两个系统插入数据。但是对于普通事务来讲，是管不了的。</p>
+</li>
+<li><p>看下图（只是举例这种操作的套路，不局限于下面的业务）：</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/XA.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>一个服务里面要去操作两个库，如何保证事务成功呢？ 下面有两个实例</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="普通应用实践"><a href="#普通应用实践" class="headerlink" title="普通应用实践"></a>普通应用实践</h3><ul>
+<li>看下面代码<code>Atomikos</code> 自己实现了一个事务管理器，我们获取的连接都从它哪里拿。<ul>
+<li>第一步先开启事务，然后进行预提交，<code>db1</code> 和 <code>db2</code>都先进行预先执行，注意：这里没有提交事务。</li>
+<li>第二步才是真正的提交事务，由<code>Atomikos</code> 来发起提交的，如果出现异常则发起回滚操作。</li>
+</ul>
+</li>
+<li>这个过程是不是就有两个角色了，一个 事务管理器，一个资源管理器（我们这里是 数据库，也可以是其他的组件，消息队列什么的）。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhouq.jta;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.atomikos.icatch.jta.UserTransactionImp;</span><br><span class="line"><span class="keyword">import</span> com.atomikos.jdbc.AtomikosDataSourceBean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.transaction.UserTransaction;</span><br><span class="line"><span class="keyword">import</span> java.sql.Connection;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.Statement;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Create by zhouq on 2019/4/4</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomikosJTATest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> AtomikosDataSourceBean <span class="title">createAtomikosDataSourceBean</span><span class="params">(String dbName)</span> </span>&#123;</span><br><span class="line">        Properties p = <span class="keyword">new</span> Properties();</span><br><span class="line">        p.setProperty(<span class="string">"url"</span>, <span class="string">"jdbc:mysql://localhost:3306/"</span> + dbName);</span><br><span class="line">        p.setProperty(<span class="string">"user"</span>, <span class="string">"root"</span>);</span><br><span class="line">        p.setProperty(<span class="string">"password"</span>, <span class="string">"root"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 AtomikosDataSourceBean 封装 com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</span></span><br><span class="line"></span><br><span class="line">        AtomikosDataSourceBean ds = <span class="keyword">new</span> AtomikosDataSourceBean();</span><br><span class="line">        ds.setUniqueResourceName(dbName);</span><br><span class="line">        ds.setXaDataSourceClassName(<span class="string">"com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"</span>);</span><br><span class="line">        ds.setXaProperties(p);</span><br><span class="line">        <span class="keyword">return</span> ds;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//准备两个数据源</span></span><br><span class="line">        AtomikosDataSourceBean ds1 = createAtomikosDataSourceBean(<span class="string">"db_user"</span>);</span><br><span class="line">        AtomikosDataSourceBean ds2 = createAtomikosDataSourceBean(<span class="string">"db_account"</span>);</span><br><span class="line"></span><br><span class="line">        Connection connection1 = <span class="keyword">null</span>;</span><br><span class="line">        Connection collection2 = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        PreparedStatement ps1 = <span class="keyword">null</span>;</span><br><span class="line">        PreparedStatement ps2 = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//用 Atomikos 实现的事物来构建</span></span><br><span class="line">        UserTransaction userTransaction = <span class="keyword">new</span> UserTransactionImp();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//开启事物</span></span><br><span class="line">            userTransaction.begin();</span><br><span class="line">            <span class="comment">// 执行db1 上面的 sql</span></span><br><span class="line">            connection1 = ds1.getConnection();</span><br><span class="line">            ps1 = connection1.prepareStatement(<span class="string">"INSERT INTO USER(name) VALUE (?)"</span>, Statement.RETURN_GENERATED_KEYS);</span><br><span class="line">            ps1.setString(<span class="number">1</span>, <span class="string">"zhouq"</span>);</span><br><span class="line">            ps1.executeUpdate();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//测试异常</span></span><br><span class="line">            System.out.println(<span class="number">1</span> / <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//执行db2 上面的 sql</span></span><br><span class="line">            collection2 = ds2.getConnection();</span><br><span class="line">            ps2 = collection2.prepareStatement(<span class="string">"INSERT INTO account(account) VALUE  (?)"</span>);</span><br><span class="line">            ps2.setString(<span class="number">1</span>, <span class="string">"zhouq6b"</span>);</span><br><span class="line">            ps2.executeUpdate();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 两阶段提交</span></span><br><span class="line">            userTransaction.commit();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="comment">//回滚</span></span><br><span class="line">            userTransaction.rollback();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                ps1.close();</span><br><span class="line">                ps2.close();</span><br><span class="line">                connection1.close();</span><br><span class="line">                collection2.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Spring应用实践"><a href="#Spring应用实践" class="headerlink" title="Spring应用实践"></a>Spring应用实践</h3><ul>
+<li><p>下面我们在<code>Spring Boot、Mybatis、Gradle</code>环境下来集成<code>Atomikos</code>这个框架，具体实现代码见 <a href="https://github.com/songshuiyang/iframe" target="_blank" rel="noopener">GitHub代码链接</a> 的<code>feature-atomikos</code>分支，代码已通过测试，下面将讲解主要配置项</p>
+</li>
+<li><p>首先导入<code>atomikos</code>的<code>gradle</code>依赖，哇，<code>Spring Boot</code>已经是提供了<code>atomikos</code>的<code>Starter</code>了，只要导这个依赖就可以了</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile("org.springframework.boot:spring-boot-starter-jta-atomikos:1.5.5.RELEASE")</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在<code>application.yml</code>配置两个数据库</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># 主数据库</span><br><span class="line">master:</span><br><span class="line">  datasource:</span><br><span class="line">    <span class="keyword">use</span>-jndi: <span class="literal">false</span></span><br><span class="line">    jndi-<span class="keyword">name</span>: jdbc/datasource</span><br><span class="line">    <span class="keyword">url</span>: jdbc:mysql://<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">3306</span>/iframe?useUnicode=<span class="literal">true</span>&amp;characterEncoding=UTF<span class="number">-8</span>&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=<span class="literal">true</span>&amp;useSSL=<span class="literal">false</span></span><br><span class="line">    username: root</span><br><span class="line">    <span class="keyword">password</span>: root</span><br><span class="line">    driver-<span class="keyword">class</span>: com.mysql.jdbc.Driver</span><br><span class="line">    <span class="keyword">initial</span>-<span class="keyword">size</span>: <span class="number">0</span></span><br><span class="line">    <span class="keyword">min</span>-idle: <span class="number">10</span></span><br><span class="line">    <span class="keyword">max</span>-active: <span class="number">100</span></span><br><span class="line">    <span class="keyword">max</span>-<span class="keyword">wait</span>: <span class="number">20000</span></span><br><span class="line"># 从数据库</span><br><span class="line"><span class="keyword">slave</span>:</span><br><span class="line">  datasource:</span><br><span class="line">    <span class="keyword">use</span>-jndi: <span class="literal">false</span></span><br><span class="line">    jndi-<span class="keyword">name</span>: jdbc/datasource</span><br><span class="line">    <span class="keyword">url</span>: jdbc:mysql://<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">3306</span>/iframe1?useUnicode=<span class="literal">true</span>&amp;characterEncoding=UTF<span class="number">-8</span>&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=<span class="literal">true</span>&amp;useSSL=<span class="literal">false</span></span><br><span class="line">    username: root</span><br><span class="line">    <span class="keyword">password</span>: root</span><br><span class="line">    driver-<span class="keyword">class</span>: com.mysql.jdbc.Driver</span><br><span class="line">    <span class="keyword">initial</span>-<span class="keyword">size</span>: <span class="number">0</span></span><br><span class="line">    <span class="keyword">min</span>-idle: <span class="number">10</span></span><br><span class="line">    <span class="keyword">max</span>-active: <span class="number">100</span></span><br><span class="line">    <span class="keyword">max</span>-<span class="keyword">wait</span>: <span class="number">20000</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>配置<code>Atomikos</code>数据源及事务管理器</p>
+<ul>
+<li><p><code>AbstractAtomikosConfig.java</code>抽象基类，这个类用于提取创建数据源的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractAtomikosConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Environment env;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建数据源</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> prefix</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> DruidXADataSource <span class="title">createXaDataSource</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 是否使用数据源</span></span><br><span class="line">        <span class="keyword">boolean</span> useJndi = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.use-jndi"</span>, Boolean.class, <span class="keyword">false</span>);</span><br><span class="line">        <span class="comment">// 数据源名称</span></span><br><span class="line">        String jndiName = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.jndi-name"</span>, <span class="string">""</span>);</span><br><span class="line">        <span class="comment">// 数据库链接</span></span><br><span class="line">        String url = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.url"</span>, <span class="string">""</span>);</span><br><span class="line">        String username = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.username"</span>, <span class="string">""</span>);</span><br><span class="line">        String password = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.password"</span>, <span class="string">""</span>);</span><br><span class="line">        String driverClass = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.driver-class"</span>, <span class="string">""</span>);</span><br><span class="line">        <span class="comment">// 数据源默认初始链接数</span></span><br><span class="line">        <span class="keyword">int</span> initialSize = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.initial-size"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_INIT_SIZE);</span><br><span class="line">        <span class="comment">// 数据源最大连接数</span></span><br><span class="line">        <span class="keyword">int</span> maxActive = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.max-active"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_MAX_ACTIVE);</span><br><span class="line">        <span class="comment">// 数据源最小连接数</span></span><br><span class="line">        <span class="keyword">int</span> minIdle = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.min-idle"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_MIN_IDLE);</span><br><span class="line">        <span class="comment">// 配置获取连接等待超时的时间</span></span><br><span class="line">        <span class="keyword">int</span> maxWait = env.getProperty(prefix + <span class="string">"."</span> + <span class="string">"datasource.max-wait"</span>, Integer.class,</span><br><span class="line">                DataSouceConstant.DEFAULT_DATASOURCE_MAX_WAIT);</span><br><span class="line">        <span class="keyword">if</span> (useJndi) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                log.debug(<span class="string">"get datasource from jndi - [&#123;&#125;]."</span>, jndiName);</span><br><span class="line">                Context context = <span class="keyword">new</span> InitialContext();</span><br><span class="line">                DruidXADataSource dataSource = (DruidXADataSource) context.lookup(jndiName);</span><br><span class="line">                <span class="keyword">return</span> dataSource;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                log.error(e.getMessage(), e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            log.debug(<span class="string">"create druid datasource."</span>);</span><br><span class="line">            log.debug(<span class="string">"url - &#123;&#125;."</span>, url);</span><br><span class="line">            log.debug(<span class="string">"username - &#123;&#125;."</span>, username);</span><br><span class="line">            log.debug(<span class="string">"password - &#123;&#125;."</span>, password);</span><br><span class="line">            log.debug(<span class="string">"driverClass - &#123;&#125;."</span>, driverClass);</span><br><span class="line">            log.debug(<span class="string">"initialSize - &#123;&#125;."</span>, initialSize);</span><br><span class="line">            log.debug(<span class="string">"maxActive - &#123;&#125;."</span>, maxActive);</span><br><span class="line">            log.debug(<span class="string">"minIdle - &#123;&#125;."</span>, minIdle);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                DruidXADataSource datasource = <span class="keyword">new</span> DruidXADataSource();</span><br><span class="line">                datasource.setUrl(url);</span><br><span class="line">                datasource.setDriverClassName(driverClass);</span><br><span class="line">                datasource.setUsername(username);</span><br><span class="line">                datasource.setPassword(password);</span><br><span class="line">                datasource.setInitialSize(initialSize);</span><br><span class="line">                datasource.setMaxActive(maxActive);</span><br><span class="line">                datasource.setMinIdle(minIdle);</span><br><span class="line">                datasource.setMaxWait(maxWait);</span><br><span class="line">                datasource.setFilters(<span class="string">"stat,slf4j"</span>);</span><br><span class="line">                datasource.setProxyFilters(getDruidFilters());</span><br><span class="line">                <span class="keyword">return</span> datasource;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Filter&gt; <span class="title">getDruidFilters</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Slf4jLogFilter slf4jLogFilter = <span class="keyword">new</span> Slf4jLogFilter();</span><br><span class="line">        slf4jLogFilter.setDataSourceLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setStatementLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setStatementExecutableSqlLogEnable(<span class="keyword">true</span>);</span><br><span class="line">        slf4jLogFilter.setResultSetLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setResultSetCloseAfterLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        slf4jLogFilter.setConnectionLogEnabled(<span class="keyword">false</span>);</span><br><span class="line">        List&lt;Filter&gt; filters = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        filters.add(<span class="keyword">new</span> StatFilter());</span><br><span class="line">        filters.add(slf4jLogFilter);</span><br><span class="line">        <span class="keyword">return</span> filters;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>AtomikosMasterConfig.java</code>用于创建主库数据源及注册事务管理器，绑定主库数据源的<code>sqlSessionFactory</code>，注意这里主库绑定的<code>Mapper</code>和从库绑定的<code>Mapper</code>是不一样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableTransactionManagement</span></span><br><span class="line"><span class="meta">@MapperScan</span>(value = <span class="string">"com.songsy.iframe.mapper.master"</span>, sqlSessionFactoryRef = <span class="string">"masterSqlSessionFactory"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomikosMasterConfig</span> <span class="keyword">extends</span> <span class="title">AbstractAtomikosConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用这个来做总事务 后面的数据源就不用设置事务了</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"transactionManager"</span>)</span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JtaTransactionManager <span class="title">regTransactionManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        UserTransactionManager userTransactionManager = <span class="keyword">new</span> UserTransactionManager();</span><br><span class="line">        UserTransaction userTransaction = <span class="keyword">new</span> UserTransactionImp();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JtaTransactionManager(userTransaction, userTransactionManager);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主库数据源</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"masterDataSource"</span>)</span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">masterDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        AtomikosDataSourceBean atomikosDataSourceBean = <span class="keyword">new</span> AtomikosDataSourceBean();</span><br><span class="line">        <span class="comment">// DataSouceConstant.MASTER_DATA_SOURCE_PREFIX = master</span></span><br><span class="line">        atomikosDataSourceBean.setXaDataSource(createXaDataSource(DataSouceConstant.MASTER_DATA_SOURCE_PREFIX));</span><br><span class="line">        atomikosDataSourceBean.setUniqueResourceName(DataSouceConstant.MASTER_DATA_SOURCE_PREFIX);</span><br><span class="line">        atomikosDataSourceBean.setPoolSize(<span class="number">5</span>);</span><br><span class="line">        <span class="keyword">return</span> atomikosDataSourceBean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主库数据源 绑定的SessionFactory</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"masterSqlSessionFactory"</span>)</span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">masterSqlSessionFactory</span><span class="params">(@Qualifier(<span class="string">"masterDataSource"</span>)</span> DataSource masterDataSource) <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> SqlSessionFactoryBean sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBean();</span><br><span class="line">        sessionFactory.setDataSource(masterDataSource);</span><br><span class="line">        <span class="keyword">return</span> sessionFactory.getObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>AtomikosSlaveConfig.java</code>用于创建从库数据源，绑定从库数据源的<code>sqlSessionFactory</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@MapperScan</span>(value = <span class="string">"com.songsy.iframe.mapper.slave"</span>, sqlSessionFactoryRef = <span class="string">"slaveSqlSessionFactory"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomikosSlaveConfig</span> <span class="keyword">extends</span> <span class="title">AbstractAtomikosConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从库数据源</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"slaveDataSource"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">masterDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        AtomikosDataSourceBean atomikosDataSourceBean = <span class="keyword">new</span> AtomikosDataSourceBean();</span><br><span class="line">        <span class="comment">// DataSouceConstant.SLAVE_DATA_SOURCE_PREFIX = slave</span></span><br><span class="line">        atomikosDataSourceBean.setXaDataSource(createXaDataSource(DataSouceConstant.SLAVE_DATA_SOURCE_PREFIX));</span><br><span class="line">        atomikosDataSourceBean.setUniqueResourceName(DataSouceConstant.SLAVE_DATA_SOURCE_PREFIX);</span><br><span class="line">        atomikosDataSourceBean.setPoolSize(<span class="number">5</span>);</span><br><span class="line">        <span class="keyword">return</span> atomikosDataSourceBean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从库数据源 绑定的SessionFactory</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"slaveSqlSessionFactory"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">masterSqlSessionFactory</span><span class="params">(@Qualifier(<span class="string">"slaveDataSource"</span>)</span> DataSource masterDataSource) <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> SqlSessionFactoryBean sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBean();</span><br><span class="line">        sessionFactory.setDataSource(masterDataSource);</span><br><span class="line">        <span class="keyword">return</span> sessionFactory.getObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>具体业务代码结构图 <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/distributed/xa2.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+<li><p>从<code>UserServiceImpl.java</code>可以看到加了<code>@Transactional</code>注解，只要执行了<code>updateAllUser</code>方法第二行会抛出异常并触发事务回滚</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserMasterDataService userMasterService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserSlaveDataService userSlaveDataService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Transactional</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateAllUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        userMasterService.updateMasterDatabase(user);</span><br><span class="line">        <span class="comment">// 触发事务回滚</span></span><br><span class="line">        System.out.println(<span class="number">1</span>/<span class="number">0</span>);</span><br><span class="line">        userSlaveDataService.updateSlaveDatabase(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateAllUserTest2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    User user = <span class="keyword">new</span> User();</span><br><span class="line">    user.setUsername(<span class="string">"songsy"</span>);</span><br><span class="line">    user.setAddress(<span class="string">"广东深圳"</span>);</span><br><span class="line">    user.setAge(<span class="number">88</span>);</span><br><span class="line">    user.setHeadPortrait(<span class="string">"头像"</span>);</span><br><span class="line">    user.setNickname(<span class="string">"某某"</span>);</span><br><span class="line">    user.setPassword(<span class="string">"root"</span>);</span><br><span class="line">    user.setSex(<span class="number">1</span>);</span><br><span class="line">    user.setVersion(<span class="keyword">new</span> Long(<span class="number">9999</span>));</span><br><span class="line">    userService.updateAllUser(user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>对于同一个应用如果涉及多个数据库，那么可以使用<code>Atomikos</code>来处理多数据源事务的问题</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.justdojava.com/2019/04/17/java-distributed-transaction/" target="_blank" rel="noopener">http://www.justdojava.com/2019/04/17/java-distributed-transaction/</a></li>
+<li><a href="https://blog.csdn.net/sinat_36596988/article/details/82149241" target="_blank" rel="noopener">https://blog.csdn.net/sinat_36596988/article/details/82149241</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式/">分布式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/&title=《分布式-Atomikos处理多数据源事务》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/&title=《分布式-Atomikos处理多数据源事务》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式-Atomikos处理多数据源事务》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/01/backend/distributed/transaction/分布式-TX-LCN分布式事务框架/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">分布式-TX-LCN分布式事务框架</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/01/backend/distributed/transaction/分布式-分布式事务解决方案/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">分布式-分布式事务解决方案</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/&title=《分布式-Atomikos处理多数据源事务》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/&title=《分布式-Atomikos处理多数据源事务》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式-Atomikos处理多数据源事务》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/分布式-Atomikos处理多数据源事务/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD7ElEQVR42u3a247aUAwF0Pn/n6ZS3yqasLd9oEhdeUIQQrwykseXn5/4ePw+nt+5P67OTK75fM7V+cl3Dx84cODAgSMINQmpJbv/rfamZw8gjxEHDhw4cJzluA8vT2ltary65iawHB0HDhw4cPxbjhcpKgggR8mLxpYeBw4cOHB8D0d7c0kqTUq1Fg4HDhw4cHwDRzs62nyrDftsUXesV4oDBw4cONJM99M2Cr//9Rv3O3DgwIEDR7kiMEuim0T7jqIxigsHDhw4cJyps4q2XTJkSgZX++bgnmkYEg4cOHDguOV4XxOwTZl7+nZV4i9n4sCBAweONccmBc6SYhLejGnPjQMHDhw4znLs01X73TykWUId/ingwIEDB44FR7KUljT72iDv32lzX07/4jUOHDhw4PgIxybIvKhrk3fLmoyjcODAgQPHnqMNYFZWfaYXly8xRGUeDhw4cOBYcCRJLj+nTdWbtJqUZ0kyvlxowIEDBw4cJcds5J8szO0befsCr21l4sCBAweOd3NsUm9y/tkadJ/UceDAgQPHnqMtfjZLcvnVHuWRLzFERR0OHDhw4FhwHJhWjRYg8vJsMyRLVhlw4MCBA8dZjs0iQt6e24S6+g9itEKBAwcOHDj2HHmhNTszX33L1xHaNYtVXYsDBw4cOGKOWYOvXSDI03M+DGvTZ/QtHDhw4MCx5miT2Wy9YEPZNhxnifwyFhw4cODAUXLMhkyz1bdNq7FddJiNx3DgwIEDx56jbQ62Lbk21FlhuV+hG/ZKceDAgQPH0+uzpdGmMZeUam1qTz79430cOHDgwHGIo23htSVTHkzLlH8aXR8HDhw4cBzlaEPaFGzvbvbVKXbW0cSBAwcOHLfXb9t2LUp7W0VfM2hNJg8MBw4cOHCc4siHN3kRdfZG62JsUUziwIEDB45THEk5lKS6fEmiLRHzZLx5bDhw4MCBY8ORt/bam96Pl9oxWNsofLHQgAMHDhw4RhyzH9g0B/OSrG0Fzgo8HDhw4MBxlmPTEGwDaG+6eJ7lEkM9cMKBAwcOHCXHZlA0K8lm5WLO1KZnHDhw4MBximOWuvKxULGpN1qtK2Zr+Z3gwIEDB44Fx6M82vIvLwjzxuLs0+gKOHDgwIFjzTFLS+0l2uWG/dpcXmq2y384cODAgSPhSJJrOxzKS8S2Bdm+kyTauh+JAwcOHDgCjiS55s272fCpfTyz/yCisRMOHDhw4Pg4R1vOzeBOpeei7MSBAwcOHB/kOLXQlgPN1inyBL9KtDhw4MCBY90cbFtyeS6bLcZtljA+VEHiwIEDx3/J0S405OOlNrwZzSzIzXdx4MCBA8fFNX8BSD/t0EygMIAAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

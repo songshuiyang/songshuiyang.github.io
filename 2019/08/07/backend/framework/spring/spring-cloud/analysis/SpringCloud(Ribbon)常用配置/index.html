@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringCloud(Ribbon)常用配置 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Cloud">
+    <meta name="description" content="Ribbon的重试机制  设置 1234567ribbon:  // 同一台实例最大重试次数,不包括首次调用  MaxAutoRetries: 1  // 重试负载均衡其他的实例最大重试次数,不包括首次server  MaxAutoRetriesNextServer: 1  // 是否所有操作都重试   OkToRetryOnAllOperations: false  根据上面的参数计算重试的次">
+<meta name="keywords" content="Spring,Spring Cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud(Ribbon)常用配置">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="Ribbon的重试机制  设置 1234567ribbon:  // 同一台实例最大重试次数,不包括首次调用  MaxAutoRetries: 1  // 重试负载均衡其他的实例最大重试次数,不包括首次server  MaxAutoRetriesNextServer: 1  // 是否所有操作都重试   OkToRetryOnAllOperations: false  根据上面的参数计算重试的次">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-09-16T13:11:05.983Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloud(Ribbon)常用配置">
+<meta name="twitter:description" content="Ribbon的重试机制  设置 1234567ribbon:  // 同一台实例最大重试次数,不包括首次调用  MaxAutoRetries: 1  // 重试负载均衡其他的实例最大重试次数,不包括首次server  MaxAutoRetriesNextServer: 1  // 是否所有操作都重试   OkToRetryOnAllOperations: false  根据上面的参数计算重试的次">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringCloud(Ribbon)常用配置</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringCloud(Ribbon)常用配置</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-06T16:03:05.000Z" itemprop="datePublished" class="page-time">
+  2019-08-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参考"><span class="post-toc-number">1.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringCloud(Ribbon)常用配置</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-07 00:03:05" datetime="2019-08-06T16:03:05.000Z" itemprop="datePublished">2019-08-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <ul>
+<li><p><code>Ribbon</code>的重试机制</p>
+<ul>
+<li><p>设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">  // 同一台实例最大重试次数,不包括首次调用</span><br><span class="line">  MaxAutoRetries: 1</span><br><span class="line">  // 重试负载均衡其他的实例最大重试次数,不包括首次server</span><br><span class="line">  MaxAutoRetriesNextServer: 1</span><br><span class="line">  // 是否所有操作都重试 </span><br><span class="line">  OkToRetryOnAllOperations: false</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据上面的参数计算重试的次数：<code>MaxAutoRetries + MaxAutoRetriesNextServer + (MaxAutoRetries * MaxAutoRetriesNextServer)</code>即重试<code>3</code>次，加上本次重试 则一共产生<code>4</code>次调用</p>
+</li>
+<li><p>如果在重试期间，时间超过了<code>hystrix</code>的超时时间，便会立即执行熔断，<code>fallback</code>。所以要根据上面配置的参数计算<code>hystrix</code>的超时时间，使得在重试期间不能达到<code>hystrix</code>的超时时间，不然重试机制就会没有意义</p>
+<ul>
+<li><p><code>hystrix</code>超时时间的计算</p>
+<ul>
+<li>不要用下面这种公式来配置<code>hystrix</code>的超时时间，不要，不要，重要的事情说3次：<code>(1 + MaxAutoRetries + MaxAutoRetriesNextServer) * ReadTimeout</code> =  <code>(1+1+1) * 3 = 9</code>秒</li>
+<li>正确的计算公式：<code>ReadTimeout+（MaxAutoRetries * ReadTimeout）</code>，如果配置的有：<code>MaxAutoRetriesNextServer</code>这个属性，看下面例子：</li>
+<li>先算出所有<code>Ribbon</code>的超时时间+重试时间的总和，那么<code>hystrix</code>的超时时间大于总和，就可以保证<code>Ribbon</code>在重试过程中不会被<code>hystrix</code>熔断。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">  MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试</span><br><span class="line">  MaxAutoRetriesNextServer: 1 #切换实例的重试次数</span><br><span class="line">  OkToRetryOnAllOperations: true # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的</span><br><span class="line">  ConnectTimeout: 250 #请求连接的超时时间</span><br><span class="line">  ReadTimeout: 1000 #请求处理的超时时间</span><br><span class="line">     </span><br><span class="line">这个hystrix的超时时间怎么配置：</span><br><span class="line"></span><br><span class="line">ReadTimeout+（MaxAutoRetries * ReadTimeout）+ ReadTimeout+（MaxAutoRetries * ReadTimeout）= 4000ms</span><br><span class="line"></span><br><span class="line">那么hystrix的超时时间为：&gt;4000ms</span><br><span class="line"></span><br><span class="line">如果MaxAutoRetriesNextServer=1，就加1个：</span><br><span class="line"></span><br><span class="line">ReadTimeout+（MaxAutoRetries * ReadTimeout）+ ReadTimeout+（MaxAutoRetries * ReadTimeout）= 4000ms</span><br><span class="line"></span><br><span class="line">如果MaxAutoRetriesNextServer=2，就加2个：</span><br><span class="line"></span><br><span class="line">ReadTimeout+（MaxAutoRetries * ReadTimeout）+ ReadTimeout+（MaxAutoRetries * ReadTimeout）+ ReadTimeout+（MaxAutoRetries * ReadTimeout）= 6000ms</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>正确配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># hystrix的超时时间</span><br><span class="line">hystrix:</span><br><span class="line">    command:</span><br><span class="line">        default:</span><br><span class="line">            execution:</span><br><span class="line">              timeout:</span><br><span class="line">                enabled: true</span><br><span class="line">              isolation:</span><br><span class="line">                    thread:</span><br><span class="line">                        timeoutInMilliseconds: 9000</span><br><span class="line">ribbon:</span><br><span class="line">  ReadTimeout: 3000</span><br><span class="line">  ConnectTimeout: 3000</span><br><span class="line">  MaxAutoRetries: 1 #同一台实例最大重试次数,不包括首次调用</span><br><span class="line">  MaxAutoRetriesNextServer: 1 #重试负载均衡其他的实例最大重试次数,不包括首次调用</span><br><span class="line">  OkToRetryOnAllOperations: false  #是否所有操作都重试</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>默认情况下,<code>GET</code>方式请求无论是连接异常还是读取异常，都会进行重试，非<code>GET</code>方式请求,只有连接异常时,才会进行重试</p>
+</li>
+<li>当<code>OkToRetryOnAllOperations</code>设置为<code>false</code>时，只会对<code>get</code>请求进行重试。如果设置为<code>true</code>，便会对所有的请求进行重试，如果是<code>put</code>或<code>post</code>等写操作，如果服务器接口没做幂等性，会产生不好的结果，所以<code>OkToRetryOnAllOperations</code>慎用。</li>
+<li>如果不配置<code>ribbon</code>的重试次数，默认会重试一次</li>
+<li><p>默认值在<code>com.netflix.client.config.DefaultClientConfigImpl</code>有定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_MAX_AUTO_RETRIES_NEXT_SERVER = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_MAX_AUTO_RETRIES = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>因为<code>Ribbon</code>的重试机制和<code>Feign</code>的重试机制有冲突，所以源码中是默认关闭<code>Feign</code>的重试机制</p>
+</li>
+</ul>
+</li>
+<li><p>超时时间设置</p>
+<ul>
+<li><p>设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">  // http建立socket超时时间,毫秒</span><br><span class="line">  ReadTimeout: 60000</span><br><span class="line">  // http读取响应socket超时时间,毫秒</span><br><span class="line">  ConnectTimeout: 60000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>默认值在</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CONNECT_TIMEOUT = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_READ_TIMEOUT = <span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>支持对不同<code>Ribbon clients</code>进行属性配置</p>
+<ul>
+<li><p>之前配置的参数都是全局配置，但在微服务环境下不是对所有服务都适用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">  ReadTimeout: <span class="number">60000</span></span><br><span class="line">  ConnectTimeout: <span class="number">60000</span></span><br><span class="line">  MaxAutoRetries: <span class="number">0</span></span><br><span class="line">  MaxAutoRetriesNextServer: <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从<code>1.2.0</code>版本开始，<code>Spring Cloud Netflix</code>支持对不同<code>Ribbon clients</code>进行属性配置，按照<code>&lt;clientName&gt;.ribbon.</code>格式进行配置</p>
+</li>
+<li>比如我们有个服务是<code>users</code>，那么我们就针对这个服务这么配置：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">users:</span><br><span class="line">    ribbon:</span><br><span class="line">      ReadTimeout: <span class="number">60000</span></span><br><span class="line">      ConnectTimeout: <span class="number">60000</span></span><br><span class="line">      MaxAutoRetries: <span class="number">0</span></span><br><span class="line">      MaxAutoRetriesNextServer: <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.4.7.RELEASE/multi/multi_spring-cloud-ribbon.html" target="_blank" rel="noopener">https://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.4.7.RELEASE/multi/multi_spring-cloud-ribbon.html</a></li>
+<li><a href="https://blog.csdn.net/east123321/article/details/82385816" target="_blank" rel="noopener">https://blog.csdn.net/east123321/article/details/82385816</a></li>
+<li><a href="https://blog.csdn.net/l848168/article/details/85090124" target="_blank" rel="noopener">https://blog.csdn.net/l848168/article/details/85090124</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/&title=《SpringCloud(Ribbon)常用配置》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/&title=《SpringCloud(Ribbon)常用配置》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Ribbon)常用配置》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Hystrix)服务容错保护介绍/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringCloud(Hystrix)服务容错保护介绍</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)工作原理及源码分析三/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringCloud(Ribbon)工作原理及源码分析三</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/&title=《SpringCloud(Ribbon)常用配置》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/&title=《SpringCloud(Ribbon)常用配置》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Ribbon)常用配置》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Ribbon)常用配置/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD/klEQVR42u3awU7cWhAEUP7/p3lSdk/AUNVlkkg5Xo0Gj319vCi6b7+9xcf7r+Pj56/O/Hj+x++T3361hq+unK9zOnDgwIEDR/Co+aWTM19/83q5r8/PV5us+ZM14MCBAweOhzjacH39TRKZ7fk5bh66OHDgwIHjz3Lk0dtWSW1xmPwWBw4cOHD8/Rz55zZ625Jy/0cBBw4cOHD8NEfebmsLpPyaSWznLb8f75XiwIEDB4406d6eDd2/4fNvmu/AgQMHjn+e43048gbiHqj5S2pj+H+/woEDBw4cM0fbtluG4Z7dlLoVbxE0Dhw4cOB4iCP/a3vLtsF3W2dSzkXNTRw4cODAMXDcirEkFHfofAQhf+xvVoUDBw4cOB7laL9pC7bbEvdQz18nDhw4cOB4lmNZYnv7vJDL+dqysCjhcODAgQNHzJE38tqhhFs51w4l3K7/Te2GAwcOHDgGjrwB1+5l5QME7YbTMrT3zQvAgQMHDhwzR7t50z5YG41trOYcbUGIAwcOHDh2jnbEYQngZOitHVDIj2IlOHDgwIFj5lhC97botujKV36Lfxw4cODAsXC0Lbx8m+oWhHkBtmyAHfffcODAgQNHyVFsycSR1rYIbw+Tl5ffoODAgQMHjoc48tu3Qw/5r5KHzAcUbtfHgQMHDhzPcizjCElY5gF8G6e4xfCXQYsDBw4cOGaOvCGYhOsNMWk4Li8pag7iwIEDB46Bo90uajeB8kjOg3YZsytGJXDgwIEDx4njqQKpbf/lbccb323lOHDgwIFj53gqaPPC77Z11I7f5UXmj/zfgQMHDhz/PMfS1MsT6rY5dGsL5q3PL8cacODAgQPHiSMJqjwa8zZc8gLyRuEtmD+5Ow4cOHDgmDnaBtzSwrsF7dKmvL0AHDhw4MCxcLQbObeRgqUka+9+KwW/GWjAgQMHDhwxx61Jd1vcUqq1Af9AtOPAgQMHjoGjbf8tG0I/MR5x3G3Lm4M4cODAgSPmaJt6S7gum1LLRlTxCnHgwIEDx8zRbuq0EMlD3pp9r3+7rBYHDhw4cCwcexC2owZ57LXFXr5lVWw14cCBAweOE8ftou3tnxpTSNaQXO2Tb3DgwIEDx8yRb/ksZdUtnvctq1v848CBAweOheO9PG7l2RLGeWTu4w44cODAgWPnyI/bkEEbosn5+b8F7avCgQMHDhxPcSxjbfujJo/XDkm0QRt1InHgwIEDR8nRhustzJKEz8vI6PHK14ADBw4cOP4UxxK9SzMx3/o6Vq44cODAgeM3ckwjaOUwRAKRl50/UsLhwIEDB465ObiMPuRMt6G929bXsYLEgQMHDhzl+EIbou1m1T6asDQQ800pHDhw4MBRcvwHJFbYuwPux7wAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

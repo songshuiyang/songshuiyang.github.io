@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringCloud(Zuul)工作原理及源码分析之初始化 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,Spring Cloud">
+    <meta name="description" content="前言 由上一章节可以知道要创建一个zuul应用，只需添加spring-cloud-starter-zuul maven依赖及启动类上添加@EnableZuulProxy就可创建一个zuul应用，那么要知道Zuul工作原理就需从这个两个地方作为入口进行研究  zuul版本: 1.4.3.RELEASE   解析Zuul 初始化spring-cloud-starter-zuul starter 我们先">
+<meta name="keywords" content="Spring,Spring Cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud(Zuul)工作原理及源码分析之初始化">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 由上一章节可以知道要创建一个zuul应用，只需添加spring-cloud-starter-zuul maven依赖及启动类上添加@EnableZuulProxy就可创建一个zuul应用，那么要知道Zuul工作原理就需从这个两个地方作为入口进行研究  zuul版本: 1.4.3.RELEASE   解析Zuul 初始化spring-cloud-starter-zuul starter 我们先">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/zuul-starter.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/zuul-starter2.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/netflix-core.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/ZuulProxyAutoConfiguration.png">
+<meta property="og:updated_time" content="2019-09-16T13:11:06.030Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloud(Zuul)工作原理及源码分析之初始化">
+<meta name="twitter:description" content="前言 由上一章节可以知道要创建一个zuul应用，只需添加spring-cloud-starter-zuul maven依赖及启动类上添加@EnableZuulProxy就可创建一个zuul应用，那么要知道Zuul工作原理就需从这个两个地方作为入口进行研究  zuul版本: 1.4.3.RELEASE   解析Zuul 初始化spring-cloud-starter-zuul starter 我们先">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-cloud/zuul-starter.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringCloud(Zuul)工作原理及源码分析之初始化</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringCloud(Zuul)工作原理及源码分析之初始化</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-06T16:05:01.000Z" itemprop="datePublished" class="page-time">
+  2019-08-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Zuul-初始化"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Zuul 初始化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#spring-cloud-starter-zuul-starter"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">spring-cloud-starter-zuul starter</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#EnableZuulProxy"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">@EnableZuulProxy</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#使用Consul作为注册中心"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">使用Consul作为注册中心</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringCloud(Zuul)工作原理及源码分析之初始化</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-07 00:05:01" datetime="2019-08-06T16:05:01.000Z" itemprop="datePublished">2019-08-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><ul>
+<li><p>由上一章节可以知道要创建一个<code>zuul</code>应用，只需添加<code>spring-cloud-starter-zuul</code> <code>maven</code>依赖及启动类上添加<code>@EnableZuulProxy</code>就可创建一个<code>zuul</code>应用，那么要知道<code>Zuul</code>工作原理就需从这个两个地方作为入口进行研究</p>
+</li>
+<li><p>zuul版本: <code>1.4.3.RELEASE</code></p>
+</li>
+</ul>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><h4 id="Zuul-初始化"><a href="#Zuul-初始化" class="headerlink" title="Zuul 初始化"></a>Zuul 初始化</h4><h5 id="spring-cloud-starter-zuul-starter"><a href="#spring-cloud-starter-zuul-starter" class="headerlink" title="spring-cloud-starter-zuul starter"></a>spring-cloud-starter-zuul starter</h5><ul>
+<li>我们先查看<code>spring-cloud-starter-zuul starter</code>包下有什么，这里的重点就是<code>pom.xml</code>文件，<code>ZuulDeprecationWarningAutoConfiguration.java</code>此类已经被<code>@Deprecated</code></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/zuul-starter.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>打开<code>org.springframework.cloud/spring-cloud-starter-zuul/pom.xml</code> ，可以看到是依赖了<code>spring-cloud-starter-netflix-zuul</code></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-netflix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.3.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">relativePath</span>&gt;</span>..<span class="tag">&lt;/<span class="name">relativePath</span>&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-zuul<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>spring-cloud-starter-zuul<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span>Spring Cloud Starter Zuul (deprecated, please use spring-cloud-starter-netflix-zuul)<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url</span>&gt;</span>https://projects.spring.io/spring-cloud<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">organization</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>Pivotal Software, Inc.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">url</span>&gt;</span>https://www.spring.io<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">organization</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">main.basedir</span>&gt;</span>$&#123;basedir&#125;/../..<span class="tag">&lt;/<span class="name">main.basedir</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-zuul<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们查看<code>spring-cloud-starter-netflix-zuul</code>包</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/zuul-starter2.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>这里关注<code>spring-cloud-starter-netflix-zuul/pom.xml</code>及<code>spring-cloud-starter-netflix-zuul-1.4.3.RELEASE.jar!/META-INF/spring.provides</code></p>
+<ul>
+<li><p>打开<code>/pom.xml</code>可以看到依赖了<code>com.netflix.zuul</code>，所以说<code>Spring Cloud Zuul</code>是基于<code>netflix</code>公司的<code>zuul</code>实现的，除此之外还添加了<code>hystrix</code>及<code>ribbon</code>依赖，所以<code>zuul</code>是自带这两个功能的，<code>spring-boot-starter-web</code>依赖可以使应用成为<code>web</code>应用，<code>spring-boot-starter-actuator</code>是监控依赖</p>
+  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.3.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-zuul<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>Spring Cloud Starter Netflix Zuul<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Spring Cloud Starter Netflix Zuul<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://projects.spring.io/spring-cloud<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">organization</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Pivotal Software, Inc.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://www.spring.io<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">organization</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">main.basedir</span>&gt;</span>$&#123;basedir&#125;/../../..<span class="tag">&lt;/<span class="name">main.basedir</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-ribbon<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-archaius<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.netflix.zuul<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zuul-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>/META-INF/spring.provides</code> 依赖<code>spring-platform-netflix-core</code>模块及<code>zuul-core</code>模块</p>
+  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">provides: spring-platform-netflix-core, zuul-core</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>现在我们进入<code>spring-platform-netflix-core</code>，看看<code>Spring</code>是怎样集成<code>Netflix</code>的一系列框架了，下面是代码框架图</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/netflix-core.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>可以看到这个炸包也包含了<code>spring.factories</code>文件，所以<code>SpringBoot</code>项目启动的时候会检索此配置文件，此文件是<code>zuul</code>实现自动注册配置的关键，下面可以看到熟悉的<code>zuul</code>,<code>hystrix</code>,<code>feign</code>,<code>ribbon</code>的自动配置类</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.feign.ribbon.FeignRibbonClientAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.feign.FeignAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.feign.encoding.FeignAcceptGzipEncodingAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.feign.encoding.FeignContentGzipEncodingAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.hystrix.HystrixAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.hystrix.security.HystrixSecurityAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.rx.RxJavaAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.metrics.servo.ServoMetricsAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.zuul.ZuulServerAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.netflix.zuul.ZuulProxyAutoConfiguration</span><br><span class="line"></span><br><span class="line">org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker=\</span><br><span class="line">org.springframework.cloud.netflix.hystrix.HystrixCircuitBreakerConfiguration</span><br><span class="line"></span><br><span class="line">org.springframework.boot.env.EnvironmentPostProcessor=\</span><br><span class="line">org.springframework.cloud.netflix.metrics.ServoEnvironmentPostProcessor</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们现在关心<code>Zuul</code>的自动配置类，从上面<code>spring.factories</code>文件可以看到和<code>Zuul</code>相关的是自动配置了两个类，下图可以看到这两个有继承关系，<code>ZuulProxyAutoConfiguration</code>功能最为完全</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-cloud/ZuulProxyAutoConfiguration.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>ZuulServerAutoConfiguration</code> 与  <code>ZuulProxyAutoConfiguration</code></p>
+<ul>
+<li><p><code>ZuulServerAutoConfiguration</code>自动配置类，启动类上如果有<code>@EnableZuulServer</code>则此类生效</p>
+<ul>
+<li>下面代码可以看到大量使用了<code>@Conditional</code>作为条件判断，注意这个<code>ZuulController</code>这个<code>Bean</code>，它是我们<code>Zuul</code>的请求入口，这个类实现了<code>Controller</code>了，说明这里也使用了<code>Spring MVC DispatcherServlet</code>，</li>
+<li>同时此类注册了大量的<code>ZuulFilter</code></li>
+<li>代码:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dave Syer</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Biju Kunjummen</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span> <span class="comment">// 声明是配置类</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span>(&#123; ZuulProperties.class &#125;) <span class="comment">// 激活 zuul配置</span></span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(ZuulServlet.class) <span class="comment">// 条件1 存在ZuulServlet.class</span></span><br><span class="line"><span class="meta">@ConditionalOnBean</span>(ZuulServerMarkerConfiguration.Marker.class) <span class="comment">// 条件2 存在ZuulServerMarkerConfiguration.Marker.class bean, 即应用使用@EnableZuulServer注解</span></span><br><span class="line"><span class="comment">// Make sure to get the ServerProperties from the same place as a normal web app would</span></span><br><span class="line"><span class="meta">@Import</span>(ServerPropertiesAutoConfiguration.class) <span class="comment">// 配置ServerProperties实例</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulServerAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">protected</span> ZuulProperties zuulProperties;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">protected</span> ServerProperties server;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span>(required = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> ErrorController errorController;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HasFeatures <span class="title">zuulFeature</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HasFeatures.namedFeature(<span class="string">"Zuul (Simple)"</span>, ZuulServerAutoConfiguration.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CompositeRouteLocator <span class="title">primaryRouteLocator</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            Collection&lt;RouteLocator&gt; routeLocators)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> CompositeRouteLocator(routeLocators);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(SimpleRouteLocator.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> SimpleRouteLocator <span class="title">simpleRouteLocator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleRouteLocator(<span class="keyword">this</span>.server.getServletPrefix(),</span><br><span class="line">                <span class="keyword">this</span>.zuulProperties);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * zuulController, 包装了一个ZuulServlet类型的servlet, 实现对ZuulServlet类型的servlet的初始化.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ZuulController <span class="title">zuulController</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ZuulController();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ZuulHandlerMapping <span class="title">zuulHandlerMapping</span><span class="params">(RouteLocator routes)</span> </span>&#123;</span><br><span class="line">        ZuulHandlerMapping mapping = <span class="keyword">new</span> ZuulHandlerMapping(routes, zuulController());</span><br><span class="line">        mapping.setErrorController(<span class="keyword">this</span>.errorController);</span><br><span class="line">        <span class="keyword">return</span> mapping;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ApplicationListener&lt;ApplicationEvent&gt; <span class="title">zuulRefreshRoutesListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ZuulRefreshListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(name = <span class="string">"zuulServlet"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServletRegistrationBean <span class="title">zuulServlet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ServletRegistrationBean servlet = <span class="keyword">new</span> ServletRegistrationBean(<span class="keyword">new</span> ZuulServlet(),</span><br><span class="line">                <span class="keyword">this</span>.zuulProperties.getServletPattern());</span><br><span class="line">        <span class="comment">// The whole point of exposing this servlet is to provide a route that doesn't</span></span><br><span class="line">        <span class="comment">// buffer requests.</span></span><br><span class="line">        servlet.addInitParameter(<span class="string">"buffer-requests"</span>, <span class="string">"false"</span>);</span><br><span class="line">        <span class="keyword">return</span> servlet;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pre filters</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServletDetectionFilter <span class="title">servletDetectionFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ServletDetectionFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FormBodyWrapperFilter <span class="title">formBodyWrapperFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FormBodyWrapperFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DebugFilter <span class="title">debugFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DebugFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Servlet30WrapperFilter <span class="title">servlet30WrapperFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Servlet30WrapperFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// post filters</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SendResponseFilter <span class="title">sendResponseFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SendResponseFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SendErrorFilter <span class="title">sendErrorFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SendErrorFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SendForwardFilter <span class="title">sendForwardFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SendForwardFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnProperty</span>(value = <span class="string">"zuul.ribbon.eager-load.enabled"</span>, matchIfMissing = <span class="keyword">false</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ZuulRouteApplicationContextInitializer <span class="title">zuulRoutesApplicationContextInitiazer</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            SpringClientFactory springClientFactory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ZuulRouteApplicationContextInitializer(springClientFactory,</span><br><span class="line">                zuulProperties);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulFilterConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Autowired</span></span><br><span class="line">        <span class="keyword">private</span> Map&lt;String, ZuulFilter&gt; filters;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> ZuulFilterInitializer <span class="title">zuulFilterInitializer</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">                CounterFactory counterFactory, TracerFactory tracerFactory)</span> </span>&#123;</span><br><span class="line">            FilterLoader filterLoader = FilterLoader.getInstance();</span><br><span class="line">            FilterRegistry filterRegistry = FilterRegistry.instance();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ZuulFilterInitializer(<span class="keyword">this</span>.filters, counterFactory, tracerFactory, filterLoader, filterRegistry);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span></span><br><span class="line">    <span class="meta">@ConditionalOnClass</span>(CounterService.class)</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulCounterFactoryConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="meta">@ConditionalOnBean</span>(CounterService.class)</span><br><span class="line">        <span class="function"><span class="keyword">public</span> CounterFactory <span class="title">counterFactory</span><span class="params">(CounterService counterService)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DefaultCounterFactory(counterService);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulMetricsConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="meta">@ConditionalOnMissingBean</span>(CounterFactory.class)</span><br><span class="line">        <span class="function"><span class="keyword">public</span> CounterFactory <span class="title">counterFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> EmptyCounterFactory();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@ConditionalOnMissingBean</span>(TracerFactory.class)</span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> TracerFactory <span class="title">tracerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> EmptyTracerFactory();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulRefreshListener</span></span></span><br><span class="line"><span class="class">            <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Autowired</span></span><br><span class="line">        <span class="keyword">private</span> ZuulHandlerMapping zuulHandlerMapping;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> HeartbeatMonitor heartbeatMonitor = <span class="keyword">new</span> HeartbeatMonitor();</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ContextRefreshedEvent</span><br><span class="line">                    || event <span class="keyword">instanceof</span> RefreshScopeRefreshedEvent</span><br><span class="line">                    || event <span class="keyword">instanceof</span> RoutesRefreshedEvent) &#123;</span><br><span class="line">                <span class="keyword">this</span>.zuulHandlerMapping.setDirty(<span class="keyword">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> HeartbeatEvent) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.heartbeatMonitor.update(((HeartbeatEvent) event).getValue())) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.zuulHandlerMapping.setDirty(<span class="keyword">true</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>ZuulProxyAutoConfiguration</code>自动配置类，启动类上如果有对应<code>@EnableZuulProxy</code>则此类生效</p>
+<ul>
+<li>由上面此类的继承图可以发现这个类继承了<code>ZuulServerAutoConfiguration</code>，所以此类拥有<code>ZuulServerAutoConfiguration</code>的所有功能，并在此基础上添加了使用了服务发现作为路由寻址功能</li>
+<li>代码：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dave Syer</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Biju Kunjummen</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span> <span class="comment">// 声明是配置类</span></span><br><span class="line"><span class="meta">@Import</span>(&#123; RibbonCommandFactoryConfiguration.RestClientRibbonConfiguration.class, <span class="comment">// 引入RibbonCommandFactory配置</span></span><br><span class="line">        RibbonCommandFactoryConfiguration.OkHttpRibbonConfiguration.class,</span><br><span class="line">        RibbonCommandFactoryConfiguration.HttpClientRibbonConfiguration.class,</span><br><span class="line">        HttpClientConfiguration.class &#125;)</span><br><span class="line"><span class="meta">@ConditionalOnBean</span>(ZuulProxyMarkerConfiguration.Marker.class) <span class="comment">// 条件2 存在ZuulProxyMarkerConfiguration.Marker.class bean, 即应用使用@EnableZuulProxy注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulProxyAutoConfiguration</span> <span class="keyword">extends</span> <span class="title">ZuulServerAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"rawtypes"</span>)</span><br><span class="line">    <span class="meta">@Autowired</span>(required = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> List&lt;RibbonRequestCustomizer&gt; requestCustomizers = Collections.emptyList();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 网关服务注册实例信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span>(required = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> Registration registration;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 服务发现客户端</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DiscoveryClient discovery;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * serviceId和路由的映射逻辑</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ServiceRouteMapper serviceRouteMapper;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HasFeatures <span class="title">zuulFeature</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HasFeatures.namedFeature(<span class="string">"Zuul (Discovery)"</span>,</span><br><span class="line">                ZuulProxyAutoConfiguration.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 静态和动态路由寻址: 静态从配置文件获取, 动态通过服务发现客户端完成. 后者优先级更高</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(DiscoveryClientRouteLocator.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DiscoveryClientRouteLocator <span class="title">discoveryRouteLocator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DiscoveryClientRouteLocator(<span class="keyword">this</span>.server.getServletPrefix(),</span><br><span class="line">                <span class="keyword">this</span>.discovery, <span class="keyword">this</span>.zuulProperties, <span class="keyword">this</span>.serviceRouteMapper, <span class="keyword">this</span>.registration);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pre filters</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PreDecorationFilter <span class="title">preDecorationFilter</span><span class="params">(RouteLocator routeLocator,</span></span></span><br><span class="line"><span class="function"><span class="params">            ProxyRequestHelper proxyRequestHelper)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PreDecorationFilter(routeLocator, <span class="keyword">this</span>.server.getServletPrefix(),</span><br><span class="line">                <span class="keyword">this</span>.zuulProperties, proxyRequestHelper);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// route filters</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RibbonRoutingFilter <span class="title">ribbonRoutingFilter</span><span class="params">(ProxyRequestHelper helper,</span></span></span><br><span class="line"><span class="function"><span class="params">            RibbonCommandFactory&lt;?&gt; ribbonCommandFactory)</span> </span>&#123;</span><br><span class="line">        RibbonRoutingFilter filter = <span class="keyword">new</span> RibbonRoutingFilter(helper, ribbonCommandFactory,</span><br><span class="line">                <span class="keyword">this</span>.requestCustomizers);</span><br><span class="line">        <span class="keyword">return</span> filter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(&#123;SimpleHostRoutingFilter.class, CloseableHttpClient.class&#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> SimpleHostRoutingFilter <span class="title">simpleHostRoutingFilter</span><span class="params">(ProxyRequestHelper helper,</span></span></span><br><span class="line"><span class="function"><span class="params">            ZuulProperties zuulProperties,</span></span></span><br><span class="line"><span class="function"><span class="params">            ApacheHttpClientConnectionManagerFactory connectionManagerFactory,</span></span></span><br><span class="line"><span class="function"><span class="params">            ApacheHttpClientFactory httpClientFactory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleHostRoutingFilter(helper, zuulProperties,</span><br><span class="line">                connectionManagerFactory, httpClientFactory);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(&#123;SimpleHostRoutingFilter.class&#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> SimpleHostRoutingFilter <span class="title">simpleHostRoutingFilter2</span><span class="params">(ProxyRequestHelper helper,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                           ZuulProperties zuulProperties,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                           CloseableHttpClient httpClient)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleHostRoutingFilter(helper, zuulProperties,</span><br><span class="line">                httpClient);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ApplicationListener&lt;ApplicationEvent&gt; <span class="title">zuulDiscoveryRefreshRoutesListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ZuulDiscoveryRefreshListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(ServiceRouteMapper.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServiceRouteMapper <span class="title">serviceRouteMapper</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleServiceRouteMapper();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingClass</span>(<span class="string">"org.springframework.boot.actuate.endpoint.Endpoint"</span>)</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">NoActuatorConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> ProxyRequestHelper <span class="title">proxyRequestHelper</span><span class="params">(ZuulProperties zuulProperties)</span> </span>&#123;</span><br><span class="line">            ProxyRequestHelper helper = <span class="keyword">new</span> ProxyRequestHelper();</span><br><span class="line">            helper.setIgnoredHeaders(zuulProperties.getIgnoredHeaders());</span><br><span class="line">            helper.setTraceRequestBody(zuulProperties.isTraceRequestBody());</span><br><span class="line">            <span class="keyword">return</span> helper;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加 Endpoint</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Configuration</span></span><br><span class="line">    <span class="meta">@ConditionalOnClass</span>(Endpoint.class)</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">EndpointConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Autowired</span>(required = <span class="keyword">false</span>)</span><br><span class="line">        <span class="keyword">private</span> TraceRepository traces;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@ConditionalOnEnabledEndpoint</span>(<span class="string">"routes"</span>)</span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> RoutesEndpoint <span class="title">routesEndpoint</span><span class="params">(RouteLocator routeLocator)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> RoutesEndpoint(routeLocator);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@ConditionalOnEnabledEndpoint</span>(<span class="string">"routes"</span>)</span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> RoutesMvcEndpoint <span class="title">routesMvcEndpoint</span><span class="params">(RouteLocator routeLocator,</span></span></span><br><span class="line"><span class="function"><span class="params">                RoutesEndpoint endpoint)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> RoutesMvcEndpoint(endpoint, routeLocator);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@ConditionalOnEnabledEndpoint</span>(<span class="string">"filters"</span>)</span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> FiltersEndpoint <span class="title">filtersEndpoint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            FilterRegistry filterRegistry = FilterRegistry.instance();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> FiltersEndpoint(filterRegistry);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> ProxyRequestHelper <span class="title">proxyRequestHelper</span><span class="params">(ZuulProperties zuulProperties)</span> </span>&#123;</span><br><span class="line">            TraceProxyRequestHelper helper = <span class="keyword">new</span> TraceProxyRequestHelper();</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.traces != <span class="keyword">null</span>) &#123;</span><br><span class="line">                helper.setTraces(<span class="keyword">this</span>.traces);</span><br><span class="line">            &#125;</span><br><span class="line">            helper.setIgnoredHeaders(zuulProperties.getIgnoredHeaders());</span><br><span class="line">            helper.setTraceRequestBody(zuulProperties.isTraceRequestBody());</span><br><span class="line">            <span class="keyword">return</span> helper;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulDiscoveryRefreshListener</span></span></span><br><span class="line"><span class="class">            <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> HeartbeatMonitor monitor = <span class="keyword">new</span> HeartbeatMonitor();</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Autowired</span></span><br><span class="line">        <span class="keyword">private</span> ZuulHandlerMapping zuulHandlerMapping;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (event <span class="keyword">instanceof</span> InstanceRegisteredEvent) &#123;</span><br><span class="line">                reset();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> ParentHeartbeatEvent) &#123;</span><br><span class="line">                ParentHeartbeatEvent e = (ParentHeartbeatEvent) event;</span><br><span class="line">                resetIfNeeded(e.getValue());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (event <span class="keyword">instanceof</span> HeartbeatEvent) &#123;</span><br><span class="line">                HeartbeatEvent e = (HeartbeatEvent) event;</span><br><span class="line">                resetIfNeeded(e.getValue());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">resetIfNeeded</span><span class="params">(Object value)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.monitor.update(value)) &#123;</span><br><span class="line">                reset();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.zuulHandlerMapping.setDirty(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>ZuulServerAutoConfiguration</code> 与  <code>ZuulProxyAutoConfiguration</code>具体使用哪种模式，是分别通过<code>@EnableZuulServer</code> 和<code>@EnableZuulProxy</code>注解来区别的</p>
+<ul>
+<li>前者使用了<code>ZuulProperties</code>进行配置路由寻址;</li>
+<li>后者在原来的基础上添加了使用了服务发现作为路由寻址功能, 并使用<code>Ribbon</code>做客户端的负载均衡，这个最为常用;</li>
+</ul>
+</li>
+</ul>
+<h5 id="EnableZuulProxy"><a href="#EnableZuulProxy" class="headerlink" title="@EnableZuulProxy"></a>@EnableZuulProxy</h5><ul>
+<li><code>@EnableZuulProxy</code>注解</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Sets up a Zuul server endpoint and installs some reverse proxy filters in it, so it can</span></span><br><span class="line"><span class="comment"> * forward requests to backend servers. The backends can be registered manually through</span></span><br><span class="line"><span class="comment"> * configuration or via DiscoveryClient.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> EnableZuulServer for how to get a Zuul server without any proxying</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dave Syer</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Biju Kunjummen</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@EnableCircuitBreaker</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Import</span>(ZuulProxyMarkerConfiguration.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableZuulProxy &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>@EnableZuulProxy</code>分析</p>
+<ul>
+<li><p><code>@EnableCircuitBreaker</code>注解用于开启短路器功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Annotation to enable a CircuitBreaker implementation.</span></span><br><span class="line"><span class="comment"> * http://martinfowler.com/bliki/CircuitBreaker.html</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Spencer Gibb</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Import</span>(EnableCircuitBreakerImportSelector.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableCircuitBreaker &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@Import(ZuulProxyMarkerConfiguration.class)</code>注解用于注册<code>ZuulProxyMarkerConfiguration.Marker.class</code>这个<code>Bean</code>，这个<code>Bean</code>与上面的<code>ZuulProxyAutoConfiguration</code>的条件注解相对应<code>@ConditionalOnBean(ZuulProxyMarkerConfiguration.Marker.class)</code>，所以说如果启动类带了这个<code>@EnableZuulProxy</code>注解将会开启<code>ZuulProxyMarkerConfiguration</code>自动注册的功能，<code>Spring</code>这个可配置化对使用者来说十分方便</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulProxyMarkerConfiguration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Marker <span class="title">zuulProxyMarkerBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Marker();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Marker</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="使用Consul作为注册中心"><a href="#使用Consul作为注册中心" class="headerlink" title="使用Consul作为注册中心"></a>使用Consul作为注册中心</h5><ul>
+<li><p><code>@EnableZuulProxy</code>模式下的<code>zuul</code>需要注册中心的支持，因为<code>eureka</code>已经被抛弃了，我们这里选用的是<code>Consul</code></p>
+<ul>
+<li><p>添加<code>Maven</code>依赖</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动类上加上<code>@EnableDiscoveryClient</code>注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableZuulProxy</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZuulApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(ZuulApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这样<code>Zuul</code>应用就可以发挥作用了</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3></li>
+</ul>
+</li>
+<li>本章节对<code>Zuul</code>的初始化进行了一次梳理，可以发现<code>Zuul</code>的初始化就是注册各种需要的<code>Bean</code>,粮草备好之后就是要发挥作用了，下一章节将介绍其具体是怎样发挥作用的</li>
+<li><code>Spring Cloud</code>对<code>Netflix Zuul</code>做了封装集成, 使得在<code>Spring Cloud</code>环境中使用<code>Zuul</code>更方便，只需添加<code>spring-cloud-starter-zuul</code> <code>maven</code>依赖及启动类上添加<code>@EnableZuulProxy</code>就可创建一个<code>zuul</code>应用</li>
+<li><code>Spring Cloud Zuul</code> 实际上就是在<code>Servlet</code>的基础上添加了一些<code>ZuulFilter</code>去完成一些额外事情，封装了就成框架了</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://www.cnblogs.com/lexiaofei/p/7080257.html" target="_blank" rel="noopener">https://www.cnblogs.com/lexiaofei/p/7080257.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/&title=《SpringCloud(Zuul)工作原理及源码分析之初始化》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/&title=《SpringCloud(Zuul)工作原理及源码分析之初始化》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Zuul)工作原理及源码分析之初始化》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之执行流程/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringCloud(Zuul)工作原理及源码分析之执行流程</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)网关服务Zuul/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpringCloud(Zuul)网关服务Zuul</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/&title=《SpringCloud(Zuul)工作原理及源码分析之初始化》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/&title=《SpringCloud(Zuul)工作原理及源码分析之初始化》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringCloud(Zuul)工作原理及源码分析之初始化》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/07/backend/framework/spring/spring-cloud/analysis/SpringCloud(Zuul)工作原理及源码分析之初始化/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEiElEQVR42u3aS44iMRAFQO5/6Z7tSDMU72UWEqbDK4Sowg4vnB8/HvH4+Wv8+33y7LPfP/vm2Zv/fVvy/uvf3DYwYcKECdNHMv1cjtmEnj17vfjk2etFzrYt+hdMmDBhwnQ40+Ygnx2x+eLz0CRZcDJzTJgwYcKE6TpEaA/+fDPyEGEW1mDChAkTJkz51O8NGvLjP0+eMWHChAnT72HKX5cUcIu/HxWC87fNisiYMGHChOmbmPKD+fs+v+V+EyZMmDBh+himn3LkyeT+As2s9dge+dGqMWHChAnTsUz5AZkkpUmK2x7Jmy1pv3+xXkyYMGHCdCDTrDE5K6Ru2qIzvv08MWHChAnTtzLtU9P3tSdnrcfrzX4RKGDChAkTpsOZ8mW0B3Ob+uYhSL7BOcrT92DChAkTpmOZZgvYBBBtizE5zvOScRsKYMKECROm72CalUc3z7YEbQCxmdVTPkyYMGHCdCxTnqDOktJZCXgWoMxCmVV4gQkTJkyYDmHKU9D8812Bwqwo3M6tqA1gwoQJE6ZDmNpkL6fJn6r3MwhW2vT1xfZgwoQJE6ZjmfLp3tV6rCcXByuzUnJxCQkTJkyYMH0RU/s3bdo8+6Z98yypftH1xYQJEyZMRzG1B/x+tEXYfZuz5X5RIcCECRMmTMcyJdNq243tYb8pLs/eH60CEyZMmDAdy5QcorMEOG8Ztlsyu7jTlp6LWjgmTJgwYfp4pllw0AYQs9GWnnOO4RoxYcKECdNRTPcWQ/N246xVOQs48qT9RcSECRMmTJiOZcqnuEoay4O/pbmrNPzI7yVhwoQJE6ajmDYBwV3P5sHErLicl31fXNzBhAkTJkxHMT1uGrMAYlbkTcKOWVASVQgwYcKECdNRTHeVR/OkOg8ONgd5WzJ++ntMmDBhwnQ406y12U43v9DTNkrb9LgOgzBhwoQJ07FMSaKYo7QJ6qyN+o4goGijYsKECROmo5hm7ca8oZgvYLMxs/Ju0TrFhAkTJkzHMm3I2qW2Rdv88k2b2LcbhgkTJkyYzmWaHdIta9tKbIOPvCicBzGYMGHChOn7mNrl5Uny/upMnjy3a4k2CRMmTJgwHcs0SwVn11/ap2Zb2L4hIcOECRMmTN/KNDvsZ63QvBmZc+SByyogwIQJEyZMhzDNWpj70u1sGbMAZZaiY8KECROmc5lmB/y7U9bZBZ1ZIThaNSZMmDBhOpzp3gujs4bo5vezDSi2BBMmTJgwfQVTWzadHbH5oZ5vUj7zG8q7mDBhwoTpKKZ2upuSbptCt4XgGetwYMKECROmQ5hmV17aku6sedkuMplh+1//qYVjwoQJE6ajmDYF0LZlmE9xU+RtZ3uNuwodMGHChAnTxzDlhdE2FMiP2NkloZw1DwheVMQxYcKECdOxTPklmLv4Zkd7fk1nX1bGhAkTJky/k2mz1HzZSabeJtJ59o8JEyZMmH4zUz65vNSbL+yuyzp1yIIJEyZMmA5n2hRG8yCgvRjUFoKvZz4LKTBhwoQJ0+lMm5Zh8k3b+Ny3SPfzGQ5MmDBhwvRZTH8A+Mr9Lo15JMsAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
