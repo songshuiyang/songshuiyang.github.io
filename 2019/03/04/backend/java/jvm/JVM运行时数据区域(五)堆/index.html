@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/heap/JVM堆内存结构-jdk8.jpg">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/eden.jpg">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/gc-generation.gif">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.502Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.300Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM运行时数据区域(五)堆">
 <meta name="twitter:description" content="概述 对于大多数应用来说，Java 堆（Java Heap）是Java 虚拟机所管理的内存中最大的一块，Java 堆是被所有线程共享的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。这一点在Java 虚拟机规范中的描述是：所有的对象实例以及数组都要在堆上分配①，但是随着JIT 编译器的发展与逃逸分析技术的逐渐成熟，栈上分配、标量替换②优化">
@@ -329,7 +329,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-新生代"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 新生代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-老年代"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 老年代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-永久代"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3. 永久代</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-新生代"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 新生代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-老年代"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 老年代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-永久代"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3. 永久代</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
         </nav>
     </aside>
 
@@ -412,7 +412,7 @@ var _hmt = _hmt || [];
 <ul>
 <li>首先，把Eden和ServivorFrom区域中存活的对象复制到ServicorTo区域（如果有对象的年龄以及达到了老年的标准,默认为 15 岁，则赋值到老年代区），同时把这些对象的年龄+1（如果ServicorTo不够位置了就放到老年区）；</li>
 <li>然后，清空Eden和ServicorFrom中的对象；</li>
-<li>最后，ServicorTo和ServicorFrom互换，原ServicorTo成为下一次GC时的ServicorFrom区。</li>
+<li>最后，ServicorTo和ServicorFrom角色互换，原ServicorTo成为下一次GC时的ServicorFrom区。</li>
 </ul>
 </li>
 <li><p>新生代分为Eden、FromSpace、ToSpace是为了尽量让对象在新生代MinorGC，如果到了老年代之后MajorGC执行时间长</p>
@@ -453,13 +453,6 @@ var _hmt = _hmt || [];
             </figure>
 <ul>
 <li>-Xmx20M -XX:MaxHeapSize简写，表示设置堆容量的最大值为20M，必须以M为单位。将-Xmx和-Xms设置为一样可以避免堆自动扩展，减少程序运行时的垃圾回收次数，从而提供性能。大的项目-Xmx和-Xms一般都要设置到10G、20G甚至还要高</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>Minor GC 和 Full GC 有什么不同<ul>
-<li>新生代 GC（Minor GC）:指发生新生代的的垃圾收集动作，Minor GC 非常频繁，回收速度一般也比较快。</li>
-<li>老年代 GC（Major GC/Full GC）:指发生在老年代的 GC，出现了 Major GC 经常会伴随至少一次的 Minor GC（并非绝对），Major GC 的速度一般会比 Minor GC 的慢 10 倍以上。</li>
-</ul>
-</li>
 </ul>
 <p>#### </p>
 <h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
@@ -543,9 +536,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/03/04/backend/java/jvm/JVM运行时数据区域(六)方法区/" id="post-prev" class="post-nav-link">
+      <a href="/2019/03/04/backend/java/jvm/JVM运行时数据区域(五)堆-TLAB分配/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">JVM运行时数据区域(六)方法区</h4>
+        <h4 class="title">JVM运行时数据区域(五)堆-TLAB分配</h4>
       </a>
     </div>
   
@@ -618,7 +611,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

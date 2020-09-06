@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/ioc2.jpg">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/ioc.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/ioc4.png">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.143Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.221Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(三十)IOC容器技术内幕">
 <meta name="twitter:description" content="前言IOC是什么 Ioc—Inversion of Control，即“控制反转”，不是什么技术，而是一种设计思想。在Java开发中，Ioc意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。如何理解好Ioc呢？理解好Ioc的关键是要明确“谁控制谁，控制什么，为何是反转（有反转就应该有正转了），哪些方面反转了”，那我们来深入分析一下： 谁控制谁，控制什么：传统Java SE程序">
@@ -390,6 +390,7 @@ var _hmt = _hmt || [];
 <h3 id="IOC注入形式"><a href="#IOC注入形式" class="headerlink" title="IOC注入形式"></a>IOC注入形式</h3><ul>
 <li>构造函数注入<ul>
 <li>通过在其构造方法中声明依赖对象的参数列表，让外部知道它需要哪些依赖对象。 </li>
+<li>spring 官方推荐这种，为啥：如果发生错误的话可以把错误在编译时就发现，而不是使用时报错</li>
 </ul>
 </li>
 <li>setter 方法注入<ul>
@@ -432,8 +433,7 @@ var _hmt = _hmt || [];
                 <div class="image-caption"></div>
             </figure>
 <ul>
-<li><p>由上图可以得到Spring容器的构造逻辑，如下：</p>
-<ul>
+<li>由上图可以得到Spring容器的构造逻辑，如下：<ul>
 <li>1、ResourceLoader从存储介质中加载Spring配置信息，并使用Resource表示这个配置文件资源；</li>
 <li>2、BeanDefinitionReader读取Resource所指向的配置文件资源，然后解析配置文件。配置文件中的每个<bean>解析成一个BeanDefinition对象，并保存到BeanDefinitionRegistry中；</bean></li>
 <li>3、容器扫描BeanDefintionRegistry中的BeanDefintion，使用Java反射机制自动识别出Bean工厂后处理器(实现BeanFactoryPostProcessor接口的Bean)，然后调用这些Bean工厂后处理对BeanDefinitionRegistry中的BeanDefinition进行加工处理。主要完成一下两项工作:<ul>
@@ -443,11 +443,12 @@ var _hmt = _hmt || [];
 </li>
 <li>4、Spring容器从BeanDefinitionRegistry中取出加工后的BeanDefinition，并调用InstantiationStarategy着手进行Bean实例化的工作；</li>
 <li>5、在实例化Bean时，Spring容器使用BeanWrapper对Bean进行封装。BeanWrapper提供了很多以Java反射机制操作Bean的方法，它将结合该Bean的BeanDefintion及容器中的属性编辑器，完成Bean属性注入工作；</li>
-<li>6、利用容器中的Bean后处理器(实现BeanPostProcessor接口的Bean)对己经完成属性设置工作的Bean进行后续加工，直接装配出一个准备就绪的Bean；<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4></li>
+<li>6、利用容器中的Bean后处理器(实现BeanPostProcessor接口的Bean)对己经完成属性设置工作的Bean进行后续加工，直接装配出一个准备就绪的Bean；</li>
 </ul>
 </li>
-<li><p>Spring容器堪称一部设计精密的机器，其内部拥有众多的组件和装置。Spring的高明之处在于，它使用众多接口描绘除了所有的装置的协作蓝图，构建好Spring的骨架，继而通过继承体系层层推演、不断丰富，最终让Spring成为有血有肉的完整的框架。所有在查看Spring框架的源码时，有两条清晰可见的脉络：</p>
-<ul>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>Spring容器堪称一部设计精密的机器，其内部拥有众多的组件和装置。Spring的高明之处在于，它使用众多接口描绘除了所有的装置的协作蓝图，构建好Spring的骨架，继而通过继承体系层层推演、不断丰富，最终让Spring成为有血有肉的完整的框架。所有在查看Spring框架的源码时，有两条清晰可见的脉络：<ul>
 <li>接口层描述了容器的重要组件及组件间的协作关系</li>
 <li>继承体系逐步实现组件的各项功能。</li>
 </ul>
@@ -457,11 +458,11 @@ var _hmt = _hmt || [];
 <li>Spring可以就像一个餐馆，为顾客提供各种各样的美味佳肴，那么它是怎样做出美味的饭菜呢？<ul>
 <li>Spring的设计者就是餐馆的老板，统筹规划餐馆的运作</li>
 <li>原始食材：<code>xml配置的bean</code> ，高级一点的原始食材<code>注解配置的bean</code>，加工后的食材：<code>Resource</code> <code>BeanDefinition</code> <code>PropertyEditor</code></li>
-<li>采购员：<code>ResourceLoader</code>，择菜员：<code>BeanDefinitionReader</code>，仓库：<code>BeanDefintionRegistry</code> ,厨师就是将准备好的食材烹饪为菜肴<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3></li>
+<li>采购员：<code>ResourceLoader</code>，择菜员：<code>BeanDefinitionReader</code>，仓库：<code>BeanDefintionRegistry</code> ,厨师就是将准备好的食材烹饪为菜肴</li>
 </ul>
 </li>
 </ul>
-<h4 id="在Spring也可以注入List-Map"><a href="#在Spring也可以注入List-Map" class="headerlink" title="在Spring也可以注入List/Map"></a>在Spring也可以注入List/Map</h4><ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h4 id="在Spring也可以注入List-Map"><a href="#在Spring也可以注入List-Map" class="headerlink" title="在Spring也可以注入List/Map"></a>在Spring也可以注入List/Map</h4><ul>
 <li><p>之前一直使用xml的方式进行Spring配置，对于内部元素为String的List和Map属性的注入一般为如下方式：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id = <span class="string">"testBean"</span> <span class="class"><span class="keyword">class</span> </span>= <span class="string">"com.a.b.c.TestBean"</span>&gt;</span><br><span class="line">    &lt;property name = <span class="string">"fieldMap"</span>&gt;</span><br><span class="line">        &lt;map&gt;</span><br><span class="line">            &lt;entry key = "field1" value = "value1"&gt;&lt;/entry&gt;</span><br><span class="line">            &lt;entry key = "field2" value = "value2"&gt;&lt;/entry&gt;</span><br><span class="line">            &lt;entry key = "field3" value = "value3"&gt;&lt;/entry&gt;</span><br><span class="line">        &lt;/map&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property name = <span class="string">"fieldList"</span>&gt;</span><br><span class="line">        &lt;list&gt;</span><br><span class="line">            &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">            &lt;value&gt;2&lt;/value&gt;</span><br><span class="line">        &lt;/list&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
 </li>
@@ -574,9 +575,9 @@ var _hmt = _hmt || [];
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二五)Bean的生命周期/" id="post-next" class="post-nav-link">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二四)Spring生命周期之Lifecycle/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Spring系列(二五)Bean的生命周期</h4>
+        <h4 class="title">Spring系列(二四)Spring生命周期之Lifecycle</h4>
       </a>
     </div>
   
@@ -640,7 +641,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

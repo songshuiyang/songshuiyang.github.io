@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>JVM垃圾回收(三)GC种类 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Jvm">
+    <meta name="description" content="概述 我们知道JVM堆内存被分为两部分【年轻代（Young Generation）、老年代（Old Generation）】，这两部分的对象回收是不一样的，下面来讲解下GC分为那些种类  GC种类1、Minor GC （YGC）1.1、介绍 年轻代是所有新对象产生的地方，年轻代被分为3个部分Eden区和两个 Survivor区，当年轻代内存空间被用完时，就会触发垃圾回收。这个垃圾回收叫做Minor">
+<meta name="keywords" content="Java,Jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM垃圾回收(三)GC种类">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概述 我们知道JVM堆内存被分为两部分【年轻代（Young Generation）、老年代（Old Generation）】，这两部分的对象回收是不一样的，下面来讲解下GC分为那些种类  GC种类1、Minor GC （YGC）1.1、介绍 年轻代是所有新对象产生的地方，年轻代被分为3个部分Eden区和两个 Survivor区，当年轻代内存空间被用完时，就会触发垃圾回收。这个垃圾回收叫做Minor">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-09-05T04:13:26.820Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM垃圾回收(三)GC种类">
+<meta name="twitter:description" content="概述 我们知道JVM堆内存被分为两部分【年轻代（Young Generation）、老年代（Old Generation）】，这两部分的对象回收是不一样的，下面来讲解下GC分为那些种类  GC种类1、Minor GC （YGC）1.1、介绍 年轻代是所有新对象产生的地方，年轻代被分为3个部分Eden区和两个 Survivor区，当年轻代内存空间被用完时，就会触发垃圾回收。这个垃圾回收叫做Minor">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">JVM垃圾回收(三)GC种类</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">JVM垃圾回收(三)GC种类</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-03-10T14:59:45.000Z" itemprop="datePublished" class="page-time">
+  2019-03-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/JVM/">JVM</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GC种类"><span class="post-toc-number">2.</span> <span class="post-toc-text">GC种类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、Minor-GC-（YGC）"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、Minor GC （YGC）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-1、介绍"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1.1、介绍</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-2、什么时候触发"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">1.2、什么时候触发</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、Major-GC（Old-GC）"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、Major GC（Old GC）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1、介绍"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">2.1、介绍</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-2、什么时候触发"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">2.2、什么时候触发</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、Full-GC"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3、Full GC</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#对程序产生影响"><span class="post-toc-number">3.</span> <span class="post-toc-text">对程序产生影响</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4、Mixed-GC"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">4、Mixed GC</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GC问题记录"><span class="post-toc-number">4.</span> <span class="post-toc-text">GC问题记录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、FGC过于频繁"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1、FGC过于频繁</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、YGC耗时过长"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2、YGC耗时过长</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/jvm/JVM垃圾回收(三)GC种类" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">JVM垃圾回收(三)GC种类</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-03-10 22:59:45" datetime="2019-03-10T14:59:45.000Z" itemprop="datePublished">2019-03-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/JVM/">JVM</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>我们知道JVM堆内存被分为两部分【年轻代（Young Generation）、老年代（Old Generation）】，这两部分的对象回收是不一样的，下面来讲解下GC分为那些种类</li>
+</ul>
+<h2 id="GC种类"><a href="#GC种类" class="headerlink" title="GC种类"></a>GC种类</h2><h3 id="1、Minor-GC-（YGC）"><a href="#1、Minor-GC-（YGC）" class="headerlink" title="1、Minor GC （YGC）"></a>1、Minor GC （YGC）</h3><h4 id="1-1、介绍"><a href="#1-1、介绍" class="headerlink" title="1.1、介绍"></a>1.1、介绍</h4><ul>
+<li><p>年轻代是所有新对象产生的地方，年轻代被分为3个部分<code>Eden</code>区和两个 <code>Survivor</code>区，当年轻代内存空间被用完时，就会触发垃圾回收。这个垃圾回收叫做Minor GC。</p>
+</li>
+<li><p>大多数新建的对象都位于<code>Eden</code>区，当<code>Eden</code>区被对象填满时，就会执行<code>Minor GC</code>，并把所有存活下来的对象转移到其中一个<code>survivor</code>区</p>
+</li>
+<li><p><code>Minor GC</code>同样会检查存活下来的对象，并把它们转移到另一个<code>survivor</code>区。这样在一段时间内，总会有一个空的<code>survivor</code>区。</p>
+</li>
+<li><p>经过多次<code>GC</code>周期后，仍然存活下来的对象会被转移到年老代内存空间，通常这是在年轻代有资格提升到年老代前通过设定年龄阈值来完成的。</p>
+</li>
+<li><p><code>Minor GC</code> 非常频繁，回收速度一般也比较快。</p>
+</li>
+</ul>
+<h4 id="1-2、什么时候触发"><a href="#1-2、什么时候触发" class="headerlink" title="1.2、什么时候触发"></a>1.2、什么时候触发</h4><ul>
+<li><p>如果<code>Eden</code>区域没有足够的空间，那么就会触发<code>Minor GC</code></p>
+</li>
+<li><p><code>Minor GC</code>处理的区域只有新生代。因为大部分对象在短时间内都是可收回掉的，因此<code>Minor GC</code>后只有极少数的对象能存活下来，而被移动到S0区（采用的是复制算法）。</p>
+</li>
+</ul>
+<h3 id="2、Major-GC（Old-GC）"><a href="#2、Major-GC（Old-GC）" class="headerlink" title="2、Major GC（Old GC）"></a>2、Major GC（Old GC）</h3><h4 id="2-1、介绍"><a href="#2-1、介绍" class="headerlink" title="2.1、介绍"></a>2.1、介绍</h4><ul>
+<li><p>老年代的垃圾收集叫做<code>Major GC</code>，</p>
+</li>
+<li><p>出现了 <code>Major GC</code> 经常会伴随至少一次的 <code>Minor GC</code>（并非绝对），<code>Major GC</code> 的速度一般会比 <code>Minor GC</code> 的慢 10 倍以上。</p>
+</li>
+</ul>
+<h4 id="2-2、什么时候触发"><a href="#2-2、什么时候触发" class="headerlink" title="2.2、什么时候触发"></a>2.2、什么时候触发</h4><ul>
+<li><p>老年代的内存使用率达到了一定阈值（可通过参数调整），直接触发</p>
+</li>
+<li><p>空间分配担保：在<code>YGC</code>之前，会先检查老年代最大可用的连续空间是否大于新生代所有对象的总空间。如果小于，说明<code>YGC</code>是不安全的，则会查看参数<code>HandlePromotionFailure</code>是否被设置成了允许担保失败，如果不允许则直接触发<code>Full GC</code>；如果允许，那么会进一步检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果小于也会触发 <code>Full GC</code>。</p>
+</li>
+<li><p><code>Metaspace</code>（元空间）在空间不足时会进行扩容，当扩容到了<code>-XX:MetaspaceSize</code> 参数的指定值时，也会触发FGC</p>
+</li>
+<li><p><code>System.gc()</code> 或者<code>Runtime.gc()</code> 被显式调用时，触发<code>FGC</code>。</p>
+</li>
+</ul>
+<h3 id="3、Full-GC"><a href="#3、Full-GC" class="headerlink" title="3、Full GC"></a>3、Full GC</h3><ul>
+<li><code>Full GC</code>定义是相对明确的，就是针对整个新生代、老生代、元空间（<code>metaspace，java8</code>以上版本取代<code>perm gen</code>）的全局范围的<code>GC</code>。</li>
+</ul>
+<h2 id="对程序产生影响"><a href="#对程序产生影响" class="headerlink" title="对程序产生影响"></a>对程序产生影响</h2><ul>
+<li><p>不管<code>YGC</code>还是<code>FGC</code>，都会造成一定程度的程序卡顿，即使采用<code>ParNew、CMS</code>或者<code>G1</code>这些更先进的垃圾回收算法，也只是在减少卡顿时间，而并不能完全消除卡顿</p>
+</li>
+<li><p>那到底什么情况下，GC会对程序产生影响呢？</p>
+</li>
+</ul>
+<h3 id="4、Mixed-GC"><a href="#4、Mixed-GC" class="headerlink" title="4、Mixed GC"></a>4、Mixed GC</h3><ul>
+<li>混合收集：指目标是收集整个新生代以及部分老年代的垃圾收集。目前只有G1收 集器会有这种行为。</li>
+</ul>
+<h2 id="GC问题记录"><a href="#GC问题记录" class="headerlink" title="GC问题记录"></a>GC问题记录</h2><h3 id="1、FGC过于频繁"><a href="#1、FGC过于频繁" class="headerlink" title="1、FGC过于频繁"></a>1、FGC过于频繁</h3><ul>
+<li><p><code>FGC</code>通常是比较慢的，少则几百毫秒，多则几秒，正常情况<code>FGC</code>每隔几个小时甚至几天才执行一次，对系统的影响还能接受</p>
+</li>
+<li><p>一旦出现<code>FGC</code>频繁（比如几十分钟就会执行一次），这种肯定是存在问题的，它会导致工作线程频繁被停止，让系统看起来一直有卡顿现象，也会使得程序的整体性能变差</p>
+</li>
+</ul>
+<h3 id="2、YGC耗时过长"><a href="#2、YGC耗时过长" class="headerlink" title="2、YGC耗时过长"></a>2、YGC耗时过长</h3><ul>
+<li><p>一般来说，<code>YGC</code>的总耗时在几十或者上百毫秒是比较正常的，虽然会引起系统卡顿几毫秒或者几十毫秒，这种情况几乎对用户无感知，对程序的影响可以忽略不计</p>
+</li>
+<li><p>但是如果<code>YGC</code>耗时达到了1秒甚至几秒（都快赶上<code>FGC</code>的耗时了），那卡顿时间就会增大，加上<code>YGC</code>本身比较频繁，就会导致比较多的服务超时问题。</p>
+</li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
+<li>周志明版  《深入理解Java虚拟机》</li>
+<li><a href="https://mp.weixin.qq.com/s/7XGD-Z3wrThv5HyoK3B8AQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/7XGD-Z3wrThv5HyoK3B8AQ</a></li>
+<li><a href="https://mp.weixin.qq.com/s/zQP4xrRZB6nqdCJemKJeGQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/zQP4xrRZB6nqdCJemKJeGQ</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jvm/">Jvm</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/&title=《JVM垃圾回收(三)GC种类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/&title=《JVM垃圾回收(三)GC种类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JVM垃圾回收(三)GC种类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/03/11/backend/java/jvm/JVM垃圾回收(四)常用参数/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">JVM垃圾回收(四)常用参数</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(三)内存分配及回收策略/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">JVM垃圾回收(三)内存分配及回收策略</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/&title=《JVM垃圾回收(三)GC种类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/&title=《JVM垃圾回收(三)GC种类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JVM垃圾回收(三)GC种类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADLklEQVR42u3a0W7qQAwE0P7/T3Nfr1SFznhBIubkCQUIe7ZSLY/35ye+HhfX/+9eff73/as7v999/rTn33rBhY2NjX0T9uPpdfWZqwXln0wWnW9KbsHGxsbeym5/MikqeWl5/vx206Mih42Njf317KRcnbQxeTnExsbGxj4pYO2dNmCa3cHGxsb+TnZeZlrMLGxqt+ONWRo2Njb2x7Pb0OeTX79lvo2NjY39wexHec2akHZI0K6kVmBjY2MvYufLypuTvBWZjYHzIOmPwTM2Njb2CnYS5bzqOOYseGq/Gw0nsLGxsdexZ2F9XsxeW95eMB7AxsbGXsSeBT2zQjIDJ3+StgxjY2Nj72O3D8pHAvln8k1si+jlc7CxsbFXsGchzmzsmjQ/bYORl8kXZFfY2NjYH8kupsFByTkpSLNVzQ4DYWNjY+9jJ6FM/rotlu3z29UeTbmxsbGxb8KeLX3WWrzqCGa7NZe/hY2NjX1z9vl4tQ162uM77VBhmKVhY2Nj35ad/HyeSCX32yObedFqixw2Njb2DnY7lE2aitl1Mqxtmx9sbGzs3exZ6cpLyCzWz0fIkQgbGxt7EftkEfnYoI2c2tD/fNOxsbGx78ueLShfSr6stkC2Q4LLVgQbGxt7BXs2ds3LVVvM8rHBMK7CxsbGXsRuI5v2SE0b+uRhVhsYYWNjY29l58if8pr9BdpQaRaQYWNjY29l50XipMjNwql8PUnbg42Njb2PPQt6TqKivGRGjLIoYmNjY+9mt4Uq34g8Qmobm6P5NjY2NvbN2fmINx8hzAYJyaa03yr6MGxsbOxF7FlgdDKabZuZfIQQNSTY2NjY69gnEU9+6KcFt2UseQI2Njb2N7BnUc5sGJBc7ZGg+lQRNjY29g3Zj/LKN6VtbNoNmm03NjY29j72yf/8Ga8tRSdBUluSsbGxse/LbiP4V7UrsyFxO9D9Y9CLjY2NvYidNwz5dsxC/OLYzUHRxcbGxv5mdlJ4ZiH+Ow7oXOKxsbGxsePw6KTBmEVIURnDxsbGXsduh7ttCNWOBPIAq22TsLGxsfex8yahjenryP6gXcm/hY2Njb2I/Q+QtsRwTj6tJgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

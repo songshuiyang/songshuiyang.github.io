@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言Arrays.asList() Arrays.asList() 方法返回的并不是 java.util.ArrayList ，而是 java.util.Arrays 的一个内部类,这个内部类并没有实现集合的修改方法或者说并没有重写这些方法。  下图是java.util.Arrays$ArrayList的简易源码，我们可以看到这个类重写的方法有哪些。   123456789101112131415">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.425Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.760Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java集合-List-Arrays">
 <meta name="twitter:description" content="前言Arrays.asList() Arrays.asList() 方法返回的并不是 java.util.ArrayList ，而是 java.util.Arrays 的一个内部类,这个内部类并没有实现集合的修改方法或者说并没有重写这些方法。  下图是java.util.Arrays$ArrayList的简易源码，我们可以看到这个类重写的方法有哪些。   123456789101112131415">
@@ -324,7 +324,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Arrays-asList"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">Arrays.asList()</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#集合转数组的方法"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">集合转数组的方法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#数组转换成集合"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">数组转换成集合</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Arrays-asList"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">Arrays.asList()</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#集合转数组的方法"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">集合转数组的方法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#数组转换成集合"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">数组转换成集合</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#基本类型的数组"><span class="post-toc-number">1.0.4.</span> <span class="post-toc-text">基本类型的数组</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li>
         </nav>
     </aside>
 
@@ -384,9 +384,18 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
+<h4 id="基本类型的数组"><a href="#基本类型的数组" class="headerlink" title="基本类型的数组"></a>基本类型的数组</h4><ul>
+<li>asList()方法传入的参数不能是基本类型的数组，必须包装成包装类型再使用，否则对应生成的列表的大小永远是1：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] arr1 = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    Integer[] arr2 = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    List lists1 = Arrays.asList(arr1);</span><br><span class="line">    List lists2 = Arrays.asList(arr2);</span><br><span class="line">    System.out.println(lists1.size()); <span class="comment">// 1</span></span><br><span class="line">    System.out.println(lists2.size()); <span class="comment">// 3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>从反编译结果来解释，为什么传入基本类型的数组后，返回的List大小是1：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.PrintStream;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Demo</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ai[] = &#123;</span><br><span class="line">            <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">// 使用包装类型，全部元素由int包装为Integer</span></span><br><span class="line">        Integer ainteger[] = &#123;</span><br><span class="line">            Integer.valueOf(<span class="number">1</span>), Integer.valueOf(<span class="number">2</span>), Integer.valueOf(<span class="number">3</span>)</span><br><span class="line">        &#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 注意这里被反编译成二维数组，而且是一个1行三列的二维数组</span></span><br><span class="line">        <span class="comment">// list.size()当然返回1</span></span><br><span class="line">        List list = Arrays.asList(<span class="keyword">new</span> <span class="keyword">int</span>[][] &#123; ai &#125;);</span><br><span class="line">        List list1 = Arrays.asList(ainteger);</span><br><span class="line">        System.out.println(list.size());</span><br><span class="line">        System.out.println(list1.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>《阿里巴巴Java 开发手册》</li>
 <li><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/Java疑难点?id=_212-《阿里巴巴java-开发手册》对其的描述" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/java/Java疑难点?id=_212-《阿里巴巴java-开发手册》对其的描述</a></li>
+<li><a href="https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/JAD%E5%8F%8D%E7%BC%96%E8%AF%91tricks.md" target="_blank" rel="noopener">https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/JAD%E5%8F%8D%E7%BC%96%E8%AF%91tricks.md</a></li>
 </ul>
 
         </div>
@@ -463,18 +472,18 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/10/20/backend/java/collection/Java集合-List-LinkedList源码解析及原理/" id="post-prev" class="post-nav-link">
+      <a href="/2018/10/20/backend/java/collection/Java集合-List-ArrayList源码解析及原理/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Java集合-List-LinkedList源码解析及原理</h4>
+        <h4 class="title">Java集合-List-ArrayList源码解析及原理</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/10/20/backend/java/collection/Java集合-List-ArrayList源码解析及原理/" id="post-next" class="post-nav-link">
+      <a href="/2018/10/20/backend/java/collection/Java集合-Collection及Map抽象实现类/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Java集合-List-ArrayList源码解析及原理</h4>
+        <h4 class="title">Java集合-Collection及Map抽象实现类</h4>
       </a>
     </div>
   
@@ -538,7 +547,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

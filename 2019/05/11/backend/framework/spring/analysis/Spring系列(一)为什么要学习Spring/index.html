@@ -30,7 +30,8 @@
 <meta property="og:description" content="前言 作为一名从事JavaWeb开发方向的程序猿，Spring在项目开发中的地位是十分重要的（个人感觉地位仅次于jdk），现在基本上的项目都有使用它，之前的日常开发中对Spring的掌握">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/spring.jpg">
-<meta property="og:updated_time" content="2020-01-04T12:22:45.268Z">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/640.png">
+<meta property="og:updated_time" content="2020-08-16T04:24:17.944Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(一)为什么要学习Spring">
 <meta name="twitter:description" content="前言 作为一名从事JavaWeb开发方向的程序猿，Spring在项目开发中的地位是十分重要的（个人感觉地位仅次于jdk），现在基本上的项目都有使用它，之前的日常开发中对Spring的掌握">
@@ -326,7 +327,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么要阅读源码"><span class="post-toc-number">2.</span> <span class="post-toc-text">为什么要阅读源码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#下载并导入源码"><span class="post-toc-number">3.</span> <span class="post-toc-text">下载并导入源码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题记录"><span class="post-toc-number">4.</span> <span class="post-toc-text">问题记录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#坚持"><span class="post-toc-number">5.</span> <span class="post-toc-text">坚持</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Spring模块"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Spring模块</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么要阅读源码"><span class="post-toc-number">2.</span> <span class="post-toc-text">为什么要阅读源码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#下载并导入源码"><span class="post-toc-number">3.</span> <span class="post-toc-text">下载并导入源码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题记录"><span class="post-toc-number">4.</span> <span class="post-toc-text">问题记录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#坚持"><span class="post-toc-number">5.</span> <span class="post-toc-text">坚持</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考</span></a></li></ol>
         </nav>
     </aside>
 
@@ -367,11 +368,28 @@ var _hmt = _hmt || [];
 <li><p>Spring 的宗旨：简化开发</p>
 </li>
 </ul>
+<h3 id="Spring模块"><a href="#Spring模块" class="headerlink" title="Spring模块"></a>Spring模块</h3><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/640.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>Spring Core： 基础,可以说 Spring 其他所有的功能都需要依赖于该类库。主要提供 IoC 依赖注入功能。</li>
+<li>Spring Aspects ：该模块为与AspectJ的集成提供支持。</li>
+<li>Spring AOP ：提供了面向切面的编程实现。</li>
+<li>Spring JDBC : Java数据库连接。</li>
+<li>Spring JMS ：Java消息服务。</li>
+<li>Spring ORM : 用于支持Hibernate等ORM工具。</li>
+<li>Spring Web : 为创建Web应用程序提供支持。</li>
+<li>Spring Test : 提供了对 JUnit 和 TestNG 测试的支持。</li>
+</ul>
 <h2 id="为什么要阅读源码"><a href="#为什么要阅读源码" class="headerlink" title="为什么要阅读源码"></a>为什么要阅读源码</h2><ul>
 <li>站在巨人的肩膀上看世界，看看大佬们是怎么写代码的，一些写代码的模式或者技巧是否可以运用到实际项目中</li>
 <li>许多东西不能只停留在使用层面，更要知其所以然，提高自己知识的深度</li>
 <li>可以融会贯通，看得越多，知识的互通性的愈发明显，比如一些设计思想，设计模式这些在其他框架也是大量的运用</li>
-<li>面试官会问呀</li>
+<li>还有就是面试官会问呀</li>
 </ul>
 <h2 id="下载并导入源码"><a href="#下载并导入源码" class="headerlink" title="下载并导入源码"></a>下载并导入源码</h2><ul>
 <li><p>源码地址 <code>https://github.com/spring-projects/spring-framework</code> 选择合适的版本</p>
@@ -417,7 +435,7 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 </li>
-<li><p>下面的代码是已经可以在<code>idea</code>编译使用的源码文件 <code>https://github.com/songshuiyang/spring-framework-4.3.10.RELEAS</code>E ，<code>clone</code>一下按照上面的步骤说明即可在本地调试源码</p>
+<li><p>下面的代码是已经可以在<code>idea</code>编译使用的源码文件 <code>https://github.com/songshuiyang/spring-framework-4.3.10.RELEAS</code>，<code>clone</code>一下按照上面的步骤说明即可在本地调试源码</p>
 </li>
 <li><p>设置测试类不编译，修改文件<code>build.gradle</code>，不然每次点击方法在哪里调用都会冒出一堆测试类供你选择</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sourceSets &#123;</span><br><span class="line">    test &#123;</span><br><span class="line">        java.srcDirs = [<span class="string">'src/排除test目录'</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test &#123;</span><br><span class="line">    systemProperty(<span class="string">"java.awt.headless"</span>, <span class="string">"true"</span>)</span><br><span class="line">    systemProperty(<span class="string">"testGroups"</span>, project.properties.get(<span class="string">"testGroups"</span>))</span><br><span class="line">    scanForTestClasses = <span class="keyword">false</span></span><br><span class="line">    include([<span class="string">"**/*Tests.class"</span>, <span class="string">"**/*Test.class"</span>])</span><br><span class="line">    <span class="comment">// Since we set scanForTestClasses to false, we need to filter out inner</span></span><br><span class="line">    <span class="comment">// classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to</span></span><br><span class="line">    <span class="comment">// run MyTests by itself will fail if MyTests contains any inner classes.</span></span><br><span class="line">    exclude <span class="string">'*'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -536,9 +554,9 @@ var _hmt = _hmt || [];
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/05/10/backend/framework/spring/Spring系列()工具类Assert断言/" id="post-next" class="post-nav-link">
+      <a href="/2019/05/10/backend/framework/spring/Spring系列()注解Value/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Spring系列()工具类Assert断言</h4>
+        <h4 class="title">Spring系列()注解Value</h4>
       </a>
     </div>
   
@@ -602,7 +620,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

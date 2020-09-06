@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Linux-top命令 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Linux">
+    <meta name="description" content="前言 top命令是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。下面详细介绍它的使用方法。  命令讲解1．命令格式：1top [参数] 2．命令功能： 显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等  3．命令参数：123456789-b 批处理-c 显示完整的治命令-I 忽略失效过程-s 保密模式-S">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux-top命令">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 top命令是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。下面详细介绍它的使用方法。  命令讲解1．命令格式：1top [参数] 2．命令功能： 显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等  3．命令参数：123456789-b 批处理-c 显示完整的治命令-I 忽略失效过程-s 保密模式-S">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.881Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux-top命令">
+<meta name="twitter:description" content="前言 top命令是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。下面详细介绍它的使用方法。  命令讲解1．命令格式：1top [参数] 2．命令功能： 显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等  3．命令参数：123456789-b 批处理-c 显示完整的治命令-I 忽略失效过程-s 保密模式-S">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Linux-top命令</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Linux-top命令</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-08T09:30:44.000Z" itemprop="datePublished" class="page-time">
+  2018-03-08
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#命令讲解"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">命令讲解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1．命令格式："><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">1．命令格式：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2．命令功能："><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">2．命令功能：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3．命令参数："><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">3．命令参数：</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#命令实例"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">命令实例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、第一行，任务队列信息"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">1、第一行，任务队列信息</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、第二行，Tasks-—-任务（进程）"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">2、第二行，Tasks — 任务（进程）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、第三行，cpu状态信息"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">3、第三行，cpu状态信息</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、第四行-内存状态"><span class="post-toc-number">1.2.4.</span> <span class="post-toc-text">4、第四行,内存状态</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5、第五行，swap交换分区信息"><span class="post-toc-number">1.2.5.</span> <span class="post-toc-text">5、第五行，swap交换分区信息</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#6、第六行，空行"><span class="post-toc-number">1.2.6.</span> <span class="post-toc-text">6、第六行，空行</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#7、第七行以下：各进程（任务）的状态监控"><span class="post-toc-number">1.2.7.</span> <span class="post-toc-text">7、第七行以下：各进程（任务）的状态监控</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#其他技巧"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">其他技巧</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、多U多核CPU监控"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">1、多U多核CPU监控</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、排序"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">2、排序</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、显示-完整命令"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">3、显示 完整命令</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、显示指定的进程信息"><span class="post-toc-number">1.3.4.</span> <span class="post-toc-text">4、显示指定的进程信息</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">2.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/server/Linux/Linux-top命令" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Linux-top命令</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-08 17:30:44" datetime="2018-03-08T09:30:44.000Z" itemprop="datePublished">2018-03-08</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>top命令是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。下面详细介绍它的使用方法。</li>
+</ul>
+<h3 id="命令讲解"><a href="#命令讲解" class="headerlink" title="命令讲解"></a>命令讲解</h3><h4 id="1．命令格式："><a href="#1．命令格式：" class="headerlink" title="1．命令格式："></a>1．命令格式：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top [参数]</span><br></pre></td></tr></table></figure>
+<h4 id="2．命令功能："><a href="#2．命令功能：" class="headerlink" title="2．命令功能："></a>2．命令功能：</h4><ul>
+<li>显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等</li>
+</ul>
+<h4 id="3．命令参数："><a href="#3．命令参数：" class="headerlink" title="3．命令参数："></a>3．命令参数：</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-b 批处理</span><br><span class="line">-c 显示完整的治命令</span><br><span class="line">-I 忽略失效过程</span><br><span class="line">-s 保密模式</span><br><span class="line">-S 累积模式</span><br><span class="line">-i&lt;时间&gt; 设置间隔时间</span><br><span class="line">-u&lt;用户名&gt; 指定用户名</span><br><span class="line">-p&lt;进程号&gt; 指定进程</span><br><span class="line">-n&lt;次数&gt; 循环显示的次数</span><br></pre></td></tr></table></figure>
+<h3 id="命令实例"><a href="#命令实例" class="headerlink" title="命令实例"></a>命令实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@TG1704 log]# top</span><br><span class="line">top - <span class="number">14</span>:<span class="number">06</span>:<span class="number">23</span> up <span class="number">70</span> days, <span class="number">16</span>:<span class="number">44</span>,  <span class="number">2</span> users,  load average: <span class="number">1.25</span>, <span class="number">1.32</span>, <span class="number">1.35</span></span><br><span class="line">Tasks: <span class="number">206</span> total,   <span class="number">1</span> running, <span class="number">205</span> sleeping,   <span class="number">0</span> stopped,   <span class="number">0</span> zombie</span><br><span class="line">Cpu(s):  <span class="number">5.9</span>%us,  <span class="number">3.4</span>%sy,  <span class="number">0.0</span>%ni, <span class="number">90.4</span>%id,  <span class="number">0.0</span>%wa,  <span class="number">0.0</span>%hi,  <span class="number">0.2</span>%si,  <span class="number">0.0</span>%st</span><br><span class="line">Mem:  <span class="number">32949016</span>k total, <span class="number">14411180</span>k used, <span class="number">18537836</span>k free,   <span class="number">169884</span>k buffers</span><br><span class="line">Swap: <span class="number">32764556</span>k total,        <span class="number">0</span>k used, <span class="number">32764556</span>k free,  <span class="number">3612636</span>k cached</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                </span><br><span class="line"><span class="number">28894</span> root      <span class="number">22</span>   <span class="number">0</span> <span class="number">1501</span>m <span class="number">405</span>m  <span class="number">10</span>m S <span class="number">52.2</span>  <span class="number">1.3</span>   <span class="number">2534</span>:<span class="number">16</span> java                                                                   </span><br><span class="line"><span class="number">18249</span> root      <span class="number">18</span>   <span class="number">0</span> <span class="number">3201</span>m <span class="number">1.9</span>g  <span class="number">11</span>m S <span class="number">35.9</span>  <span class="number">6.0</span> <span class="number">569</span>:<span class="number">39.41</span> java                                                                   </span><br><span class="line"> <span class="number">2808</span> root      <span class="number">25</span>   <span class="number">0</span> <span class="number">3333</span>m <span class="number">1.0</span>g  <span class="number">11</span>m S <span class="number">24.3</span>  <span class="number">3.1</span> <span class="number">526</span>:<span class="number">51.85</span> java                                                                   </span><br><span class="line"><span class="number">25668</span> root      <span class="number">23</span>   <span class="number">0</span> <span class="number">3180</span>m <span class="number">704</span>m  <span class="number">11</span>m S <span class="number">14.0</span>  <span class="number">2.2</span> <span class="number">360</span>:<span class="number">44.53</span> java                                                                   </span><br><span class="line">  <span class="number">574</span> root      <span class="number">25</span>   <span class="number">0</span> <span class="number">3168</span>m <span class="number">611</span>m  <span class="number">10</span>m S <span class="number">12.6</span>  <span class="number">1.9</span> <span class="number">556</span>:<span class="number">59.63</span> java                                                                   </span><br><span class="line"> <span class="number">1599</span> root      <span class="number">20</span>   <span class="number">0</span> <span class="number">3237</span>m <span class="number">1.9</span>g  <span class="number">11</span>m S <span class="number">12.3</span>  <span class="number">6.2</span> <span class="number">262</span>:<span class="number">01.14</span> java                                                                                                                                                                                          </span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>前五行是当前系统情况整体的统计信息区。下面我们看每一行信息的具体意义。</li>
+</ul>
+<h4 id="1、第一行，任务队列信息"><a href="#1、第一行，任务队列信息" class="headerlink" title="1、第一行，任务队列信息"></a>1、第一行，任务队列信息</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top - 14:06:23 up 70 days, 16:44,  2 users,  <span class="keyword">load</span> average: <span class="number">1.25</span>, <span class="number">1.32</span>, <span class="number">1.35</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">14:06:23 — 当前系统时间</span><br><span class="line">up 70 days, 16:44 — 系统已经运行了70天16小时44分钟（在这期间系统没有重启过的吆！）</span><br><span class="line">2 users — 当前有2个用户登录系统</span><br><span class="line"><span class="keyword">load</span> average: <span class="number">1.15</span>, <span class="number">1.42</span>, <span class="number">1.44</span> — <span class="keyword">load</span> average后面的三个数分别是<span class="number">1</span>分钟、<span class="number">5</span>分钟、<span class="number">15</span>分钟的负载情况。</span><br><span class="line"><span class="keyword">load</span> average数据是每隔<span class="number">5</span>秒钟检查一次活跃的进程数，然后按特定算法计算出的数值。如果这个数除以逻辑CPU的数量，结果高于<span class="number">5</span>的时候就表明系统在超负荷运转了。</span><br></pre></td></tr></table></figure>
+<h4 id="2、第二行，Tasks-—-任务（进程）"><a href="#2、第二行，Tasks-—-任务（进程）" class="headerlink" title="2、第二行，Tasks — 任务（进程）"></a>2、第二行，Tasks — 任务（进程）</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tasks: 206 total,   1 running, 205 sleeping,   0 stopped,   0 zombie</span><br></pre></td></tr></table></figure>
+<ul>
+<li>系统现在共有206个进程，其中处于运行中的有1个，205个在休眠（sleep），stoped状态的有0个，zombie状态（僵尸）的有0个。</li>
+</ul>
+<h4 id="3、第三行，cpu状态信息"><a href="#3、第三行，cpu状态信息" class="headerlink" title="3、第三行，cpu状态信息"></a>3、第三行，cpu状态信息</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cpu(s):  5.9%us,  3.4%sy,  0.0%ni, 90.4%id,  0.0%wa,  0.0%hi,  0.2%si,  0.0%st</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">5.9%us — 用户空间占用CPU的百分比。</span><br><span class="line">3.4% sy — 内核空间占用CPU的百分比。</span><br><span class="line">0.0% ni — 改变过优先级的进程占用CPU的百分比</span><br><span class="line">90.4% id — 空闲CPU百分比</span><br><span class="line">0.0% wa — IO等待占用CPU的百分比</span><br><span class="line">0.0% hi — 硬中断（Hardware IRQ）占用CPU的百分比</span><br><span class="line">0.2% si — 软中断（Software Interrupts）占用CPU的百分比</span><br><span class="line">备注：在这里CPU的使用比率和windows概念不同，需要理解linux系统用户空间和内核空间的相关知识！</span><br></pre></td></tr></table></figure>
+<h4 id="4、第四行-内存状态"><a href="#4、第四行-内存状态" class="headerlink" title="4、第四行,内存状态"></a>4、第四行,内存状态</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Mem:  32949016k total, 14411180k used, 18537836k free,   169884k buffers</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">32949016k total — 物理内存总量（32GB）</span><br><span class="line">14411180k used — 使用中的内存总量（14GB）</span><br><span class="line">18537836k free — 空闲内存总量（18GB）</span><br><span class="line">169884k buffers — 缓存的内存量 （169M）</span><br></pre></td></tr></table></figure>
+<h4 id="5、第五行，swap交换分区信息"><a href="#5、第五行，swap交换分区信息" class="headerlink" title="5、第五行，swap交换分区信息"></a>5、第五行，swap交换分区信息</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Swap: 32764556k total,        0k used, 32764556k free,  3612636k cached</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">32764556k total — 交换区总量（32GB）</span><br><span class="line">0k used — 使用的交换区总量（0K）</span><br><span class="line">32764556k free — 空闲交换区总量（32GB）</span><br><span class="line">3612636k cached — 缓冲的交换区总量（3.6GB）</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>第四行中使用中的内存总量（used）指的是现在系统内核控制的内存数，空闲内存总量（free）是内核还未纳入其管控范围的数量。纳入内核管理的内存不见得都在使用中，还包括过去使用过的现在可以被重复利用的内存，内核并不把这些可被重新使用的内存交还到free中去，因此在linux上free内存会越来越少，但不用为此担心。</p>
+</li>
+<li><p>如果出于习惯去计算可用内存数，这里有个近似的计算公式：第四行的free + 第四行的buffers + 第五行的cached，按这个公式此台服务器的可用内存：18537836k +169884k +3612636k = 22GB左右。</p>
+</li>
+<li><p>对于内存监控，在top里我们要时刻监控第五行swap交换分区的used，如果这个数值在不断的变化，说明内核在不断进行内存和swap的数据交换，这是真正的内存不够用了。</p>
+</li>
+</ul>
+<h4 id="6、第六行，空行"><a href="#6、第六行，空行" class="headerlink" title="6、第六行，空行"></a>6、第六行，空行</h4><h4 id="7、第七行以下：各进程（任务）的状态监控"><a href="#7、第七行以下：各进程（任务）的状态监控" class="headerlink" title="7、第七行以下：各进程（任务）的状态监控"></a>7、第七行以下：各进程（任务）的状态监控</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                </span><br><span class="line">28894 root      22   0 1501m 405m  10m S 52.2  1.3   2534:16 java                                                                   </span><br><span class="line">18249 root      18   0 3201m 1.9g  11m S 35.9  6.0 569:39.41 java</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">PID — 进程id</span><br><span class="line">USER — 进程所有者</span><br><span class="line">PR — 进程优先级</span><br><span class="line">NI — nice值。负值表示高优先级，正值表示低优先级</span><br><span class="line">VIRT — 进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES</span><br><span class="line">RES — 进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA</span><br><span class="line">SHR — 共享内存大小，单位kb</span><br><span class="line">S — 进程状态。D=不可中断的睡眠状态 R=运行 S=睡眠 T=跟踪/停止 Z=僵尸进程</span><br><span class="line">%CPU — 上次更新到现在的CPU时间占用百分比</span><br><span class="line">%MEM — 进程使用的物理内存百分比</span><br><span class="line">TIME+ — 进程使用的CPU时间总计，单位1/100秒</span><br><span class="line">COMMAND — 进程名称（命令名/命令行）</span><br></pre></td></tr></table></figure>
+<h3 id="其他技巧"><a href="#其他技巧" class="headerlink" title="其他技巧"></a>其他技巧</h3><h4 id="1、多U多核CPU监控"><a href="#1、多U多核CPU监控" class="headerlink" title="1、多U多核CPU监控"></a>1、多U多核CPU监控</h4><ul>
+<li>在top基本视图中，按键盘数字“1”，可监控每个逻辑CPU的状况：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">top - 10:50:22 up 18 days, 21:37,  3 users,  <span class="keyword">load</span> average: <span class="number">0.00</span>, <span class="number">0.01</span>, <span class="number">0.05</span></span><br><span class="line">Tasks: <span class="number">134</span> total,   <span class="number">1</span> running, <span class="number">133</span> sleeping,   <span class="number">0</span> stopped,   <span class="number">0</span> zombie</span><br><span class="line">%Cpu0  :  <span class="number">0.3</span> us,  <span class="number">0.0</span> sy,  <span class="number">0.0</span> ni, <span class="number">99.7</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">%Cpu1  :  <span class="number">0.3</span> us,  <span class="number">0.0</span> sy,  <span class="number">0.0</span> ni, <span class="number">99.7</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">%Cpu2  :  <span class="number">0.3</span> us,  <span class="number">0.0</span> sy,  <span class="number">0.0</span> ni, <span class="number">99.7</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">%Cpu3  :  <span class="number">0.0</span> us,  <span class="number">0.0</span> sy,  <span class="number">0.0</span> ni,<span class="number">100.0</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">KiB Mem : <span class="number">12139592</span> total,  <span class="number">1029092</span> free,  <span class="number">6069216</span> used,  <span class="number">5041284</span> buff/<span class="keyword">cache</span></span><br><span class="line">KiB Swap:  <span class="number">5242876</span> total,  <span class="number">5242876</span> free,        <span class="number">0</span> used.  <span class="number">5662784</span> avail Mem </span><br><span class="line"></span><br><span class="line">  PID <span class="keyword">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     <span class="keyword">TIME</span>+ COMMAND                                                                                                                             </span><br><span class="line">  <span class="number">427</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.3</span>  <span class="number">0.0</span>   <span class="number">2</span>:<span class="number">41.88</span> xfsaild/dm<span class="number">-0</span>                                                                                                                        </span><br><span class="line">  <span class="number">657</span> root      <span class="number">20</span>   <span class="number">0</span>  <span class="number">307732</span>  <span class="number">10836</span>   <span class="number">4820</span> S   <span class="number">0.3</span>  <span class="number">0.1</span>   <span class="number">9</span>:<span class="number">10.83</span> vmtoolsd                                                                                                                            </span><br><span class="line">  <span class="number">758</span> zabbix    <span class="number">20</span>   <span class="number">0</span>   <span class="number">81052</span>   <span class="number">2264</span>   <span class="number">1312</span> S   <span class="number">0.3</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">43.81</span> zabbix_agentd                                                                                                                       </span><br><span class="line"> <span class="number">6132</span> root      <span class="number">20</span>   <span class="number">0</span>  <span class="number">213896</span> <span class="number">194688</span>   <span class="number">9628</span> S   <span class="number">0.3</span>  <span class="number">1.6</span>  <span class="number">68</span>:<span class="number">59.11</span> consul                                                                                                                              </span><br><span class="line"><span class="number">14142</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6078564</span> <span class="number">1.175</span>g  <span class="number">14156</span> S   <span class="number">0.3</span> <span class="number">10.1</span>   <span class="number">2</span>:<span class="number">44.55</span> <span class="keyword">java</span>                                                                                                                                </span><br><span class="line"><span class="number">15310</span> root      <span class="number">20</span>   <span class="number">0</span>  <span class="number">157716</span>   <span class="number">2324</span>   <span class="number">1572</span> R   <span class="number">0.3</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">00.01</span> top                                                                                                                                 </span><br><span class="line">    <span class="number">1</span> root      <span class="number">20</span>   <span class="number">0</span>   <span class="number">43160</span>   <span class="number">3560</span>   <span class="number">2384</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">06.32</span> systemd                                                                                                                             </span><br><span class="line">    <span class="number">2</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">00.01</span> kthreadd                                                                                                                            </span><br><span class="line">    <span class="number">3</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">01.06</span> ksoftirqd/<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h4 id="2、排序"><a href="#2、排序" class="headerlink" title="2、排序"></a>2、排序</h4><ul>
+<li><p>默认进入<code>top</code>时，各进程是按照<code>CPU</code>的占用量来排序的</p>
+</li>
+<li><p>通过<code>shift + &gt;</code>或<code>shift + &lt;</code>可以向右或左改变排序列</p>
+</li>
+<li><p>按下大写<code>P</code>会以cpu从大到小排序，大写<code>M</code>以内存大小排序</p>
+</li>
+</ul>
+<h4 id="3、显示-完整命令"><a href="#3、显示-完整命令" class="headerlink" title="3、显示 完整命令"></a>3、显示 完整命令</h4><ul>
+<li><code>top -c</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">top - 10:54:05 up 18 days, 21:40,  3 users,  <span class="keyword">load</span> average: <span class="number">0.07</span>, <span class="number">0.03</span>, <span class="number">0.05</span></span><br><span class="line">Tasks: <span class="number">134</span> total,   <span class="number">1</span> running, <span class="number">133</span> sleeping,   <span class="number">0</span> stopped,   <span class="number">0</span> zombie</span><br><span class="line">%Cpu(s):  <span class="number">3.2</span> us,  <span class="number">0.2</span> sy,  <span class="number">0.0</span> ni, <span class="number">96.5</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">KiB Mem : <span class="number">12139592</span> total,  <span class="number">1024768</span> free,  <span class="number">6072260</span> used,  <span class="number">5042564</span> buff/<span class="keyword">cache</span></span><br><span class="line">KiB Swap:  <span class="number">5242876</span> total,  <span class="number">5242876</span> free,        <span class="number">0</span> used.  <span class="number">5659636</span> avail Mem </span><br><span class="line"></span><br><span class="line">  PID <span class="keyword">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     <span class="keyword">TIME</span>+ COMMAND                                                                                                                             </span><br><span class="line"><span class="number">14228</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5965816</span> <span class="number">1.377</span>g  <span class="number">14200</span> S   <span class="number">9.7</span> <span class="number">11.9</span>   <span class="number">2</span>:<span class="number">29.70</span> <span class="keyword">java</span> -<span class="keyword">server</span> -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Xloggc:/tmp/gc_20200505100131.log -jar /fjf_work/fuba+</span><br><span class="line"> <span class="number">7738</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5889728</span> <span class="number">662120</span>  <span class="number">13964</span> S   <span class="number">2.0</span>  <span class="number">5.5</span>  <span class="number">53</span>:<span class="number">16.84</span> <span class="keyword">java</span> -<span class="keyword">server</span> -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Xloggc:/tmp/gc_20200416161119.log -jar /fjf_work/fujf+</span><br><span class="line"><span class="number">14142</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6078564</span> <span class="number">1.175</span>g  <span class="number">14160</span> S   <span class="number">1.3</span> <span class="number">10.2</span>   <span class="number">2</span>:<span class="number">46.01</span> <span class="keyword">java</span> -<span class="keyword">server</span> -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Xloggc:/tmp/gc_20200505100131.log -jar /fjf_work/fuba+</span><br><span class="line"> <span class="number">8249</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5866352</span> <span class="number">787700</span>  <span class="number">13972</span> S   <span class="number">0.7</span>  <span class="number">6.5</span>  <span class="number">19</span>:<span class="number">22.37</span> <span class="keyword">java</span> -<span class="keyword">server</span> -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Xloggc:/tmp/gc_20200416161543.log -jar /fjf_work/fujf+</span><br><span class="line">    <span class="number">9</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.3</span>  <span class="number">0.0</span>   <span class="number">3</span>:<span class="number">35.49</span> [rcu_sched]                                                                                                                         </span><br><span class="line"> <span class="number">1033</span> elastic+  <span class="number">20</span>   <span class="number">0</span> <span class="number">6250940</span> <span class="number">832420</span>  <span class="number">16336</span> S   <span class="number">0.3</span>  <span class="number">6.9</span>  <span class="number">51</span>:<span class="number">58.91</span> /opt/jdk1<span class="number">.8</span>/<span class="keyword">bin</span>/<span class="keyword">java</span> -Xms256m -Xmx1g -Djava.awt.headless=<span class="literal">true</span> -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFr+</span><br><span class="line"> <span class="number">8623</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5879284</span> <span class="number">567444</span>  <span class="number">13944</span> S   <span class="number">0.3</span>  <span class="number">4.7</span>  <span class="number">41</span>:<span class="number">29.83</span> <span class="keyword">java</span> -<span class="keyword">server</span> -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Xloggc:/tmp/gc_20200416161551.log -jar /fjf_work/fujf+</span><br><span class="line">    <span class="number">1</span> root      <span class="number">20</span>   <span class="number">0</span>   <span class="number">43160</span>   <span class="number">3560</span>   <span class="number">2384</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">06.32</span> /usr/lib/systemd/systemd <span class="comment">--switched-root --system --deserialize 21                                                                  </span></span><br><span class="line">    <span class="number">2</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">00.01</span> [kthreadd]                                                                                                                          </span><br><span class="line">    <span class="number">3</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">01.06</span> [ksoftirqd/<span class="number">0</span>]                                                                                                                       </span><br><span class="line">    <span class="number">5</span> root       <span class="number">0</span> <span class="number">-20</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">00.00</span> [kworker/<span class="number">0</span>:<span class="number">0</span>H]                                                                                                                      </span><br><span class="line">    <span class="number">7</span> root      rt   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">00.26</span> [<span class="keyword">migration</span>/<span class="number">0</span>]                                                                                                                       </span><br><span class="line">    <span class="number">8</span> root      <span class="number">20</span>   <span class="number">0</span>       <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span> S   <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0</span>:<span class="number">00.00</span> [rcu_bh]</span><br></pre></td></tr></table></figure>
+<h4 id="4、显示指定的进程信息"><a href="#4、显示指定的进程信息" class="headerlink" title="4、显示指定的进程信息"></a>4、显示指定的进程信息</h4><ul>
+<li><code>top -p 14142</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@sc-uat-01 logs]# top -p 14142</span><br><span class="line">top - 10:55:35 up 18 days, 21:42,  3 users,  <span class="keyword">load</span> average: <span class="number">0.02</span>, <span class="number">0.02</span>, <span class="number">0.05</span></span><br><span class="line">Tasks:   <span class="number">1</span> total,   <span class="number">0</span> running,   <span class="number">1</span> sleeping,   <span class="number">0</span> stopped,   <span class="number">0</span> zombie</span><br><span class="line">%Cpu(s):  <span class="number">0.8</span> us,  <span class="number">0.1</span> sy,  <span class="number">0.0</span> ni, <span class="number">99.2</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">KiB Mem : <span class="number">12139592</span> total,  <span class="number">1048680</span> free,  <span class="number">6045092</span> used,  <span class="number">5045820</span> buff/<span class="keyword">cache</span></span><br><span class="line">KiB Swap:  <span class="number">5242876</span> total,  <span class="number">5242876</span> free,        <span class="number">0</span> used.  <span class="number">5687064</span> avail Mem </span><br><span class="line"></span><br><span class="line">  PID <span class="keyword">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     <span class="keyword">TIME</span>+ COMMAND                                                                                                                             </span><br><span class="line"><span class="number">14142</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6078564</span> <span class="number">1.149</span>g  <span class="number">14160</span> S   <span class="number">0.0</span>  <span class="number">9.9</span>   <span class="number">2</span>:<span class="number">47.83</span> <span class="keyword">java</span></span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.cnblogs.com/peida/archive/2012/12/24/2831353.html" target="_blank" rel="noopener">https://www.cnblogs.com/peida/archive/2012/12/24/2831353.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/&title=《Linux-top命令》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/&title=《Linux-top命令》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux-top命令》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/20/frontend/hover/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">hover.css</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/08/backend/server/Linux/Linux-笔记/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Linux-笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/&title=《Linux-top命令》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/&title=《Linux-top命令》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux-top命令》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top命令/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACt0lEQVR42u3aQW4jMQwEQP//09nrAouJu0nJyQI1pyC2ZdUEGCpNvl7x9fVw/f1q/s7ks0+vvm5ceHh4eIe2nm/6+83lN+Lf1Z5+k+wZDw8P7zbv6Yk629abrwye3vl+3ljw8PDwfgHv1Pm9PS7j4eHh/e+8aOn4QHwqmMDDw8P7JC8PameFId9uEk9cyVrw8PDwYt7m+PtTP1/p7+Hh4eGtu+pttPqZAYVit3h4eHgXeG3QkFDzAYLk0NzeSjw8PLzP8PLH7qwdlYxn5TFue5vw8PDwPs9rY9akDdaOwx4YXMDDw8M7xNs8iGeH7PadszYYHh4e3j1eOz7VRqjfF49VuHCqm4eHh4d3bThgE9HOgoz8s8VkGR4eHt6aly+dhBHthtrWWl3M8PDw8C7z2uPv7AA9KzPDgQY8PDy8C7ykAJxt9ieMvAhFZQMPDw/vKC//4k0bLAkR2oKUDCLg4eHh3eDNhqLa2HcTfMzi3WKyDA8PD2/NS5pem0Iya4nlt2/4N8TDw8OLefmm28N0fsg+ENQ+rYmHh4d3gZeXhE1haMPiWYEpmmF4eHh4C96sSZ/fiNmo1mz0qp6MwMPDwxvx8i+exaybQa42TXncIR4eHt4FXtszmj3QZyvkx/o6q8bDw8Nb89pQYPbZ9mbtf4OHh4d3g5eEqpuphITXhhpFlcPDw8O7xssHm5LDdxtk7JttbyoeHh4e3gVeO+TUjgvMvqu9oY8pNR4eHt4h3ld5tfHrrDwkZ+OoeODh4eFd4G0aYDfC2VkkceDCw8PDK3mbpdt2/mb9YaHCw8PDu8bLG2P7J3B+cJ8VsOicjoeHh/dBXt4w2wSy+3EEPDw8vN/P20Su+fp1OcHDw8O7xmuPwu2IwKxVlq8QzZTh4eHhHeK1/+RvbkTb5s/HDg709/Dw8PDeX38Ay2g1ygeWAiYAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

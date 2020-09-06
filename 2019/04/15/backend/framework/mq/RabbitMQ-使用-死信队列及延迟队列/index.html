@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq-dead.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rabbitmq-sixing.png">
-<meta property="og:updated_time" content="2020-04-12T05:53:21.620Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.190Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ-使用-死信队列及延迟队列">
 <meta name="twitter:description" content="前言死信队列 DLX(Dead-Letter-Exchange)，当消息在一个队列中变成死信之后，它能被重新被发送到另一个交换器中，这个交换器叫做DLX，而绑定DLX的队列叫死信队列  消息变成死信有下面几种情况  消息被拒绝(Basic.Reject/Basic.Nack) ，井且设置 requeue 参数为 false; 消息过期 队列达到最大长度   对于 RabbitMQ 来说， DLX">
@@ -426,10 +426,11 @@ var _hmt = _hmt || [];
 <li><p>如果在消费者的消费数据大于生产者消费的速度且Broker中没有消息堆积的情况下，对于发送的消息设置优先级并没有什么实际意义，一条消息怎么判断优先级</p>
 </li>
 </ul>
-<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>但是基于TTL的延时队列存在一个问题，就是同一个队列里的消息延时时间最好一致，比如说队列里的延时时间都是1小时，千万不能队列里的消息延时时间乱七八糟多久的都有，这样的话先入队的消息如果延时时间过长会堵着后入队延时时间小的消息，导致后面的消息到时也无法变成死信转发出去，很坑！！！<br>举个栗子：延时队列里先后进入A,B,C三条消息，存活时间是3h,2h,1h，结果到了1小时C不会死，到了2hB不会死，到了3小时A死了，同时B,C也死了，意味着3h后A,B,C才能消费，很坑！！！<br>我本来使用时候以为会像redis的存活时间一样，内部维护一个定时器去扫描死亡时间然后变成死信转发，结果不是。。。<br>至于怎么解决这个问题，一个队列里可以放不同死亡时间的消息，还能够异步死亡转发，请看下回分解:<br>springboot整合rabbitmq实现延时队列之rabbitmq_delayed_message<em>exchange插件方式<br>————————————————<br>版权声明：本文为CSDN博主「是guava不是瓜娃啊」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a href="https://blog.csdn.net/eumenides" target="_blank" rel="noopener">https://blog.csdn.net/eumenides</a></em>/java/article/details/86025773</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>但是基于TTL的延时队列存在一个问题，就是同一个队列里的消息延时时间最好一致，比如说队列里的延时时间都是1小时，千万不能队列里的消息延时时间乱七八糟多久的都有，这样的话先入队的消息如果延时时间过长会堵着后入队延时时间小的消息，导致后面的消息到时也无法变成死信转发出去，很坑！！！<br>举个栗子：延时队列里先后进入A,B,C三条消息，存活时间是3h,2h,1h，结果到了1小时C不会死，到了2hB不会死，到了3小时A死了，同时B,C也死了，意味着3h后A,B,C才能消费，很坑！！！<br>我本来使用时候以为会像redis的存活时间一样，内部维护一个定时器去扫描死亡时间然后变成死信转发，结果不是。。。<br>至于怎么解决这个问题，一个队列里可以放不同死亡时间的消息，还能够异步死亡转发，请看下回分解:<br>springboot整合rabbitmq实现延时队列之rabbitmq_delayed_message_exchange插件方式</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>RabbitMQ实战指南</li>
 <li><a href="https://www.cnblogs.com/vipstone/p/9295625.html" target="_blank" rel="noopener">https://www.cnblogs.com/vipstone/p/9295625.html</a></li>
+<li><a href="https://blog.csdn.net/eumenides_/java/article/details/86025773" target="_blank" rel="noopener">https://blog.csdn.net/eumenides_/java/article/details/86025773</a></li>
 </ul>
 
         </div>
@@ -581,7 +582,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

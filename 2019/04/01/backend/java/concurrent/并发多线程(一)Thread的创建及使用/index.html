@@ -29,12 +29,10 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="1. 线程创建及使用1.1 继承Thread类创建线程类 实现最简单，如果要访问当前线程，则无需使用 Thread.currentThread()直接使用this即可得到当前线程 不能再继承其他父类，因为线程类已经继承了Thread类 Thread类继承Runnable类12345678910111213141516public class ThreadTest &amp;#123;    public">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadprocess.png">
-<meta property="og:updated_time" content="2019-11-28T13:06:55.355Z">
+<meta property="og:updated_time" content="2020-08-16T04:24:18.025Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发多线程(一)Thread的创建及使用">
 <meta name="twitter:description" content="1. 线程创建及使用1.1 继承Thread类创建线程类 实现最简单，如果要访问当前线程，则无需使用 Thread.currentThread()直接使用this即可得到当前线程 不能再继承其他父类，因为线程类已经继承了Thread类 Thread类继承Runnable类12345678910111213141516public class ThreadTest &amp;#123;    public">
-<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadprocess.png">
     
         <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
     
@@ -326,7 +324,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-线程创建及使用"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 线程创建及使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-继承Thread类创建线程类"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1.1 继承Thread类创建线程类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-实现Runnable类创建线程类"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">1.2 实现Runnable类创建线程类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-3-使用Callable和Future创建线程"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">1.3 使用Callable和Future创建线程</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-线程的生命周期"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 线程的生命周期</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-控制线程"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. 控制线程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-1-join线程"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">3.1 join线程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-2-sleep睡眠线程"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">3.2 sleep睡眠线程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-3-yield线程让步"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">3.3 yield线程让步</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-4-setPriority-改变线程优先级"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">3.4 setPriority() 改变线程优先级</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">4.</span> <span class="post-toc-text">补充</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-线程创建及使用"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 线程创建及使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-继承Thread类创建线程类"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1.1 继承Thread类创建线程类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-实现Runnable类创建线程类"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">1.2 实现Runnable类创建线程类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-3-使用Callable和Future创建线程"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">1.3 使用Callable和Future创建线程</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-控制线程"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 控制线程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-join线程"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">2.1 join线程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-sleep睡眠线程"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2.2 sleep睡眠线程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-3-yield线程让步"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">2.3 yield线程让步</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-4-setPriority-改变线程优先级"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">2.4 setPriority() 改变线程优先级</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">3.</span> <span class="post-toc-text">补充</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#await-wait-与sleep、yield间的区别"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">await/wait 与sleep、yield间的区别</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
         </nav>
     </aside>
 
@@ -371,33 +369,16 @@ var _hmt = _hmt || [];
 <li>可以得到执行异常<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallableTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        CustomCallable customCallable = <span class="keyword">new</span> CustomCallable();</span><br><span class="line">        <span class="comment">// 使用Callable方式创建线程，需要FutureTask类的支持，用于接收运算结果，可以使用泛型指定返回值的类型</span></span><br><span class="line">        FutureTask&lt;Integer&gt; futureTask = <span class="keyword">new</span> FutureTask(customCallable);</span><br><span class="line">        <span class="keyword">new</span> Thread(futureTask).start();</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 接收运算结果，只有当该线程执行完毕后才会获取到运算结果，等同于闭锁的效果</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            sum = futureTask.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"sum is "</span> + sum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomCallable</span> <span class="keyword">implements</span> <span class="title">Callable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// 计算1-100的和</span></span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">100</span>; i++) &#123;</span><br><span class="line">            sum += i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="2-线程的生命周期"><a href="#2-线程的生命周期" class="headerlink" title="2. 线程的生命周期"></a>2. 线程的生命周期</h2><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="/images/server/java/Concurrent/threadprocess.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-<ul>
-<li><p>线程从创建到最终的消亡，要经历若干个状态。一般来说，线程包括以下这几个状态：创建<code>(new)</code>、就绪<code>(runnable)</code>、运行<code>(running)</code>、阻塞<code>(blocked)</code>、消亡<code>（dead）</code>。</p>
-</li>
-<li><p>当需要新起一个线程来执行某个子任务时，就创建了一个线程。但是线程创建之后，不会立即进入就绪状态，因为线程的运行需要一些条件（比如内存资源，在前面的<code>JVM</code>内存区域划分一篇博文中知道程序计数器、Java栈、本地方法栈都是线程私有的，所以需要为线程分配一定的内存空间），只有线程运行需要的所有条件满足了，才进入就绪状态。</p>
-</li>
-<li><p>线程上下文切换，线程的上下文切换实际上就是 存储和恢复<code>CPU</code>状态的过程，它使得线程执行能够从中断点恢复执行，上下文切换过程中会记录程序计数器、<code>CPU</code>寄存器状态等数据。</p>
-</li>
-<li><p>虽然多线程可以使得任务执行的效率得到提升，但是由于在线程切换时同样会带来一定的开销代价，并且多个线程会导致系统资源占用的增加，所以在进行多线程编程时要注意这些因素。</p>
-</li>
-</ul>
-<h2 id="3-控制线程"><a href="#3-控制线程" class="headerlink" title="3. 控制线程"></a>3. 控制线程</h2><h3 id="3-1-join线程"><a href="#3-1-join线程" class="headerlink" title="3.1 join线程"></a>3.1 join线程</h3><ul>
+<h2 id="2-控制线程"><a href="#2-控制线程" class="headerlink" title="2. 控制线程"></a>2. 控制线程</h2><h3 id="2-1-join线程"><a href="#2-1-join线程" class="headerlink" title="2.1 join线程"></a>2.1 join线程</h3><ul>
 <li>让一个线程等待另一个线程完成的方法，当在某个程序执行流中调用其他线程的<code>join()</code>方法时，调用线程将被阻塞，直到加入的<code>join()</code>线程执行完为止</li>
 </ul>
-<h3 id="3-2-sleep睡眠线程"><a href="#3-2-sleep睡眠线程" class="headerlink" title="3.2 sleep睡眠线程"></a>3.2 sleep睡眠线程</h3><ul>
+<h3 id="2-2-sleep睡眠线程"><a href="#2-2-sleep睡眠线程" class="headerlink" title="2.2 sleep睡眠线程"></a>2.2 sleep睡眠线程</h3><ul>
 <li><code>sleep</code>相当于让线程睡眠，交出<code>CPU</code>，让<code>CPU</code>去执行其他的任务。</li>
 </ul>
-<h3 id="3-3-yield线程让步"><a href="#3-3-yield线程让步" class="headerlink" title="3.3 yield线程让步"></a>3.3 yield线程让步</h3><ul>
+<h3 id="2-3-yield线程让步"><a href="#2-3-yield线程让步" class="headerlink" title="2.3 yield线程让步"></a>2.3 yield线程让步</h3><ul>
 <li>调用<code>yield</code>方法并不会让线程进入阻塞状态，而是让线程重回就绪状态，它只需要等待重新获取<code>CPU</code>执行时间，这一点是和<code>sleep</code>方法不一样的。</li>
 </ul>
-<h3 id="3-4-setPriority-改变线程优先级"><a href="#3-4-setPriority-改变线程优先级" class="headerlink" title="3.4 setPriority() 改变线程优先级"></a>3.4 setPriority() 改变线程优先级</h3><ul>
+<h3 id="2-4-setPriority-改变线程优先级"><a href="#2-4-setPriority-改变线程优先级" class="headerlink" title="2.4 setPriority() 改变线程优先级"></a>2.4 setPriority() 改变线程优先级</h3><ul>
 <li>优先级高的线程获得较多的执行机会</li>
 </ul>
 <h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><ul>
@@ -410,16 +391,48 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
+<h3 id="await-wait-与sleep、yield间的区别"><a href="#await-wait-与sleep、yield间的区别" class="headerlink" title="await/wait 与sleep、yield间的区别"></a>await/wait 与sleep、yield间的区别</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">\</th>
+<th style="text-align:left">await/wait</th>
+<th style="text-align:left">sleep</th>
+<th style="text-align:left">yield</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">谁的方法</td>
+<td style="text-align:left">Condition/Object</td>
+<td style="text-align:left">Thread</td>
+<td style="text-align:left">Thread</td>
+</tr>
+<tr>
+<td style="text-align:left">执行环境</td>
+<td style="text-align:left">同步代码块</td>
+<td style="text-align:left">任意位置</td>
+<td style="text-align:left">任意位置</td>
+</tr>
+<tr>
+<td style="text-align:left">是否释放持有的锁</td>
+<td style="text-align:left">释放</td>
+<td style="text-align:left">不释放</td>
+<td style="text-align:left">不释放</td>
+</tr>
+<tr>
+<td style="text-align:left">调用后何时恢复</td>
+<td style="text-align:left">阻塞在条件队列之上，之后某个线程调用对应的notify/signal方法，才会使得await/wait的线程回到就绪状态，也是不一定立即执行</td>
+<td style="text-align:left">指定时间后</td>
+<td style="text-align:left">立刻进入就绪态</td>
+</tr>
+</tbody>
+</table>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li><p>线程可以比作上班工作流程：</p>
-<ul>
-<li>招来一个新员工就是<code>new</code> 了一个<code>Thread</code></li>
-<li>当然刚进来肯定要先熟悉一下才能真正进入工作状态，那就是线程就绪<code>(runnable)</code>状态</li>
-<li>熟悉的差不多了那就可以真正的工作运行了<code>(running)</code>，哈哈开始干活了</li>
-<li>在工作过程中经常遇到需要其他部门的人支持，这时候就需要等待他们一起配合，那么工作进度就会进入到阻塞<code>(blocked)</code>状态或者<code>join()</code>状态</li>
-<li>当然不可能<code>24</code>小时工作喽，人还是需要休息的<code>sleep</code>，休息完之后又要<code>9</code>点打卡上班了</li>
-<li>那么才算一个工作项目结束呢，1、项目按照预期圆满结束 2、哇老板突然说不做了<code>stop</code> 3、哇，项目发生重大事故<code>error</code>了</li>
-</ul>
+<li><p>当需要新起一个线程来执行某个子任务时，就创建了一个线程。但是线程创建之后，不会立即进入就绪状态，因为线程的运行需要一些条件（比如内存资源，在前面的<code>JVM</code>内存区域划分一篇博文中知道程序计数器、Java栈、本地方法栈都是线程私有的，所以需要为线程分配一定的内存空间），只有线程运行需要的所有条件满足了，才进入就绪状态。</p>
+</li>
+<li><p>线程上下文切换，线程的上下文切换实际上就是 存储和恢复<code>CPU</code>状态的过程，它使得线程执行能够从中断点恢复执行，上下文切换过程中会记录程序计数器、<code>CPU</code>寄存器状态等数据。</p>
+</li>
+<li><p>虽然多线程可以使得任务执行的效率得到提升，但是由于在线程切换时同样会带来一定的开销代价，并且多个线程会导致系统资源占用的增加，所以在进行多线程编程时要注意这些因素。</p>
 </li>
 <li><p>线程是进程划分成的更小的运行单位。线程和进程最大的不同在于基本上各进程是独立的，而各线程则不一定，因为同一进程中的线程极有可能会相互影响。</p>
 </li>
@@ -427,6 +440,7 @@ var _hmt = _hmt || [];
 </ul>
 <h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
 <li><a href="https://www.cnblogs.com/dolphin0520/p/3920357.html" target="_blank" rel="noopener">https://www.cnblogs.com/dolphin0520/p/3920357.html</a></li>
+<li><a href="https://blog.csdn.net/peter_teng/article/details/10197785" target="_blank" rel="noopener">https://blog.csdn.net/peter_teng/article/details/10197785</a></li>
 </ul>
 
         </div>
@@ -503,9 +517,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/04/01/backend/java/concurrent/并发多线程(二)synchronized关键字/" id="post-prev" class="post-nav-link">
+      <a href="/2019/04/01/backend/java/concurrent/并发多线程(一)线程安全相关概念/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">并发多线程(二)synchronized关键字</h4>
+        <h4 class="title">并发多线程(一)线程安全相关概念</h4>
       </a>
     </div>
   
@@ -578,7 +592,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

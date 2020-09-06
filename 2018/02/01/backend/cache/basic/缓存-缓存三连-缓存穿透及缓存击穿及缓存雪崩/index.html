@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/cache1.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/cache.png">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.371Z">
+<meta property="og:updated_time" content="2020-08-16T04:24:17.912Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩">
 <meta name="twitter:description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从">
@@ -327,7 +327,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、缓存穿透"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、缓存穿透</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#什么是缓存穿透"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">什么是缓存穿透</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存穿透的问题"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">如何避免缓存穿透的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、缓存雪崩"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、缓存雪崩</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存雪崩"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">什么是缓存雪崩</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存雪崩的问题"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">如何避免缓存雪崩的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、缓存击穿"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">3、缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存击穿"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">什么是缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何避免缓存击穿的问题"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">如何避免缓存击穿的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、缓存穿透"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、缓存穿透</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#什么是缓存穿透"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">什么是缓存穿透</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存穿透的问题"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">如何避免缓存穿透的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、缓存雪崩"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、缓存雪崩</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存雪崩"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">什么是缓存雪崩</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存雪崩的问题"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">如何避免缓存雪崩的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、缓存击穿"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">3、缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存击穿"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">什么是缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何避免缓存击穿的问题"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">如何避免缓存击穿的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解决数据一致性问题"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">解决数据一致性问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol>
         </nav>
     </aside>
 
@@ -506,9 +506,30 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="解决数据一致性问题"><a href="#解决数据一致性问题" class="headerlink" title="解决数据一致性问题"></a>解决数据一致性问题</h3><ul>
+<li><p>方案一的思路是扫描数据库的数据变化记录，比如数据表里面的数据更新时间戳，或者订阅数据库的binlog记录。当扫描到数据变化时，删除对应的缓存数据。</p>
+</li>
+<li><p>方案二的思路是借助于携程的消息通知平台服务。在订单处理流转的各个重要环节，会有消息事件产生。通过订阅这些消息，能够感知到订单数据的变化，并且通过对不同消息的影响数据范围可以精准地配置缓存数据更新。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>一般避免以上情况发生我们从三个时间段去分析下：</p>
+<ul>
+<li>事前：Redis 高可用、主从+哨兵、Redis cluster，避免全盘崩溃。</li>
+<li>事中：本地 ehcache 缓存 + Hystrix 限流+降级，避免MySQL 被打死。</li>
+<li>事后：Redis 持久化 RDB+AOF，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。</li>
+</ul>
+</li>
+<li><p>使用限流组件，可以设置每秒的请求，有多少能通过组件，剩余的未通过的请求，怎么办？走降级！可以返回一些默认的值，或者友情提示，或者空白的值</p>
+</li>
+<li><p>生活中举个例子就是可以遇到某明星爆出什么事情，你发现你去微博怎么刷都空白界面，但是有的人又直接进了，你多刷几次也出来了，那是做了降级，牺牲部分用户的体验换来服务器的稳定</p>
+</li>
+</ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
 <li><a href="https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug</a></li>
+<li><a href="https://blog.csdn.net/qq_35190492/article/details/102889333" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/102889333</a></li>
+<li><a href="https://mp.weixin.qq.com/s/0ls1QYKAIiZdXhKPQ62OrQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/0ls1QYKAIiZdXhKPQ62OrQ</a></li>
 </ul>
 
         </div>
@@ -660,7 +681,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

@@ -31,9 +31,9 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/lang/string1.jpg">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/lang/string2.jpg">
-<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/lang/string3.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/jvm23.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/lang/string.png">
-<meta property="og:updated_time" content="2019-11-10T02:08:41.967Z">
+<meta property="og:updated_time" content="2020-07-14T14:19:20.134Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java基础-常用类-String">
 <meta name="twitter:description" content="前言 String类代表字符串。 Java程序中的所有字符串文字（例如abc ）都被实现为此类的实例。  解析类成员变量12345678910111213141516171819202122public final class String implements java.io.Serializable, Comparable&amp;lt;String&amp;gt;, CharSequence &amp;#123;">
@@ -407,20 +407,23 @@ var _hmt = _hmt || [];
                 </div>
                 <div class="image-caption"></div>
             </figure></li>
-<li>在不同版本的<code>JDK</code>中，<code>Java</code>堆和字符串常量池之间的关系是不一样的，上面这张图只是为了方便表述，就画成两个独立的物理区域了，具体情况请参考Java虚拟机规范。 <figure class="image-bubble">
+<li>在不同版本的<code>JDK</code>中，<code>Java</code>堆和字符串常量池之间的关系是不一样的，在Java 7之前，该池位于热点JVM上的堆的permgen空间中，1.8中元数据区取代了永久代。元空间的本质和永久代类似，都是对JVM规范中方法区的实现。不过元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。</li>
+<li><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/images/server/java/jdk/lang/string3.png" alt="" title="">
+                    <img src="/images/server/java/JVM/jvm23.png" alt="" title="">
                 </div>
                 <div class="image-caption"></div>
-            </figure></li>
-</ul>
+            </figure>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li>上面两种实例化方式的比较<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestString</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String str1 = <span class="string">"Lance"</span>;</span><br><span class="line">        String str2 = <span class="keyword">new</span> String(<span class="string">"Lance"</span>);</span><br><span class="line">        String str3 = str2; <span class="comment">// 引用传递，str3直接指向st2的堆内存地址</span></span><br><span class="line">        String str4 = <span class="string">"Lance"</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(str1==str2); <span class="comment">// false</span></span><br><span class="line">        System.out.println(str1==str3); <span class="comment">// false</span></span><br><span class="line">        System.out.println(str3==str2); <span class="comment">// true</span></span><br><span class="line">        System.out.println(str1==str4); <span class="comment">// true</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</ul>
+</li>
+<li><p>上面两种实例化方式的比较</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestString</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String str1 = <span class="string">"Lance"</span>;</span><br><span class="line">        String str2 = <span class="keyword">new</span> String(<span class="string">"Lance"</span>);</span><br><span class="line">        String str3 = str2; <span class="comment">// 引用传递，str3直接指向st2的堆内存地址</span></span><br><span class="line">        String str4 = <span class="string">"Lance"</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(str1==str2); <span class="comment">// false</span></span><br><span class="line">        System.out.println(str1==str3); <span class="comment">// false</span></span><br><span class="line">        System.out.println(str3==str2); <span class="comment">// true</span></span><br><span class="line">        System.out.println(str1==str4); <span class="comment">// true</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h4 id="String的不变性"><a href="#String的不变性" class="headerlink" title="String的不变性"></a>String的不变性</h4><h5 id="前言-1"><a href="#前言-1" class="headerlink" title="前言"></a>前言</h5><ul>
@@ -454,10 +457,10 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><ul>
-<li><p>String的不变性主要是为了<code>安全性</code>和<code>效率</code>的缘故</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2></li>
-<li><p>理解<code>String</code>的<code>intern</code>方法</p>
-<ul>
+<li>String的不变性主要是为了<code>安全性</code>和<code>效率</code>的缘故</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li>理解<code>String</code>的<code>intern</code>方法<ul>
 <li>当一个<code>String</code>实例<code>str</code>调用<code>intern()</code>方法时，<code>Java</code>查找常量池中是否有相同<code>Unicode</code>的字符串常量，如果有，则返回其的引用，如果没有，则在常量池中增加一个<code>Unicode</code>等于<code>str</code>的字符串并返回它的引用；<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestString</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">     String str =<span class="keyword">new</span> String(<span class="string">"Lance"</span>).intern();<span class="comment">// 对匿名对象"hello"进行手工入池操作</span></span><br><span class="line">     String str1=<span class="string">"Lance"</span>;</span><br><span class="line">     System.out.println(str==str1);<span class="comment">//true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
@@ -542,18 +545,18 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/" id="post-prev" class="post-nav-link">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-hashcode和equals的区别/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Java基础-强引用-软引用-弱引用-虚引用</h4>
+        <h4 class="title">Java基础-hashcode和equals的区别</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/" id="post-next" class="post-nav-link">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-笔记/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Java基础-基本数据类型及包装类</h4>
+        <h4 class="title">Java基础-笔记</h4>
       </a>
     </div>
   
@@ -617,7 +620,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

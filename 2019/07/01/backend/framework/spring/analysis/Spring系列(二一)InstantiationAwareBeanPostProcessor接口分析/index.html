@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="前言 上一章节我们知道BeanPostProcessor接口的两个方法是在初始化 Bean前后调用的，注意这个时候 Bean已经实例化了  12345678910public interface BeanPostProcessor &amp;#123;    /**    * 执行初始化 `Bean` 方法之前调用    **/	Object postProcessBeforeInitialization">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 上一章节我们知道BeanPostProcessor接口的两个方法是在初始化 Bean前后调用的，注意这个时候 Bean已经实例化了  12345678910public interface BeanPostProcessor &amp;#123;    /**    * 执行初始化 `Bean` 方法之前调用    **/	Object postProcessBeforeInitialization">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析">
+<meta name="twitter:description" content="前言 上一章节我们知道BeanPostProcessor接口的两个方法是在初始化 Bean前后调用的，注意这个时候 Bean已经实例化了  12345678910public interface BeanPostProcessor &amp;#123;    /**    * 执行初始化 `Bean` 方法之前调用    **/	Object postProcessBeforeInitialization">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-07-01T14:01:47.000Z" itemprop="datePublished" class="page-time">
+  2019-07-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-07-01 22:01:47" datetime="2019-07-01T14:01:47.000Z" itemprop="datePublished">2019-07-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>上一章节我们知道<code>BeanPostProcessor</code>接口的两个方法是在初始化 <code>Bean</code>前后调用的，注意这个时候 <code>Bean</code>已经实例化了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 执行初始化 `Bean` 方法之前调用</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">	<span class="function">Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 执行初始化 `Bean` 方法之后调用</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">	<span class="function">Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>那如果要在实例化前后要做一些事情呢，<code>InstantiationAwareBeanPostProcessor</code>接口可以帮你处理这个，下面可以看到<code>InstantiationAwareBeanPostProcessor</code>接口继承<code>BeanPostProcessor</code>接口，也就是对<code>BeanPostProcessor</code>的扩展</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 主要作用在于目标对象的实例化过程中需要处理的事情，包括实例化对象的前后过程以及实例的属性设置</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Subinterface of &#123;<span class="doctag">@link</span> BeanPostProcessor&#125; that adds a before-instantiation callback,</span></span><br><span class="line"><span class="comment"> * and a callback after instantiation but before explicit properties are set or</span></span><br><span class="line"><span class="comment"> * autowiring occurs.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Typically used to suppress default instantiation for specific target beans,</span></span><br><span class="line"><span class="comment"> * for example to create proxies with special TargetSources (pooling targets,</span></span><br><span class="line"><span class="comment"> * lazily initializing targets, etc), or to implement additional injection strategies</span></span><br><span class="line"><span class="comment"> * such as field injection.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;&lt;b&gt;<span class="doctag">NOTE:</span>&lt;/b&gt; This interface is a special purpose interface, mainly for</span></span><br><span class="line"><span class="comment"> * internal use within the framework. It is recommended to implement the plain</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> BeanPostProcessor&#125; interface as far as possible, or to derive from</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> InstantiationAwareBeanPostProcessorAdapter&#125; in order to be shielded</span></span><br><span class="line"><span class="comment"> * from extensions to this interface.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Juergen Hoeller</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Rod Johnson</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.2</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#setCustomTargetSourceCreators</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">InstantiationAwareBeanPostProcessor</span> <span class="keyword">extends</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 是最先执行的方法，它在目标对象实例化之前调用，该方法的返回值类型是Object，我们可以返回任何类型的值。</span></span><br><span class="line"><span class="comment">	 * 由于这个时候目标对象还未实例化，所以这个返回值可以用来代替原本该生成的目标对象的实例(比如AOP代理对象)。</span></span><br><span class="line"><span class="comment">	 * 如果该方法的返回值代替原本该生成的目标对象，</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Apply this BeanPostProcessor &lt;i&gt;before the target bean gets instantiated&lt;/i&gt;.</span></span><br><span class="line"><span class="comment">	 * The returned bean object may be a proxy to use instead of the target bean,</span></span><br><span class="line"><span class="comment">	 * effectively suppressing default instantiation of the target bean.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;If a non-null object is returned by this method, the bean creation process</span></span><br><span class="line"><span class="comment">	 * will be short-circuited. The only further processing applied is the</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> #postProcessAfterInitialization&#125; callback from the configured</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> BeanPostProcessor BeanPostProcessors&#125;.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;This callback will only be applied to bean definitions with a bean class.</span></span><br><span class="line"><span class="comment">	 * In particular, it will not be applied to beans with a "factory-method".</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Post-processors may implement the extended</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> SmartInstantiationAwareBeanPostProcessor&#125; interface in order</span></span><br><span class="line"><span class="comment">	 * to predict the type of the bean object that they are going to return here.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanClass the class of the bean to be instantiated</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanName the name of the bean</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the bean object to expose instead of a default instance of the target bean,</span></span><br><span class="line"><span class="comment">	 * or &#123;<span class="doctag">@code</span> null&#125; to proceed with default instantiation</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> org.springframework.beans.BeansException in case of errors</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.beans.factory.support.AbstractBeanDefinition#hasBeanClass</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.beans.factory.support.AbstractBeanDefinition#getFactoryMethodName</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">Object <span class="title">postProcessBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 在目标对象实例化之后调用，这个时候对象已经被实例化，但是该实例的属性还未被设置都是null，要通过下面那个方法</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Perform operations after the bean has been instantiated, via a constructor or factory method,</span></span><br><span class="line"><span class="comment">	 * but before Spring property population (from explicit properties or autowiring) occurs.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;This is the ideal callback for performing custom field injection on the given bean</span></span><br><span class="line"><span class="comment">	 * instance, right before Spring's autowiring kicks in.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> bean the bean instance created, with properties not having been set yet</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanName the name of the bean</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if properties should be set on the bean; &#123;<span class="doctag">@code</span> false&#125;</span></span><br><span class="line"><span class="comment">	 * if property population should be skipped. Normal implementations should return &#123;<span class="doctag">@code</span> true&#125;.</span></span><br><span class="line"><span class="comment">	 * Returning &#123;<span class="doctag">@code</span> false&#125; will also prevent any subsequent InstantiationAwareBeanPostProcessor</span></span><br><span class="line"><span class="comment">	 * instances being invoked on this bean instance.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> org.springframework.beans.BeansException in case of errors</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">boolean</span> <span class="title">postProcessAfterInstantiation</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 对属性值进行修改(这个时候属性值还未被设置，但是我们可以修改原本该设置进去的属性值)。</span></span><br><span class="line"><span class="comment">	 * 如果 &#123;<span class="doctag">@link</span> #postProcessAfterInstantiation(java.lang.Object, java.lang.String)&#125;方法返回false，该方法可能不会被调用。可以在该方法内对属性值进行修改</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * Post-process the given property values before the factory applies them</span></span><br><span class="line"><span class="comment">	 * to the given bean. Allows for checking whether all dependencies have been</span></span><br><span class="line"><span class="comment">	 * satisfied, for example based on a "Required" annotation on bean property setters.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Also allows for replacing the property values to apply, typically through</span></span><br><span class="line"><span class="comment">	 * creating a new MutablePropertyValues instance based on the original PropertyValues,</span></span><br><span class="line"><span class="comment">	 * adding or removing specific values.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> pvs the property values that the factory is about to apply (never &#123;<span class="doctag">@code</span> null&#125;)</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> pds the relevant property descriptors for the target bean (with ignored</span></span><br><span class="line"><span class="comment">	 * dependency types - which the factory handles specifically - already filtered out)</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> bean the bean instance created, but whose properties have not yet been set</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanName the name of the bean</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the actual property values to apply to the given bean</span></span><br><span class="line"><span class="comment">	 * (can be the passed-in PropertyValues instance), or &#123;<span class="doctag">@code</span> null&#125;</span></span><br><span class="line"><span class="comment">	 * to skip property population</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> org.springframework.beans.BeansException in case of errors</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.beans.MutablePropertyValues</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">PropertyValues <span class="title">postProcessPropertyValues</span><span class="params">(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>InstantiationAwareBeanPostProcessor</code> 定义了三个方法，这三个方法是什么时候调用呢，还是回到又回到又回到<code>doCreateBean(...)</code> 方法，这个方法主要用于完成 <code>bean</code> 的创建和初始化工作，我们可以将其分为一下几个过程</p>
+<ul>
+<li><code>createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args)</code> 方法，实例化 <code>bean</code> 。</li>
+<li><code>populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper bw)</code> 方法，进行属性填充。</li>
+<li><code>initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd)</code> 方法，初始化 <code>Bean</code> 。</li>
+</ul>
+</li>
+<li><p>这三个方法会在实例化 <code>bean</code>、属性填充 这两个阶段调用</p>
+</li>
+<li><p>方法一 <code>Object postProcessBeforeInstantiation(Class&lt;?&gt; beanClass, String beanName)</code></p>
+<ul>
+<li>实例化 <code>bean</code>之前调用</li>
+<li>当经过这个方法后，bean可能已经不是我们认为的bean了，而是或许成为了一个经过处理的代理bean，可能是通过cglib生成的，当经过前置处理后的返回结果如果不为空，那么会直接略过后续bean的创建二直接返回结果。这一特性虽然很容易被忽略，但是却起着至关重要的作用</li>
+</ul>
+</li>
+<li>方法二 <code>boolean postProcessAfterInstantiation(Object bean, String beanName)</code><ul>
+<li>实例化 <code>bean</code>之后调用</li>
+</ul>
+</li>
+<li>方法三 <code>PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName)</code><ul>
+<li>属性填充时调用</li>
+<li>其中就包括我们平时使用的<code>AutowiredAnnotationBeanPostProcessor @Autowired</code>注解功能就是在这里完成属性注入的</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>InstantiationAwareBeanPostProcessor</code> 接口在<code>BeanPostProcessor</code>的基础上添加了三个方法，实现这三个方法可以在实例化 <code>bean</code> 前后及属性填充这两个阶段做额外的事情</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《Spring 源码深度解析》</li>
+<li>芋道源码 <a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/&title=《Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/&title=《Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二二)BeanFactoryPostProcessor接口分析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring系列(二二)BeanFactoryPostProcessor接口分析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)BeanPostProcessor接口分析/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring系列(二一)BeanPostProcessor接口分析</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/&title=《Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/&title=《Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEgklEQVR42u3ay27rRhAFwPv/P+0AWQVIpJzTzYVaLq4MSx5yigamX3/+xNfP31fym39erz59v/6/v/nq52SF96s9fGHChAkTpo9k+nl7vX/QnCNZ//0GZveagf7H32LChAkTpuNMyXLtQ7e4s09ngUu+d0yYMGHC9HuYZunu7KFnx3wbdmDChAkTJkztkdwWbdv6av4KNwVfTJgwYcL0fUz5UZoXZNvHaku97cGf7wsTJkyYMH0TUzu4800/P3xhwoQJE6YPY/pZX3mLMR9gzbe6GZMt9ogJEyZMmM4yJUXSp4q/s2glT1PzVzUsPWPChAkTpoNMzw67zAZu2iLvs68kKmRjwoQJE6azTLNFX0G0ozD5y5h9sw0joq4vJkyYMGE6zrQZgtkc2ElZNk+/k2drU2VMmDBhwnSXKW86ti3DPdA+7Jg1TTFhwoQJ0zcx7ZPJTTm4BWqDmDbdffn8mDBhwoTpINPs8N63D3PQ/G23ocBjk02YMGHChOmDmdpmYQKdp8R56zF/Me3m86AEEyZMmDDdZcobge0B317tWTwLFNrdYcKECROmu0zt7Vv75NHz0ZycY88UTTZhwoQJE6aPZ5rdbJ++bgZo2tT6saABEyZMmDB9BdOs+TdrEA7bikGinn+avx5MmDBhwnSdKWlq5o3GvN2Y3GtDsKHBhAkTJkzXmfIN54gJ1mxoJvnmJqR4+fyYMGHChOksU36Qb26z2UzS/mzT8uFkEyZMmDBhOsi0CQgSsn1Cm99930x9iYUJEyZMmM4y5almOzoz+9unBoba8m4RMWHChAkTplNM+4AgbxDmBd+nhn7q0ZxX62PChAkTpuNMs0Zg/uh5Cj0rJc8Kx0WTFRMmTJgwHWdq09R9wzIPF3L6drUiBMGECRMmTGeZZgXTzTDNrAjbNlOfDREwYcKECdN3MLXNyHyAZvMy2m8mocywaYoJEyZMmI4zzSZV9gHHLFmdrbxJ5jFhwoQJ00WmZInklm0anAcT7aGe76IIMjBhwoQJ01mmfeKaJJOzduammLv5zv/sAhMmTJgwHWSapaabcvCs1doO8czQXwYumDBhwoTpIFM+XrNpB27KwfsApUWMiryYMGHChOkI076MmxzP+bY3a25ioqIijgkTJkyYTjGtGnujAnE7oLNPudvybvF/hAkTJkyYPp5p327MS65J+7Dovi5ez2zkCBMmTJgwXWTaHIr5hvel4VmhNikiR/87mDBhwoTpK5hWsz9lA7It6baJbvLkSRkaEyZMmDBdZ8qBNjdO1pkNCc1Gjh64MGHChAnTEaaf8srT5rZluAlB2kmlerQIEyZMmDCdZdocyZujvW09tiHLvs25Ch0wYcKECdOHMbWl1STJbAny++5nlIZFXkyYMGHCdJyp3WoeCjz7t/ugJA9ZMGHChAnT72TatBU3SelT/ceEBhMmTJgw/U6mtvk3SzJn462bEnD0r4AJEyZMmI4z5WM3m83kh3Re2J29kvoZMGHChAnTWaa22JqHAnUhdV3q3bySB+AwYcKECdNnMf0F2HEay0LYwwkAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

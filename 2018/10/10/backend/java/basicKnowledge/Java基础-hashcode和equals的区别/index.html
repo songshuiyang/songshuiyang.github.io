@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言： 首先，我们要介绍hashCode()和equals()方法的作用是是什么，然后才说他的区别，说了区别之后再说使用的时候需要注意到的地方，这样的回答思路基本是OK的，如果你在了解一些其他人不知道的那就更好了！下边我们就开始介绍：  分析： 一、hashCode()和equals()是什么？ hashCode()方法和equals()方法的作用其实一样，在Java里都是用来对比两个对象是否相等">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-11-10T02:08:41.959Z">
+<meta property="og:updated_time" content="2020-07-14T14:03:59.556Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java基础-hashcode和equals的区别">
 <meta name="twitter:description" content="前言： 首先，我们要介绍hashCode()和equals()方法的作用是是什么，然后才说他的区别，说了区别之后再说使用的时候需要注意到的地方，这样的回答思路基本是OK的，如果你在了解一些其他人不知道的那就更好了！下边我们就开始介绍：  分析： 一、hashCode()和equals()是什么？ hashCode()方法和equals()方法的作用其实一样，在Java里都是用来对比两个对象是否相等">
@@ -377,10 +377,18 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 </li>
-<li>三、hashCode()和equals()使用的注意事项<ul>
+<li><p>三、hashCode()和equals()使用的注意事项</p>
+<ul>
 <li>1、对于需要大量并且快速的对比的话如果都用equals()去做显然效率太低，所以解决方式是，每当需要对比的时候，首先用hashCode()去对比，如果hashCode()不一样，则表示这两个对象肯定不相等（也就是不必再用equals()去再对比了）,如果hashCode()相同，此时再对比他们的equals()，如果equals()也相同，则表示这两个对象是真的相同了，这样既能大大提高了效率也保证了对比的绝对正确性！</li>
 <li>2、这种大量的并且快速的对象对比一般使用的hash容器中，比如HashSet,HashMap,HashTable等等，比如HashSet里要求对象不能重复，则他内部必然要对添加进去的每个对象进行对比，而他的对比规则就是像上面说的那样，先hashCode()，如果hashCode()相同，再用equals()验证，如果hashCode()都不同，则肯定不同，这样对比的效率就很高了。</li>
 <li>3、然而hashCode()和equals()一样都是基本类Object里的方法，而和equals()一样，Object里hashCode()里面只是返回当前对象的地址，如果是这样的话，那么我们相同的一个类，new两个对象，由于他们在内存里的地址不同，则他们的hashCode（）不同，所以这显然不是我们想要的，所以我们必须重写我们类的hashCode()方法，即一个类，在hashCode()里面返回唯一的一个hash值，比如下面：</li>
+</ul>
+</li>
+<li><p>四、什么情况需要重写equals？</p>
+<ul>
+<li>加入到HashSet中的自定义类对象，为确保他们不重复，需要对他们的类重写equals() 和 hashcode()的方法。</li>
+<li>例子<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    User user1 = <span class="keyword">new</span> User(<span class="string">"songsy"</span>,<span class="number">10</span>);</span><br><span class="line">    User user2 = <span class="keyword">new</span> User(<span class="string">"songsy"</span>,<span class="number">10</span>);</span><br><span class="line">    Set&lt;User&gt; sets = <span class="keyword">new</span> HashSet();</span><br><span class="line">    sets.add(user1);</span><br><span class="line">    sets.add(user2);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 没有重写equals方法的情况会显示出现两个元素，因为默认equals比较的是两个对象的引用是否相等</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    System.out.println(sets);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 </ul>
@@ -527,18 +535,18 @@ hashCode:<span class="number">325040804</span>
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-基本数据类型及包装类/" id="post-prev" class="post-nav-link">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Java基础-基本数据类型及包装类</h4>
+        <h4 class="title">Java基础-强引用-软引用-弱引用-虚引用</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-Serializable序列化/" id="post-next" class="post-nav-link">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-常用类-String/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Java基础-Serializable序列化</h4>
+        <h4 class="title">Java基础-常用类-String</h4>
       </a>
     </div>
   
@@ -602,7 +610,7 @@ hashCode:<span class="number">325040804</span>
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

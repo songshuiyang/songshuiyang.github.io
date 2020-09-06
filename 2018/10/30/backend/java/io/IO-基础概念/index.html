@@ -21,18 +21,18 @@
     
     
     <meta name="keywords" content="Java,Io">
-    <meta name="description" content="概念 Java 中的 BIO、NIO和 AIO 理解为是 Java 语言对操作系统的各种 IO 模型的封装。程序员在使用这些 API 的时候，不需要关心操作系统层面的知识，也不需要根据不同操作系统编写不同的代码。只需要使用Java的API就可以了。  在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。   同步与异步 同步和异步的区别最大在于异步的话调用者不需要">
+    <meta name="description" content="概念 Java 中的 BIO、NIO和 AIO 理解为是 Java 语言对操作系统的各种 IO 模型的封装。程序员在使用这些 API 的时候，不需要关心操作系统层面的知识，也不需要根据不同操作系统编写不同的代码。只需要使用Java的API就可以了。  在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。    所谓同步/异步，关注的是能不能同时开工。 所谓阻塞/非">
 <meta name="keywords" content="Java,Io">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IO-基础概念">
 <meta property="og:url" content="http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-基础概念/index.html">
 <meta property="og:site_name" content="宋水阳个人博客">
-<meta property="og:description" content="概念 Java 中的 BIO、NIO和 AIO 理解为是 Java 语言对操作系统的各种 IO 模型的封装。程序员在使用这些 API 的时候，不需要关心操作系统层面的知识，也不需要根据不同操作系统编写不同的代码。只需要使用Java的API就可以了。  在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。   同步与异步 同步和异步的区别最大在于异步的话调用者不需要">
+<meta property="og:description" content="概念 Java 中的 BIO、NIO和 AIO 理解为是 Java 语言对操作系统的各种 IO 模型的封装。程序员在使用这些 API 的时候，不需要关心操作系统层面的知识，也不需要根据不同操作系统编写不同的代码。只需要使用Java的API就可以了。  在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。    所谓同步/异步，关注的是能不能同时开工。 所谓阻塞/非">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-22T04:06:10.386Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.830Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO-基础概念">
-<meta name="twitter:description" content="概念 Java 中的 BIO、NIO和 AIO 理解为是 Java 语言对操作系统的各种 IO 模型的封装。程序员在使用这些 API 的时候，不需要关心操作系统层面的知识，也不需要根据不同操作系统编写不同的代码。只需要使用Java的API就可以了。  在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。   同步与异步 同步和异步的区别最大在于异步的话调用者不需要">
+<meta name="twitter:description" content="概念 Java 中的 BIO、NIO和 AIO 理解为是 Java 语言对操作系统的各种 IO 模型的封装。程序员在使用这些 API 的时候，不需要关心操作系统层面的知识，也不需要根据不同操作系统编写不同的代码。只需要使用Java的API就可以了。  在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。    所谓同步/异步，关注的是能不能同时开工。 所谓阻塞/非">
     
         <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
     
@@ -324,7 +324,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概念"><span class="post-toc-number">1.</span> <span class="post-toc-text">概念</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#同步与异步"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">同步与异步</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#同步："><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">同步：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#异步："><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">异步：</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#阻塞和非阻塞"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">阻塞和非阻塞</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#阻塞："><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">阻塞：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#非阻塞："><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">非阻塞：</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概念"><span class="post-toc-number">1.</span> <span class="post-toc-text">概念</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#通过推理进行组合："><span class="post-toc-number">1.1.</span> <span class="post-toc-text">通过推理进行组合：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#回到程序里，把它们和线程关联起来："><span class="post-toc-number">1.2.</span> <span class="post-toc-text">回到程序里，把它们和线程关联起来：</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
         </nav>
     </aside>
 
@@ -357,22 +357,28 @@ var _hmt = _hmt || [];
 <li><p>在讲 BIO,NIO,AIO 之前先来回顾一下这样几个概念：同步与异步，阻塞与非阻塞。</p>
 </li>
 </ul>
-<h3 id="同步与异步"><a href="#同步与异步" class="headerlink" title="同步与异步"></a>同步与异步</h3><ul>
-<li>同步和异步的区别最大在于异步的话调用者不需要等待处理结果，被调用者会通过回调等机制来通知调用者其返回结果。</li>
-</ul>
-<h4 id="同步："><a href="#同步：" class="headerlink" title="同步："></a>同步：</h4><ul>
-<li>同步就是发起一个调用后，被调用者未处理完请求之前，调用不返回。</li>
-</ul>
-<h4 id="异步："><a href="#异步：" class="headerlink" title="异步："></a>异步：</h4><ul>
-<li>异步就是发起一个调用后，立刻得到被调用者的回应表示已接收到请求，但是被调用者并没有返回结果，此时我们可以处理其他的请求，被调用者通常依靠事件，回调等机制来通知调用者其返回结果。</li>
-</ul>
-<h3 id="阻塞和非阻塞"><a href="#阻塞和非阻塞" class="headerlink" title="阻塞和非阻塞"></a>阻塞和非阻塞</h3><h4 id="阻塞："><a href="#阻塞：" class="headerlink" title="阻塞："></a>阻塞：</h4><ul>
-<li>阻塞就是发起一个请求，调用者一直等待请求结果返回，也就是当前线程会被挂起，无法从事其他任务，只有当条件就绪才能继续。</li>
-</ul>
-<h4 id="非阻塞："><a href="#非阻塞：" class="headerlink" title="非阻塞："></a>非阻塞：</h4><ul>
-<li><p>非阻塞就是发起一个请求，调用者不用一直等着结果返回，可以先去干其他事情。</p>
+<blockquote>
+<p>所谓同步/异步，关注的是能不能同时开工。</p>
+<p>所谓阻塞/非阻塞，关注的是能不能动。</p>
+</blockquote>
+<h3 id="通过推理进行组合："><a href="#通过推理进行组合：" class="headerlink" title="通过推理进行组合："></a>通过推理进行组合：</h3><ul>
+<li><p>同步阻塞，不能同时开工，也不能动。只有一条小道，一次只能过一辆车，可悲的是还TMD的堵上了。</p>
 </li>
-<li><p>会用使用线程一直轮询，直到有IO资源准备好了</p>
+<li><p>同步非阻塞，不能同时开工，但可以动。只有一条小道，一次只能过一辆车，幸运的是可以正常通行。</p>
+</li>
+<li><p>异步阻塞，可以同时开工，但不可以动。有多条路，每条路都可以跑车，可气的是全都TMD的堵上了。</p>
+</li>
+<li><p>异步非阻塞，可以工时开工，也可以动。有多条路，每条路都可以跑车，很爽的是全都可以正常通行。</p>
+</li>
+</ul>
+<h3 id="回到程序里，把它们和线程关联起来："><a href="#回到程序里，把它们和线程关联起来：" class="headerlink" title="回到程序里，把它们和线程关联起来："></a>回到程序里，把它们和线程关联起来：</h3><ul>
+<li><p>同步阻塞，相当于一个线程在等待。</p>
+</li>
+<li><p>同步非阻塞，相当于一个线程在正常运行。</p>
+</li>
+<li><p>异步阻塞，相当于多个线程都在等待。</p>
+</li>
+<li><p>异步非阻塞，相当于多个线程都在正常运行。</p>
 </li>
 </ul>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
@@ -380,6 +386,7 @@ var _hmt = _hmt || [];
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/BIO-NIO-AIO" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/java/BIO-NIO-AIO</a></li>
+<li><a href="https://mp.weixin.qq.com/s/EVequWGVMWV5Ki2llFzdHg" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/EVequWGVMWV5Ki2llFzdHg</a></li>
 </ul>
 
         </div>
@@ -456,9 +463,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/10/30/backend/java/io/IO-字节流及字符流/" id="post-prev" class="post-nav-link">
+      <a href="/2018/10/30/backend/java/io/IO-BIO-基础概念/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">IO-字节流及字符流</h4>
+        <h4 class="title">IO-BIO-基础概念</h4>
       </a>
     </div>
   
@@ -531,7 +538,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

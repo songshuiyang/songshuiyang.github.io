@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/aop/JdkDynamicAopProxy.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/aop/ObjenesisCglibAopProxy.png">
-<meta property="og:updated_time" content="2019-09-16T13:11:05.195Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.655Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(五四)AOP源码解析之代理对象方法执行">
 <meta name="twitter:description" content="前言 上一章节介绍了AOP代理对象的创建，那么实际方法的运行是通过代理对象来操作的，本章节将介绍代理对象方法的执行过程  AopProxy它有两个子类，所以不同代理对象方法执行过程是不一样的  JdkDynamicAopProxy是基于 JDK 的 AOP 代理实现类 ObjenesisCglibAopProxy是基于 CGLIB 的 AOP 的代理实现类    解析1、JdkDynamicAop">
@@ -327,7 +327,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、JdkDynamicAopProxy"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1、JdkDynamicAopProxy</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、ObjenesisCglibAopProxy"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2、ObjenesisCglibAopProxy</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、JdkDynamicAopProxy"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1、JdkDynamicAopProxy</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、ObjenesisCglibAopProxy"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2、ObjenesisCglibAopProxy</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#类内部调用-AOP-问题："><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">类内部调用 AOP 问题：</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
         </nav>
     </aside>
 
@@ -432,8 +432,21 @@ var _hmt = _hmt || [];
 <ul>
 <li>关注<code>retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();</code>这行代码，这里构造了<code>CglibMethodInvocation</code>查看这个类，然后执行<code>proceed()</code>方法，可以发现这个类继承了<code>ReflectiveMethodInvocation</code>这个类，所以这里的<code>proceed()</code>方法和我们上面<code>jdk</code>动态代理执行的<code>proceed()</code>方法是一样的</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h4 id="类内部调用-AOP-问题："><a href="#类内部调用-AOP-问题：" class="headerlink" title="类内部调用 AOP 问题："></a>类内部调用 AOP 问题：</h4><ul>
+<li><p>a() 方法被 @Around 注解用来输出日志，b() 方法没有 AOP 注解，但 b() 方法内部调用 a() 方法，那么调用 b() 方法会有怎么样的输出？</p>
+</li>
+<li><p>答：不会有日志输出。因为这是类内部调用，而 AOP 是通过代理进行的，类内部调用不会调用代理类，不走代理所以不会有日志输出。如果想要有日志输出，需要在该类中通过 AopProxy 将代理对象（命名为 proxy）获取，然后在 b() 方法中通过 proxy 调用 a() 方法；</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>上一章节我们得到了代理对象，如果执行代理对象的方法，如果是<code>JDK</code>动态代理对象就会执行<code>org.springframework.aop.framework.JdkDynamicAopProxy#invoke()</code>方法 ，如果是<code>CGLib</code>动态代理对象就会执行<code>org.springframework.aop.framework.CglibAopProxy.DynamicAdvisedInterceptor#intercept()</code>方法</p>
+</li>
+<li><p>两者的执行逻辑大致相同，先获取当前方法的拦截器链（一个list，会递归执行这个拦截器的逻辑），如果检查到有增强逻辑就会执行相应逻辑，如果是普通方法就直接通过反射执行方法</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>《Spring 源码深度解析》</li>
+<li><a href="https://blog.csdn.net/qq_35190492/article/details/104785794" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/104785794</a></li>
 </ul>
 
         </div>
@@ -585,7 +598,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

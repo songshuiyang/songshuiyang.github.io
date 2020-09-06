@@ -30,7 +30,7 @@
 <meta property="og:description" content="概述 Java技术体系中所提倡的自动内存管理最终可以归结为自动化地解决了两个问题：给对象分配内存以及回收分配给对象的内存。关于回收内存这一点，我们已经使用了大量篇幅去介绍虚拟机中的垃圾收集器体系以及运作原理，现在我们再一起来探讨一下给对象分配内存的那点事儿。 对象的内存分配，往大方向讲，就是在堆上分配（但也可能经过JIT编译后被拆散为标量类型并间接地栈上分配），对象主要分配在新生代的Eden区上，">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/gc-generation.gif">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.480Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.257Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM垃圾回收(三)内存分配及回收策略">
 <meta name="twitter:description" content="概述 Java技术体系中所提倡的自动内存管理最终可以归结为自动化地解决了两个问题：给对象分配内存以及回收分配给对象的内存。关于回收内存这一点，我们已经使用了大量篇幅去介绍虚拟机中的垃圾收集器体系以及运作原理，现在我们再一起来探讨一下给对象分配内存的那点事儿。 对象的内存分配，往大方向讲，就是在堆上分配（但也可能经过JIT编译后被拆散为标量类型并间接地栈上分配），对象主要分配在新生代的Eden区上，">
@@ -326,7 +326,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-对象优先在Eden分配"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 对象优先在Eden分配</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-大对象直接进入老年代"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 大对象直接进入老年代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-长期存活的对象将进入老年代"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3. 长期存活的对象将进入老年代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-动态对象年龄判定"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">4. 动态对象年龄判定</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-空间分配担保"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">5. 空间分配担保</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-对象优先在Eden分配"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 对象优先在Eden分配</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-大对象直接进入老年代"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 大对象直接进入老年代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-长期存活的对象将进入老年代"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3. 长期存活的对象将进入老年代</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-动态对象年龄判定"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">4. 动态对象年龄判定</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-空间分配担保"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">5. 空间分配担保</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-Stop-The-World"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">6. Stop The World</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
         </nav>
     </aside>
 
@@ -424,9 +424,25 @@ var _hmt = _hmt || [];
 <li>Parallel Scavenge收集器与其他收集器在空间分配担保上有一点差别, 正常是在Minor GC前进行检查, 而Parallel Scavenge收集器在Minor GC后也会进行检查。</li>
 <li>另外当出现大量对象在Minor GC后仍然存活的情况（最极端的情况就是内存回收后新生代中所有对象都存活），就需要老年代进行分配担保，把Survivor无法容纳的对象直接进入老年代。</li>
 </ul>
+<h3 id="6-Stop-The-World"><a href="#6-Stop-The-World" class="headerlink" title="6. Stop The World"></a>6. Stop The World</h3><ul>
+<li><p>如果老年代满了，会触发 Full GC, Full GC 会同时回收新生代和老年代（即对整个堆进行GC），它会导致 Stop The World（简称 STW）,造成挺大的性能开销。</p>
+</li>
+<li><p>什么是 STW ？所谓的 STW, 即在 GC（minor GC 或 Full GC）期间，只有垃圾回收器线程在工作，其他工作线程则被挂起。</p>
+</li>
+<li><p>为啥在垃圾收集期间其他工作线程会被挂起？想象一下，你一边在收垃圾，另外一群人一边丢垃圾，垃圾能收拾干净吗</p>
+</li>
+</ul>
+<p>## </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>把新生代设置成 <code>Eden, S0，S1</code>区或者给对象设置年龄阈值或者默认把新生代与老年代的空间大小设置成 1:2 都是为了<code>尽可能地避免对象过早地进入老年代，尽可能晚地触发 Full GC</code>。</p>
+</li>
+<li><p>想想新生代如果只设置 Eden 会发生什么，后果就是每经过一次 Minor GC，存活对象会过早地进入老年代，那么老年代很快就会装满，很快会触发 Full GC，而对象其实在经过两三次的 Minor GC 后大部分都会消亡，所以有了 S0,S1的缓冲，只有少数的对象会进入老年代，老年代大小也就不会这么快地增长，也就避免了过早地触发 Full GC。</p>
+</li>
+</ul>
 <h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
 <li>周志明版  《深入理解Java虚拟机》</li>
-<li><a href="https://blog.csdn.net/v123411739/article/details/78941793" target="_blank" rel="noopener">https://blog.csdn.net/v123411739/article/details/78941793</a> </li>
+<li><a href="https://blog.csdn.net/v123411739/article/details/78941793" target="_blank" rel="noopener">https://blog.csdn.net/v123411739/article/details/78941793</a></li>
+<li><a href="https://mp.weixin.qq.com/s/_AKQs-xXDHlk84HbwKUzOw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/_AKQs-xXDHlk84HbwKUzOw</a></li>
 </ul>
 
         </div>
@@ -503,9 +519,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/03/11/backend/java/jvm/JVM垃圾回收(四)常用参数/" id="post-prev" class="post-nav-link">
+      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">JVM垃圾回收(四)常用参数</h4>
+        <h4 class="title">JVM垃圾回收(三)GC种类</h4>
       </a>
     </div>
   
@@ -578,7 +594,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

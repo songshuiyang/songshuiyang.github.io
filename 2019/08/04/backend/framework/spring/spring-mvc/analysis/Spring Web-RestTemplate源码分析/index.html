@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring Web-RestTemplate源码分析 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="spring mvc,spring">
+    <meta name="description" content="1.1 前言 Spring RestTemplate 是 Spring 提供的用于访问 Rest 服务的客户端，此类位于org.springframework.web包下，有了这个工具类，访问第三方服务接口的时候太香了，都不用关心请求参数如何封装，响应参数如何解析，RestTemplate就能帮我们完成这些事项  2.1 使用 Spring RestTemplate 对 Rest 服务封装了各种方">
+<meta name="keywords" content="spring mvc,spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Web-RestTemplate源码分析">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="1.1 前言 Spring RestTemplate 是 Spring 提供的用于访问 Rest 服务的客户端，此类位于org.springframework.web包下，有了这个工具类，访问第三方服务接口的时候太香了，都不用关心请求参数如何封装，响应参数如何解析，RestTemplate就能帮我们完成这些事项  2.1 使用 Spring RestTemplate 对 Rest 服务封装了各种方">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/restTemplate.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/RestTemplate.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/restTemplate3.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/restTemplate1.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/restTemplate2.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/restTemplate4.jpg">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.680Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Web-RestTemplate源码分析">
+<meta name="twitter:description" content="1.1 前言 Spring RestTemplate 是 Spring 提供的用于访问 Rest 服务的客户端，此类位于org.springframework.web包下，有了这个工具类，访问第三方服务接口的时候太香了，都不用关心请求参数如何封装，响应参数如何解析，RestTemplate就能帮我们完成这些事项  2.1 使用 Spring RestTemplate 对 Rest 服务封装了各种方">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/restTemplate.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring Web-RestTemplate源码分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring Web-RestTemplate源码分析</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-03T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2019-08-04
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringMvc/">SpringMvc</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.1 前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-使用"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.1 使用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-1-解析"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.1 解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类解析"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">类解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#HttpAccessor-类"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">HttpAccessor 类</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#InterceptingHttpAccessor-类"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">InterceptingHttpAccessor 类</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#RestTemplate-类"><span class="post-toc-number">3.1.3.</span> <span class="post-toc-text">RestTemplate  类</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#具体执行"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">具体执行</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring Web-RestTemplate源码分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-04 00:00:00" datetime="2019-08-03T16:00:00.000Z" itemprop="datePublished">2019-08-04</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringMvc/">SpringMvc</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="1-1-前言"><a href="#1-1-前言" class="headerlink" title="1.1 前言"></a>1.1 前言</h2><ul>
+<li><code>Spring RestTemplate</code> 是 <code>Spring</code> 提供的用于访问 <code>Rest</code> 服务的客户端，此类位于<code>org.springframework.web</code>包下，有了这个工具类，访问第三方服务接口的时候太香了，都不用关心请求参数如何封装，响应参数如何解析，<code>RestTemplate</code>就能帮我们完成这些事项</li>
+</ul>
+<h2 id="2-1-使用"><a href="#2-1-使用" class="headerlink" title="2.1 使用"></a>2.1 使用</h2><ul>
+<li><p><code>Spring RestTemplate</code> 对 <code>Rest</code> 服务封装了各种方法，使用者可以按照需要使用合适的方法</p>
+</li>
+<li><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/restTemplate.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+</li>
+</ul>
+<h2 id="3-1-解析"><a href="#3-1-解析" class="headerlink" title="3.1 解析"></a>3.1 解析</h2><h3 id="类解析"><a href="#类解析" class="headerlink" title="类解析"></a>类解析</h3><ul>
+<li>类继承关系图</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/RestTemplate.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h4 id="HttpAccessor-类"><a href="#HttpAccessor-类" class="headerlink" title="HttpAccessor 类"></a>HttpAccessor 类</h4><ul>
+<li>这个抽象类是<code>RestTemplate</code>的最顶级接口，下面可以看到主要有两个成员变量 <code>requestFactory</code> 和 <code>clientHttpRequestInitializers</code><ul>
+<li><code>ClientHttpRequestFactory</code>接口只有方法<code>ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException;</code>，此方法是用来创建请求</li>
+<li><code>ClientHttpRequestInitializer</code>此成员见名是个请求初始化类</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpAccessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/** Logger available to subclasses. */</span></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">final</span> Log logger = HttpLogging.forLogName(getClass());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ClientHttpRequestFactory requestFactory = <span class="keyword">new</span> SimpleClientHttpRequestFactory();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> List&lt;ClientHttpRequestInitializer&gt; clientHttpRequestInitializers = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRequestFactory</span><span class="params">(ClientHttpRequestFactory requestFactory)</span> </span>&#123;</span><br><span class="line">		Assert.notNull(requestFactory, <span class="string">"ClientHttpRequestFactory must not be null"</span>);</span><br><span class="line">		<span class="keyword">this</span>.requestFactory = requestFactory;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ClientHttpRequestFactory <span class="title">getRequestFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.requestFactory;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setClientHttpRequestInitializers</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">			List&lt;ClientHttpRequestInitializer&gt; clientHttpRequestInitializers)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.clientHttpRequestInitializers != clientHttpRequestInitializers) &#123;</span><br><span class="line">			<span class="keyword">this</span>.clientHttpRequestInitializers.clear();</span><br><span class="line">			<span class="keyword">this</span>.clientHttpRequestInitializers.addAll(clientHttpRequestInitializers);</span><br><span class="line">			AnnotationAwareOrderComparator.sort(<span class="keyword">this</span>.clientHttpRequestInitializers);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;ClientHttpRequestInitializer&gt; <span class="title">getClientHttpRequestInitializers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.clientHttpRequestInitializers;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">protected</span> ClientHttpRequest <span class="title">createRequest</span><span class="params">(URI url, HttpMethod method)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		ClientHttpRequest request = getRequestFactory().createRequest(url, method);</span><br><span class="line">		initialize(request);</span><br><span class="line">		<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">			logger.debug(<span class="string">"HTTP "</span> + method.name() + <span class="string">" "</span> + url);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> request;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ClientHttpRequest request)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.clientHttpRequestInitializers.forEach(initializer -&gt; initializer.initialize(request));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="InterceptingHttpAccessor-类"><a href="#InterceptingHttpAccessor-类" class="headerlink" title="InterceptingHttpAccessor 类"></a>InterceptingHttpAccessor 类</h4><ul>
+<li>此类主要有两个功能<ul>
+<li>封装拦截器功能，这样的话可以在请求过程中额外做一些事情，比如在<code>SpringCloud</code>环境下使用<code>@LoadBalanced</code>注解修饰<code>RestTemplate</code>的话就可以实现负载均衡的功能，这里面就是使用了拦截器来实现的</li>
+<li>创建<code>ClientHttpRequestFactory</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">InterceptingHttpAccessor</span> <span class="keyword">extends</span> <span class="title">HttpAccessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> List&lt;ClientHttpRequestInterceptor&gt; interceptors = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> ClientHttpRequestFactory interceptingRequestFactory;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Set the request interceptors that this accessor should use.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;The interceptors will get immediately sorted according to their</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@linkplain</span> AnnotationAwareOrderComparator#sort(List) order&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> #getRequestFactory()</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> AnnotationAwareOrderComparator</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setInterceptors</span><span class="params">(List&lt;ClientHttpRequestInterceptor&gt; interceptors)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Take getInterceptors() List as-is when passed in here</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.interceptors != interceptors) &#123;</span><br><span class="line">			<span class="keyword">this</span>.interceptors.clear();</span><br><span class="line">			<span class="keyword">this</span>.interceptors.addAll(interceptors);</span><br><span class="line">			AnnotationAwareOrderComparator.sort(<span class="keyword">this</span>.interceptors);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Get the request interceptors that this accessor uses.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;The returned &#123;<span class="doctag">@link</span> List&#125; is active and may be modified. Note,</span></span><br><span class="line"><span class="comment">	 * however, that the interceptors will not be resorted according to their</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@linkplain</span> AnnotationAwareOrderComparator#sort(List) order&#125; before the</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> ClientHttpRequestFactory&#125; is built.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;ClientHttpRequestInterceptor&gt; <span class="title">getInterceptors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.interceptors;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRequestFactory</span><span class="params">(ClientHttpRequestFactory requestFactory)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.setRequestFactory(requestFactory);</span><br><span class="line">		<span class="keyword">this</span>.interceptingRequestFactory = <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ClientHttpRequestFactory <span class="title">getRequestFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		List&lt;ClientHttpRequestInterceptor&gt; interceptors = getInterceptors();</span><br><span class="line">		<span class="keyword">if</span> (!CollectionUtils.isEmpty(interceptors)) &#123;</span><br><span class="line">			ClientHttpRequestFactory factory = <span class="keyword">this</span>.interceptingRequestFactory;</span><br><span class="line">			<span class="keyword">if</span> (factory == <span class="keyword">null</span>) &#123;</span><br><span class="line">				factory = <span class="keyword">new</span> InterceptingClientHttpRequestFactory(<span class="keyword">super</span>.getRequestFactory(), interceptors);</span><br><span class="line">				<span class="keyword">this</span>.interceptingRequestFactory = factory;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> factory;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">super</span>.getRequestFactory();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="RestTemplate-类"><a href="#RestTemplate-类" class="headerlink" title="RestTemplate  类"></a>RestTemplate  类</h4><ul>
+<li><p>下面可以看到熟悉的<code>List&lt;HttpMessageConverter&lt;?&gt;&gt; messageConverters</code>变量，这里就知道了请求参数如何封装，响应参数如何解析，和<code>Spring Mvc</code>解析参数的原理是一样的</p>
+</li>
+<li><p><code>static</code>代码主要逻辑就是检查这些类是否存在（是否导入了相关包），然后给这些<code>boolean</code>变量赋值，这样的话在构造函数就可以封装对应的<code>HttpMessageConverter</code></p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RestTemplate</span> <span class="keyword">extends</span> <span class="title">InterceptingHttpAccessor</span> <span class="keyword">implements</span> <span class="title">RestOperations</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> romePresent;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> jaxb2Present;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> jackson2Present;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> jackson2XmlPresent;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> jackson2SmilePresent;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> jackson2CborPresent;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> gsonPresent;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> jsonbPresent;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		ClassLoader classLoader = RestTemplate.class.getClassLoader();</span><br><span class="line">		romePresent = ClassUtils.isPresent(<span class="string">"com.rometools.rome.feed.WireFeed"</span>, classLoader);</span><br><span class="line">		jaxb2Present = ClassUtils.isPresent(<span class="string">"javax.xml.bind.Binder"</span>, classLoader);</span><br><span class="line">		jackson2Present =</span><br><span class="line">				ClassUtils.isPresent(<span class="string">"com.fasterxml.jackson.databind.ObjectMapper"</span>, classLoader) &amp;&amp;</span><br><span class="line">						ClassUtils.isPresent(<span class="string">"com.fasterxml.jackson.core.JsonGenerator"</span>, classLoader);</span><br><span class="line">		jackson2XmlPresent = ClassUtils.isPresent(<span class="string">"com.fasterxml.jackson.dataformat.xml.XmlMapper"</span>, classLoader);</span><br><span class="line">		jackson2SmilePresent = ClassUtils.isPresent(<span class="string">"com.fasterxml.jackson.dataformat.smile.SmileFactory"</span>, classLoader);</span><br><span class="line">		jackson2CborPresent = ClassUtils.isPresent(<span class="string">"com.fasterxml.jackson.dataformat.cbor.CBORFactory"</span>, classLoader);</span><br><span class="line">		gsonPresent = ClassUtils.isPresent(<span class="string">"com.google.gson.Gson"</span>, classLoader);</span><br><span class="line">		jsonbPresent = ClassUtils.isPresent(<span class="string">"javax.json.bind.Jsonb"</span>, classLoader);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> List&lt;HttpMessageConverter&lt;?&gt;&gt; messageConverters = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ResponseErrorHandler errorHandler = <span class="keyword">new</span> DefaultResponseErrorHandler();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> UriTemplateHandler uriTemplateHandler;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> ResponseExtractor&lt;HttpHeaders&gt; headersExtractor = <span class="keyword">new</span> HeadersExtractor();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Create a new instance of the &#123;<span class="doctag">@link</span> RestTemplate&#125; using default settings.</span></span><br><span class="line"><span class="comment">	 * Default &#123;<span class="doctag">@link</span> HttpMessageConverter HttpMessageConverters&#125; are initialized.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">RestTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> ByteArrayHttpMessageConverter());</span><br><span class="line">		<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> StringHttpMessageConverter());</span><br><span class="line">		<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> ResourceHttpMessageConverter(<span class="keyword">false</span>));</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> SourceHttpMessageConverter&lt;&gt;());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (Error err) &#123;</span><br><span class="line">			<span class="comment">// Ignore when no TransformerFactory implementation is available</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> AllEncompassingFormHttpMessageConverter());</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (romePresent) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> AtomFeedHttpMessageConverter());</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> RssChannelHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (jackson2XmlPresent) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> MappingJackson2XmlHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (jaxb2Present) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> Jaxb2RootElementHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (jackson2Present) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> MappingJackson2HttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (gsonPresent) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> GsonHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (jsonbPresent) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> JsonbHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (jackson2SmilePresent) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> MappingJackson2SmileHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (jackson2CborPresent) &#123;</span><br><span class="line">			<span class="keyword">this</span>.messageConverters.add(<span class="keyword">new</span> MappingJackson2CborHttpMessageConverter());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">this</span>.uriTemplateHandler = initUriTemplateHandler();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Create a new instance of the &#123;<span class="doctag">@link</span> RestTemplate&#125; based on the given &#123;<span class="doctag">@link</span> ClientHttpRequestFactory&#125;.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> requestFactory the HTTP request factory to use</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.http.client.SimpleClientHttpRequestFactory</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.http.client.HttpComponentsClientHttpRequestFactory</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">RestTemplate</span><span class="params">(ClientHttpRequestFactory requestFactory)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		setRequestFactory(requestFactory);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Create a new instance of the &#123;<span class="doctag">@link</span> RestTemplate&#125; using the given list of</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> HttpMessageConverter&#125; to use.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> messageConverters the list of &#123;<span class="doctag">@link</span> HttpMessageConverter&#125; to use</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@since</span> 3.2.7</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">RestTemplate</span><span class="params">(List&lt;HttpMessageConverter&lt;?&gt;&gt; messageConverters)</span> </span>&#123;</span><br><span class="line">		validateConverters(messageConverters);</span><br><span class="line">		<span class="keyword">this</span>.messageConverters.addAll(messageConverters);</span><br><span class="line">		<span class="keyword">this</span>.uriTemplateHandler = initUriTemplateHandler();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<h3 id="具体执行"><a href="#具体执行" class="headerlink" title="具体执行"></a>具体执行</h3><ul>
+<li>先来个例子，这里执行一个<code>GET</code>请求，返回一个字符对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"输出:&#123;&#125;"</span>, restTemplate.getForObject(<span class="string">"http://cloud-alibaba-user/user/uriVariables/&#123;id&#125;/&#123;age&#125;"</span>, String.class, <span class="string">"songsy"</span>, <span class="number">100</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>然后进入<code>getForObject</code>方法，可以看到只是做了一下参数准备</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getForObject</span><span class="params">(String url, Class&lt;T&gt; responseType, Object... uriVariables)</span> <span class="keyword">throws</span> RestClientException </span>&#123;</span><br><span class="line">    RequestCallback requestCallback = acceptHeaderRequestCallback(responseType);</span><br><span class="line">    HttpMessageConverterExtractor&lt;T&gt; responseExtractor =</span><br><span class="line">            <span class="keyword">new</span> HttpMessageConverterExtractor&lt;&gt;(responseType, getMessageConverters(), logger);</span><br><span class="line">    <span class="keyword">return</span> execute(url, HttpMethod.GET, requestCallback, responseExtractor, uriVariables);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进入<code>execute()</code>方法，可以看到这里创建了一个<code>URI expanded</code>，可以看到已经将链接上<code>{name}、{age}</code>参数给替换为实际参数了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(String url, HttpMethod method, @Nullable RequestCallback requestCallback,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable ResponseExtractor&lt;T&gt; responseExtractor, Object... uriVariables)</span> <span class="keyword">throws</span> RestClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">    URI expanded = getUriTemplateHandler().expand(url, uriVariables);</span><br><span class="line">    <span class="keyword">return</span> doExecute(expanded, method, requestCallback, responseExtractor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/restTemplate3.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>跟进代码，可以知道下面这个方法会将<code>{name}、{age}</code>参数给替换调，观察<code>PathComponent pathTo</code>对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.util.HierarchicalUriComponents#expandInternal</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> HierarchicalUriComponents <span class="title">expandInternal</span><span class="params">(UriTemplateVariables uriVariables)</span> </span>&#123;</span><br><span class="line">    Assert.state(!<span class="keyword">this</span>.encodeState.equals(EncodeState.FULLY_ENCODED),</span><br><span class="line">            <span class="string">"URI components already encoded, and could not possibly contain '&#123;' or '&#125;'."</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Array-based vars rely on the order below...</span></span><br><span class="line">    String schemeTo = expandUriComponent(getScheme(), uriVariables, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line">    String userInfoTo = expandUriComponent(<span class="keyword">this</span>.userInfo, uriVariables, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line">    String hostTo = expandUriComponent(<span class="keyword">this</span>.host, uriVariables, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line">    String portTo = expandUriComponent(<span class="keyword">this</span>.port, uriVariables, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line">    PathComponent pathTo = <span class="keyword">this</span>.path.expand(uriVariables, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line">    MultiValueMap&lt;String, String&gt; queryParamsTo = expandQueryParams(uriVariables);</span><br><span class="line">    String fragmentTo = expandUriComponent(getFragment(), uriVariables, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> HierarchicalUriComponents(schemeTo, fragmentTo, userInfoTo,</span><br><span class="line">            hostTo, portTo, pathTo, queryParamsTo, <span class="keyword">this</span>.encodeState, <span class="keyword">this</span>.variableEncoder);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/restTemplate1.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/restTemplate2.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><code>{name}、{age}</code>替换参数方法，这里有个正则表达式<code>NAMES_PATTERN</code>匹配<code>\{([^/]+?)}</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.util.UriComponents#expandUriComponent(java.lang.String, org.springframework.web.util.UriComponents.UriTemplateVariables, java.util.function.UnaryOperator&lt;java.lang.String&gt;)</span></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> String <span class="title">expandUriComponent</span><span class="params">(@Nullable String source, UriTemplateVariables uriVariables,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable UnaryOperator&lt;String&gt; encoder)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (source == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (source.indexOf(<span class="string">'&#123;'</span>) == -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> source;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (source.indexOf(<span class="string">':'</span>) != -<span class="number">1</span>) &#123;</span><br><span class="line">        source = sanitizeSource(source);</span><br><span class="line">    &#125;</span><br><span class="line">    Matcher matcher = NAMES_PATTERN.matcher(source);</span><br><span class="line">    StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">    <span class="keyword">while</span> (matcher.find()) &#123;</span><br><span class="line">        String match = matcher.group(<span class="number">1</span>);</span><br><span class="line">        String varName = getVariableName(match);</span><br><span class="line">        Object varValue = uriVariables.getValue(varName);</span><br><span class="line">        <span class="keyword">if</span> (UriTemplateVariables.SKIP_VALUE.equals(varValue)) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        String formatted = getVariableValueAsString(varValue);</span><br><span class="line">        formatted = encoder != <span class="keyword">null</span> ? encoder.apply(formatted) : Matcher.quoteReplacement(formatted);</span><br><span class="line">        matcher.appendReplacement(sb, formatted);</span><br><span class="line">    &#125;</span><br><span class="line">    matcher.appendTail(sb);</span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>得到请求链接之后就是执行请求了，可以看到下面的逻辑很清晰<ul>
+<li>1、创建了<code>ClientHttpRequest</code>对象来执行请求</li>
+<li>2、<code>request.execute();</code>执行</li>
+<li>3、得到<code>ClientHttpResponse</code>对象来响应结果</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> &lt;T&gt; <span class="function">T <span class="title">doExecute</span><span class="params">(URI url, @Nullable HttpMethod method, @Nullable RequestCallback requestCallback,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable ResponseExtractor&lt;T&gt; responseExtractor)</span> <span class="keyword">throws</span> RestClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">    Assert.notNull(url, <span class="string">"URI is required"</span>);</span><br><span class="line">    Assert.notNull(method, <span class="string">"HttpMethod is required"</span>);</span><br><span class="line">    ClientHttpResponse response = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ClientHttpRequest request = createRequest(url, method);</span><br><span class="line">        <span class="keyword">if</span> (requestCallback != <span class="keyword">null</span>) &#123;</span><br><span class="line">            requestCallback.doWithRequest(request);</span><br><span class="line">        &#125;</span><br><span class="line">        response = request.execute();</span><br><span class="line">        handleResponse(url, method, response);</span><br><span class="line">        <span class="keyword">return</span> (responseExtractor != <span class="keyword">null</span> ? responseExtractor.extractData(response) : <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        String resource = url.toString();</span><br><span class="line">        String query = url.getRawQuery();</span><br><span class="line">        resource = (query != <span class="keyword">null</span> ? resource.substring(<span class="number">0</span>, resource.indexOf(<span class="string">'?'</span>)) : resource);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ResourceAccessException(<span class="string">"I/O error on "</span> + method.name() +</span><br><span class="line">                <span class="string">" request for \""</span> + resource + <span class="string">"\": "</span> + ex.getMessage(), ex);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (response != <span class="keyword">null</span>) &#123;</span><br><span class="line">            response.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续跟进<code>request.execute()</code>方法后执行到下面这个方法<ul>
+<li><code>this.iterator.hasNext()</code>这里的判断就是执行拦截器方法</li>
+<li>如果没有拦截器的话，这里<code>ClientHttpRequest delegate</code> 这里创建的是<code>SimpleBufferingClientHttpRequest</code>对象，此对象就构造了<code>HttpURLConnection</code>对象</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.http.client.InterceptingClientHttpRequest.InterceptingRequestExecution#execute</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">InterceptingRequestExecution</span> <span class="keyword">implements</span> <span class="title">ClientHttpRequestExecution</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Iterator&lt;ClientHttpRequestInterceptor&gt; iterator;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InterceptingRequestExecution</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.iterator = interceptors.iterator();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClientHttpResponse <span class="title">execute</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.iterator.hasNext()) &#123;</span><br><span class="line">            ClientHttpRequestInterceptor nextInterceptor = <span class="keyword">this</span>.iterator.next();</span><br><span class="line">            <span class="keyword">return</span> nextInterceptor.intercept(request, body, <span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            HttpMethod method = request.getMethod();</span><br><span class="line">            Assert.state(method != <span class="keyword">null</span>, <span class="string">"No standard HTTP method"</span>);</span><br><span class="line">            ClientHttpRequest delegate = requestFactory.createRequest(request.getURI(), method);</span><br><span class="line">            request.getHeaders().forEach((key, value) -&gt; delegate.getHeaders().addAll(key, value));</span><br><span class="line">            <span class="keyword">if</span> (body.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (delegate <span class="keyword">instanceof</span> StreamingHttpOutputMessage) &#123;</span><br><span class="line">                    StreamingHttpOutputMessage streamingOutputMessage = (StreamingHttpOutputMessage) delegate;</span><br><span class="line">                    streamingOutputMessage.setBody(outputStream -&gt; StreamUtils.copy(body, outputStream));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    StreamUtils.copy(body, delegate.getBody());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> delegate.execute();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续更新<code>delegate.execute()</code>方法，进入到<code>SimpleBufferingClientHttpRequest#executeInternal</code>方法，这里就看到了执行<code>HttpURLConnection</code>请求的操作</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.http.client.SimpleBufferingClientHttpRequest#executeInternal</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> ClientHttpResponse <span class="title">executeInternal</span><span class="params">(HttpHeaders headers, <span class="keyword">byte</span>[] bufferedOutput)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    addHeaders(<span class="keyword">this</span>.connection, headers);</span><br><span class="line">    <span class="comment">// JDK &lt;1.8 doesn't support getOutputStream with HTTP DELETE</span></span><br><span class="line">    <span class="keyword">if</span> (getMethod() == HttpMethod.DELETE &amp;&amp; bufferedOutput.length == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.connection.setDoOutput(<span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.connection.getDoOutput() &amp;&amp; <span class="keyword">this</span>.outputStreaming) &#123;</span><br><span class="line">        <span class="keyword">this</span>.connection.setFixedLengthStreamingMode(bufferedOutput.length);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 执行HttpURLConnection请求</span></span><br><span class="line">    <span class="keyword">this</span>.connection.connect();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.connection.getDoOutput()) &#123;</span><br><span class="line">        FileCopyUtils.copy(bufferedOutput, <span class="keyword">this</span>.connection.getOutputStream());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Immediately trigger the request in a no-output scenario as well</span></span><br><span class="line">        <span class="keyword">this</span>.connection.getResponseCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SimpleClientHttpResponse(<span class="keyword">this</span>.connection);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>这里执行完成之后直接将结果封装为<code>SimpleClientHttpResponse</code>对象</p>
+</li>
+<li><p>得到结果之后就是解析响应结果为具体对象了，下面可以看到就是循环<code>this.messageConverters</code>，那个能解析就解析</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.springframework.web.client.HttpMessageConverterExtractor#extractData</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">extractData</span><span class="params">(ClientHttpResponse response)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    MessageBodyClientHttpResponseWrapper responseWrapper = <span class="keyword">new</span> MessageBodyClientHttpResponseWrapper(response);</span><br><span class="line">    <span class="keyword">if</span> (!responseWrapper.hasMessageBody() || responseWrapper.hasEmptyMessageBody()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    MediaType contentType = getContentType(responseWrapper);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (HttpMessageConverter&lt;?&gt; messageConverter : <span class="keyword">this</span>.messageConverters) &#123;</span><br><span class="line">            <span class="keyword">if</span> (messageConverter <span class="keyword">instanceof</span> GenericHttpMessageConverter) &#123;</span><br><span class="line">                GenericHttpMessageConverter&lt;?&gt; genericMessageConverter =</span><br><span class="line">                        (GenericHttpMessageConverter&lt;?&gt;) messageConverter;</span><br><span class="line">                <span class="keyword">if</span> (genericMessageConverter.canRead(<span class="keyword">this</span>.responseType, <span class="keyword">null</span>, contentType)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                        ResolvableType resolvableType = ResolvableType.forType(<span class="keyword">this</span>.responseType);</span><br><span class="line">                        logger.debug(<span class="string">"Reading to ["</span> + resolvableType + <span class="string">"]"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> (T) genericMessageConverter.read(<span class="keyword">this</span>.responseType, <span class="keyword">null</span>, responseWrapper);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.responseClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (messageConverter.canRead(<span class="keyword">this</span>.responseClass, contentType)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                        String className = <span class="keyword">this</span>.responseClass.getName();</span><br><span class="line">                        logger.debug(<span class="string">"Reading to ["</span> + className + <span class="string">"] as \""</span> + contentType + <span class="string">"\""</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> (T) messageConverter.read((Class) <span class="keyword">this</span>.responseClass, responseWrapper);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException | HttpMessageNotReadableException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RestClientException(<span class="string">"Error while extracting response for type ["</span> +</span><br><span class="line">                <span class="keyword">this</span>.responseType + <span class="string">"] and content type ["</span> + contentType + <span class="string">"]"</span>, ex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RestClientException(<span class="string">"Could not extract response: no suitable HttpMessageConverter found "</span> +</span><br><span class="line">            <span class="string">"for response type ["</span> + <span class="keyword">this</span>.responseType + <span class="string">"] and content type ["</span> + contentType + <span class="string">"]"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们这里的返回结果是<code>String</code>对象，所以是这个<code>StringHttpMessageConverter</code>解析类来处理返回结果</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/spring-mvc/restTemplate4.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/">spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-mvc/">spring mvc</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/&title=《Spring Web-RestTemplate源码分析》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/&title=《Spring Web-RestTemplate源码分析》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring Web-RestTemplate源码分析》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(一)前言/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringBoot(一)前言</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring Mvc源码(十)RequestBody注解解析之RequestResponseBodyMethodProcessor</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/&title=《Spring Web-RestTemplate源码分析》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/&title=《Spring Web-RestTemplate源码分析》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring Web-RestTemplate源码分析》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring Web-RestTemplate源码分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD/UlEQVR42u3aS07kQBAFwL7/pRlpVoyg7fcyywOL8Ao1tKsqjJTOz+sVXx9/r6+ffL6+fn79l+9Wyb+brPt64sKBAwcOHMFR313Xt77+Vkuc7+p6hwnr293iwIEDB45DHNfbzQNYfrc8TOYPpg26OHDgwIHjZzmuF7hO82bpX3K3ZD84cODAgeN3cuRhuD3qJqWc7R8HDhw4cDzNkSy/Lxq2cHmrqV3rQK0UBw4cOHB0XaG6UPibf35wvgMHDhw4cIyGBvLgN0vq2nvmSWZxIhw4cODAseZoy3b5IFrbNEqaUu1R2+EGHDhw4MCx50i+1urmow+zptQs9EZNLBw4cODAseZIQlc74jZLzPKGUPsIkz0UhUIcOHDgwFFytGGphciPmgf79iUgSixx4MCBA8eaIx99e64V1KZ8s8dZIOLAgQMHjpKjbdgkm5ulf3mJcJOY3QR4HDhw4MBxlGNWK5slTrPfzhLLIjnEgQMHDhyHONohg02BLx9r2CR1s53jwIEDB47nOGbjCEm6lQ8ubMYsZiVIHDhw4MBxiiM5TL5M24KaNZZOjSz88zkOHDhw4Fhz5MnbqYJgHgKT8DxL/26YcODAgQPHgmMW/HKUWbhtWV/BFa2CAwcOHDiOcsyGG5Ii4ywNyxtLs8dzE2hx4MCBA8eIo023ZsFytq22QVUf+7piigMHDhw4RhyzQ+aFuTyVyhPF5Lf5Q7p578CBAwcOHCOOPNS14w75sfMmU5tqFi8KOHDgwIHjKMemjTRLsfZtqk0LqpjswIEDBw4cZfc/CaVJwS6hSY7aErTXzU5w4MCBA8eC41S61YbPNlHcFA2LdXHgwIEDxwMcdcITJ4RJeJ7lUznizePEgQMHDhxrjjxxyoNr2yLKDzYrDraJKA4cOHDg2HDst9uGxpwsB9qvPnzvwIEDBw4coz7+ptd/duDg1Co4cODAgeNpjmTIIB8myNtO7WHaoJuniN+8feDAgQMHjhHHrIQ3C89tyGwfRo4eDTTgwIEDB44RR/6FvDC3afzsVzzQ7sKBAwcOHAuOWdCaDcPt/yZ/SMmIQz2LgQMHDhw4Yo48FOUBchZiZwMQSZExSvNw4MCBA8eaI79Ffry22Hcd7/IAnF84cODAgeM5jlNBdFZerCcvRodM0jkcOHDgwHGKYxacNiXF2eBCzpcH7HbkDgcOHDhwzKphs5QsIWgDYRKwZ4/h5v8CBw4cOHAc4miLdGeHDNrH047rFUw4cODAgeOHONqiXhuM25TvWOaKAwcOHDj+I0fempo1q2ZJ46z4eCCFw4EDBw4c6+LgDGhfyEt2lawShVscOHDgwLHmmA00nBpK2CR7bemwbUrhwIEDB46S4w/uoqYYzwElmwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

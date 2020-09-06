@@ -20,19 +20,23 @@
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="消息队列">
+    <meta name="keywords" content="消息队列,RocketMQ">
     <meta name="description" content="前言RocketMQ 是什么？ RocketMQ 是阿里巴巴在 2012 年开源的分布式消息中间件，目前已经捐赠给 Apache 软件基金会，并于 2017 年 9 月 25 日成为 Apache 的顶级项目。  作为经历过多次阿里巴巴双十一这种“超级工程”的洗礼并有稳定出色表现的国产中间件，以其高性能、低延时和高可靠等特性近年来已经也被越来越多的国内企业使用。  官网：http://rocket">
-<meta name="keywords" content="消息队列">
+<meta name="keywords" content="消息队列,RocketMQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RocketMQ-下载安装">
 <meta property="og:url" content="http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-下载安装/index.html">
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言RocketMQ 是什么？ RocketMQ 是阿里巴巴在 2012 年开源的分布式消息中间件，目前已经捐赠给 Apache 软件基金会，并于 2017 年 9 月 25 日成为 Apache 的顶级项目。  作为经历过多次阿里巴巴双十一这种“超级工程”的洗礼并有稳定出色表现的国产中间件，以其高性能、低延时和高可靠等特性近年来已经也被越来越多的国内企业使用。  官网：http://rocket">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-04-05T03:08:54.762Z">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rocketmq/rocketMQ.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rocketmq/rocketmq-1.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/mq/rocketmq/rocketmq-2.jpg">
+<meta property="og:updated_time" content="2020-04-26T03:28:39.566Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RocketMQ-下载安装">
 <meta name="twitter:description" content="前言RocketMQ 是什么？ RocketMQ 是阿里巴巴在 2012 年开源的分布式消息中间件，目前已经捐赠给 Apache 软件基金会，并于 2017 年 9 月 25 日成为 Apache 的顶级项目。  作为经历过多次阿里巴巴双十一这种“超级工程”的洗礼并有稳定出色表现的国产中间件，以其高性能、低延时和高可靠等特性近年来已经也被越来越多的国内企业使用。  官网：http://rocket">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/mq/rocketmq/rocketMQ.jpg">
     
         <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
     
@@ -324,7 +328,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#RocketMQ-是什么？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">RocketMQ 是什么？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#下载安装"><span class="post-toc-number">2.</span> <span class="post-toc-text">下载安装</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Windows环境下"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Windows环境下</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、下载"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1、下载</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、配置"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">2、配置</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、启动"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">3、启动</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-1-启动NAMESERVER"><span class="post-toc-number">2.1.3.1.</span> <span class="post-toc-text">3.1 启动NAMESERVER</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-2-启动BROKER"><span class="post-toc-number">2.1.3.2.</span> <span class="post-toc-text">3.2 启动BROKER</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Linux环境下"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Linux环境下</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题记录"><span class="post-toc-number">3.</span> <span class="post-toc-text">问题记录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#发送消息报磁盘空间不足的问题"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">发送消息报磁盘空间不足的问题</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#RocketMQ-是什么？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">RocketMQ 是什么？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#下载安装"><span class="post-toc-number">2.</span> <span class="post-toc-text">下载安装</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Windows环境下"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Windows环境下</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、下载"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1、下载</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、配置"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">2、配置</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、启动"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">3、启动</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-1-启动NAMESERVER"><span class="post-toc-number">2.1.3.1.</span> <span class="post-toc-text">3.1 启动NAMESERVER</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-2-启动BROKER"><span class="post-toc-number">2.1.3.2.</span> <span class="post-toc-text">3.2 启动BROKER</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-3-启动界面控制台"><span class="post-toc-number">2.1.3.3.</span> <span class="post-toc-text">3.3 启动界面控制台</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Linux环境下"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Linux环境下</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题记录"><span class="post-toc-number">3.</span> <span class="post-toc-text">问题记录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#发送消息报磁盘空间不足的问题"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">发送消息报磁盘空间不足的问题</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
         </nav>
     </aside>
 
@@ -381,17 +385,62 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
-<h4 id="3、启动"><a href="#3、启动" class="headerlink" title="3、启动"></a>3、启动</h4><h5 id="3-1-启动NAMESERVER"><a href="#3-1-启动NAMESERVER" class="headerlink" title="3.1 启动NAMESERVER"></a>3.1 启动NAMESERVER</h5><ul>
+<h4 id="3、启动"><a href="#3、启动" class="headerlink" title="3、启动"></a>3、启动</h4><ul>
+<li>先修改<code>runbroker.cmd</code>、<code>mqbroker.cmd</code>堆设置大小，默认的是2g，，自己跑demo的情况下很占内存</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT="$&#123;JAVA_OPT&#125; -server -Xms1g -Xmx1g -Xmn512m"</span><br></pre></td></tr></table></figure>
+<h5 id="3-1-启动NAMESERVER"><a href="#3-1-启动NAMESERVER" class="headerlink" title="3.1 启动NAMESERVER"></a>3.1 启动NAMESERVER</h5><ul>
 <li>进入<code>下载目录\bin</code>，执行命令<code>start mqnamesrv.cmd</code>启动<code>NAMESERVER</code>，成功后会弹出提示框，此框勿关闭。</li>
 </ul>
 <h5 id="3-2-启动BROKER"><a href="#3-2-启动BROKER" class="headerlink" title="3.2 启动BROKER"></a>3.2 启动BROKER</h5><ul>
-<li>打开<code>下载目录\runbroker.cmd</code>文件，修改下面这行<code>%CLASSPATH%</code>加上英文双引号，不然会报错误: 找不到或无法加载主类 xxxxxx</li>
+<li>打开<code>下载目录\bin\runbroker.cmd</code>文件，修改下面这行<code>%CLASSPATH%</code>加上英文双引号，不然会报错误: 找不到或无法加载主类 xxxxxx</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set &quot;JAVA_OPT=%JAVA_OPT% -cp %CLASSPATH%&quot;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>进入<code>下载目录\bin</code>，执行命令<code>start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true</code>启动<code>BROKER</code>，成功后会弹出提示框，此框勿关闭</li>
 </ul>
-<h3 id="Linux环境下"><a href="#Linux环境下" class="headerlink" title="Linux环境下"></a>Linux环境下</h3><p>*</p>
+<h5 id="3-3-启动界面控制台"><a href="#3-3-启动界面控制台" class="headerlink" title="3.3 启动界面控制台"></a>3.3 启动界面控制台</h5><ul>
+<li>先下载源码</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/apache/rocketmq-externals.git</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进入<code>rocketmq-console</code>文件夹，先编辑一下<code>rocketmq-console</code>里面的<code>application.properties</code>文件，将项目使用的<code>rocketmq.config.namesrvAddr</code>配置上去（或者在项目启动时，以参数的形式配进去）</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rocketmq/rocketMQ.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>将<code>rocktmq-console</code>打成<code>jar</code>包，得到<code>rocketmq-console-ng-1.0.0.jar</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean package -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行<code>jar</code>包，启动项目，这里也可以设置<code>rocketmq.config.namesrvAdd</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar rocketmq-console-ng-1.0.1.jar <span class="comment">--server.port=12581 --rocketmq.config.namesrvAddr=127.0.0.1:9876</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动完成之后，进入界面<code>127.0.0.1:12581</code></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rocketmq/rocketmq-1.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/mq/rocketmq/rocketmq-2.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="Linux环境下"><a href="#Linux环境下" class="headerlink" title="Linux环境下"></a>Linux环境下</h3><ul>
+<li>TODO</li>
+</ul>
 <h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h4 id="发送消息报磁盘空间不足的问题"><a href="#发送消息报磁盘空间不足的问题" class="headerlink" title="发送消息报磁盘空间不足的问题"></a>发送消息报磁盘空间不足的问题</h4><ul>
 <li>向<code>RocketMQ</code>发消息后，发生如下错误</li>
 </ul>
@@ -406,6 +455,7 @@ var _hmt = _hmt || [];
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://www.jianshu.com/p/4a275e779afa" target="_blank" rel="noopener">https://www.jianshu.com/p/4a275e779afa</a></li>
 <li><a href="https://m.2cto.com/os/201702/592453.html" target="_blank" rel="noopener">https://m.2cto.com/os/201702/592453.html</a></li>
+<li><a href="https://www.cnblogs.com/miaoying/p/10319840.html" target="_blank" rel="noopener">https://www.cnblogs.com/miaoying/p/10319840.html</a></li>
 <li>芋道源码 <a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
 </ul>
 
@@ -425,7 +475,7 @@ var _hmt = _hmt || [];
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息队列/">消息队列</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息队列/">消息队列</a></li></ul>
 
 
             
@@ -483,18 +533,18 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-下载安装/" id="post-prev" class="post-nav-link">
+      <a href="/2019/04/14/backend/framework/mq/RocketMQ-使用-使用原生API/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">RabbitMQ-下载安装</h4>
+        <h4 class="title">RocketMQ-使用-使用原生API</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/04/13/backend/framework/mq/消息队列-基础概念/" id="post-next" class="post-nav-link">
+      <a href="/2019/04/14/backend/framework/mq/RocketMQ-使用-问题记录/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">消息队列-基础概念</h4>
+        <h4 class="title">RocketMQ-使用-问题记录</h4>
       </a>
     </div>
   
@@ -558,7 +608,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

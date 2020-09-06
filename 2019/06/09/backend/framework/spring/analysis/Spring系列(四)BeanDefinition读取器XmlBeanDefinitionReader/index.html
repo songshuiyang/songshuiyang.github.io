@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/ioc4.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/XmlBeanDefinitionReader.png">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.202Z">
+<meta property="og:updated_time" content="2020-08-16T04:24:17.999Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(四)BeanDefinition读取器XmlBeanDefinitionReader">
 <meta name="twitter:description" content="前言 上一章节介绍了Resource的获取，这一章节来介绍BeanDefinitionReader功能， 它的作用是读取Resource所指向的配置文件资源，然后解析配置文件。配置文件中的每个解析成一个BeanDefinition对象，并保存到BeanDefinitionRegistry中；  下图是Spring容器从加载配置文件到创建一个完整Bean的作业流程及参与的角色">
@@ -373,11 +373,11 @@ var _hmt = _hmt || [];
 <li>在配置文件中每一个 <bean> 都对应着一个 BeanDefinition 对象。</bean></li>
 </ul>
 </li>
-<li>向 IoC 容器注册在第二步解析好的 BeanDefinition，这个过程是通过 BeanDefinitionRegistry 接口来实现的。在 IoC 容器内部其实是将第二个过程解析得到的 BeanDefinition 注入到一个 HashMap 容器中，IoC 容器就是通过这个 HashMap 来维护这些 BeanDefinition 的。<ul>
-<li>在这里需要注意的一点是这个过程并没有完成依赖注入（Bean 创建），Bean 创建是发生在应用第一次调用 #getBean(…) 方法，向容器索要 Bean 时。</li>
+<li>向 IoC 容器注册在第二步解析好的 BeanDefinition，这个过程是通过 BeanDefinitionRegistry 接口来实现的。在 IoC 容器内部其实是将第二个过程解析得到的 BeanDefinition 注入到一个 Map<string, beandefinition=""> beanDefinitionMap 容器中，IoC 容器就是通过这个 HashMap 来维护这些 BeanDefinition 的。<ul>
+<li>在这里需要注意的一点是这个过程并没有构造<code>Bean</code>也没有完成依赖注入，Bean 创建是发生在应用第一次调用 #getBean(…) 方法，向容器索要 Bean 时。</li>
 <li>当然我们可以通过设置预处理，即对某个 Bean 设置 lazyinit = false 属性，那么这个 Bean 的依赖注入就会在容器初始化的时候完成。</li>
 </ul>
-</li>
+</string,></li>
 </ul>
 <h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><figure class="image-bubble">
                 <div class="img-lightbox">
@@ -655,7 +655,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

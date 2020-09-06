@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>并发多线程(一)Thread线程状态及状态切换 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java并发">
+    <meta name="description" content="Java线程状态 Java线程状态在java.lang.Thread.State 中有说明，一个线程可以在给定时间点只能处于一种状态。 注意这些状态是虚拟机的状态并没有反映任何操作系统线程状态。  12345678910111213141516171819public enum State &amp;#123;    // 尚未启动的线程处于这种状态。    NEW,        // 在Java虚拟机">
+<meta name="keywords" content="Java,Java并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发多线程(一)Thread线程状态及状态切换">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="Java线程状态 Java线程状态在java.lang.Thread.State 中有说明，一个线程可以在给定时间点只能处于一种状态。 注意这些状态是虚拟机的状态并没有反映任何操作系统线程状态。  12345678910111213141516171819public enum State &amp;#123;    // 尚未启动的线程处于这种状态。    NEW,        // 在Java虚拟机">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadStatus.jpeg">
+<meta property="og:image" content="http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/source/images/server/java/Concurrent/p1.png">
+<meta property="og:updated_time" content="2020-08-16T04:24:18.027Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发多线程(一)Thread线程状态及状态切换">
+<meta name="twitter:description" content="Java线程状态 Java线程状态在java.lang.Thread.State 中有说明，一个线程可以在给定时间点只能处于一种状态。 注意这些状态是虚拟机的状态并没有反映任何操作系统线程状态。  12345678910111213141516171819public enum State &amp;#123;    // 尚未启动的线程处于这种状态。    NEW,        // 在Java虚拟机">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/threadStatus.jpeg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">并发多线程(一)Thread线程状态及状态切换</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">并发多线程(一)Thread线程状态及状态切换</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-01T12:59:44.000Z" itemprop="datePublished" class="page-time">
+  2019-04-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Java线程状态"><span class="post-toc-number">1.</span> <span class="post-toc-text">Java线程状态</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、初始状态-NEW"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1、初始状态(NEW)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、运行-RUNNABLE"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">2、运行(RUNNABLE)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1、就绪状态-ready"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">2.1、就绪状态 ready</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-2、运行中状态-running"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">2.2、运行中状态 running</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、阻塞-BLOCKED"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">3、阻塞(BLOCKED)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4、等待-WAITING"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">4、等待(WAITING)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5、超时等待-TIMED-WAITING"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">5、超时等待(TIMED_WAITING)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6、终止-TERMINATED"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">6、终止(TERMINATED)</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#通用操作系统线程状态"><span class="post-toc-number">2.</span> <span class="post-toc-text">通用操作系统线程状态</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充"><span class="post-toc-number">3.</span> <span class="post-toc-text">补充</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#既然阻塞-I-O-会使线程休眠，为什么-Java-线程状态却是-RUNNABLE"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">既然阻塞 I/O 会使线程休眠，为什么 Java 线程状态却是 RUNNABLE</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">并发多线程(一)Thread线程状态及状态切换</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-01 20:59:44" datetime="2019-04-01T12:59:44.000Z" itemprop="datePublished">2019-04-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Java线程状态"><a href="#Java线程状态" class="headerlink" title="Java线程状态"></a>Java线程状态</h2><ul>
+<li>Java线程状态在<code>java.lang.Thread.State</code> 中有说明，一个线程可以在给定时间点只能处于一种状态。 注意这些状态是虚拟机的状态并没有反映任何操作系统线程状态。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> State &#123;</span><br><span class="line">    <span class="comment">// 尚未启动的线程处于这种状态。</span></span><br><span class="line">    NEW,</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 在Java虚拟机上执行的线程处于这种状态</span></span><br><span class="line">    RUNNABLE,</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 被阻止等待监视器锁的线程处于这种状态</span></span><br><span class="line">    BLOCKED,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 即无限期地等待另一个线程来执行某一特定操作的线程处于这种状态。</span></span><br><span class="line">    WAITING,</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 正在等待另一个线程来达到一个指定的等待时间执行动作的线程处于这种状态。</span></span><br><span class="line">    TIMED_WAITING,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 已退出的线程处于这种状态。</span></span><br><span class="line">    TERMINATED;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/Concurrent/threadStatus.jpeg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="1、初始状态-NEW"><a href="#1、初始状态-NEW" class="headerlink" title="1、初始状态(NEW)"></a>1、初始状态<code>(NEW)</code></h3><ul>
+<li>实现Runnable接口和继承Thread可以得到一个线程类，new一个实例出来，但还没有调用start()方法，线程就进入了初始状态。</li>
+</ul>
+<h3 id="2、运行-RUNNABLE"><a href="#2、运行-RUNNABLE" class="headerlink" title="2、运行(RUNNABLE)"></a>2、运行<code>(RUNNABLE)</code></h3><ul>
+<li><p>Java线程中将就绪（ready）和运行中（running）两种状态笼统的称为“运行”。</p>
+</li>
+<li><p>线程对象创建后，其他线程(比如main线程）调用了该对象的start()方法。该状态的线程位于可运行线程池中，等待被线程调度选中，获取CPU的使用权，此时处于就绪状态（ready）。就绪状态的线程在获得CPU时间片后变为运行中状态（running）。</p>
+</li>
+</ul>
+<h4 id="2-1、就绪状态-ready"><a href="#2-1、就绪状态-ready" class="headerlink" title="2.1、就绪状态 ready"></a>2.1、就绪状态 ready</h4><ul>
+<li>2.1.1、就绪状态只是说你资格运行，调度程序没有挑选到你，你就永远是就绪状态。</li>
+<li>2.1.2、调用线程的start()方法，此线程进入就绪状态。</li>
+<li>2.1.3、当前线程sleep()方法结束，其他线程join()结束，等待用户输入完毕，某个线程拿到对象锁，这些线程也将进入就绪状态。</li>
+<li>2.1.4、当前线程时间片用完了，调用当前线程的yield()方法，当前线程进入就绪状态。</li>
+<li>2.1.5、锁池里的线程拿到对象锁后，进入就绪状态。</li>
+</ul>
+<h4 id="2-2、运行中状态-running"><a href="#2-2、运行中状态-running" class="headerlink" title="2.2、运行中状态 running"></a>2.2、运行中状态 running</h4><ul>
+<li>线程调度程序从可运行池中选择一个线程作为当前线程时线程所处的状态。这也是线程进入运行状态的唯一一种方式。</li>
+</ul>
+<h3 id="3、阻塞-BLOCKED"><a href="#3、阻塞-BLOCKED" class="headerlink" title="3、阻塞(BLOCKED)"></a>3、阻塞<code>(BLOCKED)</code></h3><ul>
+<li>阻塞状态是线程阻塞在进入synchronized关键字修饰的方法或代码块(获取锁)时的状态，线程等待获取一个锁，在未获取之前，其线程的状态就一直未BLOCKED，如果线程长时间处于这种状态下，我们就是当心看是否出现死锁的问题了</li>
+</ul>
+<h3 id="4、等待-WAITING"><a href="#4、等待-WAITING" class="headerlink" title="4、等待(WAITING)"></a>4、等待<code>(WAITING)</code></h3><ul>
+<li><p>处于这种状态的线程不会被分配CPU执行时间，它们要等待被显式地唤醒，否则会处于无限期等待的状态。</p>
+</li>
+<li><p>一个线程会进入这个状态，一定是执行了如下的一些代码，例如</p>
+<ul>
+<li><code>Object.wait()</code><ul>
+<li>当一个线程执行了Object.wait()的时候，它一定在等待另一个线程执行Object.notify()或者Object.notifyAll()。</li>
+</ul>
+</li>
+<li><code>Thread.join()</code><ul>
+<li>主线程中被执行了thread.join()的时候，主线程即会等待该线程执行完成</li>
+</ul>
+</li>
+<li><code>LockSupport.park()</code><ul>
+<li>当一个线程执行了LockSupport.park()的时候，其在等待执行LockSupport.unpark(thread)。当该线程处于这种等待的时候，其状态即为WAITING。需要关注的是，这边的等待是没有时间限制的，当发现有这种状态的线程的时候，若其长时间处于这种状态，也需要关注下程序内部有无逻辑异常</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5、超时等待-TIMED-WAITING"><a href="#5、超时等待-TIMED-WAITING" class="headerlink" title="5、超时等待(TIMED_WAITING)"></a>5、超时等待<code>(TIMED_WAITING)</code></h3><ul>
+<li><p>处于这种状态的线程不会被分配CPU执行时间，不过无须无限期等待被其他线程显示地唤醒，在达到一定时间后它们会自动唤醒。</p>
+</li>
+<li><p>当执行如下代码的时候，对应的线程会进入到TIMED_WAITING状态</p>
+<ul>
+<li><code>Thread.sleep(long)</code></li>
+<li><code>Object.wait(long)</code></li>
+<li><code>Thread.join(long)</code></li>
+<li><code>LockSupport.parkNanos()</code></li>
+<li><code>ockSupport.parkUntil()</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="6、终止-TERMINATED"><a href="#6、终止-TERMINATED" class="headerlink" title="6、终止(TERMINATED)"></a>6、终止<code>(TERMINATED)</code></h3><ul>
+<li><p>线程一旦执行结束或者线程执行过程发生异常且未正常捕获处理，状态都将会自动变成 TERMINATED。</p>
+</li>
+<li><p>这个线程对象也许是活的，但是，它已经不是一个单独执行的线程。线程一旦终止了，就不能复生，在一个终止的线程上调用start()方法，会抛出java.lang.IllegalThreadStateException异常</p>
+</li>
+</ul>
+<h2 id="通用操作系统线程状态"><a href="#通用操作系统线程状态" class="headerlink" title="通用操作系统线程状态"></a>通用操作系统线程状态</h2><ul>
+<li>我们来看下通用操作系统的线程状态。操作系统线程状态可以分为初始状态，可运行状态，运行状态，休眠状态以及终止状态，如下图：</li>
+</ul>
+<p><img src="source/images/server/java/Concurrent/p1.png" alt=""></p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h3 id="既然阻塞-I-O-会使线程休眠，为什么-Java-线程状态却是-RUNNABLE"><a href="#既然阻塞-I-O-会使线程休眠，为什么-Java-线程状态却是-RUNNABLE" class="headerlink" title="既然阻塞 I/O 会使线程休眠，为什么 Java 线程状态却是 RUNNABLE"></a>既然阻塞 I/O 会使线程休眠，为什么 Java 线程状态却是 RUNNABLE</h3><ul>
+<li><p>使用 Java 阻塞 I/O 模型读取数据，将会导致线程阻塞，线程将会进入休眠，从而让出 CPU 的执行权，直到数据读取完成。这个期间如果使用 jstack 查看线程状态，却可以发现Java 线程状态是处于 RUNNABLE，这就和上面说的存在矛盾，为什么会这样？</p>
+</li>
+<li><p>上面的矛盾其实是混淆了操作系统线程状态与 Java 线程状态。这里说的线程阻塞进入休眠状态，其实是操作系统层面线程实际状态。而我们使用 jstack 查看的线程状态却是 JVM 中的线程状态。</p>
+</li>
+<li><p>当线程调用阻塞式 API，线程进入休眠状态，这里指的是操作系统层面的。从 JVM 层面，Java 线程状态依然处于 RUNNABLE 状态。JVM 并不关心操作系统线程实际状态</p>
+</li>
+</ul>
+<p>### </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>线程可以比作上班工作流程：</p>
+<ul>
+<li>招来一个新员工就是<code>new</code> 了一个<code>Thread</code></li>
+<li>当然刚进来肯定要先熟悉一下才能真正进入工作状态，那就是线程就绪<code>(runnable)</code>状态</li>
+<li>熟悉的差不多了那就可以真正的工作运行了<code>(running)</code>，哈哈开始干活了</li>
+<li>在工作过程中经常遇到需要其他部门的人支持，这时候就需要等待他们一起配合，那么工作进度就会进入到阻塞<code>(blocked)</code>状态或者<code>join()</code>状态</li>
+<li>当然不可能<code>24</code>小时工作喽，人还是需要休息的<code>sleep</code>，休息完之后又要<code>9</code>点打卡上班了</li>
+<li>那么才算一个工作项目结束呢，1、项目按照预期圆满结束 2、哇老板突然说不做了<code>stop</code> 3、哇，项目发生重大事故<code>error</code>了</li>
+</ul>
+</li>
+<li><p>线程是进程划分成的更小的运行单位。线程和进程最大的不同在于基本上各进程是独立的，而各线程则不一定，因为同一进程中的线程极有可能会相互影响。</p>
+</li>
+<li>从另一角度来说，进程属于操作系统的范畴，主要是同一段时间内，可以同时执行一个以上的程序，而线程则是在同一程序内几乎同时执行一个以上的程序段。</li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
+<li><a href="https://blog.csdn.net/pange1991/article/details/53860651" target="_blank" rel="noopener">https://blog.csdn.net/pange1991/article/details/53860651</a></li>
+<li><a href="https://www.jianshu.com/p/ec94ed32895f" target="_blank" rel="noopener">https://www.jianshu.com/p/ec94ed32895f</a></li>
+<li><a href="https://blog.csdn.net/javageektech/article/details/101443127" target="_blank" rel="noopener">https://blog.csdn.net/javageektech/article/details/101443127</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java并发/">Java并发</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/&title=《并发多线程(一)Thread线程状态及状态切换》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/&title=《并发多线程(一)Thread线程状态及状态切换》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(一)Thread线程状态及状态切换》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/01/backend/java/concurrent/并发多线程(二)synchronized关键字/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">并发多线程(二)synchronized关键字</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/01/backend/java/concurrent/并发多线程(一)线程安全相关概念/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">并发多线程(一)线程安全相关概念</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/&title=《并发多线程(一)Thread线程状态及状态切换》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/&title=《并发多线程(一)Thread线程状态及状态切换》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(一)Thread线程状态及状态切换》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/并发多线程(一)Thread线程状态及状态切换/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD6ElEQVR42u3a22rdQAwF0Pz/T6fQp5YSe29ppk1h+Smc+NjyckDR5eMjPj5/Hu35v34r/+SrOz5/8ny1wwcOHDhw4IhD//N4DvQzOBKs5DW0EeZx4sCBAweOGxxJKO2lZ+HmKLMU/vLsOHDgwIHjL3JsQpldLfmHIC/wcODAgQPHd+PIv9UWdUmBl4DiwIEDB47vw5GksVnBtk/e+UCrjR8HDhw4cNzgaBca/sefL+534MCBAweOstw6lWLbMmyz7jB7Ohw4cODAsedoF9eeG4WbJt1zvpuVcO1yAw4cOHDg2HPkN4sGNqMHzl9JvsQwI8OBAwcOHDc42nBnSXS20JCXbXnMxRvGgQMHDhxxDPnl8vW4U8Xb2VFTVHziwIEDB44FR56K2gbcbD0i+SRP+TUoDhw4cOA4xLEp3tpFh7w823DkKRYHDhw4cJzlmAWaj3Y2TcDkvpu24EvHFAcOHDhwrDna4dOmnGvbiJvlvPqOOHDgwIHjEMe+3bZvBSYP2Y6+cmIcOHDgwHGD48CqWQAxazju1ykiehw4cODAseCYtfZmqwyfwXGvgIxeIQ4cOHDguMYxW27IH2OPu1lZePmPAwcOHDhwLDhOFWazht2s8Gubj8P4ceDAgQPHIv4kIe2HUkkrsB0U5eVcXpTiwIEDB44NR75wthkRtVgta1vCvfxd4MCBAweONUebCDfNu5xpdvfZet9viRYHDhw4cCw4NsOe2Srbpjl4tvn45fk4cODAgWPB0S6rnUquSWrPU37+FC+R4MCBAweOQxz5w7fJdQO3SbrDJI0DBw4cOA5xbJaq24SafLetp/arEvU7wYEDBw4cj1kvD/G5cGrXI/JFt2RxIb9O3SvFgQMHDhwlx4ymXYzbXH9THCbR4sCBAweOGxxn01XbyKvf2+j8pKTEgQMHDhynOPYpqm3S5csK7QJEW3DiwIEDB44bHJuybRPipnrKP6/jxIEDBw4cozg/R8esVJuFnlw/X6p4uS8OHDhw4LjGMSuZ2vTWPvwmkR/rj+LAgQMHjoBjc9F8mDRL4Zvz2/SPAwcOHDj2HHkrMP98lj7zl3Fgkpb8jeDAgQMHjhHHrC0YlUNBsy9PnKfGVy9XwIEDBw4ca442LbULEPmQaQOXD6Vmwy0cOHDgwNFyzJJre/u2ndcuQMzahcUsDgcOHDhwlBztgsJz8y4ZXOVtu3b4NOyS4sCBAweOf8SxWhco0/ZsZJUXosVJOHDgwIHjAkee3vZLEnlBmKw+FF1SHDhw4MBxiCNpDs5ahHu+/Leb9QscOHDgwHGKY7Yc0C4ZbBp8SSrNv7VZksCBAwcOHI9X+AFW1qS3R5k6hQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

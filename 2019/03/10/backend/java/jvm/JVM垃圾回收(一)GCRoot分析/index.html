@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>JVM垃圾回收(一)GCRoot分析 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Jvm">
+    <meta name="description" content="概述 上一章节我们了解了可达性算法，现代虚拟机基本都是采用这种算法来判断对象是否存活，这种算法是 GC Root  的对象为起点出发，引出它们指向的下一个节点，再以下个节点为起点，引出此节点指向的下一个结点  分析">
+<meta name="keywords" content="Java,Jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM垃圾回收(一)GCRoot分析">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概述 上一章节我们了解了可达性算法，现代虚拟机基本都是采用这种算法来判断对象是否存活，这种算法是 GC Root  的对象为起点出发，引出它们指向的下一个节点，再以下个节点为起点，引出此节点指向的下一个结点  分析">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/gcroot.png">
+<meta property="og:updated_time" content="2020-09-05T03:37:52.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM垃圾回收(一)GCRoot分析">
+<meta name="twitter:description" content="概述 上一章节我们了解了可达性算法，现代虚拟机基本都是采用这种算法来判断对象是否存活，这种算法是 GC Root  的对象为起点出发，引出它们指向的下一个节点，再以下个节点为起点，引出此节点指向的下一个结点  分析">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/JVM/gcroot.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">JVM垃圾回收(一)GCRoot分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">JVM垃圾回收(一)GCRoot分析</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-03-10T13:59:45.000Z" itemprop="datePublished" class="page-time">
+  2019-03-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/JVM/">JVM</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析"><span class="post-toc-number">2.</span> <span class="post-toc-text">分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#哪些对象可以作为-GC-Root"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">哪些对象可以作为 GC Root</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、虚拟机栈中引用的对象（方法内的变量、局部变量、临时变量）"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1、虚拟机栈中引用的对象（方法内的变量、局部变量、临时变量）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、方法区中类静态属性引用的对象（类静态成员变量）"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">2、方法区中类静态属性引用的对象（类静态成员变量）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、方法区中常量引用的对象（类常量）"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">3、方法区中常量引用的对象（类常量）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、本地方法栈中-JNI-引用的对象"><span class="post-toc-number">2.1.4.</span> <span class="post-toc-text">4、本地方法栈中 JNI 引用的对象</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5、Java虚拟机内部的引用"><span class="post-toc-number">2.1.5.</span> <span class="post-toc-text">5、Java虚拟机内部的引用</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/jvm/JVM垃圾回收(一)GCRoot分析" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">JVM垃圾回收(一)GCRoot分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-03-10 21:59:45" datetime="2019-03-10T13:59:45.000Z" itemprop="datePublished">2019-03-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/JVM/">JVM</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>上一章节我们了解了可达性算法，现代虚拟机基本都是采用这种算法来判断对象是否存活，这种算法是 <code>GC Root</code>  的对象为起点出发，引出它们指向的下一个节点，再以下个节点为起点，引出此节点指向的下一个结点</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/JVM/gcroot.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>如图示，如果用可达性算法即可解决上述循环引用的问题，因为从<code>GC Root</code> 出发没有到达 <code>a,b</code>,所以 <code>a，b</code> 可回收</p>
+</li>
+<li><p><code>a, b</code>对象可回收，就一定会被回收吗?并不是，对象的 <code>finalize</code>方法给了对象一次垂死挣扎的机会，当对象不可达（可回收）时，当发生<code>GC</code>时，会先判断对象是否执行了 <code>finalize</code> 方法，如果未执行，则会先执行 <code>finalize</code> 方法，我们可以在此方法里将当前对象与 <code>GC Roots</code> 关联，这样执行 <code>finalize</code>方法之后，<code>GC</code> 会再次判断对象是否可达，如果不可达，则会被回收，如果可达，则不回收！</p>
+</li>
+<li><p>注意： <code>finalize</code> 方法只会被执行一次，如果第一次执行 <code>finalize</code> 方法此对象变成了可达确实不会回收，但如果对象再次被 <code>GC</code>，则会忽略 <code>finalize</code> 方法，对象会被回收！这一点切记!</p>
+</li>
+<li><p>那么这些 <code>GC Roots</code> 到底是什么东西呢，哪些对象可以作为 <code>GC Root</code> 呢，有以下几类</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中 JNI（即一般说的 Native 方法）引用的对象</li>
+</ul>
+</li>
+</ul>
+<h3 id="哪些对象可以作为-GC-Root"><a href="#哪些对象可以作为-GC-Root" class="headerlink" title="哪些对象可以作为 GC Root"></a>哪些对象可以作为 <code>GC Root</code></h3><h4 id="1、虚拟机栈中引用的对象（方法内的变量、局部变量、临时变量）"><a href="#1、虚拟机栈中引用的对象（方法内的变量、局部变量、临时变量）" class="headerlink" title="1、虚拟机栈中引用的对象（方法内的变量、局部变量、临时变量）"></a>1、虚拟机栈中引用的对象（方法内的变量、局部变量、临时变量）</h4><ul>
+<li>如下代码所示，a 是栈帧中的本地变量，当 a = null 时，由于此时 a 充当了 GC Root 的作用，a 与原来指向的实例 new Test() 断开了连接，所以对象会被回收。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	Test a = <span class="keyword">new</span> Test();</span><br><span class="line">	a = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2、方法区中类静态属性引用的对象（类静态成员变量）"><a href="#2、方法区中类静态属性引用的对象（类静态成员变量）" class="headerlink" title="2、方法区中类静态属性引用的对象（类静态成员变量）"></a>2、方法区中类静态属性引用的对象（类静态成员变量）</h4><ul>
+<li>如下代码所示，当栈帧中的本地变量 a = null 时，由于 a 原来指向的对象与 GC Root (变量 a) 断开了连接，所以 a 原来指向的对象会被回收，而由于我们给 s 赋值了变量的引用，s 在此时是类静态属性引用，充当了 GC Root 的作用，它指向的对象依然存活!</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>  <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span>  <span class="keyword">static</span> Test s;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	Test a = <span class="keyword">new</span> Test();</span><br><span class="line">	a.s = <span class="keyword">new</span> Test();</span><br><span class="line">	a = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3、方法区中常量引用的对象（类常量）"><a href="#3、方法区中常量引用的对象（类常量）" class="headerlink" title="3、方法区中常量引用的对象（类常量）"></a>3、方法区中常量引用的对象（类常量）</h4><ul>
+<li>方法区中常量引用的对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>  <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span>  <span class="keyword">static</span>  <span class="keyword">final</span> Test s = <span class="keyword">new</span> Test();</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	    Test a = <span class="keyword">new</span> Test();</span><br><span class="line">	    a = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4、本地方法栈中-JNI-引用的对象"><a href="#4、本地方法栈中-JNI-引用的对象" class="headerlink" title="4、本地方法栈中 JNI 引用的对象"></a>4、本地方法栈中 JNI 引用的对象</h4><ul>
+<li>当 Java 调用以上本地方法时，jc 会被本地方法栈压入栈中, jc 就是我们说的本地方法栈中 JNI 的对象引用，因此只会在此本地方法执行完成后才会被释放。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_com_pecuyu_jnirefdemo_MainActivity_newStringNative</span><span class="params">(JNIEnv *env, jobject instance，jstring jmsg)</span> </span>&#123;</span><br><span class="line">...</span><br><span class="line">   <span class="comment">// 缓存String的class</span></span><br><span class="line">   jclass jc = (*env)-&gt;FindClass(env, STRING_PATH);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="5、Java虚拟机内部的引用"><a href="#5、Java虚拟机内部的引用" class="headerlink" title="5、Java虚拟机内部的引用"></a>5、Java虚拟机内部的引用</h4><ul>
+<li>如基本数据类型对应的Class对象，一些常驻的异常对象（比如 NullPointExcepiton、OutOfMemoryError）等，还有系统类加载器</li>
+</ul>
+<ul>
+<li><p>所有被同步锁（synchronized关键字）持有的对象</p>
+</li>
+<li><p>反映Java虚拟机内部情况的JMXBean、JVMTI中注册的回调、本地代码缓存等</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>GC ROOTS是用来分析对象的引用关系，对象基本都是在堆中生成，然后在虚拟机栈中被引用，因此，我们只要分析虚拟机中栈的引用对象的被其他对象引用的关系，以此对象为根节点</li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/_AKQs-xXDHlk84HbwKUzOw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/_AKQs-xXDHlk84HbwKUzOw</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jvm/">Jvm</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/&title=《JVM垃圾回收(一)GCRoot分析》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/&title=《JVM垃圾回收(一)GCRoot分析》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JVM垃圾回收(一)GCRoot分析》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(一)方法区回收/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">JVM垃圾回收(一)方法区回收</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(一)垃圾回收算法/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">JVM垃圾回收(一)垃圾回收算法</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/&title=《JVM垃圾回收(一)GCRoot分析》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/&title=《JVM垃圾回收(一)GCRoot分析》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JVM垃圾回收(一)GCRoot分析》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADL0lEQVR42u3a0U4qUQwFUP7/p72vJnpx73ZImMOaJwPKsIqxtvs8HvH19e36/sjP79k88vPZ548nz64ubGxs7Juwv55e//ue5HWeF25GSgr33IKNjY19Kvv5LZMm8bwoyc9uPoy6BWJjY2N/MHvf2PKRpm2o2NjY2Nj7BnbVmJEXCBsbGxs7/6c/eel25ZQMMHk5XrJLw8bGxn57drv0eeevX5JvY2NjY78x+6u82ni1fVvtO/kaXdjY2NgnsWch7n5QaceDWbj7x5iEjY2NfRB7Ft9uVvab0uQBQFQabGxs7CPYeSvKD+jMgtj2ANBqR4SNjY19KDsJZZ//c99Gue2Q04YB0RCCjY2NfVt22yTyRtWuh/IBI/nZPx7BxsbGPpS9WeJsCtS2rtm66tF+YtjY2Ng3YedFmQ0VeUNqh4pZVFz/LmBjY2PfhJ1HuW0APDtMmXzdHgl9tJ8ANjY29k3YRSxajg2bu8wGp/w9YGNjY5/KbpvWpo1twok2GCjGMWxsbOwbsmdtqV0evXrYyCPeX5ZK2NjY2Ddn54NHHiHMFkx1dhF3ol+excbGxv4Adj4ktIPNZmHU3n3VsbGxsbFvxU6oyQ02YcNm6Z/jsbGxsT+B3baxdlDJw+N95PDHKIKNjY19HHs2GORL+asOA13QLLGxsbGPZl91jKZY1gcLqTbu/WOZhY2NjX0cu20/+YGbfKiYLZXyGBgbGxv709gtfla+2er/ghEFGxsb+yB2u7jfDBJ5kNAupNqmiI2NjX0qe7bEaUszO6bZDiH5K2NjY2Ofx87X/a84UpPvfGaBBDY2Nvap7KvCgLY0+VoqL1DRMrGxsbEPZc/ws0EiB7dFvGyLho2NjX1z9v5mmxZYz0/7szzY2NjYN2TPDru0UWtesnxomcXJ2NjY2OexZ3/z8+bXNrZ8XMkHpHawwcbGxr4je3/gpl0wJSukPLgdLqewsbGxj2NftXafDTZt25vtjrCxsbGxn8PyiHe25MqHkKhw2NjY2B/M3hdiHwy3gTQ2Njb2J7DbgaF907NwNx9+2o8KGxsb+yR2PiRsbnlB2rxolqt8GxsbG/t92f8AZM7EcNs5RkwAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

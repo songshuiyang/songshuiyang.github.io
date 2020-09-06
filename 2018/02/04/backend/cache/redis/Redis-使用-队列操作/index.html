@@ -21,18 +21,18 @@
     
     
     <meta name="keywords" content="缓存,Redis">
-    <meta name="description" content="12345678910111213141516171819public class Tests &amp;#123;    @Autowired    private StringRedisTemplate stringRedisTemplate;    @Test    public void test1 () &amp;#123;        for (int i = 1; i &amp;lt; 20; i ++)">
+    <meta name="description" content="一般使用list结构作为队列，rpush生产消息，lpop消费消息。当lpop没有消息的时候，要适当sleep一会再重试。  list还有个指令叫blpop，在没有消息的时候，它会阻塞住直到消息到来。  Spring提供 RedisTemplate可以很方便操作list   12345678910111213141516171819public class Tests &amp;#123;    @Au">
 <meta name="keywords" content="缓存,Redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis-使用-队列操作">
 <meta property="og:url" content="http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-使用-队列操作/index.html">
 <meta property="og:site_name" content="宋水阳个人博客">
-<meta property="og:description" content="12345678910111213141516171819public class Tests &amp;#123;    @Autowired    private StringRedisTemplate stringRedisTemplate;    @Test    public void test1 () &amp;#123;        for (int i = 1; i &amp;lt; 20; i ++)">
+<meta property="og:description" content="一般使用list结构作为队列，rpush生产消息，lpop消费消息。当lpop没有消息的时候，要适当sleep一会再重试。  list还有个指令叫blpop，在没有消息的时候，它会阻塞住直到消息到来。  Spring提供 RedisTemplate可以很方便操作list   12345678910111213141516171819public class Tests &amp;#123;    @Au">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-04-11T12:23:47.813Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis-使用-队列操作">
-<meta name="twitter:description" content="12345678910111213141516171819public class Tests &amp;#123;    @Autowired    private StringRedisTemplate stringRedisTemplate;    @Test    public void test1 () &amp;#123;        for (int i = 1; i &amp;lt; 20; i ++)">
+<meta name="twitter:description" content="一般使用list结构作为队列，rpush生产消息，lpop消费消息。当lpop没有消息的时候，要适当sleep一会再重试。  list还有个指令叫blpop，在没有消息的时候，它会阻塞住直到消息到来。  Spring提供 RedisTemplate可以很方便操作list   12345678910111213141516171819public class Tests &amp;#123;    @Au">
     
         <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
     
@@ -351,8 +351,19 @@ var _hmt = _hmt || [];
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span> <span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">20</span>; i ++) &#123;</span><br><span class="line">            stringRedisTemplate.opsForList().rightPush(<span class="string">"list_order"</span>, String.valueOf(i));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">20</span>; i ++) &#123;</span><br><span class="line">            log.info(stringRedisTemplate.opsForList().leftPop(<span class="string">"list_order"</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2>
+            <ul>
+<li><p>一般使用list结构作为队列，rpush生产消息，lpop消费消息。当lpop没有消息的时候，要适当sleep一会再重试。</p>
+</li>
+<li><p>list还有个指令叫blpop，在没有消息的时候，它会阻塞住直到消息到来。</p>
+</li>
+<li><p><code>Spring</code>提供 <code>RedisTemplate</code>可以很方便操作list</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span> <span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">20</span>; i ++) &#123;</span><br><span class="line">            stringRedisTemplate.opsForList().rightPush(<span class="string">"list_order"</span>, String.valueOf(i));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">20</span>; i ++) &#123;</span><br><span class="line">            log.info(stringRedisTemplate.opsForList().leftPop(<span class="string">"list_order"</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://aobing.blog.csdn.net/article/details/102841400" target="_blank" rel="noopener">https://aobing.blog.csdn.net/article/details/102841400</a></li>
+</ul>
+
         </div>
 
         <blockquote class="post-copyright">
@@ -436,9 +447,9 @@ var _hmt = _hmt || [];
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/02/04/backend/cache/redis/Redis-常用命令/" id="post-next" class="post-nav-link">
+      <a href="/2018/02/04/backend/cache/redis/Redis-使用-与Spring集成/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Redis-常用命令</h4>
+        <h4 class="title">Redis-使用-与Spring集成</h4>
       </a>
     </div>
   
@@ -502,7 +513,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

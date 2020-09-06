@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/tx/transaction1.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/tx/transaction2.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/tx/transaction3.png">
-<meta property="og:updated_time" content="2019-09-16T13:11:04.970Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.497Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(七二)Spring事务之具体执行过程">
 <meta name="twitter:description" content="前言 我们知道在JDBC中处理事务，都是通过Connection完成的，同一事务中所有的操作，都在使用同一个Connection对象，Connection的三个方法与事务有关，万变不离其宗，Spring的事务也是基于JDBC来实现的，那么Spring是怎么来写这些代码的呢，这就是本章要介绍的内容。  1234567891011try &amp;#123;    // 设置是否为自动提交事务，如果true（">
@@ -305,7 +305,7 @@ var _hmt = _hmt || [];
         <h1 class="title">Spring系列(七二)Spring事务之具体执行过程</h1>
         <h5 class="subtitle">
             
-                <time datetime="2019-08-01T16:00:02.000Z" itemprop="datePublished" class="page-time">
+                <time datetime="2019-08-01T16:02:00.000Z" itemprop="datePublished" class="page-time">
   2019-08-02
 </time>
 
@@ -338,7 +338,7 @@ var _hmt = _hmt || [];
     <div class="post-card">
         <h1 class="post-card-title">Spring系列(七二)Spring事务之具体执行过程</h1>
         <div class="post-meta">
-            <time class="post-time" title="2019-08-02 00:00:02" datetime="2019-08-01T16:00:02.000Z" itemprop="datePublished">2019-08-02</time>
+            <time class="post-time" title="2019-08-02 00:02:00" datetime="2019-08-01T16:02:00.000Z" itemprop="datePublished">2019-08-02</time>
 
             
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
@@ -502,7 +502,8 @@ var _hmt = _hmt || [];
 <li>在 Spring 的事务管理中所使用的数据库连接会和当前线程所绑定，即使我们设置了另外一个数据源，使用的还是当前的数据源连接。</li>
 </ul>
 </li>
-<li></li>
+</ul>
+<ul>
 <li><p>什么是事务的传播级别？分成哪些传播级别？</p>
 <ul>
 <li>事务的传播行为，指的是当前带有事务配置的方法，需要怎么处理事务。<ul>
@@ -516,11 +517,13 @@ var _hmt = _hmt || [];
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TransactionDefinition.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ========== 支持当前事务的情况 ========== </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则使用该事务。</span></span><br><span class="line"><span class="comment"> * 如果当前没有事务，则创建一个新的事务。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_REQUIRED = <span class="number">0</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则使用该事务。</span></span><br><span class="line"><span class="comment"> * 如果当前没有事务，则以非事务的方式继续运行。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_SUPPORTS = <span class="number">1</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则使用该事务。</span></span><br><span class="line"><span class="comment"> * 如果当前没有事务，则抛出异常。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_MANDATORY = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ========== 不支持当前事务的情况 ========== </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建一个新的事务。</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则把当前事务挂起。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_REQUIRES_NEW = <span class="number">3</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 以非事务方式运行。</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则把当前事务挂起。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_NOT_SUPPORTED = <span class="number">4</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 以非事务方式运行。</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则抛出异常。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_NEVER = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ========== 其他情况 ========== </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行。</span></span><br><span class="line"><span class="comment"> * 如果当前没有事务，则等价于 &#123;<span class="doctag">@link</span> TransactionDefinition#PROPAGATION_REQUIRED&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> PROPAGATION_NESTED = <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>分类之后，其实还是比较好记的。当然，绝大数场景，我们只用 <code>PROPAGATION_REQUIRED</code> 传播级别。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2></li>
-</ul>
 </li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>事务说白了就是“绑架”一个数据库连接，更改数据库的自动提交功能，使用手动提交机制。<code>Spring</code>把这一系列操作属性及数据库连接放到了<code>ThreadLocal</code>中，而<code>ThreadLocal</code>的<code>key</code>为“当前线程的值”，可以说一个线程一个连接一个事务`</li>
 <li>声明式事务管理建立在<code>AOP</code>之上的，其本质是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务</li>
 <li>默认情况下<code>Spring</code>中的事务处理只对<code>RuntimeException</code>运行时异常进行回滚，对<code>Exception</code>编译性异常不会进行回滚</li>
@@ -680,7 +683,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

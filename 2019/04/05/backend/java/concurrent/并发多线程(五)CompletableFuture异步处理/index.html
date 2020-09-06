@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>并发多线程(五)CompletableFuture异步处理 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java并发">
+    <meta name="description" content="概述使用场景一 三个操作用异步线程执行，然后CompletableFuture.allOf()得到汇总结果，不阻塞主线程  123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051public static void main(String[] args) &amp;#123;">
+<meta name="keywords" content="Java,Java并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发多线程(五)CompletableFuture异步处理">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概述使用场景一 三个操作用异步线程执行，然后CompletableFuture.allOf()得到汇总结果，不阻塞主线程  123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051public static void main(String[] args) &amp;#123;">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/forkJoinPool.jpg">
+<meta property="og:updated_time" content="2020-08-16T04:24:18.041Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发多线程(五)CompletableFuture异步处理">
+<meta name="twitter:description" content="概述使用场景一 三个操作用异步线程执行，然后CompletableFuture.allOf()得到汇总结果，不阻塞主线程  123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051public static void main(String[] args) &amp;#123;">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/forkJoinPool.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">并发多线程(五)CompletableFuture异步处理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">并发多线程(五)CompletableFuture异步处理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-05T14:00:04.000Z" itemprop="datePublished" class="page-time">
+  2019-04-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#场景一"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">场景一</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#场景二"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">场景二</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#运行原理分析"><span class="post-toc-number">3.</span> <span class="post-toc-text">运行原理分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#线程池设置"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">线程池设置</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/concurrent/并发多线程(五)CompletableFuture异步处理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">并发多线程(五)CompletableFuture异步处理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-05 22:00:04" datetime="2019-04-05T14:00:04.000Z" itemprop="datePublished">2019-04-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h4 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h4><ul>
+<li>三个操作用异步线程执行，然后<code>CompletableFuture.allOf()</code>得到汇总结果，不阻塞主线程</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    ExecutorService executor = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">3</span>, <span class="number">3</span>, <span class="number">0L</span>,</span><br><span class="line">            TimeUnit.MILLISECONDS, <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(),</span><br><span class="line">            <span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line"></span><br><span class="line">    log.info(<span class="string">"主线程开始执行"</span> + DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">    CompletableFuture&lt;String&gt; future1 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">6</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程1执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future1"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;String&gt; future2 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">10</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程2执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future2"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;String&gt; future3 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">3</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程3执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future3"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line">    CompletableFuture.allOf(future1, future2, future3).thenAcceptAsync((Void) -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            log.info(<span class="string">"所有异步线程执行完成后触发时间:&#123;&#125;"</span> , DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">            log.info(<span class="string">"所有异步线程执行完成后执行结果:&#123;&#125; &#123;&#125; &#123;&#125;"</span> , future1.get(),  future2.get(), future3.get());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    log.info(<span class="string">"主线程完成执行"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>也可以通过返回一个新的<code>CompletableFuture</code>来同步处理结果实现阻塞主线程</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    ExecutorService executor = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">3</span>, <span class="number">3</span>, <span class="number">0L</span>,</span><br><span class="line">            TimeUnit.MILLISECONDS, <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(),</span><br><span class="line">            <span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line"></span><br><span class="line">    log.info(<span class="string">"主线程开始执行"</span> + DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">    CompletableFuture&lt;String&gt; future1 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">6</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程1执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future1"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;String&gt; future2 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">10</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程2执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future2"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;String&gt; future3 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">3</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程3执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future3"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture future4 = CompletableFuture.allOf(future1, future2, future3).thenAccept((Void) -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            log.info(<span class="string">"所有异步线程执行完成后触发时间:&#123;&#125;"</span> , DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">            log.info(<span class="string">"所有异步线程执行完成后执行结果:&#123;&#125; &#123;&#125; &#123;&#125;"</span> , future1.get(),  future2.get(), future3.get());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        future4.get();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    log.info(<span class="string">"主线程完成执行"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h4><ul>
+<li>三个操作用异步线程执行，然后主线程阻塞一个一个获取结果</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    ExecutorService executor = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">3</span>, <span class="number">3</span>, <span class="number">0L</span>,</span><br><span class="line">            TimeUnit.MILLISECONDS, <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(),</span><br><span class="line">            <span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line"></span><br><span class="line">    log.info(<span class="string">"主线程开始执行"</span> + DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">    CompletableFuture&lt;String&gt; future1 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">6</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程1执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future1"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;String&gt; future2 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">10</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程2执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future2"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;String&gt; future3 =</span><br><span class="line">            CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">3</span> * <span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                log.info(<span class="string">"异步线程3执行完成"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"future3"</span>;</span><br><span class="line">            &#125;, executor);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        log.info(<span class="string">"执行结果 &#123;&#125; &#123;&#125;"</span>, future1.get(), DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">        log.info(<span class="string">"执行结果 &#123;&#125; &#123;&#125;"</span>, future2.get(), DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">        log.info(<span class="string">"执行结果 &#123;&#125; &#123;&#125;"</span>, future3.get(), DateUtil.formatDateByPattern(DateUtil.getUnixTime()));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    log.info(<span class="string">"主线程完成执行"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="运行原理分析"><a href="#运行原理分析" class="headerlink" title="运行原理分析"></a>运行原理分析</h2><h4 id="线程池设置"><a href="#线程池设置" class="headerlink" title="线程池设置"></a>线程池设置</h4><ul>
+<li>上面我们执行<code>supplyAsync</code>方法指定了线程池来执行任务，如果不指定线程池是什么情况呢，继续跟进<code>supplyAsync()</code>方法，下面可以看到会默认有个<code>asyncPool</code>参数</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;U&gt; <span class="function">CompletableFuture&lt;U&gt; <span class="title">supplyAsync</span><span class="params">(Supplier&lt;U&gt; supplier)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> asyncSupplyStage(asyncPool, supplier);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>跟进<code>asyncPool</code>参数，这里可以看到<code>ForkJoinPool</code>这个默认线程池类，注意的是这里调用了<code>ForkJoinPool</code>的静态方法，也就是说如果使用<code>CompletableFuture</code>不指定线程池，那么大家都是用的同一个线程池来处理任务，这样的话需要根据业务场景来判断是否使用公用线程池</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Default executor -- ForkJoinPool.commonPool() unless it cannot</span></span><br><span class="line"><span class="comment"> * support parallelism.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Executor asyncPool = useCommonPool ?</span><br><span class="line">    ForkJoinPool.commonPool() : <span class="keyword">new</span> ThreadPerTaskExecutor();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续跟进<code>ForkJoinPool.commonPool()</code>方法，可以看到很简单就是返回一个静态变量</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Common (static) pool. Non-null for public use unless a static</span></span><br><span class="line"><span class="comment"> * construction exception, but internal usages null-check on use</span></span><br><span class="line"><span class="comment"> * to paranoically avoid potential initialization circularities</span></span><br><span class="line"><span class="comment"> * as well as to simplify generated code.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> ForkJoinPool common;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ForkJoinPool <span class="title">commonPool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert common != null : "static init error";</span></span><br><span class="line">    <span class="keyword">return</span> common;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们关心的是这个线程池是怎么创建的，点击这个变量的引用，我们来到<code>ForkJoinPool</code>的静态代码块</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="comment">// initialize field offsets for CAS etc</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        U = sun.misc.Unsafe.getUnsafe();</span><br><span class="line">        Class&lt;?&gt; k = ForkJoinPool.class;</span><br><span class="line">        CTL = U.objectFieldOffset</span><br><span class="line">            (k.getDeclaredField(<span class="string">"ctl"</span>));</span><br><span class="line">        RUNSTATE = U.objectFieldOffset</span><br><span class="line">            (k.getDeclaredField(<span class="string">"runState"</span>));</span><br><span class="line">        STEALCOUNTER = U.objectFieldOffset</span><br><span class="line">            (k.getDeclaredField(<span class="string">"stealCounter"</span>));</span><br><span class="line">        Class&lt;?&gt; tk = Thread.class;</span><br><span class="line">        PARKBLOCKER = U.objectFieldOffset</span><br><span class="line">            (tk.getDeclaredField(<span class="string">"parkBlocker"</span>));</span><br><span class="line">        Class&lt;?&gt; wk = WorkQueue.class;</span><br><span class="line">        QTOP = U.objectFieldOffset</span><br><span class="line">            (wk.getDeclaredField(<span class="string">"top"</span>));</span><br><span class="line">        QLOCK = U.objectFieldOffset</span><br><span class="line">            (wk.getDeclaredField(<span class="string">"qlock"</span>));</span><br><span class="line">        QSCANSTATE = U.objectFieldOffset</span><br><span class="line">            (wk.getDeclaredField(<span class="string">"scanState"</span>));</span><br><span class="line">        QPARKER = U.objectFieldOffset</span><br><span class="line">            (wk.getDeclaredField(<span class="string">"parker"</span>));</span><br><span class="line">        QCURRENTSTEAL = U.objectFieldOffset</span><br><span class="line">            (wk.getDeclaredField(<span class="string">"currentSteal"</span>));</span><br><span class="line">        QCURRENTJOIN = U.objectFieldOffset</span><br><span class="line">            (wk.getDeclaredField(<span class="string">"currentJoin"</span>));</span><br><span class="line">        Class&lt;?&gt; ak = ForkJoinTask[].class;</span><br><span class="line">        ABASE = U.arrayBaseOffset(ak);</span><br><span class="line">        <span class="keyword">int</span> scale = U.arrayIndexScale(ak);</span><br><span class="line">        <span class="keyword">if</span> ((scale &amp; (scale - <span class="number">1</span>)) != <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"data type scale not a power of two"</span>);</span><br><span class="line">        ASHIFT = <span class="number">31</span> - Integer.numberOfLeadingZeros(scale);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Error(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    commonMaxSpares = DEFAULT_COMMON_MAX_SPARES;</span><br><span class="line">    defaultForkJoinWorkerThreadFactory =</span><br><span class="line">        <span class="keyword">new</span> DefaultForkJoinWorkerThreadFactory();</span><br><span class="line">    modifyThreadPermission = <span class="keyword">new</span> RuntimePermission(<span class="string">"modifyThread"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 这里创建公共线程池了</span></span><br><span class="line">    common = java.security.AccessController.doPrivileged</span><br><span class="line">        (<span class="keyword">new</span> java.security.PrivilegedAction&lt;ForkJoinPool&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> ForkJoinPool <span class="title">run</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> makeCommonPool(); &#125;&#125;);</span><br><span class="line">    <span class="keyword">int</span> par = common.config &amp; SMASK; <span class="comment">// report 1 even if threads disabled</span></span><br><span class="line">    commonParallelism = par &gt; <span class="number">0</span> ? par : <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进入<code>makeCommonPool()</code>方法，这里就是构建<code>ForkJoinPool</code>对象<ul>
+<li>我们可以通过启动参数来设置<code>parallelism</code>、<code>threadFactory</code>、<code>exceptionHandler</code>这些对象</li>
+<li>如果没有指定<code>parallelism</code>参数的话，这里<code>parallelism</code>并发数量是和CPU核心数量有关的<code>Runtime.getRuntime().availableProcessors() -1</code>，那就是核心池线程数量 = CPU核数 -1</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> ForkJoinPool <span class="title">makeCommonPool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> parallelism = -<span class="number">1</span>;</span><br><span class="line">    ForkJoinWorkerThreadFactory factory = <span class="keyword">null</span>;</span><br><span class="line">    UncaughtExceptionHandler handler = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;  <span class="comment">// ignore exceptions in accessing/parsing properties</span></span><br><span class="line">        String pp = System.getProperty</span><br><span class="line">            (<span class="string">"java.util.concurrent.ForkJoinPool.common.parallelism"</span>);</span><br><span class="line">        String fp = System.getProperty</span><br><span class="line">            (<span class="string">"java.util.concurrent.ForkJoinPool.common.threadFactory"</span>);</span><br><span class="line">        String hp = System.getProperty</span><br><span class="line">            (<span class="string">"java.util.concurrent.ForkJoinPool.common.exceptionHandler"</span>);</span><br><span class="line">        <span class="keyword">if</span> (pp != <span class="keyword">null</span>)</span><br><span class="line">            parallelism = Integer.parseInt(pp);</span><br><span class="line">        <span class="keyword">if</span> (fp != <span class="keyword">null</span>)</span><br><span class="line">            factory = ((ForkJoinWorkerThreadFactory)ClassLoader.</span><br><span class="line">                       getSystemClassLoader().loadClass(fp).newInstance());</span><br><span class="line">        <span class="keyword">if</span> (hp != <span class="keyword">null</span>)</span><br><span class="line">            handler = ((UncaughtExceptionHandler)ClassLoader.</span><br><span class="line">                       getSystemClassLoader().loadClass(hp).newInstance());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception ignore) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (factory == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (System.getSecurityManager() == <span class="keyword">null</span>)</span><br><span class="line">            factory = defaultForkJoinWorkerThreadFactory;</span><br><span class="line">        <span class="keyword">else</span> <span class="comment">// use security-managed default</span></span><br><span class="line">            factory = <span class="keyword">new</span> InnocuousForkJoinWorkerThreadFactory();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (parallelism &lt; <span class="number">0</span> &amp;&amp; <span class="comment">// default 1 less than #cores</span></span><br><span class="line">        (parallelism = Runtime.getRuntime().availableProcessors() - <span class="number">1</span>) &lt;= <span class="number">0</span>)</span><br><span class="line">        parallelism = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (parallelism &gt; MAX_CAP)</span><br><span class="line">        parallelism = MAX_CAP;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ForkJoinPool(parallelism, factory, handler, LIFO_QUEUE,</span><br><span class="line">                            <span class="string">"ForkJoinPool.commonPool-worker-"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下图可以看到我<code>6</code>核的CPU得到了一个并发数为<code>5</code>的线程池</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/Concurrent/forkJoinPool.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>CompletableFuture</code>类的出现可以很方便的处理并发任务，在使用的过程中建议还是指定线程池来执行任务（注意需要关闭线程池），因为默认线程池是使用共用线程池，如果不划分的话有可能任务一直在队列里</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java并发/">Java并发</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/&title=《并发多线程(五)CompletableFuture异步处理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/&title=《并发多线程(五)CompletableFuture异步处理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(五)CompletableFuture异步处理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/13/backend/framework/mq/消息队列-基础概念/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">消息队列-基础概念</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor参数设置/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">并发多线程(五)ThreadPoolExecutor参数设置</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/&title=《并发多线程(五)CompletableFuture异步处理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/&title=《并发多线程(五)CompletableFuture异步处理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(五)CompletableFuture异步处理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)CompletableFuture异步处理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD60lEQVR42u3aQW7jQAwEQP//01kgpw0S2d3kyFlgS6fAdsaj0oFuDh+P+Pr4vPLXrz759+evXrn6+/t35asdvnDgwIEDR7zR79fV0vm7CU2ycr7D5/RXK+DAgQMHjrMc+bY25bPdbk4/K7o4cODAgeN3OWblLUlJz1/PEWePEwcOHDhw/BZHG+eSBt++Ebn/oYADBw4cOO7gSELU/uCnLd5nW4eHe6U4cODAgSOtdI9Z0f2X/75xvgMHDhw4cMQl9nBxigttfjP5cVR0Rzhw4MCBY83Rtu02h1XtTW4On1Z7wIEDBw4cC478n/eNwtknk93ORiV+WAcHDhw4cKw5ZgFsNtCQHxRtKNvHdqBjigMHDhw44tubDbdtDoHycjj7lheBEAcOHDhwHOLYh6W21diW2P0QXvTjAAcOHDhwHOXII9Os1M1GJdpPzhqLOHDgwIHjFMcw6owK2yzUbQLe7IAKBw4cOHBsONrBslnzrkWfPZ7Z4/zySRw4cODAcYijLXuzMtyGunzeIPkdcaw5iAMHDhw4ymOn5wVpU1zzIbbkuxKI53fxw5o4cODAgWPNcSpKtWMEmyGGhCwqq/clSxw4cOD4jznayLQZepiBtmFydcSFAwcOHDgOcTzKq41Vp9bfA70Ikzhw4MCB4yhHEpnaTbdxrg2QbavxBRAOHDhw4LiBYxaBZsFsFvwS+vYHwWOzCRw4cODA8XQIOy9U+SFQW8hnYw2bIYYvhRYHDhw4cNzG0bbz8tGEffMxH6EoGpc4cODAgWPNkZTM2bDaLFbN2oizEbrLneDAgQMHjkMcm8OkfcFuD7eSFYYBFQcOHDhwLDjagLRpxuUlcBbecsQX4Q0HDhw4cCw4ZsGs/d+z39i2CPPjLhw4cODAcZajHXpL4tOpQjtjGq6GAwcOHDgOcbRlb38c9TxW5QV7Vphx4MCBA8cdHMkSq0ZbGf/y4t2SRY8KBw4cOHAc4tiXyYRgM2owO9xKXseBAwcOHO/hSA5sksI2OyhqxxraNS/XwYEDBw4cb+HIb3XfzruDOw+EOHDgwIHjFEe7aFsy23C1ORJbPRIcOHDgwHHo3D8fVmsH3faxKi+Ws5V/2BUOHDhw4FhwfJTXPs5tDopmrcNinzhw4MCBY82RX+04Qj7W0A5AtK3M9rtw4MCBA8eeY9aAm0W7vBAOx91GhfZAPxIHDhw4cARVd9aG27ybPJ4ccRjtcODAgQPH2zna4nf2QKsNnHVyxYEDBw4cb+TIb35TCPPQ2IJG+8GBAwcOHIc4kuZgXvzaIDfjm7U1X+wfBw4cOHCsOfZlb38Dm4A3K7TtA8aBAwcOHMHKfwDChjQ2MS9/yAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

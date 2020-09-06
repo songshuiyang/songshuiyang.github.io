@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言使用索引的目的 索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？是不是觉得如果没有索引，这个事情根本无法完成？  除了词典，生活中随处可见索引的例子，如坐火车的场景（比如你买了一张火车票，">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-11-10T02:08:41.800Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.185Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql-索引-索引的使用">
 <meta name="twitter:description" content="前言使用索引的目的 索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？是不是觉得如果没有索引，这个事情根本无法完成？  除了词典，生活中随处可见索引的例子，如坐火车的场景（比如你买了一张火车票，">
@@ -426,7 +426,23 @@ var _hmt = _hmt || [];
 <li><p>常用的全文索引引擎的解决方案有 <code>Elasticsearch、Solr</code> 等等。最为常用的是 <code>Elasticsearch</code>。</p>
 </li>
 </ul>
-<h4 id="二、从数据结构角度划分"><a href="#二、从数据结构角度划分" class="headerlink" title="二、从数据结构角度划分"></a>二、从数据结构角度划分</h4><h5 id="1、B-树索引-O-log-n"><a href="#1、B-树索引-O-log-n" class="headerlink" title="1、B+树索引(O(log(n)))"></a>1、B+树索引(O(log(n)))</h5><h5 id="2、hash索引"><a href="#2、hash索引" class="headerlink" title="2、hash索引"></a>2、hash索引</h5><h5 id="3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"><a href="#3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）" class="headerlink" title="3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"></a>3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）</h5><h5 id="4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"><a href="#4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）" class="headerlink" title="4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"></a>4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）</h5><h4 id="三、从物理存储角度划分"><a href="#三、从物理存储角度划分" class="headerlink" title="三、从物理存储角度划分"></a>三、从物理存储角度划分</h4><h5 id="1、聚集索引（clustered-index）"><a href="#1、聚集索引（clustered-index）" class="headerlink" title="1、聚集索引（clustered index）"></a>1、聚集索引（clustered index）</h5><h5 id="2、非聚集索引（non-clustered-index）"><a href="#2、非聚集索引（non-clustered-index）" class="headerlink" title="2、非聚集索引（non-clustered index）"></a>2、非聚集索引（non-clustered index）</h5><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h4 id="MySQL-索引的“使用”注意事项？"><a href="#MySQL-索引的“使用”注意事项？" class="headerlink" title="MySQL 索引的“使用”注意事项？"></a>MySQL 索引的“使用”注意事项？</h4><ul>
+<h4 id="二、从数据结构角度划分"><a href="#二、从数据结构角度划分" class="headerlink" title="二、从数据结构角度划分"></a>二、从数据结构角度划分</h4><h5 id="1、B-树索引-O-log-n"><a href="#1、B-树索引-O-log-n" class="headerlink" title="1、B+树索引(O(log(n)))"></a>1、B+树索引(O(log(n)))</h5><h5 id="2、hash索引"><a href="#2、hash索引" class="headerlink" title="2、hash索引"></a>2、hash索引</h5><h5 id="3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"><a href="#3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）" class="headerlink" title="3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）"></a>3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）</h5><h5 id="4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"><a href="#4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）" class="headerlink" title="4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）"></a>4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）</h5><h4 id="三、从物理存储角度划分"><a href="#三、从物理存储角度划分" class="headerlink" title="三、从物理存储角度划分"></a>三、从物理存储角度划分</h4><h5 id="1、聚集索引（clustered-index）"><a href="#1、聚集索引（clustered-index）" class="headerlink" title="1、聚集索引（clustered index）"></a>1、聚集索引（clustered index）</h5><ul>
+<li><p>该索引中键值的逻辑顺序决定了表中相应行的物理顺序，一个表中只能拥有一个聚集索引，所以聚集索引一般是是主键<code>id</code>的那一列</p>
+</li>
+<li><p>数据行的物理顺序与列值的顺序相同，如果我们查询id比较靠后的数据，那么这行数据的地址在磁盘中的物理地址也会比较靠后。而且由于物理排列方式与聚集索引的顺序相同，所以也就只能建立一个聚集索引了。</p>
+</li>
+<li><p>聚集索引的叶子节点是数据节点</p>
+</li>
+</ul>
+<h5 id="2、非聚集索引（non-clustered-index）"><a href="#2、非聚集索引（non-clustered-index）" class="headerlink" title="2、非聚集索引（non-clustered index）"></a>2、非聚集索引（non-clustered index）</h5><ul>
+<li><p>该索引中索引的逻辑顺序与磁盘上行的物理存储顺序不同。</p>
+</li>
+<li><p>其实按照定义，除了聚集索引以外的索引都是非聚集索引，只是人们想细分一下非聚集索引，分成普通索引，唯一索引，全文索引</p>
+</li>
+<li><p>非聚集索引叶子节点是指向数据块的指针</p>
+</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h4 id="MySQL-索引的“使用”注意事项？"><a href="#MySQL-索引的“使用”注意事项？" class="headerlink" title="MySQL 索引的“使用”注意事项？"></a>MySQL 索引的“使用”注意事项？</h4><ul>
 <li><p>MySQL 索引通常是被用于提高 <code>WHERE</code>条件的数据行匹配时的搜索速度，在索引的使用过程中，存在一些使用细节和注意事项。</p>
 </li>
 <li><p>不要在列上使用函数和进行运算</p>
@@ -460,8 +476,8 @@ var _hmt = _hmt || [];
 </li>
 <li>复合索引的最左前缀原则<ul>
 <li>复合索引遵守“最左前缀”原则，即在查询条件中使用了复合索引的第一个字段，索引才会被使用。因此，在复合索引中索引列的顺序至关重要。如果不是按照索引的最左列开始查找，则无法使用索引。</li>
-<li>假设，有一个场景只需要针对资讯的月份进行查询，那么，SQL 语句可以写成：<code>select * from news where news_month = 1</code></li>
-<li>此时，无法使用 <code>news_year_month_idx(news_year, news_month)</code>索引，因为遵守“最左前缀”原则，在查询条件中没有使用复合索引的第一个字段，索引是不会被使用的。</li>
+<li><code>select * from users where area=’beijing’ and age=22;</code>如果我们是在<code>area</code>和<code>age</code>上分别创建单个索引的话，由于<code>mysql</code>查询每次只能使用一个索引，所以虽然这样已经相对不做索引时全表扫描提高了很多效率</li>
+<li>如果在<code>area、age</code>两列上创建复合索引的话将带来更高的效率。如果我们创建了(<code>area, age,salary</code>)的复合索引，那么其实相当于创建了<code>(area,age,salary)、(area,age)、(area)</code>三个索引，这被称为最佳左前缀特性。因此我们在创建复合索引时应该将最常用作限制条件的列放在最左边，依次递减。</li>
 </ul>
 </li>
 <li>什么是索引的最左匹配特性？<ul>
@@ -470,6 +486,10 @@ var _hmt = _hmt || [];
 <li>但当 <code>(20, F)</code>这样的没有 <code>name</code> 的数据来的时候，<code>B+Tree</code> 就不知道下一步该查哪个节点，因为建立搜索树的时候 <code>name</code> 就是第一个比较因子，必须要先根据 <code>name</code> 来搜索才能知道下一步去哪里查询。</li>
 <li>比如当 <code>(张三, F)</code> 这样的数据来检索时，<code>B+Tree</code> 可以用 <code>name</code> 来指定搜索方向，但下一个字段 <code>ag</code>e 的缺失，所以只能把名字等于张三的数据都找到，然后再匹配性别是 <code>F</code> 的数据了。</li>
 <li>这个是非常重要的性质，即索引的最左匹配特性。</li>
+</ul>
+</li>
+<li>索引不会包含有<code>NULL</code>值的列<ul>
+<li>只要列中包含有<code>NULL</code>值都将不会被包含在索引中，复合索引中只要有一列含有<code>NULL</code>值，那么这一列对于此复合索引就是无效的。所以我们在数据库设计时不要让字段的默认值为<code>NULL</code>。</li>
 </ul>
 </li>
 <li><p>覆盖索引的好处</p>
@@ -527,6 +547,7 @@ var _hmt = _hmt || [];
 <li><a href="http://blog.720ui.com/2017/mysql_core_03_how_use_index/" target="_blank" rel="noopener">http://blog.720ui.com/2017/mysql_core_03_how_use_index/</a></li>
 <li><a href="http://blog.720ui.com/2017/mysql_core_04_index_item/" target="_blank" rel="noopener">http://blog.720ui.com/2017/mysql_core_04_index_item/</a></li>
 <li><a href="https://www.cnblogs.com/duanxz/p/3799045.html" target="_blank" rel="noopener">https://www.cnblogs.com/duanxz/p/3799045.html</a></li>
+<li><a href="https://www.cnblogs.com/s-b-b/p/8334593.html" target="_blank" rel="noopener">https://www.cnblogs.com/s-b-b/p/8334593.html</a></li>
 </ul>
 
         </div>
@@ -612,9 +633,9 @@ var _hmt = _hmt || [];
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/03/03/backend/database/mysql/Mysql-面试题/" id="post-next" class="post-nav-link">
+      <a href="/2018/03/03/backend/database/mysql/Mysql-如何设置字段自动获取当前时间/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Mysql-面试题</h4>
+        <h4 class="title">Mysql-如何设置字段自动获取当前时间</h4>
       </a>
     </div>
   
@@ -678,7 +699,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

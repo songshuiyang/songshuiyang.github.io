@@ -30,7 +30,7 @@
 <meta property="og:description" content="概述 Java 的异常体系，基于共同的祖先 java.lang.Throwable 类。如下图所示：                                                                                                              Java异常体系分为 Error错误，表示系统级的错误和程序不必处理的异常，是">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/lang/exception.png">
-<meta property="og:updated_time" content="2019-11-27T15:11:32.511Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.715Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java基础-Exception与RuntimeException">
 <meta name="twitter:description" content="概述 Java 的异常体系，基于共同的祖先 java.lang.Throwable 类。如下图所示：                                                                                                              Java异常体系分为 Error错误，表示系统级的错误和程序不必处理的异常，是">
@@ -368,6 +368,12 @@ var _hmt = _hmt || [];
 <li>Error错误，表示系统级的错误和程序不必处理的异常，是 Java 运行环境中的内部错误或者硬件问题。<ul>
 <li>例如：内存资源不足等。</li>
 <li>对于这种错误，程序基本无能为力，除了退出运行外别无选择，它是由 Java 虚拟机抛出的。</li>
+<li>常见Error<ul>
+<li>OutOfMemoryError</li>
+<li>Virtual MachineError</li>
+<li>NoClassDefFoundError</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Exception异常<ul>
@@ -467,18 +473,18 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-ASCII 160 空格/" id="post-prev" class="post-nav-link">
+      <a href="/2018/10/19/backend/java/collection/Java集合-集合使用笔记整理/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Java基础-ASCII 160 空格</h4>
+        <h4 class="title">Java集合-集合使用笔记整理</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/09/10/backend/framework/spring/spring-data/spring-data-jpa/" id="post-next" class="post-nav-link">
+      <a href="/2018/10/10/backend/java/basicKnowledge/Java基础-Java8-Stream/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">spring-data-jpa</h4>
+        <h4 class="title">Java基础-Java8-Stream</h4>
       </a>
     </div>
   
@@ -542,7 +548,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

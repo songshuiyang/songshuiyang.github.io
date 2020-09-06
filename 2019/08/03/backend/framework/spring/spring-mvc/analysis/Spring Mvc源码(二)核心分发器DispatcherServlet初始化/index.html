@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/mvc/ContextLoaderListener.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/spring-mvc/DispatcherServlet.png">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.227Z">
+<meta property="og:updated_time" content="2020-08-16T08:48:37.173Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring Mvc源码(二)核心分发器DispatcherServlet初始化">
 <meta name="twitter:description" content="1.1 前言我们都知道DispatcherServlet是前端控制器，是整个Spring Mvc的入口，但是这个前端控制器里面又有很多箱子，每一个箱子都有其独有的功能，当我们翻开一个箱子之后看看里面有什么的时候，又会发现箱子里面装着又一个箱子，所以我们需要一个个的探究这些箱子。 2.1 DispatcherServlet 初始化过程2.1.1 配置 DispatcherServlet 首先，Tom">
@@ -445,7 +445,7 @@ var _hmt = _hmt || [];
                 <div class="image-caption"></div>
             </figure>
 <ul>
-<li><p>通过上图可以看到 <code>DispatcherServlet</code> 实现了<code>Spring</code> 的<code>ApplicationContextAware</code>、<code>EnvironmentCapable</code>、 <code>EnvironmentAware</code>这些<code>Spring</code>中的接口，<code>XXXAware</code>在<code>Spring</code>中表示对<code>XXX</code>可以感知，通俗点可以说在某个类中想使用<code>Spring</code>的一些东西，就可以实现<code>XXXAware</code>接口告诉<code>Spring</code>我要这个东西，比如<code>ApplicationContextAware</code>，该接口只有一个方法就是<code>setApplicationContext(ApplicationContext applicationContext)</code>, 通过该方法可以得到<code>ApplicationContext</code>，<code>Spring</code>容器会检测容器中的所有<code>Bean</code>，如果发现某个<code>Bean</code>实现了<code>ApplicationContextAware</code>接口，Spring容器会在创建该<code>Bean</code>之后，自动调用该<code>Bean</code>的<code>setApplicationContextAware()</code>方法，调用该方法时，会将容器本身作为参数传给该方法——该方法中的实现部分将<code>Spring</code>传入的参数（容器本身）赋给该类对象的<code>applicationContext</code>实例变量，因此接下来可以通过该<code>applicationContext</code>实例变量来访问容器本身。实现<code>XXXCapable</code>接口表示可以得到某种能力，实现<code>EnvironmentCapable</code>接口说明可以得到<code>Environment</code>的能力，也就是可以提供<code>Environment</code></p>
+<li><p>通过上图可以看到 <code>DispatcherServlet</code> 实现了<code>Spring</code> 的<code>ApplicationContextAware</code>、<code>EnvironmentCapable</code>、 <code>EnvironmentAware</code>这些<code>Spring</code>中的接口，<code>XXXAware</code>在<code>Spring</code>中表示对<code>XXX</code>可以感知，通俗点可以说在某个类中想使用<code>Spring</code>的一些东西，就可以实现<code>XXXAware</code>接口告诉<code>Spring</code>我要这个东西，比如<code>ApplicationContextAware</code>，该接口只有一个方法就是<code>setApplicationContext(ApplicationContext applicationContext)</code>, 通过该方法可以得到<code>ApplicationContext</code>，如果发现某个<code>Bean</code>实现了<code>ApplicationContextAware</code>接口，Spring容器会在创建该<code>Bean</code>之后，自动调用该<code>Bean</code>的<code>setApplicationContextAware()</code>方法，调用该方法时，会将容器本身作为参数传给该方法——该方法中的实现部分将<code>Spring</code>传入的参数（容器本身）赋给该类对象的<code>applicationContext</code>实例变量，因此接下来可以通过该<code>applicationContext</code>实例变量来访问容器本身。实现<code>XXXCapable</code>接口表示可以得到某种能力，实现<code>EnvironmentCapable</code>接口说明可以得到<code>Environment</code>的能力，也就是可以提供<code>Environment</code></p>
 <ul>
 <li><p><code>ApplicationContextAware</code></p>
 <ul>
@@ -703,7 +703,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

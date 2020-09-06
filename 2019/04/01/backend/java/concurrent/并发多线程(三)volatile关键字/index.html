@@ -30,7 +30,7 @@
 <meta property="og:description" content="剖析volatile关键字1. volatile关键字的两层语义 一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义：  保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。 禁止进行指令重排序。   先看一段代码，假如线程1先执行，线程2后执行： 1234567891011// 线程1bool">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/jdk/collection/concurrent1.png">
-<meta property="og:updated_time" content="2019-11-28T13:40:49.425Z">
+<meta property="og:updated_time" content="2020-08-16T04:24:18.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发多线程(三)volatile关键字">
 <meta name="twitter:description" content="剖析volatile关键字1. volatile关键字的两层语义 一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义：  保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。 禁止进行指令重排序。   先看一段代码，假如线程1先执行，线程2后执行： 1234567891011// 线程1bool">
@@ -475,7 +475,10 @@ var _hmt = _hmt || [];
 <li><p>这种类型的状态标记的一个公共特性是：通常只有一种状态转换；shutdownRequested 标志从 false 转换为 true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展（从 false 到 true，再转换到 false）。此外，还需要某些原子状态转换机制，例如原子变量。</p>
 </li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>volatile只能保证被其修饰变量的内存可见性，但如果对该变量执行的是非原子操作线程依旧是不安全的</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
 <li>Java 中可以创建 volatile 类型数组，不过只是一个指向数组的引用，而不是整个数组。如果改变引用指向的数组，将会受到 volatile 的保护，但是如果多个线程同时改变数组的元素，volatile 标示符就不能起到之前的保护作用了。</li>
 <li>volatile 和 synchronized 的区别：<ul>
 <li>volatile 本质是在告诉 JVM 当前变量在寄存器（工作内存）中的值是不确定的，需要从主存中读取。synchronized 则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞住。</li>
@@ -485,10 +488,12 @@ var _hmt = _hmt || [];
 <li>volatile 标记的变量不会被编译器优化。synchronized标记的变量可以被编译器优化。</li>
 </ul>
 </li>
+<li>volatile不能保证线程安全而synchronized可以保证线程安全。volatile只能保证被其修饰变量的内存可见性，但如果对该变量执行的是非原子操作线程依旧是不安全的。而synchronized既可以保证其修饰范围内存可见性和操作的原子性，所以synchronized是线程安全的</li>
 </ul>
 <h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
 <li><a href="https://www.cnblogs.com/dolphin0520/p/3920373.html" target="_blank" rel="noopener">https://www.cnblogs.com/dolphin0520/p/3920373.html</a></li>
 <li><a href="https://blog.csdn.net/y874961524/article/details/82934831" target="_blank" rel="noopener">https://blog.csdn.net/y874961524/article/details/82934831</a></li>
+<li><a href="https://www.jianshu.com/p/45d4b9b7f360" target="_blank" rel="noopener">https://www.jianshu.com/p/45d4b9b7f360</a></li>
 </ul>
 
         </div>
@@ -640,7 +645,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

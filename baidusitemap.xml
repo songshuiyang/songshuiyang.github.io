@@ -4,8 +4,590 @@
 
     
   <url>
+    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%8C)synchronized%E5%85%B3%E9%94%AE%E5%AD%97/</loc>
+    <lastmod>2020-09-06T04:45:52.950Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(二)synchronized关键字</title>
+        <pubTime>2019-04-01T13:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/11/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E5%9B%9B)%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0/</loc>
+    <lastmod>2020-09-05T08:58:50.576Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(四)常用参数</title>
+        <pubTime>2019-03-11T13:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%BA%8C)%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</loc>
+    <lastmod>2020-09-05T08:42:11.173Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(二)垃圾回收器</title>
+        <pubTime>2019-03-10T13:59:50.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%80)%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2020-09-05T04:47:54.679Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(一)垃圾回收算法</title>
+        <pubTime>2019-03-10T13:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%89)GC%E7%A7%8D%E7%B1%BB/</loc>
+    <lastmod>2020-09-05T04:13:26.820Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(三)GC种类</title>
+        <pubTime>2019-03-10T14:59:45.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%80)%E6%96%B9%E6%B3%95%E5%8C%BA%E5%9B%9E%E6%94%B6/</loc>
+    <lastmod>2020-09-05T04:05:51.741Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(一)方法区回收</title>
+        <pubTime>2019-03-10T13:59:46.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%80)GCRoot%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2020-09-05T03:37:52.255Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(一)GCRoot分析</title>
+        <pubTime>2019-03-10T13:59:45.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E5%85%AD)%E6%96%B9%E6%B3%95%E5%8C%BA/</loc>
+    <lastmod>2020-09-03T14:21:46.451Z</lastmod>
+    <data>
+        <display>
+        <title>JVM运行时数据区域(六)方法区</title>
+        <pubTime>2019-03-04T05:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%BA%94)%E5%A0%86/</loc>
+    <lastmod>2020-09-03T13:26:59.300Z</lastmod>
+    <data>
+        <display>
+        <title>JVM运行时数据区域(五)堆</title>
+        <pubTime>2019-03-04T04:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/11/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E5%85%AD)%E5%B8%B8%E7%94%A8GC%E8%B0%83%E4%BC%98%E7%AD%96%E7%95%A5/</loc>
+    <lastmod>2020-09-03T13:26:59.276Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(六)常用GC调优策略</title>
+        <pubTime>2019-03-11T15:01:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/11/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E5%85%AD)GC%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</loc>
+    <lastmod>2020-09-03T13:26:59.268Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(六)GC问题排查</title>
+        <pubTime>2019-03-11T15:01:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%89)%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%8F%8A%E5%9B%9E%E6%94%B6%E7%AD%96%E7%95%A5/</loc>
+    <lastmod>2020-09-03T13:26:59.257Z</lastmod>
+    <data>
+        <display>
+        <title>JVM垃圾回收(三)内存分配及回收策略</title>
+        <pubTime>2019-03-10T14:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%94)ThreadPoolExecutor%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2020-09-03T13:26:59.241Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(五)ThreadPoolExecutor线程池原理分析</title>
+        <pubTime>2019-04-05T14:00:02.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%85%AB)%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/</loc>
+    <lastmod>2020-09-03T13:26:59.233Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(八)加载Bean之单例缓存中获取单例 Bean</title>
+        <pubTime>2019-06-12T15:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%85%AB)%E5%8A%A0%E8%BD%BDBean%E4%B9%8B%E5%8D%95%E4%BE%8B%E7%BC%93%E5%AD%98%E4%B8%AD%E8%8E%B7%E5%8F%96%E5%8D%95%E4%BE%8B%20Bean/</loc>
+    <lastmod>2020-09-03T13:26:59.229Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(八)加载Bean之单例缓存中获取单例 Bean</title>
+        <pubTime>2019-06-12T15:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/07/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%89%E5%8D%81)IOC%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</loc>
+    <lastmod>2020-09-03T13:26:59.221Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(三十)IOC容器技术内幕</title>
+        <pubTime>2019-07-02T14:02:45.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2020/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%8D%81)Spring%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%97%A0%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF/</loc>
+    <lastmod>2020-09-03T13:26:59.213Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七十)Spring声明式事务无效的场景</title>
+        <pubTime>2020-08-01T16:00:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2020/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%8D%81)Spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA/</loc>
+    <lastmod>2020-09-03T13:26:59.209Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七十)Spring事务传播行为</title>
+        <pubTime>2020-08-01T16:00:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-%E4%BD%BF%E7%94%A8-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%E5%8F%8A%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97/</loc>
+    <lastmod>2020-09-03T13:26:59.190Z</lastmod>
+    <data>
+        <display>
+        <title>RabbitMQ-使用-死信队列及延迟队列</title>
+        <pubTime>2019-04-14T16:03:02.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RabbitMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-%E7%B4%A2%E5%BC%95-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    <lastmod>2020-09-03T13:26:59.185Z</lastmod>
+    <data>
+        <display>
+        <title>Mysql-索引-索引的使用</title>
+        <pubTime>2018-03-02T16:05:00.000Z</pubTime>
+        
+        <tag>数据库</tag>
+         
+        <tag>Mysql</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/04/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%9B%9B)Lock%E5%90%8C%E6%AD%A5%E9%94%81/</loc>
+    <lastmod>2020-08-19T13:26:40.320Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(四)Lock同步锁</title>
+        <pubTime>2019-04-04T14:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%80)%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2020-08-19T12:14:11.123Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(一)线程安全相关概念</title>
+        <pubTime>2019-04-01T12:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E4%BA%8C)BeanFactoryPostProcessor%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2020-08-16T09:31:54.241Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二二)BeanFactoryPostProcessor接口分析</title>
+        <pubTime>2019-07-01T14:01:47.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%BA%8C)%E6%A0%B8%E5%BF%83%E5%88%86%E5%8F%91%E5%99%A8DispatcherServlet%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
+    <lastmod>2020-08-16T08:48:37.173Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Mvc源码(二)核心分发器DispatcherServlet初始化</title>
+        <pubTime>2019-08-02T16:02:00.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="SpringMvc" url="http://www.songshuiyang.com/categories/SpringMvc/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E4%B8%89)%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81%E5%8F%8ASpringApplication/</loc>
+    <lastmod>2020-08-16T06:26:31.778Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(三)下载源码及SpringApplication</title>
+        <pubTime>2019-08-05T16:03:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="SpringBoot" url="http://www.songshuiyang.com/categories/SpringBoot/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E4%BA%8C)%E6%9E%84%E5%BB%BA%E5%8F%8A%E9%85%8D%E7%BD%AESpringBoot%E9%A1%B9%E7%9B%AE/</loc>
+    <lastmod>2020-08-16T06:17:35.957Z</lastmod>
+    <data>
+        <display>
+        <title>SpringBoot(二)构建及配置SpringBoot项目</title>
+        <pubTime>2019-08-05T16:02:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Boot</tag>
+         
+         
+           
+             
+              <breadCrumb title="SpringBoot" url="http://www.songshuiyang.com/categories/SpringBoot/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/20/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%85%AD)ThreadLocal/</loc>
+    <lastmod>2020-08-16T04:24:18.053Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(六)ThreadLocal</title>
+        <pubTime>2019-04-20T14:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%94)ThreadPoolExecutor%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8/</loc>
-    <lastmod>2020-04-18T05:15:04.317Z</lastmod>
+    <lastmod>2020-08-16T04:24:18.045Z</lastmod>
     <data>
         <display>
         <title>并发多线程(五)ThreadPoolExecutor线程池使用</title>
@@ -19,6 +601,1782 @@
            
              
               <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%94)CompletableFuture%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86/</loc>
+    <lastmod>2020-08-16T04:24:18.041Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(五)CompletableFuture异步处理</title>
+        <pubTime>2019-04-05T14:00:04.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/29/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B9%9D)ReadWriteLock%E4%B8%8EReentrantReadWriteLock/</loc>
+    <lastmod>2020-08-16T04:24:18.037Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(九)ReadWriteLock与ReentrantReadWriteLock</title>
+        <pubTime>2019-04-29T14:59:50.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%89)volatile%E5%85%B3%E9%94%AE%E5%AD%97/</loc>
+    <lastmod>2020-08-16T04:24:18.033Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(三)volatile关键字</title>
+        <pubTime>2019-04-01T14:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%80)Thread%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E5%8F%8A%E7%8A%B6%E6%80%81%E5%88%87%E6%8D%A2/</loc>
+    <lastmod>2020-08-16T04:24:18.027Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(一)Thread线程状态及状态切换</title>
+        <pubTime>2019-04-01T12:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%80)Thread%E7%9A%84%E5%88%9B%E5%BB%BA%E5%8F%8A%E4%BD%BF%E7%94%A8/</loc>
+    <lastmod>2020-08-16T04:24:18.025Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(一)Thread的创建及使用</title>
+        <pubTime>2019-04-01T12:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-%E6%B5%85%E6%8B%B7%E8%B4%9D%E5%8F%8A%E6%B7%B1%E6%8B%B7%E8%B4%9D/</loc>
+    <lastmod>2020-08-16T04:24:18.021Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-浅拷贝及深拷贝</title>
+        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java基础</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-Object%E7%B1%BB/</loc>
+    <lastmod>2020-08-16T04:24:18.019Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-Object类</title>
+        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java基础</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/04/01/backend/java/algorithm/%E7%AE%97%E6%B3%95()%E6%9F%A5%E6%89%BE%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2020-08-16T04:24:18.011Z</lastmod>
+    <data>
+        <display>
+        <title>算法()排序算法</title>
+        <pubTime>2018-03-31T16:24:12.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据结构" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/04/01/backend/java/algorithm/%E7%AE%97%E6%B3%95()%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2020-08-16T04:24:18.003Z</lastmod>
+    <data>
+        <display>
+        <title>算法()排序算法</title>
+        <pubTime>2018-03-31T16:24:12.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据结构" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/09/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%9B%9B)BeanDefinition%E8%AF%BB%E5%8F%96%E5%99%A8XmlBeanDefinitionReader/</loc>
+    <lastmod>2020-08-16T04:24:17.999Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(四)BeanDefinition读取器XmlBeanDefinitionReader</title>
+        <pubTime>2019-06-09T07:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E5%9B%9B)@PostConstruct%E6%B3%A8%E8%A7%A3%E5%8E%9F%E7%90%86/</loc>
+    <lastmod>2020-08-16T04:24:17.995Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十四)@PostConstruct注解原理</title>
+        <pubTime>2019-06-19T15:01:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%BA%8C)@Resource%E6%B3%A8%E8%A7%A3%E5%8E%9F%E7%90%86CommonAnnotationBeanPostProcessor/</loc>
+    <lastmod>2020-08-16T04:24:17.992Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor</title>
+        <pubTime>2019-06-19T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%B8%89)Bean%E5%88%9D%E5%A7%8B%E5%8C%96initializeBean%E6%96%B9%E6%B3%95%E4%B9%8BAbstractAutowireCapableBeanFactory/</loc>
+    <lastmod>2020-08-16T04:24:17.988Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory</title>
+        <pubTime>2019-06-19T14:01:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%B8%80)@Autowired%E6%B3%A8%E8%A7%A3%E5%8E%9F%E7%90%86AutowiredAnnotationBeanPostProcessor/</loc>
+    <lastmod>2020-08-16T04:24:17.983Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十一)@Autowired注解原理AutowiredAnnotationBeanPostProcessor</title>
+        <pubTime>2019-06-19T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/18/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BAbstractBeanFactory%E7%B1%BBcreateBean%E6%96%B9%E6%B3%95/</loc>
+    <lastmod>2020-08-16T04:24:17.978Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法</title>
+        <pubTime>2019-06-18T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/11/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%85%AD)%E8%A3%85%E8%BD%BDBeanDefinition%E6%80%BB%E7%BB%93/</loc>
+    <lastmod>2020-08-16T04:24:17.974Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(六)装载BeanDefinition总结</title>
+        <pubTime>2019-06-11T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/09/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94)Document%E8%AF%BB%E5%8F%96%E5%99%A8BeanDefinitionDocumentReader/</loc>
+    <lastmod>2020-08-16T04:24:17.965Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(五)Document读取器BeanDefinitionDocumentReader</title>
+        <pubTime>2019-06-09T08:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/05/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C)%E8%A3%85%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6Resource/</loc>
+    <lastmod>2020-08-16T04:24:17.960Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二)装载配置文件Resource</title>
+        <pubTime>2019-05-12T15:00:44.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/17/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B9%9D)%E5%8A%A0%E8%BD%BDBean%E4%B9%8B%E4%B8%8D%E5%90%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8B%E8%8E%B7%E5%8F%96Bean/</loc>
+    <lastmod>2020-08-16T04:24:17.954Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(九)加载Bean之不同作用域下获取Bean</title>
+        <pubTime>2019-06-17T15:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/05/11/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%80)%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0Spring/</loc>
+    <lastmod>2020-08-16T04:24:17.944Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(一)为什么要学习Spring</title>
+        <pubTime>2019-05-11T15:02:44.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/11/01/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%80)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2020-08-16T04:24:17.939Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式(一)创建型模式-单例模式</title>
+        <pubTime>2018-10-31T16:00:01.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="设计模式" url="http://www.songshuiyang.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</loc>
+    <lastmod>2020-08-16T04:24:17.920Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-使用-分布式锁</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-Redis%E5%92%8CMemcached%E5%8C%BA%E5%88%AB/</loc>
+    <lastmod>2020-08-16T04:24:17.917Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-使用-Redis和Memcached区别</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/01/backend/cache/basic/%E7%BC%93%E5%AD%98-%E7%BC%93%E5%AD%98%E4%B8%89%E8%BF%9E-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%8F%8A%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%E5%8F%8A%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/</loc>
+    <lastmod>2020-08-16T04:24:17.912Z</lastmod>
+    <data>
+        <display>
+        <title>缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</title>
+        <pubTime>2018-01-31T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-%E5%B8%B8%E7%94%A8%E7%B1%BB-String/</loc>
+    <lastmod>2020-07-14T14:19:20.134Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-常用类-String</title>
+        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java基础</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-hashcode%E5%92%8Cequals%E7%9A%84%E5%8C%BA%E5%88%AB/</loc>
+    <lastmod>2020-07-14T14:03:59.556Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-hashcode和equals的区别</title>
+        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java基础</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java%E9%9B%86%E5%90%88-Map-HashMap%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%8E%9F%E7%90%86/</loc>
+    <lastmod>2020-07-14T13:54:15.145Z</lastmod>
+    <data>
+        <display>
+        <title>Java集合-Map-HashMap源码解析及原理</title>
+        <pubTime>2018-10-19T16:03:02.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java集合</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/%E5%88%86%E5%B8%83%E5%BC%8F-JWT/</loc>
+    <lastmod>2020-07-14T13:37:23.645Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-JWT</title>
+        <pubTime>2018-02-28T16:00:02.000Z</pubTime>
+        
+        <tag>分布式</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2020-07-14T12:46:56.884Z</lastmod>
+    <data>
+        <display>
+        <title>Linux-笔记</title>
+        <pubTime>2018-03-08T09:30:44.000Z</pubTime>
+        
+        <tag>Linux</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://www.songshuiyang.com/categories/Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Linux-top%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2020-07-14T12:46:56.881Z</lastmod>
+    <data>
+        <display>
+        <title>Linux-top命令</title>
+        <pubTime>2018-03-08T09:30:44.000Z</pubTime>
+        
+        <tag>Linux</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://www.songshuiyang.com/categories/Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/06/backend/network/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%9F%BA%E7%A1%80-TCP%E7%B2%98%E5%8C%85%E4%B8%8E%E6%8B%86%E5%8C%85/</loc>
+    <lastmod>2020-07-14T12:46:56.879Z</lastmod>
+    <data>
+        <display>
+        <title>计算机网络-基础-TCP粘包与拆包</title>
+        <pubTime>2018-03-05T16:01:01.000Z</pubTime>
+        
+        <tag>计算机网络</tag>
+         
+         
+           
+             
+              <breadCrumb title="计算机网络" url="http://www.songshuiyang.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%BA%94)%E5%A0%86-TLAB%E5%88%86%E9%85%8D/</loc>
+    <lastmod>2020-07-14T12:46:56.872Z</lastmod>
+    <data>
+        <display>
+        <title>JVM运行时数据区域(五)堆-TLAB分配</title>
+        <pubTime>2019-03-04T04:59:45.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%B8%89)Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88/</loc>
+    <lastmod>2020-07-14T12:46:56.870Z</lastmod>
+    <data>
+        <display>
+        <title>JVM运行时数据区域(三)Java虚拟机栈</title>
+        <pubTime>2019-03-04T02:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%B8%80)%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2020-07-14T12:46:56.865Z</lastmod>
+    <data>
+        <display>
+        <title>JVM运行时数据区域(一)介绍</title>
+        <pubTime>2019-03-04T00:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/26/backend/java/jvm/JVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E4%B8%8E%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7-jstack/</loc>
+    <lastmod>2020-07-14T12:46:56.861Z</lastmod>
+    <data>
+        <display>
+        <title>JVM虚拟机性能监控与故障处理工具-jstack</title>
+        <pubTime>2019-03-26T13:59:45.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/16/backend/java/jvm/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6(%E4%B8%80)%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%97%B6%E6%9C%BA%E5%8F%8A%E8%BF%87%E7%A8%8B/</loc>
+    <lastmod>2020-07-14T12:46:56.859Z</lastmod>
+    <data>
+        <display>
+        <title>类加载机制(一)类加载时机及过程</title>
+        <pubTime>2019-03-16T03:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8(%E4%BA%8C)%E5%88%86%E6%9E%90Java%E7%BA%BF%E7%A8%8B%E5%8D%A0%E7%94%A8cpu%E6%88%96%E8%80%85%E5%86%85%E5%AD%98%E9%AB%98%E7%9A%84%E4%BB%A3%E7%A0%81/</loc>
+    <lastmod>2020-07-14T12:46:56.833Z</lastmod>
+    <data>
+        <display>
+        <title>JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码</title>
+        <pubTime>2019-03-04T05:59:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Jvm</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2020-07-14T12:46:56.830Z</lastmod>
+    <data>
+        <display>
+        <title>IO-基础概念</title>
+        <pubTime>2018-10-29T16:00:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Io</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/20/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%85%AD)InheritableThreadLocal/</loc>
+    <lastmod>2020-07-14T12:46:56.824Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(六)InheritableThreadLocal</title>
+        <pubTime>2019-04-20T14:59:45.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%94)ThreadPoolExecutor%E7%BA%BF%E7%A8%8B%E5%BC%82%E5%B8%B8/</loc>
+    <lastmod>2020-07-14T12:46:56.812Z</lastmod>
+    <data>
+        <display>
+        <title>并发多线程(五)ThreadPoolExecutor线程异常</title>
+        <pubTime>2019-04-05T14:00:02.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java并发</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java%E9%9B%86%E5%90%88-List-Arrays/</loc>
+    <lastmod>2020-07-14T12:46:56.760Z</lastmod>
+    <data>
+        <display>
+        <title>Java集合-List-Arrays</title>
+        <pubTime>2018-10-19T16:01:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java集合</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-Exception%E4%B8%8ERuntimeException/</loc>
+    <lastmod>2020-07-14T12:46:56.715Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础-Exception与RuntimeException</title>
+        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Java基础</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/04/backend/framework/spring/spring-mvc/analysis/Spring%20Web-RestTemplate%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2020-07-14T12:46:56.680Z</lastmod>
+    <data>
+        <display>
+        <title>Spring Web-RestTemplate源码分析</title>
+        <pubTime>2019-08-03T16:00:00.000Z</pubTime>
+        
+        <tag>spring mvc</tag>
+         
+        <tag>spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="SpringMvc" url="http://www.songshuiyang.com/categories/SpringMvc/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E5%9B%9B)AOP%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E4%BB%A3%E7%90%86%E5%AF%B9%E8%B1%A1%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C/</loc>
+    <lastmod>2020-07-14T12:46:56.655Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(五四)AOP源码解析之代理对象方法执行</title>
+        <pubTime>2019-07-31T16:00:04.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E5%8D%81)%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E5%8F%8A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</loc>
+    <lastmod>2020-07-14T12:46:56.650Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(五十)静态代理及动态代理</title>
+        <pubTime>2019-07-31T16:00:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E4%B8%89)AOP%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E5%88%9B%E5%BB%BAAOP%E4%BB%A3%E7%90%86/</loc>
+    <lastmod>2020-07-14T12:46:56.622Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(五三)AOP源码解析之创建AOP代理</title>
+        <pubTime>2019-07-31T16:00:03.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E4%B8%80)InstantiationAwareBeanPostProcessor%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2020-07-14T12:46:56.613Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析</title>
+        <pubTime>2019-07-01T14:01:47.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E4%B8%80)BeanPostProcessor%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2020-07-14T12:46:56.611Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(二一)BeanPostProcessor接口分析</title>
+        <pubTime>2019-07-01T14:01:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%9B%9B)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8BMybatis%E9%9B%86%E6%88%90%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/</loc>
+    <lastmod>2020-07-14T12:46:56.600Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七四)Spring事务之Mybatis集成事务管理</title>
+        <pubTime>2019-08-01T16:04:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%8D%81)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2020-07-14T12:46:56.585Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七十)Spring事务之基础概念</title>
+        <pubTime>2019-08-01T16:00:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%BA%8C)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E5%85%B7%E4%BD%93%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</loc>
+    <lastmod>2020-07-14T12:46:56.497Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七二)Spring事务之具体执行过程</title>
+        <pubTime>2019-08-01T16:02:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%89)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8BPlatformTransactionManager/</loc>
+    <lastmod>2020-07-14T12:46:56.485Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七三)Spring事务之PlatformTransactionManager</title>
+        <pubTime>2019-08-01T16:03:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%80)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E8%A7%A3%E6%9E%90%E4%BA%8B%E5%8A%A1%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/</loc>
+    <lastmod>2020-07-14T12:46:56.478Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七一)Spring事务之解析事务自定义标签</title>
+        <pubTime>2019-08-01T16:01:00.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BdoGetBean%E6%96%B9%E6%B3%95/</loc>
+    <lastmod>2020-07-14T12:46:56.473Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(七)加载Bean之doGetBean方法</title>
+        <pubTime>2019-06-12T14:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/%E5%88%86%E5%B8%83%E5%BC%8F-%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2020-07-14T12:46:56.458Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-限流算法</title>
+        <pubTime>2018-03-01T12:51:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
+    <lastmod>2020-07-14T12:46:56.455Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-分布式事务解决方案</title>
+        <pubTime>2018-02-28T16:01:00.000Z</pubTime>
+        
+        <tag>分布式</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-%E7%B4%A2%E5%BC%95-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2020-07-14T12:46:56.444Z</lastmod>
+    <data>
+        <display>
+        <title>Mysql-索引-详细介绍</title>
+        <pubTime>2018-03-02T16:05:02.000Z</pubTime>
+        
+        <tag>数据库</tag>
+         
+        <tag>Mysql</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-%E7%B4%A2%E5%BC%95-%E5%90%84%E7%A7%8DBTree%E7%B1%BB%E5%9E%8B/</loc>
+    <lastmod>2020-07-14T12:46:56.419Z</lastmod>
+    <data>
+        <display>
+        <title>Mysql-索引-各种BTree类型</title>
+        <pubTime>2018-03-02T16:05:01.000Z</pubTime>
+        
+        <tag>数据库</tag>
+         
+        <tag>Mysql</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-%E8%AF%AD%E5%8F%A5%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2020-07-14T12:46:56.390Z</lastmod>
+    <data>
+        <display>
+        <title>Mysql-Sql-语句笔记</title>
+        <pubTime>2018-03-02T16:08:01.000Z</pubTime>
+        
+        <tag>数据库</tag>
+         
+        <tag>Mysql</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-SQL%E8%AF%AD%E5%8F%A5%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84/</loc>
+    <lastmod>2020-07-14T12:46:56.387Z</lastmod>
+    <data>
+        <display>
+        <title>Mysql-SQL语句在MySQL中如何执行的</title>
+        <pubTime>2018-03-03T16:00:00.000Z</pubTime>
+        
+        <tag>数据库</tag>
+         
+        <tag>Mysql</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</loc>
+    <lastmod>2020-07-14T12:46:56.372Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-高可用集群</title>
+        <pubTime>2018-02-03T16:00:06.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/</loc>
+    <lastmod>2020-07-14T12:46:56.341Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-线程模型</title>
+        <pubTime>2018-02-03T16:00:04.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E6%95%B0%E6%8D%AE%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/</loc>
+    <lastmod>2020-07-14T12:46:56.325Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-数据淘汰策略</title>
+        <pubTime>2018-02-03T16:00:05.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2020-07-14T12:46:56.318Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-常用命令</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2020-07-14T12:46:56.304Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-基础概念</title>
+        <pubTime>2018-02-03T16:00:00.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5-%E8%B7%B3%E8%B7%83%E8%A1%A8/</loc>
+    <lastmod>2020-07-14T12:46:56.271Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-基础概念-跳跃表</title>
+        <pubTime>2018-02-03T16:00:00.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-%E9%98%9F%E5%88%97%E6%93%8D%E4%BD%9C/</loc>
+    <lastmod>2020-07-14T12:46:56.269Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-使用-队列操作</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2020-07-14T12:46:56.244Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-使用-发布订阅模式</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-%E4%B8%8ESpring%E9%9B%86%E6%88%90/</loc>
+    <lastmod>2020-07-14T12:46:56.220Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-使用-与Spring集成</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-pipeline/</loc>
+    <lastmod>2020-07-14T12:46:56.218Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-使用-pipeline</title>
+        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
+        
+        <tag>缓存</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/06/08/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%89)Bean%E6%A0%87%E7%AD%BEBeanDefinition/</loc>
+    <lastmod>2020-05-02T01:59:47.792Z</lastmod>
+    <data>
+        <display>
+        <title>Spring系列(三)Bean标签BeanDefinition</title>
+        <pubTime>2019-06-08T08:00:46.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/17/backend/framework/mq/Kafka-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2020-05-02T01:59:47.776Z</lastmod>
+    <data>
+        <display>
+        <title>Kafka-基础概念</title>
+        <pubTime>2019-04-16T16:00:00.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>Kafka</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/17/backend/framework/mq/Kafka-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%BF%AB/</loc>
+    <lastmod>2020-05-02T01:59:47.771Z</lastmod>
+    <data>
+        <display>
+        <title>Kafka-为什么这么快</title>
+        <pubTime>2019-04-16T16:01:00.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>Kafka</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/%E5%88%86%E5%B8%83%E5%BC%8F-ELK%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86/</loc>
+    <lastmod>2020-05-02T01:59:47.755Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-ELK日志收集</title>
+        <pubTime>2018-02-28T16:00:02.000Z</pubTime>
+        
+        <tag>分布式</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E4%BA%8ERocketMQ%E5%A4%84%E7%90%86%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</loc>
+    <lastmod>2020-04-26T05:26:06.995Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-基于RocketMQ处理分布式事务</title>
+        <pubTime>2018-02-28T16:01:04.000Z</pubTime>
+        
+        <tag>分布式</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E5%AE%9E%E4%BE%8B/</loc>
+    <lastmod>2020-04-26T05:24:20.639Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ-分布式事务-实例</title>
+        <pubTime>2019-04-13T16:02:00.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/%E5%88%86%E5%B8%83%E5%BC%8F-%E9%AB%98%E5%B9%B6%E5%8F%91/</loc>
+    <lastmod>2020-04-26T03:35:46.193Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-高并发</title>
+        <pubTime>2018-03-01T12:50:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/%E5%88%86%E5%B8%83%E5%BC%8F-%E9%AB%98%E5%8F%AF%E7%94%A8/</loc>
+    <lastmod>2020-04-26T03:35:46.068Z</lastmod>
+    <data>
+        <display>
+        <title>分布式-高可用</title>
+        <pubTime>2018-03-01T12:50:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
+    <lastmod>2020-04-26T03:28:39.596Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ-基础概念</title>
+        <pubTime>2019-04-13T16:00:01.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E4%BD%BF%E7%94%A8-%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</loc>
+    <lastmod>2020-04-26T03:28:39.588Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ-使用-问题记录</title>
+        <pubTime>2019-04-13T16:00:00.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E4%BD%BF%E7%94%A8-%E4%BD%BF%E7%94%A8%E5%8E%9F%E7%94%9FAPI/</loc>
+    <lastmod>2020-04-26T03:28:39.585Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ-使用-使用原生API</title>
+        <pubTime>2019-04-13T16:00:01.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E4%BD%BF%E7%94%A8-%E4%B8%8ESpringBoot%E9%9B%86%E6%88%90/</loc>
+    <lastmod>2020-04-26T03:28:39.569Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ-使用-与SpringBoot集成</title>
+        <pubTime>2019-04-13T16:00:02.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85/</loc>
+    <lastmod>2020-04-26T03:28:39.566Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ-下载安装</title>
+        <pubTime>2019-04-13T16:00:00.000Z</pubTime>
+        
+        <tag>消息队列</tag>
+         
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.songshuiyang.com/2018/03/06/backend/database/mongodb/Mongodb-%E7%B4%A2%E5%BC%95-%E4%BD%BF%E7%94%A8/</loc>
+    <lastmod>2020-04-26T03:28:39.549Z</lastmod>
+    <data>
+        <display>
+        <title>Mongodb-索引-使用</title>
+        <pubTime>2018-03-05T16:00:00.000Z</pubTime>
+        
+        <tag>Mongodb</tag>
+         
+        <tag>数据库</tag>
+         
+        <tag>分库分表</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
           
         </display>
     </data>
@@ -76,28 +2434,6 @@
         <display>
         <title>RabbitMQ-使用-消息发送确认及消息接收确认</title>
         <pubTime>2019-04-14T16:03:01.000Z</pubTime>
-        
-        <tag>消息队列</tag>
-         
-        <tag>RabbitMQ</tag>
-         
-         
-           
-             
-              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RabbitMQ-%E4%BD%BF%E7%94%A8-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%E5%8F%8A%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97/</loc>
-    <lastmod>2020-04-12T05:53:21.620Z</lastmod>
-    <data>
-        <display>
-        <title>RabbitMQ-使用-死信队列及延迟队列</title>
-        <pubTime>2019-04-14T16:03:02.000Z</pubTime>
         
         <tag>消息队列</tag>
          
@@ -202,54 +2538,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E4%BD%BF%E7%94%A8-%E9%98%9F%E5%88%97%E6%93%8D%E4%BD%9C/</loc>
-    <lastmod>2020-04-11T12:23:47.813Z</lastmod>
-    <data>
-        <display>
-        <title>Redis-使用-队列操作</title>
-        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-        <tag>Redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/04/13/backend/framework/mq/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
     <lastmod>2020-04-05T03:08:54.836Z</lastmod>
     <data>
         <display>
         <title>消息队列-基础概念</title>
         <pubTime>2019-04-12T16:00:00.000Z</pubTime>
-        
-        <tag>消息队列</tag>
-         
-         
-           
-             
-              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/14/backend/framework/mq/RocketMQ-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85/</loc>
-    <lastmod>2020-04-05T03:08:54.762Z</lastmod>
-    <data>
-        <display>
-        <title>RocketMQ-下载安装</title>
-        <pubTime>2019-04-13T16:00:00.000Z</pubTime>
         
         <tag>消息队列</tag>
          
@@ -372,56 +2666,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/10/30/backend/java/io/IO-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
-    <lastmod>2020-03-22T04:06:10.386Z</lastmod>
-    <data>
-        <display>
-        <title>IO-基础概念</title>
-        <pubTime>2018-10-29T16:00:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Io</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/05/02/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%8D%81%E4%BA%8C)ConcurrentHashMap%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/</loc>
     <lastmod>2020-03-21T14:52:42.891Z</lastmod>
     <data>
         <display>
         <title>并发多线程(十二)ConcurrentHashMap并发容器</title>
         <pubTime>2019-05-02T15:01:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%8C)synchronized%E5%85%B3%E9%94%AE%E5%AD%97/</loc>
-    <lastmod>2020-03-21T13:41:29.996Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(二)synchronized关键字</title>
-        <pubTime>2019-04-01T13:59:44.000Z</pubTime>
         
         <tag>Java</tag>
          
@@ -475,28 +2725,6 @@
            
              
               <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/</loc>
-    <lastmod>2020-03-16T13:05:29.698Z</lastmod>
-    <data>
-        <display>
-        <title>Redis-线程模型</title>
-        <pubTime>2018-02-03T16:00:04.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-        <tag>Redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
           
         </display>
     </data>
@@ -729,46 +2957,6 @@
            
              
               <breadCrumb title="计算机网络" url="http://www.songshuiyang.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/04/01/backend/server/JavaEE%E6%9C%8D%E5%8A%A1%E5%99%A8/%E9%AB%98%E5%B9%B6%E5%8F%91/</loc>
-    <lastmod>2020-03-16T11:43:55.584Z</lastmod>
-    <data>
-        <display>
-        <title>高并发</title>
-        <pubTime>2018-04-01T12:50:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/08/01/backend/server/JavaEE%E6%9C%8D%E5%8A%A1%E5%99%A8/%E9%AB%98%E5%8F%AF%E7%94%A8/</loc>
-    <lastmod>2020-03-16T11:43:55.561Z</lastmod>
-    <data>
-        <display>
-        <title>高可用</title>
-        <pubTime>2018-07-31T16:24:12.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
           
         </display>
     </data>
@@ -1132,78 +3320,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E5%85%AD)%E6%96%B9%E6%B3%95%E5%8C%BA/</loc>
-    <lastmod>2020-03-16T11:43:55.505Z</lastmod>
-    <data>
-        <display>
-        <title>JVM运行时数据区域(六)方法区</title>
-        <pubTime>2019-03-04T05:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%BA%94)%E5%A0%86/</loc>
-    <lastmod>2020-03-16T11:43:55.502Z</lastmod>
-    <data>
-        <display>
-        <title>JVM运行时数据区域(五)堆</title>
-        <pubTime>2019-03-04T04:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%BA%8C)%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8/</loc>
     <lastmod>2020-03-16T11:43:55.498Z</lastmod>
     <data>
         <display>
         <title>JVM运行时数据区域(二)程序计数器</title>
         <pubTime>2019-03-04T01:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%B8%89)Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88/</loc>
-    <lastmod>2020-03-16T11:43:55.495Z</lastmod>
-    <data>
-        <display>
-        <title>JVM运行时数据区域(三)Java虚拟机栈</title>
-        <pubTime>2019-03-04T02:59:44.000Z</pubTime>
         
         <tag>Java</tag>
          
@@ -1242,100 +3364,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F(%E4%B8%80)%E4%BB%8B%E7%BB%8D/</loc>
-    <lastmod>2020-03-16T11:43:55.490Z</lastmod>
-    <data>
-        <display>
-        <title>JVM运行时数据区域(一)介绍</title>
-        <pubTime>2019-03-04T00:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/11/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E5%85%AD)%E5%B8%B8%E7%94%A8GC%E8%B0%83%E4%BC%98%E7%AD%96%E7%95%A5/</loc>
-    <lastmod>2020-03-16T11:43:55.487Z</lastmod>
-    <data>
-        <display>
-        <title>JVM垃圾回收(六)常用GC调优策略</title>
-        <pubTime>2019-03-11T15:01:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/03/11/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%BA%94)GC%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/</loc>
     <lastmod>2020-03-16T11:43:55.485Z</lastmod>
     <data>
         <display>
         <title>JVM垃圾回收(五)GC日志分析</title>
         <pubTime>2019-03-11T15:00:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%BA%8C)%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</loc>
-    <lastmod>2020-03-16T11:43:55.484Z</lastmod>
-    <data>
-        <display>
-        <title>JVM垃圾回收(二)垃圾回收器</title>
-        <pubTime>2019-03-10T13:59:50.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%89)%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%8F%8A%E5%9B%9E%E6%94%B6%E7%AD%96%E7%95%A5/</loc>
-    <lastmod>2020-03-16T11:43:55.480Z</lastmod>
-    <data>
-        <display>
-        <title>JVM垃圾回收(三)内存分配及回收策略</title>
-        <pubTime>2019-03-10T14:59:44.000Z</pubTime>
         
         <tag>Java</tag>
          
@@ -1462,50 +3496,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/04/20/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%85%AD)ThreadLocal/</loc>
-    <lastmod>2020-03-16T11:43:55.463Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(六)ThreadLocal</title>
-        <pubTime>2019-04-20T14:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%94)ThreadPoolExecutor%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2020-03-16T11:43:55.459Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(五)ThreadPoolExecutor线程池原理分析</title>
-        <pubTime>2019-04-05T14:00:02.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%94)ThreadPoolExecutor4%E7%A7%8D%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5/</loc>
     <lastmod>2020-03-16T11:43:55.431Z</lastmod>
     <data>
@@ -1538,28 +3528,6 @@
         <tag>Java</tag>
          
         <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java%E9%9B%86%E5%90%88-List-Arrays/</loc>
-    <lastmod>2020-03-16T11:43:55.425Z</lastmod>
-    <data>
-        <display>
-        <title>Java集合-List-Arrays</title>
-        <pubTime>2018-10-19T16:01:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java集合</tag>
          
          
            
@@ -1653,26 +3621,6 @@
            
              
               <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/04/01/backend/java/algorithm/%E7%AE%97%E6%B3%95(%E4%B8%80)Java%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2020-03-16T11:43:55.412Z</lastmod>
-    <data>
-        <display>
-        <title>算法(一)Java经典算法</title>
-        <pubTime>2018-03-31T16:24:12.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="数据结构" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
           
         </display>
     </data>
@@ -1938,26 +3886,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/02/01/backend/cache/basic/%E7%BC%93%E5%AD%98-%E7%BC%93%E5%AD%98%E4%B8%89%E8%BF%9E-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%8F%8A%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%E5%8F%8A%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/</loc>
-    <lastmod>2020-03-16T11:43:55.371Z</lastmod>
-    <data>
-        <display>
-        <title>缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</title>
-        <pubTime>2018-01-31T16:00:01.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/01/11/backend/business/payment/%E6%8E%A5%E5%85%A5%E9%93%B6%E8%81%94%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3/</loc>
     <lastmod>2020-03-16T11:43:55.367Z</lastmod>
     <data>
@@ -2158,26 +4086,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/05/11/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%80)%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0Spring/</loc>
-    <lastmod>2020-01-04T12:22:45.268Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(一)为什么要学习Spring</title>
-        <pubTime>2019-05-11T15:02:44.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/03/06/backend/network/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%9F%BA%E7%A1%80-UDP%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E6%8A%A5%E5%8D%8F%E8%AE%AE/</loc>
     <lastmod>2020-01-04T12:21:52.262Z</lastmod>
     <data>
@@ -2348,28 +4256,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/03/backend/framework/spring/spring-mvc/analysis/Spring%20Mvc%E6%BA%90%E7%A0%81(%E4%BA%8C)%E6%A0%B8%E5%BF%83%E5%88%86%E5%8F%91%E5%99%A8DispatcherServlet%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
-    <lastmod>2020-01-04T12:21:52.227Z</lastmod>
-    <data>
-        <display>
-        <title>Spring Mvc源码(二)核心分发器DispatcherServlet初始化</title>
-        <pubTime>2019-08-02T16:02:00.000Z</pubTime>
-        
-        <tag>spring mvc</tag>
-         
-        <tag>spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="SpringMvc" url="http://www.songshuiyang.com/categories/SpringMvc/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E5%9B%9B)@EnableAutoConfiguration%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/</loc>
     <lastmod>2020-01-04T12:21:52.221Z</lastmod>
     <data>
@@ -2414,28 +4300,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E4%B8%89)%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81%E5%8F%8ASpringApplication/</loc>
-    <lastmod>2020-01-04T12:21:52.212Z</lastmod>
-    <data>
-        <display>
-        <title>SpringBoot(三)下载源码及SpringApplication</title>
-        <pubTime>2019-08-05T16:03:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Boot</tag>
-         
-         
-           
-             
-              <breadCrumb title="SpringBoot" url="http://www.songshuiyang.com/categories/SpringBoot/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E4%B8%80)%E5%89%8D%E8%A8%80/</loc>
     <lastmod>2020-01-04T12:21:52.207Z</lastmod>
     <data>
@@ -2458,172 +4322,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/06/09/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%9B%9B)BeanDefinition%E8%AF%BB%E5%8F%96%E5%99%A8XmlBeanDefinitionReader/</loc>
-    <lastmod>2020-01-04T12:21:52.202Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(四)BeanDefinition读取器XmlBeanDefinitionReader</title>
-        <pubTime>2019-06-09T07:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%BA%8C)@Resource%E6%B3%A8%E8%A7%A3%E5%8E%9F%E7%90%86CommonAnnotationBeanPostProcessor/</loc>
-    <lastmod>2020-01-04T12:21:52.197Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(十二)@Resource注解原理CommonAnnotationBeanPostProcessor</title>
-        <pubTime>2019-06-19T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%B8%89)Bean%E5%88%9D%E5%A7%8B%E5%8C%96initializeBean%E6%96%B9%E6%B3%95%E4%B9%8BAbstractAutowireCapableBeanFactory/</loc>
-    <lastmod>2020-01-04T12:21:52.195Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory</title>
-        <pubTime>2019-06-19T14:01:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81%E4%B8%80)@Autowired%E6%B3%A8%E8%A7%A3%E5%8E%9F%E7%90%86AutowiredAnnotationBeanPostProcessor/</loc>
-    <lastmod>2020-01-04T12:21:52.193Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(十一)@Autowired注解原理AutowiredAnnotationBeanPostProcessor</title>
-        <pubTime>2019-06-19T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/18/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%8D%81)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BAbstractBeanFactory%E7%B1%BBcreateBean%E6%96%B9%E6%B3%95/</loc>
-    <lastmod>2020-01-04T12:21:52.190Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(十)加载Bean之AbstractBeanFactory类createBean方法</title>
-        <pubTime>2019-06-18T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/11/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%85%AD)%E8%A3%85%E8%BD%BDBeanDefinition%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2020-01-04T12:21:52.185Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(六)装载BeanDefinition总结</title>
-        <pubTime>2019-06-11T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E5%8D%81)%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8BAOP/</loc>
     <lastmod>2020-01-04T12:21:52.180Z</lastmod>
     <data>
         <display>
         <title>Spring系列(五十)面向切面编程AOP</title>
         <pubTime>2019-07-31T16:00:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E5%8D%81)%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E5%8F%8A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</loc>
-    <lastmod>2020-01-04T12:21:52.175Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(五十)静态代理及动态代理</title>
-        <pubTime>2019-07-31T16:00:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/09/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94)Document%E8%AF%BB%E5%8F%96%E5%99%A8BeanDefinitionDocumentReader/</loc>
-    <lastmod>2020-01-04T12:21:52.172Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(五)Document读取器BeanDefinitionDocumentReader</title>
-        <pubTime>2019-06-09T08:00:46.000Z</pubTime>
         
         <tag>Spring</tag>
          
@@ -2678,106 +4382,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E4%BA%8C)BeanFactoryPostProcessor%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2020-01-04T12:21:52.157Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(二二)BeanFactoryPostProcessor接口分析</title>
-        <pubTime>2019-07-01T14:01:47.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C%E4%B8%80)BeanPostProcessor%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2020-01-04T12:21:52.153Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(二一)BeanPostProcessor接口分析</title>
-        <pubTime>2019-07-01T14:01:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/17/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B9%9D)%E5%8A%A0%E8%BD%BDBean%E4%B9%8B%E4%B8%8D%E5%90%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8B%E8%8E%B7%E5%8F%96Bean/</loc>
-    <lastmod>2020-01-04T12:21:52.148Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(九)加载Bean之不同作用域下获取Bean</title>
-        <pubTime>2019-06-17T15:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/07/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%89%E5%8D%81)IOC%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</loc>
-    <lastmod>2020-01-04T12:21:52.143Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(三十)IOC容器技术内幕</title>
-        <pubTime>2019-07-02T14:02:45.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83)%E5%8A%A0%E8%BD%BDBean%E4%B9%8BdoGetBean%E6%96%B9%E6%B3%95/</loc>
-    <lastmod>2020-01-04T12:21:52.139Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(七)加载Bean之doGetBean方法</title>
-        <pubTime>2019-06-12T14:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/05/10/backend/framework/spring/Spring%E7%B3%BB%E5%88%97()%E5%BC%82%E6%AD%A5%E6%96%B9%E6%B3%95Async/</loc>
     <lastmod>2020-01-04T12:21:52.134Z</lastmod>
     <data>
@@ -2791,26 +4395,6 @@
            
              
               <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/15/backend/framework/mq/RocketMQ-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
-    <lastmod>2020-01-04T12:21:52.125Z</lastmod>
-    <data>
-        <display>
-        <title>RocketMQ-基础概念</title>
-        <pubTime>2019-04-14T16:02:02.000Z</pubTime>
-        
-        <tag>消息队列</tag>
-         
-         
-           
-             
-              <breadCrumb title="消息队列" url="http://www.songshuiyang.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
           
         </display>
     </data>
@@ -3144,72 +4728,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/03/04/backend/database/mysql/Mysql-SQL%E8%AF%AD%E5%8F%A5%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84/</loc>
-    <lastmod>2020-01-04T12:21:52.025Z</lastmod>
-    <data>
-        <display>
-        <title>Mysql-SQL语句在MySQL中如何执行的</title>
-        <pubTime>2018-03-03T16:00:00.000Z</pubTime>
-        
-        <tag>数据库</tag>
-         
-        <tag>Mysql</tag>
-         
-         
-           
-             
-              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/</loc>
-    <lastmod>2020-01-04T12:21:52.023Z</lastmod>
-    <data>
-        <display>
-        <title>Redis-高可用集群</title>
-        <pubTime>2018-02-03T16:00:06.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-        <tag>Redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E6%95%B0%E6%8D%AE%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/</loc>
-    <lastmod>2020-01-04T12:21:52.012Z</lastmod>
-    <data>
-        <display>
-        <title>Redis-数据淘汰策略</title>
-        <pubTime>2018-02-03T16:00:05.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-        <tag>Redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/02/01/backend/cache/basic/%E7%BC%93%E5%AD%98-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F-%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</loc>
     <lastmod>2020-01-04T12:21:51.986Z</lastmod>
     <data>
@@ -3298,28 +4816,6 @@
         <display>
         <title>类加载机制(二)类加载器</title>
         <pubTime>2019-03-18T13:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/16/backend/java/jvm/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6(%E4%B8%80)%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%97%B6%E6%9C%BA%E5%8F%8A%E8%BF%87%E7%A8%8B/</loc>
-    <lastmod>2019-12-05T12:19:35.279Z</lastmod>
-    <data>
-        <display>
-        <title>类加载机制(一)类加载时机及过程</title>
-        <pubTime>2019-03-16T03:59:44.000Z</pubTime>
         
         <tag>Java</tag>
          
@@ -3720,94 +5216,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/04/04/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E5%9B%9B)Lock%E5%90%8C%E6%AD%A5%E9%94%81/</loc>
-    <lastmod>2019-12-03T12:17:09.431Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(四)Lock同步锁</title>
-        <pubTime>2019-04-04T14:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/29/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B9%9D)ReadWriteLock%E4%B8%8EReentrantReadWriteLock/</loc>
-    <lastmod>2019-12-03T12:17:09.368Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(九)ReadWriteLock与ReentrantReadWriteLock</title>
-        <pubTime>2019-04-29T14:59:50.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%89)volatile%E5%85%B3%E9%94%AE%E5%AD%97/</loc>
-    <lastmod>2019-11-28T13:40:49.425Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(三)volatile关键字</title>
-        <pubTime>2019-04-01T14:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/04/01/backend/java/concurrent/%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%80)Thread%E7%9A%84%E5%88%9B%E5%BB%BA%E5%8F%8A%E4%BD%BF%E7%94%A8/</loc>
-    <lastmod>2019-11-28T13:06:55.355Z</lastmod>
-    <data>
-        <display>
-        <title>并发多线程(一)Thread的创建及使用</title>
-        <pubTime>2019-04-01T12:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/03/06/backend/network/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2019-11-27T15:11:32.623Z</lastmod>
     <data>
@@ -4000,28 +5408,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-Exception%E4%B8%8ERuntimeException/</loc>
-    <lastmod>2019-11-27T15:11:32.511Z</lastmod>
-    <data>
-        <display>
-        <title>Java基础-Exception与RuntimeException</title>
-        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java基础</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-Sql-EXPLAIN%E5%91%BD%E4%BB%A4/</loc>
     <lastmod>2019-11-27T15:11:32.509Z</lastmod>
     <data>
@@ -4164,46 +5550,6 @@
         <tag>分布式</tag>
          
         <tag>Zookeeper</tag>
-         
-         
-           
-             
-              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E4%BA%8ERocketMQ%E5%A4%84%E7%90%86%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</loc>
-    <lastmod>2019-11-19T12:31:03.248Z</lastmod>
-    <data>
-        <display>
-        <title>分布式-基于RocketMQ处理分布式事务</title>
-        <pubTime>2018-02-28T16:01:04.000Z</pubTime>
-        
-        <tag>分布式</tag>
-         
-         
-           
-             
-              <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/03/01/backend/distributed/transaction/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
-    <lastmod>2019-11-19T12:31:03.246Z</lastmod>
-    <data>
-        <display>
-        <title>分布式-分布式事务解决方案</title>
-        <pubTime>2018-02-28T16:01:00.000Z</pubTime>
-        
-        <tag>分布式</tag>
          
          
            
@@ -4408,26 +5754,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/03/08/backend/server/Linux/linux%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2019-11-10T02:08:42.073Z</lastmod>
-    <data>
-        <display>
-        <title>Linux 命令笔记</title>
-        <pubTime>2018-03-08T09:30:44.000Z</pubTime>
-        
-        <tag>Linux</tag>
-         
-         
-           
-             
-              <breadCrumb title="Linux" url="http://www.songshuiyang.com/categories/Linux/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/03/08/backend/server/Linux/Docker%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2019-11-10T02:08:42.070Z</lastmod>
     <data>
@@ -4514,50 +5840,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-%E5%B8%B8%E7%94%A8%E7%B1%BB-String/</loc>
-    <lastmod>2019-11-10T02:08:41.967Z</lastmod>
-    <data>
-        <display>
-        <title>Java基础-常用类-String</title>
-        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java基础</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-hashcode%E5%92%8Cequals%E7%9A%84%E5%8C%BA%E5%88%AB/</loc>
-    <lastmod>2019-11-10T02:08:41.959Z</lastmod>
-    <data>
-        <display>
-        <title>Java基础-hashcode和equals的区别</title>
-        <pubTime>2018-10-09T16:00:00.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java基础</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java%E5%9F%BA%E7%A1%80-ASCII%20160%20%E7%A9%BA%E6%A0%BC/</loc>
     <lastmod>2019-11-10T02:08:41.928Z</lastmod>
     <data>
@@ -4593,26 +5875,6 @@
            
              
               <breadCrumb title="分布式" url="http://www.songshuiyang.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/11/01/backend/designPatterns/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F(%E4%B8%80)%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2019-11-10T02:08:41.864Z</lastmod>
-    <data>
-        <display>
-        <title>设计模式(一)创建型模式-单例模式</title>
-        <pubTime>2018-10-31T16:00:01.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="设计模式" url="http://www.songshuiyang.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
           
         </display>
     </data>
@@ -4714,72 +5976,6 @@
         <display>
         <title>Mysql-面试题</title>
         <pubTime>2018-03-02T16:04:00.000Z</pubTime>
-        
-        <tag>数据库</tag>
-         
-        <tag>Mysql</tag>
-         
-         
-           
-             
-              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-%E7%B4%A2%E5%BC%95-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D/</loc>
-    <lastmod>2019-11-10T02:08:41.814Z</lastmod>
-    <data>
-        <display>
-        <title>Mysql-索引-详细介绍</title>
-        <pubTime>2018-03-02T16:05:02.000Z</pubTime>
-        
-        <tag>数据库</tag>
-         
-        <tag>Mysql</tag>
-         
-         
-           
-             
-              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-%E7%B4%A2%E5%BC%95-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
-    <lastmod>2019-11-10T02:08:41.800Z</lastmod>
-    <data>
-        <display>
-        <title>Mysql-索引-索引的使用</title>
-        <pubTime>2018-03-02T16:05:00.000Z</pubTime>
-        
-        <tag>数据库</tag>
-         
-        <tag>Mysql</tag>
-         
-         
-           
-             
-              <breadCrumb title="数据库" url="http://www.songshuiyang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/03/03/backend/database/mysql/Mysql-%E7%B4%A2%E5%BC%95-%E5%90%84%E7%A7%8DBTree%E7%B1%BB%E5%9E%8B/</loc>
-    <lastmod>2019-11-10T02:08:41.779Z</lastmod>
-    <data>
-        <display>
-        <title>Mysql-索引-各种BTree类型</title>
-        <pubTime>2018-03-02T16:05:01.000Z</pubTime>
         
         <tag>数据库</tag>
          
@@ -4990,50 +6186,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</loc>
-    <lastmod>2019-11-10T02:08:41.532Z</lastmod>
-    <data>
-        <display>
-        <title>Redis-常用命令</title>
-        <pubTime>2018-02-03T16:00:01.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-        <tag>Redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
-    <lastmod>2019-11-10T02:08:41.516Z</lastmod>
-    <data>
-        <display>
-        <title>Redis-基础概念</title>
-        <pubTime>2018-02-03T16:00:00.000Z</pubTime>
-        
-        <tag>缓存</tag>
-         
-        <tag>Redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="缓存" url="http://www.songshuiyang.com/categories/%E7%BC%93%E5%AD%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/02/01/backend/cache/basic/%E7%BC%93%E5%AD%98-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
     <lastmod>2019-11-10T02:08:41.441Z</lastmod>
     <data>
@@ -5230,28 +6382,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java%E9%9B%86%E5%90%88-Map-HashMap%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%8E%9F%E7%90%86/</loc>
-    <lastmod>2019-09-21T15:35:34.479Z</lastmod>
-    <data>
-        <display>
-        <title>Java集合-Map-HashMap源码解析及原理</title>
-        <pubTime>2018-10-19T16:03:02.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Java集合</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://www.songshuiyang.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2018/10/20/backend/java/collection/Java%E9%9B%86%E5%90%88-Collection%E5%8F%8AMap%E6%8A%BD%E8%B1%A1%E5%AE%9E%E7%8E%B0%E7%B1%BB/</loc>
     <lastmod>2019-09-19T12:47:40.504Z</lastmod>
     <data>
@@ -5368,50 +6498,6 @@
         <display>
         <title>JVM堆转储文件分析EclipseMemoryAnalyzer</title>
         <pubTime>2019-03-26T14:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/11/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E5%9B%9B)%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0/</loc>
-    <lastmod>2019-09-19T12:25:24.470Z</lastmod>
-    <data>
-        <display>
-        <title>JVM垃圾回收(四)常用参数</title>
-        <pubTime>2019-03-11T13:59:44.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>Jvm</tag>
-         
-         
-           
-             
-              <breadCrumb title="JVM" url="http://www.songshuiyang.com/categories/JVM/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%80)%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2019-09-19T12:25:24.439Z</lastmod>
-    <data>
-        <display>
-        <title>JVM垃圾回收(一)垃圾回收算法</title>
-        <pubTime>2019-03-10T13:59:44.000Z</pubTime>
         
         <tag>Java</tag>
          
@@ -6472,28 +7558,6 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E4%BA%8C)%E6%9E%84%E5%BB%BA%E5%8F%8A%E9%85%8D%E7%BD%AESpringBoot%E9%A1%B9%E7%9B%AE/</loc>
-    <lastmod>2019-09-16T13:11:05.627Z</lastmod>
-    <data>
-        <display>
-        <title>SpringBoot(二)构建及配置SpringBoot项目</title>
-        <pubTime>2019-08-05T16:02:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-        <tag>Spring Boot</tag>
-         
-         
-           
-             
-              <breadCrumb title="SpringBoot" url="http://www.songshuiyang.com/categories/SpringBoot/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/08/06/backend/framework/spring/spring-boot/analysis/SpringBoot(%E4%B8%83)%E5%86%85%E5%B5%8CTomcat%E5%90%AF%E5%8A%A8%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/</loc>
     <lastmod>2019-09-16T13:11:05.531Z</lastmod>
     <data>
@@ -6516,72 +7580,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E5%85%AB)%E5%8A%A0%E8%BD%BDBean%E4%B9%8B%E5%8D%95%E4%BE%8B%E7%BC%93%E5%AD%98%E4%B8%AD%E8%8E%B7%E5%8F%96%E5%8D%95%E4%BE%8B%20Bean/</loc>
-    <lastmod>2019-09-16T13:11:05.268Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(八)加载Bean之单例缓存中获取单例 Bean</title>
-        <pubTime>2019-06-12T15:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E5%9B%9B)AOP%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E4%BB%A3%E7%90%86%E5%AF%B9%E8%B1%A1%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C/</loc>
-    <lastmod>2019-09-16T13:11:05.195Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(五四)AOP源码解析之代理对象方法执行</title>
-        <pubTime>2019-07-31T16:00:04.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E4%BA%8C)AOP%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E8%A7%A3%E6%9E%90AOP%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/</loc>
     <lastmod>2019-09-16T13:11:05.180Z</lastmod>
     <data>
         <display>
         <title>Spring系列(五二)AOP源码解析之解析AOP自定义标签</title>
         <pubTime>2019-07-31T16:00:02.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/01/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%94%E4%B8%89)AOP%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E5%88%9B%E5%BB%BAAOP%E4%BB%A3%E7%90%86/</loc>
-    <lastmod>2019-09-16T13:11:05.171Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(五三)AOP源码解析之创建AOP代理</title>
-        <pubTime>2019-07-31T16:00:03.000Z</pubTime>
         
         <tag>Spring</tag>
          
@@ -6656,152 +7660,12 @@
 
     
   <url>
-    <loc>http://www.songshuiyang.com/2019/05/12/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%BA%8C)%E8%A3%85%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6Resource/</loc>
-    <lastmod>2019-09-16T13:11:05.043Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(二)装载配置文件Resource</title>
-        <pubTime>2019-05-12T15:00:44.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.songshuiyang.com/2019/07/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%89%E4%B8%80)ApplicationContext%E5%88%86%E6%9E%90/</loc>
     <lastmod>2019-09-16T13:11:05.001Z</lastmod>
     <data>
         <display>
         <title>Spring系列(三十)ApplicationContext分析</title>
         <pubTime>2019-07-02T14:02:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/06/08/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%89)Bean%E6%A0%87%E7%AD%BEBeanDefinition/</loc>
-    <lastmod>2019-09-16T13:11:04.994Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(三)Bean标签BeanDefinition</title>
-        <pubTime>2019-06-08T08:00:46.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%9B%9B)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8BMybatis%E9%9B%86%E6%88%90%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/</loc>
-    <lastmod>2019-09-16T13:11:04.986Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(七四)Spring事务之Mybatis集成事务管理</title>
-        <pubTime>2019-08-01T16:00:04.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E5%8D%81)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</loc>
-    <lastmod>2019-09-16T13:11:04.977Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(七十)Spring事务之基础概念</title>
-        <pubTime>2019-08-01T16:00:00.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%BA%8C)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E5%85%B7%E4%BD%93%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</loc>
-    <lastmod>2019-09-16T13:11:04.970Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(七二)Spring事务之具体执行过程</title>
-        <pubTime>2019-08-01T16:00:02.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%89)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8BPlatformTransactionManager/</loc>
-    <lastmod>2019-09-16T13:11:04.962Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(七三)Spring事务之PlatformTransactionManager</title>
-        <pubTime>2019-08-01T16:00:03.000Z</pubTime>
-        
-        <tag>Spring</tag>
-         
-         
-           
-             
-              <breadCrumb title="Spring" url="http://www.songshuiyang.com/categories/Spring/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.songshuiyang.com/2019/08/02/backend/framework/spring/analysis/Spring%E7%B3%BB%E5%88%97(%E4%B8%83%E4%B8%80)Spring%E4%BA%8B%E5%8A%A1%E4%B9%8B%E8%A7%A3%E6%9E%90%E4%BA%8B%E5%8A%A1%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/</loc>
-    <lastmod>2019-09-16T13:11:04.955Z</lastmod>
-    <data>
-        <display>
-        <title>Spring系列(七一)Spring事务之解析事务自定义标签</title>
-        <pubTime>2019-08-01T16:00:01.000Z</pubTime>
         
         <tag>Spring</tag>
          

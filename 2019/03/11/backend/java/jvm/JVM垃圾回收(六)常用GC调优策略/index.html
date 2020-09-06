@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言GC 调优原则 在调优之前，我们需要记住下面的原则： 多数的 Java 应用不需要在服务器上进行 GC 优化； 多数导致 GC 问题的 Java 应用，都不是因为我们参数设置错误，而是代码问题； 在应用上线之前，先考虑将机器的 JVM 参数设置到最优（最适合）； 减少创建对象的数量； 减少使用全局变量和大对象； GC 优化是到最后不得已才采用的手段； 在实际使用中，分析 GC 情况优化代码比优">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.487Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.276Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM垃圾回收(六)常用GC调优策略">
 <meta name="twitter:description" content="前言GC 调优原则 在调优之前，我们需要记住下面的原则： 多数的 Java 应用不需要在服务器上进行 GC 优化； 多数导致 GC 问题的 Java 应用，都不是因为我们参数设置错误，而是代码问题； 在应用上线之前，先考虑将机器的 JVM 参数设置到最优（最适合）； 减少创建对象的数量； 减少使用全局变量和大对象； GC 优化是到最后不得已才采用的手段； 在实际使用中，分析 GC 情况优化代码比优">
@@ -376,7 +376,7 @@ var _hmt = _hmt || [];
 </li>
 <li><p>策略 3：合理设置进入老年代对象的年龄，-XX:MaxTenuringThreshold 设置对象进入老年代的年龄大小，减少老年代的内存占用，降低 full gc 发生的频率。</p>
 </li>
-<li><p>策略 4：设置稳定的堆大小，堆大小设置有两个参数：-Xms 初始化堆大小，-Xmx 最大堆大小。</p>
+<li><p>策略 4：设置稳定的堆大小，稳定的堆空间可以减少 GC 的次数。因此，很多服务端应用都会将最大堆和最小堆设置为相同的数值，堆大小设置有两个参数：-Xms 初始化堆大小，-Xmx 最大堆大小。</p>
 </li>
 <li><p>策略5：注意： 如果满足下面的指标，则一般不需要进行 GC 优化：</p>
 <ul>
@@ -387,6 +387,7 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
+<p>### </p>
 <h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
 <li>周志明版  《深入理解Java虚拟机》</li>
 <li><a href="https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/GC调优参数" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/java/jvm/GC调优参数</a></li>
@@ -466,9 +467,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/03/16/backend/java/jvm/JVM类文件结构(一)Class类文件结构/" id="post-prev" class="post-nav-link">
+      <a href="/2019/03/11/backend/java/jvm/JVM垃圾回收(六)GC问题排查/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">JVM类文件结构(一)Class类文件结构</h4>
+        <h4 class="title">JVM垃圾回收(六)GC问题排查</h4>
       </a>
     </div>
   
@@ -541,7 +542,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

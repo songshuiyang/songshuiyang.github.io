@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="概述 方法区（Method Area）与Java 堆一样，是各个线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。虽然Java 虚拟机规范把方法区描述为堆的一个逻辑部分，但是它却有一个别名叫做Non-Heap（非堆），目的应该是与Java 堆区分开来。  对于习惯在HotSpot 虚拟机上开发和部署程序的开发者来说，很多人愿意把方法区称为“永久代”">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.505Z">
+<meta property="og:updated_time" content="2020-09-03T14:21:46.451Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM运行时数据区域(六)方法区">
 <meta name="twitter:description" content="概述 方法区（Method Area）与Java 堆一样，是各个线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。虽然Java 虚拟机规范把方法区描述为堆的一个逻辑部分，但是它却有一个别名叫做Non-Heap（非堆），目的应该是与Java 堆区分开来。  对于习惯在HotSpot 虚拟机上开发和部署程序的开发者来说，很多人愿意把方法区称为“永久代”">
@@ -324,7 +324,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#运行时常量池"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">运行时常量池</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-String-类和常量池"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">1. String 类和常量池</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#备注"><span class="post-toc-number">2.</span> <span class="post-toc-text">备注</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#运行时常量池"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">运行时常量池</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-String-类和常量池"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">1. String 类和常量池</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-垃圾回收"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">3. 垃圾回收</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#备注"><span class="post-toc-number">2.</span> <span class="post-toc-text">备注</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
         </nav>
     </aside>
 
@@ -381,6 +381,9 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一种方式是在常量池中拿对象</span></span><br><span class="line">String str1 = <span class="string">"abcd"</span>;</span><br><span class="line"><span class="comment">// 第二种方式是直接在堆内存空间创建一个新的对象。 </span></span><br><span class="line">String str2 = <span class="keyword">new</span> String(<span class="string">"abcd"</span>);</span><br><span class="line">System.out.println(str1==str2);<span class="comment">//false</span></span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">* 记住一点：只要使用 <span class="keyword">new</span> 方法，便需要创建新的对象。</span><br><span class="line"></span><br><span class="line">* 再给大家一个图应该更容易理解，图片来源：https:<span class="comment">//www.journaldev.com/797/what-is-java-string-pool：</span></span><br><span class="line"></span><br><span class="line">![](/images/server/java/JVM/heap/<span class="number">2019</span>-<span class="number">3</span>String-Pool-Java1-<span class="number">450</span>x249.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 2. 8种基本类型的包装类和常量池</span><br><span class="line">* Java 基本类型的包装类的大部分都实现了常量池技术，即Byte,Short,Integer,Long,Character,Boolean；这<span class="number">5</span>种包装类默认创建了数值[-<span class="number">128</span>，<span class="number">127</span>]的相应类型的缓存数据，但是超出此范围仍然会去创建新的对象。</span><br><span class="line">* 两种浮点数类型的包装类 Float,Double 并没有实现常量池技术。</span><br><span class="line">```java</span><br><span class="line">Integer i1 = <span class="number">33</span>;</span><br><span class="line">Integer i2 = <span class="number">33</span>;</span><br><span class="line">System.out.println(i1 == i2);<span class="comment">// 输出true</span></span><br><span class="line">Integer i11 = <span class="number">333</span>;</span><br><span class="line">Integer i22 = <span class="number">333</span>;</span><br><span class="line">System.out.println(i11 == i22);<span class="comment">// 输出false</span></span><br><span class="line">Double i3 = <span class="number">1.2</span>;</span><br><span class="line">Double i4 = <span class="number">1.2</span>;</span><br><span class="line">System.out.println(i3 == i4);<span class="comment">// 输出false</span></span><br></pre></td></tr></table></figure>
+<h4 id="3-垃圾回收"><a href="#3-垃圾回收" class="headerlink" title="3. 垃圾回收"></a>3. 垃圾回收</h4><ul>
+<li>并非数据进入了方法区就如永久代的名字一样“永久”存在了。这区域的内存回 收目标主要是针对常量池的回收和对类型的卸载</li>
+</ul>
 <h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><ul>
 <li>《Java虚拟机规范》只是规定了有方法区这么个概念和它的作用，并没有规定如何去实现它。那么，在不同的 JVM 上方法区的实现肯定是不同的了。 方法区和永久代的关系很像Java中接口和类的关系，类实现了接口，而永久代就是HotSpot虚拟机对虚拟机规范中方法区的一种实现方式。 也就是说，永久代是HotSpot的概念，方法区是Java虚拟机规范中的定义，是一种规范，而永久代是一种实现，一个是标准一个是实现，其他的虚拟机实现并没有永久带这一说法。</li>
 <li>JDK 1.8 的时候，方法区（HotSpot的永久代）被彻底移除了（JDK1.7就已经开始了），取而代之是元空间，元空间使用的是直接内存。<ul>
@@ -468,18 +471,18 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/03/04/backend/java/jvm/JVM内存溢出异常(一)OutOfMemoryError/" id="post-prev" class="post-nav-link">
+      <a href="/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">JVM内存溢出异常(一)OutOfMemoryError</h4>
+        <h4 class="title">JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/03/04/backend/java/jvm/JVM运行时数据区域(五)堆/" id="post-next" class="post-nav-link">
+      <a href="/2019/03/04/backend/java/jvm/JVM内存溢出异常(一)OutOfMemoryError/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">JVM运行时数据区域(五)堆</h4>
+        <h4 class="title">JVM内存溢出异常(一)OutOfMemoryError</h4>
       </a>
     </div>
   
@@ -543,7 +546,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

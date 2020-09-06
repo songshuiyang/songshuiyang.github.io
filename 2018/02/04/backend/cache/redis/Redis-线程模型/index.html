@@ -30,7 +30,7 @@
 <meta property="og:description" content="前言高性能服务器 一定是 多线程来实现的？ 以前一直有个误区，以为：高性能服务器 一定是 多线程来实现的，原因很简单：因为误区二导致的：多线程 一定比 单线程 效率高，其实不然  在说这个事前希望大家都能对 CPU 、 内存 、 硬盘的速度都有了解了，这样可能理解得更深刻一点  1.顺序访问：这种情况下，内存访问速度仅仅是硬盘访问速度的6~7倍（358.2M / 53.2M = 6.7） 2.随机">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis1.png">
-<meta property="og:updated_time" content="2020-03-16T13:05:29.698Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.341Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis-线程模型">
 <meta name="twitter:description" content="前言高性能服务器 一定是 多线程来实现的？ 以前一直有个误区，以为：高性能服务器 一定是 多线程来实现的，原因很简单：因为误区二导致的：多线程 一定比 单线程 效率高，其实不然  在说这个事前希望大家都能对 CPU 、 内存 、 硬盘的速度都有了解了，这样可能理解得更深刻一点  1.顺序访问：这种情况下，内存访问速度仅仅是硬盘访问速度的6~7倍（358.2M / 53.2M = 6.7） 2.随机">
@@ -421,7 +421,16 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>Redis 是非阻塞 IO ，多路复用。</li>
+<li><p>Redis被说成是单线程是操作数据，处理客户端连接是单线程的，redis本身还是有其他的线程，比如，持久化进行，hash散列重hash，主从心跳检测，等等。</p>
+</li>
+<li><p>Redis 是非阻塞 IO ，使用多路复用模式，一个线程就能够处理多个客户端的多个请求。</p>
+</li>
+<li><p>多线程Redis的改进点</p>
+<ul>
+<li>由于是IO是单个线程处理的，所以一旦某次IO比较久的话，其他的IO请求就会挂在队列中，会影响整体的性能。</li>
+<li>多线程只是在执行IO任务阶段是多线程的，但是整体用于命令分发队列的依旧是单线程串行，这样就解决了单个IO耗时影响其他IO请求了，同时也避免了多线程环境下的数据的一致性。</li>
+</ul>
+</li>
 </ul>
 <h4 id="为什么-Redis-效率这么高"><a href="#为什么-Redis-效率这么高" class="headerlink" title="为什么 Redis 效率这么高"></a>为什么 Redis 效率这么高</h4><ul>
 <li>1、C 语言实现：我们都知道，C 语言的执行速度非常快。</li>
@@ -432,7 +441,8 @@ var _hmt = _hmt || [];
 <li>单线程无需考虑并发的问题。</li>
 </ul>
 </li>
-<li>5、丰富的数据结构。<ul>
+<li>5、底层实现数据结构是hash散列表，随机访问数据的时间复杂度为O(1)，hash冲突的方式同样是采取拉链法，计算出同一个hash值，用链表去存储。</li>
+<li>6、丰富的数据结构。<ul>
 <li>Redis 全程使用 hash 结构，读取速度快，还有一些特殊的数据结构，对数据存储进行了优化。例如，压缩表，对短数据进行压缩存储</li>
 </ul>
 </li>
@@ -592,7 +602,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

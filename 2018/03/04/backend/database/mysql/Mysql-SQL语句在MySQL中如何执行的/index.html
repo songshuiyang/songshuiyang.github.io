@@ -30,7 +30,7 @@
 <meta property="og:description" content="摘抄来自木木匠 ，写的很好  前言 本篇文章会分析下一个 sql 语句在 MySQL 中的执行流程，包括 sql 的查询在 MySQL 内部会怎么流转，sql 语句的更新是怎么完成的。  在分析之前我会先带着你看看 MySQL 的基础架构，知道了 MySQL 由那些组件组成已经这些组件的作用是什么，可以帮助我们理解和解决这些问题。   解析一、MySQL 基础架构分析1.1 MySQL 基本架构">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/mysql/framework/mysql12.png">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.025Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.387Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql-SQL语句在MySQL中如何执行的">
 <meta name="twitter:description" content="摘抄来自木木匠 ，写的很好  前言 本篇文章会分析下一个 sql 语句在 MySQL 中的执行流程，包括 sql 的查询在 MySQL 内部会怎么流转，sql 语句的更新是怎么完成的。  在分析之前我会先带着你看看 MySQL 的基础架构，知道了 MySQL 由那些组件组成已经这些组件的作用是什么，可以帮助我们理解和解决这些问题。   解析一、MySQL 基础架构分析1.1 MySQL 基本架构">
@@ -326,7 +326,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、MySQL-基础架构分析"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">一、MySQL 基础架构分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-1-MySQL-基本架构概览"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1.1 MySQL 基本架构概览</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-2-Server-层基本组件介绍"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">1.2 Server 层基本组件介绍</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、语句分析"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">二、语句分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-查询语句"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">2.1 查询语句</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-2-更新语句"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">2.2 更新语句</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">总结</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、MySQL-基础架构分析"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">一、MySQL 基础架构分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-1-MySQL-基本架构概览"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">1.1 MySQL 基本架构概览</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-2-Server-层基本组件介绍"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">1.2 Server 层基本组件介绍</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-3-缓存"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">1.3 缓存</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、语句分析"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">二、语句分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-1-查询语句"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">2.1 查询语句</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-2-更新语句"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">2.2 更新语句</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">总结</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
         </nav>
     </aside>
 
@@ -422,6 +422,14 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
+<h4 id="1-3-缓存"><a href="#1-3-缓存" class="headerlink" title="1.3 缓存"></a>1.3 缓存</h4><ul>
+<li><p>如果我们当前的MySQL版本支持缓存而且我们又开启了缓存，那每次请求的查询语句和结果都会以key-value的形式缓存在内存中的，大家也看到我们的结构图了，一个请求会先去看缓存是否存在，不存在才会走解析器。</p>
+</li>
+<li><p>缓存失效比较频繁的原因就是，只要我们一对表进行更新，那这个表所有的缓存都会被清空，其实我们很少存在不更新的表，特别是我之前的电商场景，可能静态表可以用到缓存，但是我们都走大数据离线分析，缓存也就没用了。</p>
+</li>
+<li><p>我们在执行SQL的时候，记得加上SQL NoCache去跑SQL，这样跑出来的时间就是真实的查询时间了。</p>
+</li>
+</ul>
 <h3 id="二、语句分析"><a href="#二、语句分析" class="headerlink" title="二、语句分析"></a>二、语句分析</h3><h4 id="2-1-查询语句"><a href="#2-1-查询语句" class="headerlink" title="2.1 查询语句"></a>2.1 查询语句</h4><ul>
 <li>说了以上这么多，那么究竟一条 sql 语句是如何执行的呢？其实我们的 sql 可以分为两种，一种是查询，一种是更新（增加，更新，删除）。我们先分析下查询语句，语句如下：</li>
 </ul>
@@ -478,6 +486,7 @@ var _hmt = _hmt || [];
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://snailclimb.gitee.io/javaguide/#/docs/database/一条sql语句在mysql中如何执行的" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/database/一条sql语句在mysql中如何执行的</a></li>
+<li><a href="https://mp.weixin.qq.com/s/e0CqJG2-PCDgKLjQfh02tw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/e0CqJG2-PCDgKLjQfh02tw</a></li>
 </ul>
 
         </div>
@@ -629,7 +638,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

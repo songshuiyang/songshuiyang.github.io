@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring系列(十四)@PostConstruct注解原理 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="前言 @PostConstruct这个注解在平常项目中也经常用到，使用这个注解可以在Bean实例化后做一些额外的初始化操作，注意这里Bean已经实例化且完成了属性依赖注入，这一章节来看看这个注解具体的工作原理  下面是此注解的声明，可以看到这个注解不是Spring自带的，位于JDK javax.annotation 包下，可以看到Spring的功能兼容能力是很强的   12345@Document">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring系列(十四)@PostConstruct注解原理">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 @PostConstruct这个注解在平常项目中也经常用到，使用这个注解可以在Bean实例化后做一些额外的初始化操作，注意这里Bean已经实例化且完成了属性依赖注入，这一章节来看看这个注解具体的工作原理  下面是此注解的声明，可以看到这个注解不是Spring自带的，位于JDK javax.annotation 包下，可以看到Spring的功能兼容能力是很强的   12345@Document">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/bean/initDestroyAnnotation.jpg">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/bean/InitDestroyAnnotationBeanPostProcessor.png">
+<meta property="og:updated_time" content="2020-08-16T04:24:17.995Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring系列(十四)@PostConstruct注解原理">
+<meta name="twitter:description" content="前言 @PostConstruct这个注解在平常项目中也经常用到，使用这个注解可以在Bean实例化后做一些额外的初始化操作，注意这里Bean已经实例化且完成了属性依赖注入，这一章节来看看这个注解具体的工作原理  下面是此注解的声明，可以看到这个注解不是Spring自带的，位于JDK javax.annotation 包下，可以看到Spring的功能兼容能力是很强的   12345@Document">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/analysis/bean/initDestroyAnnotation.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring系列(十四)@PostConstruct注解原理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring系列(十四)@PostConstruct注解原理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-06-19T15:01:46.000Z" itemprop="datePublished" class="page-time">
+  2019-06-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原理解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">原理解析</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring系列(十四)@PostConstruct注解原理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-06-19 23:01:46" datetime="2019-06-19T15:01:46.000Z" itemprop="datePublished">2019-06-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p><code>@PostConstruct</code>这个注解在平常项目中也经常用到，使用这个注解可以在<code>Bean</code>实例化后做一些额外的初始化操作，注意这里<code>Bean</code>已经实例化且完成了属性依赖注入，这一章节来看看这个注解具体的工作原理</p>
+</li>
+<li><p>下面是此注解的声明，可以看到这个注解不是<code>Spring</code>自带的，位于<code>JDK javax.annotation</code> 包下，可以看到<code>Spring</code>的功能兼容能力是很强的</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span> (RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(METHOD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PostConstruct &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><ul>
+<li>看原理之前先来看下测试类，由具体的执行逻辑来解析</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PostConstructBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        name = <span class="string">"初始化的名字"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PostConstructBean <span class="title">postConstructBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> PostConstructBean();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"beans/initializingBean.xml"</span>);</span><br><span class="line">    PostConstructBean postConstructBean = applicationContext.getBean(PostConstructBean.class);</span><br><span class="line">    log.info(<span class="string">""</span> + postConstructBean);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在<code>init()</code>方法体内打好断点，下图可以看到具体触发点是在<code>getBean()</code>方法的三步走的初始化阶段触发的，也就是说<code>Bean</code>已经实例化且属性填充完成了</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/bean/initDestroyAnnotation.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>上图的执行链路可以看到<code>init()</code>方法是由这个类<code>InitDestroyAnnotationBeanPostProcessor</code>来执行的，其实到这里看类名就知道这个类的作用了，这个实现了<code>BeanPostProcessor</code>接口，实现了这个类可以在<code>Bean</code>初始化阶段执行额外逻辑</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/bean/InitDestroyAnnotationBeanPostProcessor.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>这个类<code>InitDestroyAnnotationBeanPostProcessor</code>看注释是替代<code>org.springframework.beans.factory.InitializingBean</code>和<code>org.springframework.beans.factory.DisposableBean</code>回调接口</p>
+</li>
+<li><p>类成员的话对每个<code>Class</code>做了<code>LifecycleMetadata</code>缓存，这个字段是存放每个类的初始化和销毁类生命周期方法</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InitDestroyAnnotationBeanPostProcessor</span></span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">DestructionAwareBeanPostProcessor</span>, <span class="title">MergedBeanDefinitionPostProcessor</span>, <span class="title">PriorityOrdered</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">transient</span> Log logger = LogFactory.getLog(getClass());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> Class&lt;? extends Annotation&gt; initAnnotationType;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> Class&lt;? extends Annotation&gt; destroyAnnotationType;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> order = Ordered.LOWEST_PRECEDENCE;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, LifecycleMetadata&gt; lifecycleMetadataCache =</span><br><span class="line">			<span class="keyword">new</span> ConcurrentHashMap&lt;Class&lt;?&gt;, LifecycleMetadata&gt;(<span class="number">256</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>InitDestroyAnnotationBeanPostProcessor</code>实现了<code>BeanPostProcessor</code>接口的初始化前执行方法，这个方法也是很简单就是找到对应的<code>LifecycleMetadata</code>然后执行方法<code>invokeInitMethods</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        metadata.invokeInitMethods(bean, beanName);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InvocationTargetException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(beanName, <span class="string">"Invocation of init method failed"</span>, ex.getTargetException());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(beanName, <span class="string">"Failed to invoke init method"</span>, ex);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以看到下面逻辑就是先在<code>lifecycleMetadataCache</code>缓存里找对应的<code>LifecycleMetadata</code>， 如果没有找到的话就是构建，构建逻辑也是很简单就是遍历此类的方法，如果方法内带有<code>PostConstruct.class</code>及<code>PreDestroy.class</code>注解就<code>add</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> LifecycleMetadata <span class="title">findLifecycleMetadata</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.lifecycleMetadataCache == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// Happens after deserialization, during destruction...</span></span><br><span class="line">        <span class="keyword">return</span> buildLifecycleMetadata(clazz);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Quick check on the concurrent map first, with minimal locking.</span></span><br><span class="line">    LifecycleMetadata metadata = <span class="keyword">this</span>.lifecycleMetadataCache.get(clazz);</span><br><span class="line">    <span class="keyword">if</span> (metadata == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.lifecycleMetadataCache) &#123;</span><br><span class="line">            metadata = <span class="keyword">this</span>.lifecycleMetadataCache.get(clazz);</span><br><span class="line">            <span class="keyword">if</span> (metadata == <span class="keyword">null</span>) &#123;</span><br><span class="line">                metadata = buildLifecycleMetadata(clazz);</span><br><span class="line">                <span class="keyword">this</span>.lifecycleMetadataCache.put(clazz, metadata);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> metadata;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> metadata;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> LifecycleMetadata <span class="title">buildLifecycleMetadata</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> debug = logger.isDebugEnabled();</span><br><span class="line">    LinkedList&lt;LifecycleElement&gt; initMethods = <span class="keyword">new</span> LinkedList&lt;LifecycleElement&gt;();</span><br><span class="line">    LinkedList&lt;LifecycleElement&gt; destroyMethods = <span class="keyword">new</span> LinkedList&lt;LifecycleElement&gt;();</span><br><span class="line">    Class&lt;?&gt; targetClass = clazz;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> LinkedList&lt;LifecycleElement&gt; currInitMethods = <span class="keyword">new</span> LinkedList&lt;LifecycleElement&gt;();</span><br><span class="line">        <span class="keyword">final</span> LinkedList&lt;LifecycleElement&gt; currDestroyMethods = <span class="keyword">new</span> LinkedList&lt;LifecycleElement&gt;();</span><br><span class="line"></span><br><span class="line">        ReflectionUtils.doWithLocalMethods(targetClass, <span class="keyword">new</span> ReflectionUtils.MethodCallback() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWith</span><span class="params">(Method method)</span> <span class="keyword">throws</span> IllegalArgumentException, IllegalAccessException </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (initAnnotationType != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (method.getAnnotation(initAnnotationType) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        LifecycleElement element = <span class="keyword">new</span> LifecycleElement(method);</span><br><span class="line">                        currInitMethods.add(element);</span><br><span class="line">                        <span class="keyword">if</span> (debug) &#123;</span><br><span class="line">                            logger.debug(<span class="string">"Found init method on class ["</span> + clazz.getName() + <span class="string">"]: "</span> + method);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (destroyAnnotationType != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (method.getAnnotation(destroyAnnotationType) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        currDestroyMethods.add(<span class="keyword">new</span> LifecycleElement(method));</span><br><span class="line">                        <span class="keyword">if</span> (debug) &#123;</span><br><span class="line">                            logger.debug(<span class="string">"Found destroy method on class ["</span> + clazz.getName() + <span class="string">"]: "</span> + method);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        initMethods.addAll(<span class="number">0</span>, currInitMethods);</span><br><span class="line">        destroyMethods.addAll(currDestroyMethods);</span><br><span class="line">        targetClass = targetClass.getSuperclass();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (targetClass != <span class="keyword">null</span> &amp;&amp; targetClass != Object.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LifecycleMetadata(clazz, initMethods, destroyMethods);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>找到<code>LifecycleMetadata</code>数据之后就是执行<code>metadata.invokeInitMethods(bean, beanName);</code>方法</p>
+</li>
+<li><p><code>LifecycleMetadata</code>对象存放了<code>initMethods</code>及<code>destroyMethods</code>集合，说明可以定义多个方法，查看此类的<code>invokeInitMethods</code>方法可以看到使用反射调用了<code>LifecycleElement</code>对象的<code>invoke(Object target)</code>方法</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(Object target)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    ReflectionUtils.makeAccessible(<span class="keyword">this</span>.method);</span><br><span class="line">    <span class="keyword">this</span>.method.invoke(target, (Object[]) <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>LifecycleMetadata</code>类对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Class representing information about annotated init and destroy methods.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">LifecycleMetadata</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;?&gt; targetClass;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Collection&lt;LifecycleElement&gt; initMethods;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Collection&lt;LifecycleElement&gt; destroyMethods;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> Set&lt;LifecycleElement&gt; checkedInitMethods;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> Set&lt;LifecycleElement&gt; checkedDestroyMethods;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LifecycleMetadata</span><span class="params">(Class&lt;?&gt; targetClass, Collection&lt;LifecycleElement&gt; initMethods,</span></span></span><br><span class="line"><span class="function"><span class="params">            Collection&lt;LifecycleElement&gt; destroyMethods)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.targetClass = targetClass;</span><br><span class="line">        <span class="keyword">this</span>.initMethods = initMethods;</span><br><span class="line">        <span class="keyword">this</span>.destroyMethods = destroyMethods;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkConfigMembers</span><span class="params">(RootBeanDefinition beanDefinition)</span> </span>&#123;</span><br><span class="line">        Set&lt;LifecycleElement&gt; checkedInitMethods = <span class="keyword">new</span> LinkedHashSet&lt;LifecycleElement&gt;(<span class="keyword">this</span>.initMethods.size());</span><br><span class="line">        <span class="keyword">for</span> (LifecycleElement element : <span class="keyword">this</span>.initMethods) &#123;</span><br><span class="line">            String methodIdentifier = element.getIdentifier();</span><br><span class="line">            <span class="keyword">if</span> (!beanDefinition.isExternallyManagedInitMethod(methodIdentifier)) &#123;</span><br><span class="line">                beanDefinition.registerExternallyManagedInitMethod(methodIdentifier);</span><br><span class="line">                checkedInitMethods.add(element);</span><br><span class="line">                <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Registered init method on class ["</span> + <span class="keyword">this</span>.targetClass.getName() + <span class="string">"]: "</span> + element);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Set&lt;LifecycleElement&gt; checkedDestroyMethods = <span class="keyword">new</span> LinkedHashSet&lt;LifecycleElement&gt;(<span class="keyword">this</span>.destroyMethods.size());</span><br><span class="line">        <span class="keyword">for</span> (LifecycleElement element : <span class="keyword">this</span>.destroyMethods) &#123;</span><br><span class="line">            String methodIdentifier = element.getIdentifier();</span><br><span class="line">            <span class="keyword">if</span> (!beanDefinition.isExternallyManagedDestroyMethod(methodIdentifier)) &#123;</span><br><span class="line">                beanDefinition.registerExternallyManagedDestroyMethod(methodIdentifier);</span><br><span class="line">                checkedDestroyMethods.add(element);</span><br><span class="line">                <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Registered destroy method on class ["</span> + <span class="keyword">this</span>.targetClass.getName() + <span class="string">"]: "</span> + element);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.checkedInitMethods = checkedInitMethods;</span><br><span class="line">        <span class="keyword">this</span>.checkedDestroyMethods = checkedDestroyMethods;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invokeInitMethods</span><span class="params">(Object target, String beanName)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        Collection&lt;LifecycleElement&gt; initMethodsToIterate =</span><br><span class="line">                (<span class="keyword">this</span>.checkedInitMethods != <span class="keyword">null</span> ? <span class="keyword">this</span>.checkedInitMethods : <span class="keyword">this</span>.initMethods);</span><br><span class="line">        <span class="keyword">if</span> (!initMethodsToIterate.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">boolean</span> debug = logger.isDebugEnabled();</span><br><span class="line">            <span class="keyword">for</span> (LifecycleElement element : initMethodsToIterate) &#123;</span><br><span class="line">                <span class="keyword">if</span> (debug) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Invoking init method on bean '"</span> + beanName + <span class="string">"': "</span> + element.getMethod());</span><br><span class="line">                &#125;</span><br><span class="line">                element.invoke(target);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invokeDestroyMethods</span><span class="params">(Object target, String beanName)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        Collection&lt;LifecycleElement&gt; destroyMethodsToUse =</span><br><span class="line">                (<span class="keyword">this</span>.checkedDestroyMethods != <span class="keyword">null</span> ? <span class="keyword">this</span>.checkedDestroyMethods : <span class="keyword">this</span>.destroyMethods);</span><br><span class="line">        <span class="keyword">if</span> (!destroyMethodsToUse.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">boolean</span> debug = logger.isDebugEnabled();</span><br><span class="line">            <span class="keyword">for</span> (LifecycleElement element : destroyMethodsToUse) &#123;</span><br><span class="line">                <span class="keyword">if</span> (debug) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Invoking destroy method on bean '"</span> + beanName + <span class="string">"': "</span> + element.getMethod());</span><br><span class="line">                &#125;</span><br><span class="line">                element.invoke(target);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasDestroyMethods</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Collection&lt;LifecycleElement&gt; destroyMethodsToUse =</span><br><span class="line">                (<span class="keyword">this</span>.checkedDestroyMethods != <span class="keyword">null</span> ? <span class="keyword">this</span>.checkedDestroyMethods : <span class="keyword">this</span>.destroyMethods);</span><br><span class="line">        <span class="keyword">return</span> !destroyMethodsToUse.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>@PostConstruct</code>这个注解执行原理是靠<code>InitDestroyAnnotationBeanPostProcessor</code>来实现的，它可以在<code>Bean</code>的初始化阶段执行带了<code>@PostConstruct</code>注解的方法</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/&title=《Spring系列(十四)@PostConstruct注解原理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/&title=《Spring系列(十四)@PostConstruct注解原理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(十四)@PostConstruct注解原理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二十)Aware接口分析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring系列(二十)Aware接口分析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/06/19/backend/framework/spring/analysis/Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring系列(十三)Bean初始化initializeBean方法之AbstractAutowireCapableBeanFactory</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/&title=《Spring系列(十四)@PostConstruct注解原理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/&title=《Spring系列(十四)@PostConstruct注解原理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(十四)@PostConstruct注解原理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/19/backend/framework/spring/analysis/Spring系列(十四)@PostConstruct注解原理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD6klEQVR42u3ay07jQBAFUP7/p2ELCjb3VrVRFserUYLb3ccjVerx8RFfn9+u1883f/l61+sKyVOSu45dOHDgwIEjPur9hu4PsDnq1TrtKfLdXj4RBw4cOHAc4mgfcCpCtYhngy4OHDhw4HgHjlMB+P5ZSULYBnscOHDgwPGeHHVSdCglS0qQOHDgwIHjfThmjZ9Ng2dWXtynjsdqpThw4MCBYxEH71Os9//3I/MdOHDgwIGjDFGzAly+iSSob0J+fS4cOHDgwLHm2D+yHUeYhfazIR8HDhw4cDzH0Y4CJAMK7WjCLJPalDUv948DBw4cONYceaCdJUjJam3yloPmLSscOHDgwHGWIwmcyebusdokbZbCteG5ziNx4MCBA8ft+u2Gks/zZlVelJyNyuVr/igO4sCBAweONUd7vLY4OEuf8mdthhhw4MCBA8cTHEWxbDTuNjvkLFHMG2m/rIkDBw4cOB7g2D+yDcyzRtcmPF++SBw4cODAsebIBxpmZb42rCYFwVkoLX4W4MCBAweOBUfe/m+H0mYrtByzCQ4cOHDgwPEcx350YB/n81CajMrN9llUPXHgwIEDR8CRtGT2wwR5qMtXboNotA4OHDhw4FhwJA9ow3PbWNpceaIY7QQHDhw4cBzimBXpziZUbTGxLREmn+PAgQMHjj1He6RZC6elbI/dhuG6OIgDBw4cOGKOdnRg1mTaBPJ8eKINqHVxEAcOHDhwxBz7gmDesnqiRDhbGQcOHDhwPMHRpkybYbj82xw3D8Z1swoHDhw4cCw4NsXBfJ1ZYN6/tvxvcODAgQPHWY78MLPHJ0lXXc4Lvs1/CuDAgQMHjj3HqUJee+BZoG2Tyfxl4MCBAweOUxxtapSE0g3xrFDY7jx6nThw4MCBY8GRlOTy1K4NkJuxiST0JuliM+mAAwcOHDjSUbm2VJc3hGbDbe0ARL7nP/5f4MCBAweOQxx5AW6TgLXp36yTNksvceDAgQPHnmMzjpaP0222lRyyHcJom2o4cODAgSPnmDWQ9onZPjnMxyaKUQYcOHDgwHGIY7aJfNwtD4qz4J2njkXbCQcOHDhwjDiSol4bkp++2sGFmhIHDhw4cCw4Pssr52tDXTtasW8+FcVBHDhw4MARc7ThbQaUB/K8EdWmjnkKigMHDhw49hyz9n+bSt0fIA+c7b11+RIHDhw4cBziSBr/efLWjkG0T9+XJi/vwoEDBw4c/8gxI3gi2dsXMf/owuHAgQMHjn/haLeVbGjfAJu9sDoC48CBAweOkiMPWvfL5d8m7aXNXcPQjgMHDhw41hybUtpsbmIzvtCOLOQ/GnDgwIEDx5rjC8L27dDhcfQiAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

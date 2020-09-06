@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="简介 重入锁 ReentrantLock 是排他锁，排他锁在同一时刻仅有一个线程可以进行访问，但是在大多数场景下，大部分时间都是提供读服务，而写服务占有的时间较少。然而，读服务不存在数据竞争问题，如果一个线程在读时禁止其他线程读势必会导致性能降低。所以就提供了读写锁。  读写锁维护着一对锁，一个读锁和一个写锁。通过分离读锁和写锁，使得并发性比一般的排他锁有了较大的提升：  在同一时间，可以允许多个">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-12-03T12:17:09.368Z">
+<meta property="og:updated_time" content="2020-08-16T04:24:18.037Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发多线程(九)ReadWriteLock与ReentrantReadWriteLock">
 <meta name="twitter:description" content="简介 重入锁 ReentrantLock 是排他锁，排他锁在同一时刻仅有一个线程可以进行访问，但是在大多数场景下，大部分时间都是提供读服务，而写服务占有的时间较少。然而，读服务不存在数据竞争问题，如果一个线程在读时禁止其他线程读势必会导致性能降低。所以就提供了读写锁。  读写锁维护着一对锁，一个读锁和一个写锁。通过分离读锁和写锁，使得并发性比一般的排他锁有了较大的提升：  在同一时间，可以允许多个">
@@ -357,7 +357,7 @@ var _hmt = _hmt || [];
 <li><p>读写锁维护着一对锁，一个读锁和一个写锁。通过分离读锁和写锁，使得并发性比一般的排他锁有了较大的提升：</p>
 <ul>
 <li>在同一时间，可以允许多个读线程同时访问。</li>
-<li>是，在写线程访问时，所有读线程和写线程都会被阻塞。</li>
+<li>在写线程访问时，所有读线程和写线程都会被阻塞。</li>
 </ul>
 </li>
 <li><p>读写锁的主要特性：</p>
@@ -554,7 +554,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

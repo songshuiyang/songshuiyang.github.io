@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/gc2.gif">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/gc3.gif">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/gc4.jpg">
-<meta property="og:updated_time" content="2019-09-19T12:25:24.439Z">
+<meta property="og:updated_time" content="2020-09-05T04:47:54.679Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM垃圾回收(一)垃圾回收算法">
 <meta name="twitter:description" content="概述 猿们都知道JVM的内存结构包括五大区域：程序计数器、虚拟机栈、本地方法栈、堆区、方法区。其中程序计数器、虚拟机栈、本地方法栈3个区域随线程而生、随线程而灭，因此这几个区域的内存分配和回收都具备确定性，就不需要过多考虑回收的问题，因为方法结束或者线程结束时，内存自然就跟随着回收了。  而Java堆区和方法区则不一样、不一样!(怎么不一样说的朗朗上口)，这部分内存的分配和回收是动态的，正是垃圾收">
@@ -330,7 +330,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#判断对象是否存活的算法"><span class="post-toc-number">2.</span> <span class="post-toc-text">判断对象是否存活的算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-引用计数法"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 引用计数法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-可达性分析算法"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 可达性分析算法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#垃圾回收算法"><span class="post-toc-number">3.</span> <span class="post-toc-text">垃圾回收算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-标记-清除算法"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1. 标记-清除算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#缺点"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">缺点</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-复制算法"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2. 复制算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#缺点-1"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">缺点</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-标记-整理算法"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">3. 标记-整理算法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-分代收集算法"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">4. 分代收集算法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#判断对象是否存活的算法"><span class="post-toc-number">2.</span> <span class="post-toc-text">判断对象是否存活的算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-引用计数法"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 引用计数法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-可达性分析算法"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 可达性分析算法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#垃圾回收算法"><span class="post-toc-number">3.</span> <span class="post-toc-text">垃圾回收算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-标记-清除算法"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1. 标记-清除算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#缺点"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">缺点</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-标记-复制算法"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2. 标记-复制算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#缺点-1"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">缺点</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-标记-整理算法"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">3. 标记-整理算法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-分代收集算法"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">4. 分代收集算法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
         </nav>
     </aside>
 
@@ -369,11 +369,14 @@ var _hmt = _hmt || [];
 <h3 id="1-引用计数法"><a href="#1-引用计数法" class="headerlink" title="1. 引用计数法"></a>1. 引用计数法</h3><ul>
 <li><p>给对象中添加一个引用计数器，每当有一个地方引用它，计数器就加1；当引用失效，计数器就减1；任何时候计数器为0的对象就是不可能再被使用的。</p>
 </li>
-<li><p>一个对象如果没有任何引用指向它，就可认为该对象已经”消亡“，这种方法有个缺点就是无法检测到引用环的存在。</p>
+<li><p>一个对象如果没有任何引用指向它，就可认为该对象已经”消亡“，这种方法有个缺点就是无法检测到引用环的存在，所以现代虚拟机都不用引用计数法来判断对象是否应该被回收。</p>
 </li>
 </ul>
 <h3 id="2-可达性分析算法"><a href="#2-可达性分析算法" class="headerlink" title="2. 可达性分析算法"></a>2. 可达性分析算法</h3><ul>
-<li>通过一系列叫做”GCRoots“的对象作为起点向下搜索，走过的路径称为引用链,当一个对象到GCRoots没有任何引用链时，表明该对象已经”消亡“。</li>
+<li><p>通过一系列叫做”GCRoots“的对象作为起点向下搜索，走过的路径称为引用链,当一个对象到GCRoots没有任何引用链时，表明该对象已经”消亡“。</p>
+</li>
+<li><p>现代虚拟机基本都是采用这种算法来判断对象是否存活</p>
+</li>
 </ul>
 <figure class="image-bubble">
                 <div class="img-lightbox">
@@ -384,32 +387,18 @@ var _hmt = _hmt || [];
             </figure>
 <ul>
 <li>上图中每个对象都存在引用链与GCRoots相连，表明对象还在，不能回收。有图中三个对象虽然互相引用，但是没有链接与GCRoots相连，则可判断它们是可回收的对象。<ul>
-<li>什么对象可以为<code>GCRoots</code>，<ul>
-<li>虚拟机栈中本地变量表引用的对象，局部变量</li>
-<li>方法区中的类静态变量引用的对象及常量引用的对象</li>
-<li>本地方法栈中JNI引用的对象</li>
-</ul>
-</li>
+<li>什么对象可以为<code>GCRoots</code> 参见：<a href="http://www.songshuiyang.com/2019/03/10/backend/java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(%E4%B8%80">JVM垃圾回收(一)GCRoot分析</a>GCRoot%E5%88%86%E6%9E%90/)</li>
 </ul>
 </li>
 </ul>
 <ul>
-<li>彻底死亡条件：<ul>
-<li>条件1：通过GC Roots作为起点的向下搜索形成引用链，没有搜到该对象，这是第一次标记。</li>
-<li>条件2：在finalize方法中没有逃脱回收（将自身被其他对象引用），这是第一次标记的清理。</li>
-</ul>
-</li>
-<li><p>引用</p>
+<li><p>彻底死亡条件：</p>
 <ul>
-<li><p>强引用<code>Object o = new Object()</code></p>
-</li>
-<li><p>软引用<code>SoftReference</code> 定义了软引用对象之后，GC可达的算法就切断与此对象的连接，那么下次垃圾回收的时候就会优化回收此对象</p>
-</li>
-<li><p>弱引用</p>
-</li>
-<li><p>虚引用</p>
-</li>
+<li>条件1：通过<code>GC Roots</code>作为起点的向下搜索形成引用链，没有搜到该对象，这是第一次标记。</li>
+<li>条件2：在<code>finalize</code>方法中没有逃脱回收（将自身被其他对象引用），这是第一次标记的清理。</li>
 </ul>
+</li>
+<li><p>引用知识参考: <a href="http://www.songshuiyang.com/2018/10/10/backend/java/basicKnowledge/Java基础-强引用-软引用-弱引用-虚引用/">Java基础-强引用-软引用-弱引用-虚引用</a></p>
 </li>
 </ul>
 <h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><h3 id="1-标记-清除算法"><a href="#1-标记-清除算法" class="headerlink" title="1. 标记-清除算法"></a>1. 标记-清除算法</h3><figure class="image-bubble">
@@ -429,7 +418,7 @@ var _hmt = _hmt || [];
 <li>效率不足</li>
 <li>会产生大量不连续的内存碎片，碎片过多的话再分配一个较大对象时就无容身之地从而不得不提前触发另一次垃圾收集</li>
 </ol>
-<h3 id="2-复制算法"><a href="#2-复制算法" class="headerlink" title="2. 复制算法"></a>2. 复制算法</h3><figure class="image-bubble">
+<h3 id="2-标记-复制算法"><a href="#2-标记-复制算法" class="headerlink" title="2. 标记-复制算法"></a>2. 标记-复制算法</h3><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
                     <img src="/images/server/java/JVM/gc2.gif" alt="" title="">
@@ -453,7 +442,10 @@ var _hmt = _hmt || [];
                 <div class="image-caption"></div>
             </figure>
 <ul>
-<li>该算法标记阶段和标记-清除算法一样，但是在完成标记之后，它不是直接清理可回收对象，而是将存活对象都向一端移动，然后清理掉端边界以外的内存。所以，特别适用于存活对象多，回收对象少的情况下。效率比“标记-清理”算法低，但不会产生内存碎片。</li>
+<li><p>该算法标记阶段和标记-清除算法一样，但是在完成标记之后，它不是直接清理可回收对象，而是将存活对象都向一端移动，然后清理掉端边界以外的内存。所以，特别适用于存活对象多，回收对象少的情况下。效率比“标记-清理”算法低，但不会产生内存碎片。</p>
+</li>
+<li><p>如果移动存活对象，尤其是在老年代这种每次回收都有大量对象存活区域，移动存活对象并更新 所有引用这些对象的地方将会是一种极为负重的操作，而且这种对象移动操作必须全程暂停用户应用程序才能进行</p>
+</li>
 </ul>
 <h3 id="4-分代收集算法"><a href="#4-分代收集算法" class="headerlink" title="4. 分代收集算法"></a>4. 分代收集算法</h3><figure class="image-bubble">
                 <div class="img-lightbox">
@@ -463,12 +455,18 @@ var _hmt = _hmt || [];
                 <div class="image-caption"></div>
             </figure>
 <ul>
-<li>分代收集算法是目前大部分JVM的垃圾收集器采用的算法。它的核心思想是根据对象存活的生命周期将内存划分为若干个不同的区域。一般情况下将堆区划分为老年代（Tenured Generation）和新生代（Young Generation），在堆区之外还有一个代就是永久代（Permanet Generation）。老年代的特点是每次垃圾收集时只有少量对象需要被回收，而新生代的特点是每次垃圾回收时都有大量的对象需要被回收，那么就可以根据不同代的特点采取最适合的收集算法。</li>
+<li><p>分代收集算法是目前大部分JVM的垃圾收集器采用的算法。它的核心思想是根据对象存活的生命周期将内存划分为若干个不同的区域。一般情况下将堆区划分为老年代（Tenured Generation）和新生代（Young Generation），在堆区之外还有一个代就是永久代（Permanet Generation）。老年代的特点是每次垃圾收集时只有少量对象需要被回收，而新生代的特点是每次垃圾回收时都有大量的对象需要被回收，那么就可以根据不同代的特点采取最适合的收集算法。</p>
+</li>
+<li><p>分代收集算法整合了以上算法，综合了这些算法的优点，最大程度避免了它们的缺点，所以是现代虚拟机采用的首选算法,与其说它是算法，倒不是说它是一种策略，因为它是把上述几种算法整合在了一起</p>
+</li>
+<li><p>如果一个区域中大多数对象都是朝生夕灭，难以熬过垃圾收集过程的话，那 么把它们集中放在一起，每次回收时只关注如何保留少量存活而不是去标记那些大量将要被回收的对 象，就能以较低代价回收到大量的空间；如果剩下的都是难以消亡的对象，那把它们集中放在一块， 虚拟机便可以使用较低的频率来回收这个区域，这就同时兼顾了垃圾收集的时间开销和内存的空间有 效利用。</p>
+</li>
 </ul>
 <h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
 <li>周志明版  《深入理解Java虚拟机》</li>
 <li><a href="https://www.cnblogs.com/aspirant/p/8662690.html" target="_blank" rel="noopener">https://www.cnblogs.com/aspirant/p/8662690.html</a></li>
 <li><a href="http://baijiahao.baidu.com/s?id=1565631804713416&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">http://baijiahao.baidu.com/s?id=1565631804713416&amp;wfr=spider&amp;for=pc</a></li>
+<li><a href="https://mp.weixin.qq.com/s/_AKQs-xXDHlk84HbwKUzOw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/_AKQs-xXDHlk84HbwKUzOw</a></li>
 </ul>
 
         </div>
@@ -545,9 +543,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(二)垃圾回收器/" id="post-prev" class="post-nav-link">
+      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(一)GCRoot分析/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">JVM垃圾回收(二)垃圾回收器</h4>
+        <h4 class="title">JVM垃圾回收(一)GCRoot分析</h4>
       </a>
     </div>
   
@@ -620,7 +618,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

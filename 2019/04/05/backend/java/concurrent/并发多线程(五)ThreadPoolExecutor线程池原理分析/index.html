@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/ThreadPoolExecutor.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/ThreadPoolExecuter.png">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.459Z">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.241Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发多线程(五)ThreadPoolExecutor线程池原理分析">
 <meta name="twitter:description" content="概述 在前面的文章中，我们使用线程的时候就去创建一个线程，这样实现起来非常简便，但是就会有一个问题：如果并发的线程数量很多，并且每个线程都是执行一个时间很短的任务就结束了，这样频繁创建线程就会大大降低系统的效率，因为频繁创建线程和销毁线程需要时间。  那么有没有一种办法使得线程可以复用，就是执行完一个任务，并不被销毁，而是可以继续执行其他的任务？在Java中可以通过线程池来达到这样的效果。今天我们">
@@ -327,7 +327,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Java中的ThreadPoolExecutor类"><span class="post-toc-number">2.</span> <span class="post-toc-text">Java中的ThreadPoolExecutor类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#深入剖析线程池实现原理"><span class="post-toc-number">3.</span> <span class="post-toc-text">深入剖析线程池实现原理</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-线程池状态"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1.线程池状态</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-任务的执行"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2.任务的执行</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-线程池中的线程初始化"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">3.线程池中的线程初始化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-任务缓存队列及排队策略"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">4.任务缓存队列及排队策略</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-任务拒绝策略"><span class="post-toc-number">3.5.</span> <span class="post-toc-text">5.任务拒绝策略</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-线程池的关闭"><span class="post-toc-number">3.6.</span> <span class="post-toc-text">6.线程池的关闭</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-线程池容量的动态调整"><span class="post-toc-number">3.7.</span> <span class="post-toc-text">7.线程池容量的动态调整</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">5.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Java中的ThreadPoolExecutor类"><span class="post-toc-number">2.</span> <span class="post-toc-text">Java中的ThreadPoolExecutor类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#深入剖析线程池实现原理"><span class="post-toc-number">3.</span> <span class="post-toc-text">深入剖析线程池实现原理</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-线程池状态"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1.线程池状态</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-任务的执行"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2.任务的执行</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-线程池中的线程初始化"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">3.线程池中的线程初始化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-任务缓存队列及排队策略"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">4.任务缓存队列及排队策略</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-任务拒绝策略"><span class="post-toc-number">3.5.</span> <span class="post-toc-text">5.任务拒绝策略</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-线程池的关闭"><span class="post-toc-number">3.6.</span> <span class="post-toc-text">6.线程池的关闭</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-线程池容量的动态调整"><span class="post-toc-number">3.7.</span> <span class="post-toc-text">7.线程池容量的动态调整</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">4.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他-1"><span class="post-toc-number">6.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">7.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
         </nav>
     </aside>
 
@@ -386,7 +386,8 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 <li>keepAliveTime：表示线程没有任务执行时最多保持多久时间会终止。<ul>
-<li>默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；</li>
+<li>默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。</li>
+<li>但是如果调用了<code>allowCoreThreadTimeOut(boolean)</code>方法，此属性默认是为<code>false</code>，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；</li>
 </ul>
 </li>
 <li><p>unit：参数keepAliveTime的时间单位，</p>
@@ -501,8 +502,8 @@ var _hmt = _hmt || [];
 </ul>
 <h3 id="4-任务缓存队列及排队策略"><a href="#4-任务缓存队列及排队策略" class="headerlink" title="4.任务缓存队列及排队策略"></a>4.任务缓存队列及排队策略</h3><ul>
 <li>在前面我们多次提到了任务缓存队列，即workQueue，它用来存放等待执行的任务。workQueue的类型为BlockingQueue<runnable>，通常可以取下面三种类型：<ul>
-<li>1）ArrayBlockingQueue：基于数组的先进先出队列，此队列创建时必须指定大小；</li>
-<li>2）LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定此队列大小，则默认为Integer.MAX_VALUE；</li>
+<li>1）ArrayBlockingQueue：基于数组的先进先出队列，此队列创建时必须指定大小，有助于防止资源耗尽，但是可能较难调整和控制。队列大小和最大池大小可能需要相互折衷</li>
+<li>2）LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定此队列大小，则默认为Integer.MAX_VALUE，所以<code>maximumPoolSize</code> 的值也就无效了</li>
 <li>3）synchronousQueue：这个队列比较特殊，它不会保存提交的任务，而是将直接新建一个线程来执行新来的任务。</li>
 </ul>
 </runnable></li>
@@ -526,11 +527,11 @@ var _hmt = _hmt || [];
 </li>
 <li>当上述参数从小变大时，ThreadPoolExecutor进行线程赋值，还可能立即创建新的线程来执行任务。</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>为什么要用线程池，因为每次new Thread新建对象性能差，使用线程池可以重用存在的线程，减少对象创建、消亡的开销，性能佳。</li>
 <li>相比普通线程的执行，使用线程池可有效控制最大并发线程数，提高系统资源的使用率，同时避免过多资源竞争，避免堵塞，同时还提供了定时执行、定期执行、单线程、并发数控制等功能。</li>
 </ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<h2 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a>其他</h2><ul>
 <li>Java 线程池大小为何会大多被设置成 CPU 核心数 +1 ？一般说来，大家认为线程池的大小经验值应该这样设置：（其中 N 为CPU的个数）<ul>
 <li>如果是 CPU 密集型应用，则线程池大小设置为 N+1，因为 CPU 密集型任务使得 CPU 使用率很高，若开过多的线程数，只能增加上下文切换的次数，因此会带来额外的开销。</li>
 <li>如果是 IO 密集型应用，则线程池大小设置为 2N+1，IO密 集型任务 CPU 使用率并不高，因此可以让 CPU 在等待 IO 的时候去处理别的任务，充分利用 CPU 时间。</li>
@@ -693,7 +694,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

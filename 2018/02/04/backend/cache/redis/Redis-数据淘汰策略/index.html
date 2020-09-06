@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言内存大小 我们知道Redis是基于内存的key-value数据库，因为系统的内存大小有限，所以我们在使用Redis的时候可以配置Redis能使用的最大的内存大小。  如果不设置最大内存大小或者设置最大内存大小为0，在64位操作系统下不限制内存大小，在32位操作系统下最多使用3GB内存  设置最大内存大小  1、获取设置的Redis能使用的最大内存大小 config get maxmemory">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.012Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.325Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis-数据淘汰策略">
 <meta name="twitter:description" content="前言内存大小 我们知道Redis是基于内存的key-value数据库，因为系统的内存大小有限，所以我们在使用Redis的时候可以配置Redis能使用的最大的内存大小。  如果不设置最大内存大小或者设置最大内存大小为0，在64位操作系统下不限制内存大小，在32位操作系统下最多使用3GB内存  设置最大内存大小  1、获取设置的Redis能使用的最大内存大小 config get maxmemory">
@@ -324,7 +324,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#内存大小"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">内存大小</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#过期策略"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">过期策略</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">2.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#内存大小"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">内存大小</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#过期策略"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">过期策略</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">2.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
         </nav>
     </aside>
 
@@ -399,7 +399,18 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据"><a href="#MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据" class="headerlink" title="MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据"></a>MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据</h3><ul>
+<li>提供一种简单实现缓存失效的思路: LRU(最近少用的淘汰)</li>
+<li>即redis的缓存每命中一次,就给命中的缓存增加一定ttl(过期时间)(根据具体情况来设定, 比如10分钟).</li>
+<li>一段时间后, 热数据的ttl都会较大, 不会自动失效, 而冷数据基本上过了设定的ttl就马上失效了.</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>Redis在默认配置下是不限制内存大小，依赖于硬件内存大小，如果机器存不了的话再次往redis写数据的话就报错了</p>
+</li>
+<li><p>针对上面这个问题，redis提供了几种数据淘汰策略，大家可以根据实际需要选择合适的淘汰策略</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://snailclimb.gitee.io/javaguide/#/docs/database/Redis/Redis" target="_blank" rel="noopener">https://snailclimb.gitee.io/javaguide/#/docs/database/Redis/Redis</a></li>
 <li><a href="http://www.iocoder.cn/Fight/Cannot-think-of-The-interviewer-asked-me-what-if-Redis-runs-out-of-memory/?self" target="_blank" rel="noopener">http://www.iocoder.cn/Fight/Cannot-think-of-The-interviewer-asked-me-what-if-Redis-runs-out-of-memory/?self</a></li>
 </ul>
@@ -553,7 +564,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

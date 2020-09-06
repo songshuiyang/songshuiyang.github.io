@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="前言 前面我们知道BeanPostProcessor是Spring 的一个工厂钩子，使用户可以对Bean创建过程中对 Bean 进行增强处理（前、后置处理），同样在 Spring 容器启动阶段，Spring 也提供了一种容器扩展机制：BeanFactoryPostProcessor，该机制作用于容器启动阶段，允许我们在容器实例化 Bean 之前对注册到该容器的 BeanDefinition 做出修">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.157Z">
+<meta property="og:updated_time" content="2020-08-16T09:31:54.241Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(二二)BeanFactoryPostProcessor接口分析">
 <meta name="twitter:description" content="前言 前面我们知道BeanPostProcessor是Spring 的一个工厂钩子，使用户可以对Bean创建过程中对 Bean 进行增强处理（前、后置处理），同样在 Spring 容器启动阶段，Spring 也提供了一种容器扩展机制：BeanFactoryPostProcessor，该机制作用于容器启动阶段，允许我们在容器实例化 Bean 之前对注册到该容器的 BeanDefinition 做出修">
@@ -324,7 +324,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BeanFactoryPostProcessor-接口定义"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">BeanFactoryPostProcessor 接口定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BeanFactoryPostProcessor-在哪里调用"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">BeanFactoryPostProcessor 在哪里调用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BeanFactoryPostProcessor-子类"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">BeanFactoryPostProcessor 子类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#PropertyPlaceholderConfigurer"><span class="post-toc-number">2.3.0.1.</span> <span class="post-toc-text">PropertyPlaceholderConfigurer</span></a></li></ol></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BeanFactoryPostProcessor-接口定义"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">BeanFactoryPostProcessor 接口定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BeanFactoryPostProcessor-在哪里调用"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">BeanFactoryPostProcessor 在哪里调用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BeanFactoryPostProcessor-子类"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">BeanFactoryPostProcessor 子类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#PropertyPlaceholderConfigurer"><span class="post-toc-number">2.3.0.1.</span> <span class="post-toc-text">PropertyPlaceholderConfigurer</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#InstantiationAwareBeanPostProcessor"><span class="post-toc-number">2.3.0.2.</span> <span class="post-toc-text">InstantiationAwareBeanPostProcessor</span></a></li></ol></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li>
         </nav>
     </aside>
 
@@ -385,6 +385,9 @@ var _hmt = _hmt || [];
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Invoke the given BeanFactoryPostProcessor beans.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">invokeBeanFactoryPostProcessors</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        Collection&lt;? extends BeanFactoryPostProcessor&gt; postProcessors, ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (BeanFactoryPostProcessor postProcessor : postProcessors) &#123;</span><br><span class="line">        postProcessor.postProcessBeanFactory(beanFactory);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="BeanFactoryPostProcessor-子类"><a href="#BeanFactoryPostProcessor-子类" class="headerlink" title="BeanFactoryPostProcessor 子类"></a>BeanFactoryPostProcessor 子类</h3><h5 id="PropertyPlaceholderConfigurer"><a href="#PropertyPlaceholderConfigurer" class="headerlink" title="PropertyPlaceholderConfigurer"></a>PropertyPlaceholderConfigurer</h5><ul>
 <li>允许我们在 <code>XML</code> 配置文件中使用占位符并将这些占位符所代表的资源单独配置到简单的 <code>properties</code> 文件中来加载</li>
+</ul>
+<h5 id="InstantiationAwareBeanPostProcessor"><a href="#InstantiationAwareBeanPostProcessor" class="headerlink" title="InstantiationAwareBeanPostProcessor"></a>InstantiationAwareBeanPostProcessor</h5><ul>
+<li>主要作用在于目标对象的实例化过程中需要处理的事情，包括实例化对象的前后过程以及实例的属性设置</li>
 </ul>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>我们始终需要注意的是 <code>BeanFactoryPostProcessor</code> 是与 <code>BeanDefinition</code> 打交道的，如果想要与 <code>Bean</code> 打交道，请使用 <code>BeanPostProcessor</code> 。</li>
@@ -478,9 +481,9 @@ var _hmt = _hmt || [];
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)BeanPostProcessor接口分析/" id="post-next" class="post-nav-link">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Spring系列(二一)BeanPostProcessor接口分析</h4>
+        <h4 class="title">Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析</h4>
       </a>
     </div>
   
@@ -544,7 +547,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

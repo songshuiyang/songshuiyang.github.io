@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis5.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis2.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/reids3.png">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.023Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.372Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis-高可用集群">
 <meta name="twitter:description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master">
@@ -387,6 +387,13 @@ var _hmt = _hmt || [];
 <li>此外，如果<code>master</code>通过<code>requirepass</code>配置项设置了密码，<code>slave</code>每次同步操作都需要验证密码，可以通过在<code>slave</code>的配置文件中添加以下配置项<code>masterauth &lt;password&gt;</code></li>
 </ul>
 </li>
+<li><p>数据怎么同步的？</p>
+<ul>
+<li>你启动一台<code>slave</code> 的时候，他会发送一个<code>psync</code>命令给<code>master</code>，如果是这个<code>slave</code>第一次连接到<code>master</code>，他会触发一个全量复制</li>
+<li><code>master</code>就会启动一个线程，生成<code>RDB</code>快照，还会把新的写请求都缓存在内存中</li>
+<li><code>RDB</code>文件生成后，<code>master</code>会将这个<code>RDB</code>发送给<code>slave</code>的，<code>slave</code>拿到之后做的第一件事情就是写进本地的磁盘，然后加载进内存，然后<code>master</code>会把内存里面缓存的那些新命名都发给<code>slave</code></li>
+</ul>
+</li>
 </ul>
 <h4 id="Redis-Sentinel-哨兵"><a href="#Redis-Sentinel-哨兵" class="headerlink" title="Redis Sentinel 哨兵"></a><code>Redis Sentinel</code> 哨兵</h4><ul>
 <li><p><a href="http://redis.cn/topics/sentinel.html" target="_blank" rel="noopener">官方中文文档</a></p>
@@ -521,6 +528,7 @@ var _hmt = _hmt || [];
 <li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
 <li><a href="http://blog.720ui.com/2016/redis_action_04_cluster/" target="_blank" rel="noopener">http://blog.720ui.com/2016/redis_action_04_cluster/</a></li>
 <li><a href="https://blog.csdn.net/dc_726/article/details/48552531" target="_blank" rel="noopener">https://blog.csdn.net/dc_726/article/details/48552531</a></li>
+<li><a href="https://blog.csdn.net/qq_35190492/article/details/102958250" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/102958250</a></li>
 </ul>
 
         </div>
@@ -672,7 +680,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

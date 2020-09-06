@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Jvm">
+    <meta name="description" content="前言 在实际项目中经常会遇到有些时刻服务器内存消耗严重的情况，通过下面的教程可以查出Java线程占用cpu或者内存高的代码  转载 https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html  执行top命令，然后按下大写P会以cpu从大到小排序，大写M以内存大小排序，这里看到这个PID为14142的java进程消耗资源较大   123">
+<meta name="keywords" content="Java,Jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 在实际项目中经常会遇到有些时刻服务器内存消耗严重的情况，通过下面的教程可以查出Java线程占用cpu或者内存高的代码  转载 https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html  执行top命令，然后按下大写P会以cpu从大到小排序，大写M以内存大小排序，这里看到这个PID为14142的java进程消耗资源较大   123">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.833Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码">
+<meta name="twitter:description" content="前言 在实际项目中经常会遇到有些时刻服务器内存消耗严重的情况，通过下面的教程可以查出Java线程占用cpu或者内存高的代码  转载 https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html  执行top命令，然后按下大写P会以cpu从大到小排序，大写M以内存大小排序，这里看到这个PID为14142的java进程消耗资源较大   123">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-03-04T05:59:44.000Z" itemprop="datePublished" class="page-time">
+  2019-03-04
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/JVM/">JVM</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-03-04 13:59:44" datetime="2019-03-04T05:59:44.000Z" itemprop="datePublished">2019-03-04</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/JVM/">JVM</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>在实际项目中经常会遇到有些时刻服务器内存消耗严重的情况，通过下面的教程可以查出Java线程占用cpu或者内存高的代码</p>
+</li>
+<li><p>转载 <a href="https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html" target="_blank" rel="noopener">https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html</a></p>
+</li>
+<li><p>执行<code>top</code>命令，然后按下大写<code>P</code>会以cpu从大到小排序，大写<code>M</code>以内存大小排序，这里看到这个PID为<code>14142</code>的<code>java</code>进程消耗资源较大</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">top - 11:26:45 up 18 days, 22:13,  4 users,  <span class="keyword">load</span> average: <span class="number">0.15</span>, <span class="number">0.12</span>, <span class="number">0.07</span></span><br><span class="line">Tasks: <span class="number">144</span> total,   <span class="number">1</span> running, <span class="number">143</span> sleeping,   <span class="number">0</span> stopped,   <span class="number">0</span> zombie</span><br><span class="line">%Cpu(s):  <span class="number">0.2</span> us,  <span class="number">0.2</span> sy,  <span class="number">0.0</span> ni, <span class="number">99.6</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.0</span> si,  <span class="number">0.0</span> st</span><br><span class="line">KiB Mem : <span class="number">12139592</span> total,   <span class="number">200772</span> free,  <span class="number">6378216</span> used,  <span class="number">5560604</span> buff/<span class="keyword">cache</span></span><br><span class="line">KiB Swap:  <span class="number">5242876</span> total,  <span class="number">5242876</span> free,        <span class="number">0</span> used.  <span class="number">5348972</span> avail Mem </span><br><span class="line"></span><br><span class="line">  PID <span class="keyword">USER</span>      PR  NI    VIRT    RES    SHR S  %CPU %MEM     <span class="keyword">TIME</span>+ COMMAND                                                                                                                             </span><br><span class="line"><span class="number">14142</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.461</span>g  <span class="number">14840</span> S   <span class="number">0.3</span> <span class="number">12.6</span>   <span class="number">4</span>:<span class="number">03.59</span> <span class="keyword">java</span>                                                                                                                                </span><br><span class="line"><span class="number">14228</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5971096</span> <span class="number">1.364</span>g  <span class="number">14208</span> S   <span class="number">0.0</span> <span class="number">11.8</span>   <span class="number">3</span>:<span class="number">06.83</span> <span class="keyword">java</span>                                                                                                                                </span><br><span class="line"> <span class="number">1033</span> elastic+  <span class="number">20</span>   <span class="number">0</span> <span class="number">6250940</span> <span class="number">832420</span>  <span class="number">16336</span> S   <span class="number">0.0</span>  <span class="number">6.9</span>  <span class="number">52</span>:<span class="number">01.49</span> <span class="keyword">java</span>                                                                                                                                </span><br><span class="line"> <span class="number">8249</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5866352</span> <span class="number">784624</span>  <span class="number">13972</span> S   <span class="number">0.0</span>  <span class="number">6.5</span>  <span class="number">19</span>:<span class="number">24.58</span> <span class="keyword">java</span>                                                                                                                                </span><br><span class="line"> <span class="number">7738</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">5889728</span> <span class="number">662204</span>  <span class="number">13964</span> S   <span class="number">0.3</span>  <span class="number">5.5</span>  <span class="number">53</span>:<span class="number">24.13</span> <span class="keyword">java</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行<code>top -Hp 14142</code> 列出该进程下的所有线程情况，可以看到<code>Java</code>应用里面这个<code>PID</code>为<code>16039</code>的线程占用资源最多</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">top - 11:25:02 up 18 days, 22:11,  4 users,  <span class="keyword">load</span> average: <span class="number">0.17</span>, <span class="number">0.08</span>, <span class="number">0.06</span></span><br><span class="line">Threads: <span class="number">178</span> total,   <span class="number">0</span> running, <span class="number">178</span> sleeping,   <span class="number">0</span> stopped,   <span class="number">0</span> zombie</span><br><span class="line">%Cpu(s): <span class="number">16.1</span> us,  <span class="number">2.3</span> sy,  <span class="number">0.0</span> ni, <span class="number">81.3</span> <span class="keyword">id</span>,  <span class="number">0.0</span> wa,  <span class="number">0.0</span> hi,  <span class="number">0.3</span> si,  <span class="number">0.0</span> st</span><br><span class="line">KiB Mem : <span class="number">12139592</span> total,   <span class="number">401664</span> free,  <span class="number">6274140</span> used,  <span class="number">5463788</span> buff/<span class="keyword">cache</span></span><br><span class="line">KiB Swap:  <span class="number">5242876</span> total,  <span class="number">5242876</span> free,        <span class="number">0</span> used.  <span class="number">5449164</span> avail Mem </span><br><span class="line"></span><br><span class="line">  PID <span class="keyword">USER</span>      PR  NI    VIRT    RES    SHR S %CPU %MEM     <span class="keyword">TIME</span>+ COMMAND                                                                                                                              </span><br><span class="line"><span class="number">16039</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S <span class="number">40.9</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">05.82</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14465</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S <span class="number">14.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">05.78</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14632</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">2.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">04.61</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14144</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">1.7</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">01.29</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14145</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">1.7</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">01.35</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14146</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">1.7</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">01.29</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14147</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">1.7</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">01.35</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14152</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">1.3</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">57.98</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14153</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">1.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">56.18</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14469</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.3</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">02.75</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14470</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.3</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">05.96</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14142</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">00.00</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14143</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">21.41</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14148</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">01.41</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14149</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">00.01</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14150</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">00.05</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14151</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">00.00</span> <span class="keyword">java</span>                                                                                                                                 </span><br><span class="line"><span class="number">14154</span> fjf       <span class="number">20</span>   <span class="number">0</span> <span class="number">6114288</span> <span class="number">1.377</span>g  <span class="number">14836</span> S  <span class="number">0.0</span> <span class="number">11.9</span>   <span class="number">0</span>:<span class="number">11.16</span> <span class="keyword">java</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行<code>printf &quot;%x\n&quot; 16039</code>命令输出对应的十六进制码，3ea7这个码是为了过滤线程id查到对应的代码</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[fjf@sc-uat-01 logs]$ printf "%x\n" 16039</span><br><span class="line">3ea7</span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行<code>jstack PID|grep 3ea7</code>，这里是<code>jstack 14142|grep 3ea7</code>，PID是进程的id，3ea7是这个进程下的一个线程占用最高的cpu十六进制码，下面的日志可以看到是线程池<code>AsyncPoolTask-2</code>的一个任务在执行</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[fjf@sc-uat-01 logs]$ jstack 14142 | grep 3ea7 -C 5</span><br><span class="line">"idle_connection_reaper" #268 daemon prio=5 os_prio=0 tid=0x00007fc3f002d800 nid=0x3ebd waiting on condition [0x00007fc3e0a85000]</span><br><span class="line">   java.lang.Thread.State: TIMED_WAITING (sleeping)</span><br><span class="line">        at java.lang.Thread.sleep(Native Method)</span><br><span class="line">        at com.aliyun.oss.common.comm.IdleConnectionReaper.run(IdleConnectionReaper.java:77)</span><br><span class="line"></span><br><span class="line">"AsyncPoolTask-2" #267 prio=5 os_prio=0 tid=0x00007fc43490c000 nid=0x3ea7 runnable [0x00007fc3e0b84000]</span><br><span class="line">   java.lang.Thread.State: RUNNABLE</span><br><span class="line">        at java.net.SocketOutputStream.socketWrite0(Native Method)</span><br><span class="line">        at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:109)</span><br><span class="line">        at java.net.SocketOutputStream.write(SocketOutputStream.java:153)</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>通过上面的命令可以在实时查出Java线程占用cpu或者内存高的代码，如果出现自己写的类，说明需要修改代码逻辑了</li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2><ul>
+<li><a href="https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html" target="_blank" rel="noopener">https://www.csdn.net/gather_2f/NtDakg1sNDMyLWJsb2cO0O0O.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jvm/">Jvm</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/&title=《JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/&title=《JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/03/04/backend/java/jvm/JVM运行时数据区域(七)HotSpot虚拟机对象探秘/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">JVM运行时数据区域(七)HotSpot虚拟机对象探秘</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/03/04/backend/java/jvm/JVM运行时数据区域(六)方法区/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">JVM运行时数据区域(六)方法区</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/&title=《JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/&title=《JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/03/04/backend/java/jvm/JVM内存溢出异常(二)分析Java线程占用cpu或者内存高的代码/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEh0lEQVR42u3aS27bQBAFQN3/0s42gSP6vW4K0MillcBE5EzRQE9/Ho/48/XX5/uV/Pr192d3+H63698mK3+84oMJEyZMmN6SKVnW9XKTRScbnlE+u3K93/aVYMKECROm05mS2yUPu95Mjp7H5c0xIn/lmDBhwoTp9zC1KWgSvPNAnv9281xMmDBhwoRpn/rmR4G2EJw/FxMmTJgw/R6m/HbDx5TbrouwZTH3hbVwTJgwYcL0ZkxtSP6k7y+Zb8KECRMmTG/D9FV+kiblrJF5V7BPrtS7xoQJEyZMxzLtW4n7zbTl3dkh5vrlJa1QTJgwYcJ0LlPbemxbg+1S2ie2DcvZ/8GECRMmTKczzQ4E19+TJPnew0FycGnXhgkTJkyYPokpL8vmBdZZUjpbSd68bO+DCRMmTJjOZcqT2LZlmCxu1ijdh/Z8tZgwYcKE6VymWRl3lsrm28iboO0xZVbOxoQJEyZMn8HUth5fV6idNVn34zs/dHoxYcKECdOBTG0jc/b4hDV/AZtDzL40jAkTJkyYzmXK25btItrS8CzxTu6wPzRgwoQJE6YTmfJxmRyuLbbmSfJsLikfJ/rh7wgTJkyYMB3F1KaFecBucV+RtW/Gff75V0yYMGHCdCzTXQ3FWaq8P460qWybxmPChAkTptOZkvS1pUzKr5vA37ZX2xUWOTEmTJgwYXp7ps0YTd4mrGeFFltt/xRqXEyYMGHCdBTTKicug+vs2NGO8iSF43YvmDBhwoTpXKYkNLapZou1CdvtwGv728dm6ZgwYcKE6RCm63ZgEkrvGtCpNzZqoA4PBJgwYcKE6S2Z9oEzB70rSM9eatvCxIQJEyZMn8r0ihZjnjy3z8pLuu3unp6YMGHChAnTsUyz9mRbwN0Udq/52jBfpMSYMGHChOlYpmS5eYhtN5aXbouKdfnEYqAHEyZMmDAdyLRJUDfjPpvy8ayAuxo8woQJEyZMhzO1KK9oN+Ytz/aw0j7radKLCRMmTJiOZWrD871BvQ3S14eSfQL/Qy0cEyZMmDAdy3Tv+MtmG7M0NYngw1IvJkyYMGE6lmnT9rvrSjuUM2uRztqomDBhwoTpdKY2UZwdGjapcnLP/HAzPGpgwoQJE6bDme5qN+YTnnle2abTbXM0gsaECRMmTMcyJQG+PQpsGpDtxtrttQcRTJgwYcL0eUx5mTU/IuRpbd5YbVPr5FXVyT8mTJgwYXp7ptkgy2xoZhb+711bm6JjwoQJE6ZPYkp+MCvFztqi7cZmV6KyNSZMmDBhOpZp33qcBewNzSyJvfmDCRMmTJgOYZqNvCStwTZ93YzXJC+1LVv/p8iLCRMmTJgOZLor9O5Hf/LybjsS1PZ1ZwViTJgwYcL0zkyz5mKeBs/GgGbl4HwvbXqPCRMmTJhOZ5oF7GTzm1NJvZn1szBhwoQJE6a2UJuH9jyQz1aOCRMmTJgw5T/Lm4h5ATdvhW7S73YmBxMmTJgwfQbTJhjnW82DcdvgzOnbsSRMmDBhwnQ60ywt3Lc/2wNH3uycvZLVZBMmTJgwYXpHpj+86ckqCqZGygAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

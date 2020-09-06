@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/aop/allAdvisor.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/aop/AopProxy.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/aop/jdkcglib.png">
-<meta property="og:updated_time" content="2019-09-16T13:11:05.171Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.622Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(五三)AOP源码解析之创建AOP代理">
 <meta name="twitter:description" content="前言 上一章节介绍了&amp;lt;aop:aspectj-autoproxy/&amp;gt;的解析过程，最终结果是得到AnnotationAwareAspectJAutoProxyCreator 这个bean，这个类用于创建AOP的代理类，那么这个类到底做了什么工作来完成AOP的功能的呢？  先看一下AnnotationAwareAspectJAutoProxyCreator 的类继承关系">
@@ -499,11 +499,14 @@ var _hmt = _hmt || [];
                 <div class="image-caption"></div>
             </figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>由<code>AnnotationAwareAspectJAutoProxyCreator</code>的继承关系图可以注意到此类实现了 <code>BeanPostProcessor</code>接口，<code>BeanPostProcessor</code>接口是<code>IOC</code>与<code>AOP</code>连接的桥梁</li>
+<li>由<code>AnnotationAwareAspectJAutoProxyCreator</code>的继承关系图可以注意到此类实现了 <code>BeanPostProcessor</code>接口，<code>BeanPostProcessor</code>接口是<code>IOC</code>与<code>AOP</code>连接的桥梁<ul>
+<li>动态代理对象是通过这个 <code>BeanPostProcessor</code>接口的<code>postProcessAfterInitialization()</code>方法来创建的，这个方法会在<code>Bean</code>初始化过程之后调用，注意这里<code>Bean</code>对象已经实例化了，且也属性填充了</li>
+<li>创建代理对象分为两种情况，一个是<code>JDK</code>动态代理，另一个是<code>CGLib</code>动态代理技术，默认情况下如果代理对象实现了接口，那么默认使用的是<code>JDK</code>的动态代理，如果没有实现接口则走<code>CGLib</code>代理，<code>CGLib</code>不对目标类作任何限制，他是通过动态生成目标类子类的方式提供代理</li>
+<li><code>JDK</code>在创建代理对象时的性能高于<code>CGLib</code>，但生成的代理对象的运行性能却比<code>CGLib</code>的低，如果无需频繁的创建代理对象比较适合采用<code>CGLib</code>动态代理技术，反之比较适合<code>JDK</code>动态代理技术</li>
+</ul>
+</li>
 <li>在研究源码之前可以尝试着自己想象一下解析思路，看看自己的思路和<code>Spring</code>是否有差别</li>
 <li>在 <code>Spring</code> 的容器中，我们面向的对象是一个个的 <code>bean</code> 实例，当我们需要<code>bean</code>的时候通过<code>IOC</code> 容器的 <code>getBean(…)</code> 方法从容器中获取 <code>bean</code> 实例，只不过大部分的场景下，我们都用了依赖注入，所以很少手动调用 <code>getBean(...)</code> 方法。借助<code>IOC</code>的话实现<code>AOP</code>就很简单了，只要在<code>getBean(...)</code>返回新的代理类就可以了</li>
-<li><code>Spring</code>使用<code>JDK</code>动态代理和<code>CGLib</code>动态代理技术在运行期织入增强，要使用<code>JDK</code>动态代理，目标类必须实现接口，而<code>CGLib</code>不对目标类作任何限制，他是通过动态生成目标类子类的方式提供代理</li>
-<li><code>JDK</code>在创建代理对象时的性能高于<code>CGLib</code>，但生成的代理对象的运行性能却比<code>CGLib</code>的低，如果无需频繁的创建代理对象比较适合采用<code>CGLib</code>动态代理技术，反之比较适合<code>JDK</code>动态代理技术</li>
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>《Spring 源码深度解析》</li>
@@ -659,7 +662,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

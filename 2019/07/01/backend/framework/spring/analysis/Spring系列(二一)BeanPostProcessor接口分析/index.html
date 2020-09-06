@@ -21,19 +21,19 @@
     
     
     <meta name="keywords" content="Spring">
-    <meta name="description" content="前言 BeanPostProcessor接口的核心思想是允许 Spring 在创建 bean 阶段对其进行定制化修改  123456public interface BeanPostProcessor &amp;#123;	Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;">
+    <meta name="description" content="前言 BeanPostProcessor接口的核心思想是允许 Spring 在创建 bean 阶段对其进行定制化修改，下面这两个方法是在初始化 Bean前后调用的，注意这个时候 Bean已经实例化了  12345678910public interface BeanPostProcessor &amp;#123;    /**    * 执行初始化 `Bean` 方法之前调用    **/	Object">
 <meta name="keywords" content="Spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring系列(二一)BeanPostProcessor接口分析">
 <meta property="og:url" content="http://www.songshuiyang.com/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)BeanPostProcessor接口分析/index.html">
 <meta property="og:site_name" content="宋水阳个人博客">
-<meta property="og:description" content="前言 BeanPostProcessor接口的核心思想是允许 Spring 在创建 bean 阶段对其进行定制化修改  123456public interface BeanPostProcessor &amp;#123;	Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;">
+<meta property="og:description" content="前言 BeanPostProcessor接口的核心思想是允许 Spring 在创建 bean 阶段对其进行定制化修改，下面这两个方法是在初始化 Bean前后调用的，注意这个时候 Bean已经实例化了  12345678910public interface BeanPostProcessor &amp;#123;    /**    * 执行初始化 `Bean` 方法之前调用    **/	Object">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/201808231001.png">
-<meta property="og:updated_time" content="2020-01-04T12:21:52.153Z">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.611Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring系列(二一)BeanPostProcessor接口分析">
-<meta name="twitter:description" content="前言 BeanPostProcessor接口的核心思想是允许 Spring 在创建 bean 阶段对其进行定制化修改  123456public interface BeanPostProcessor &amp;#123;	Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;">
+<meta name="twitter:description" content="前言 BeanPostProcessor接口的核心思想是允许 Spring 在创建 bean 阶段对其进行定制化修改，下面这两个方法是在初始化 Bean前后调用的，注意这个时候 Bean已经实例化了  12345678910public interface BeanPostProcessor &amp;#123;    /**    * 执行初始化 `Bean` 方法之前调用    **/	Object">
 <meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/analysis/201808231001.png">
     
         <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
@@ -354,9 +354,9 @@ var _hmt = _hmt || [];
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li><code>BeanPostProcessor</code>接口的核心思想是允许 <code>Spring</code> 在创建 <code>bean</code> 阶段对其进行定制化修改</li>
+<li><code>BeanPostProcessor</code>接口的核心思想是允许 <code>Spring</code> 在创建 <code>bean</code> 阶段对其进行定制化修改，下面这两个方法是在初始化 <code>Bean</code>前后调用的，注意这个时候 <code>Bean</code>已经实例化了</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function">Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function">Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 执行初始化 `Bean` 方法之前调用</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">	<span class="function">Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 执行初始化 `Bean` 方法之后调用</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">	<span class="function">Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p><code>BeanPostProcessor</code> 可以理解为是 <code>Spring</code> 的一个工厂钩子（其实 <code>Spring</code> 提供一系列的钩子，如 <code>Aware 、InitializingBean、DisposableBean）</code>，它是 <code>Spring</code> 提供的对象实例化阶段强有力的扩展点，允许 <code>Spring</code> 在实例化 <code>bean</code> 阶段对其进行定制化修改，比较常见的使用场景是处理标记接口实现类或者为当前对象提供代理实现（例如 <code>AOP</code>）。</p>
 </li>
@@ -489,9 +489,9 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二二)BeanFactoryPostProcessor接口分析/" id="post-prev" class="post-nav-link">
+      <a href="/2019/07/01/backend/framework/spring/analysis/Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Spring系列(二二)BeanFactoryPostProcessor接口分析</h4>
+        <h4 class="title">Spring系列(二一)InstantiationAwareBeanPostProcessor接口分析</h4>
       </a>
     </div>
   
@@ -564,7 +564,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

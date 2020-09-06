@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring系列(八)加载Bean之单例缓存中获取单例 Bean | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="前言 平常开发中我们知道Spring的Bean默认是单例模式，也就是说此Bean只会创建一次，然后每次调用都是获取的同一个Bean，那么Spring是怎么实现的呢？  解析 回到上一章节的的doGetBean()方法，关注Object sharedInstance = getSingleton(beanName); 方法，sharedInstance 见名知意(共享实例)，这个方法是从缓存中获取">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring系列(八)加载Bean之单例缓存中获取单例 Bean">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 平常开发中我们知道Spring的Bean默认是单例模式，也就是说此Bean只会创建一次，然后每次调用都是获取的同一个Bean，那么Spring是怎么实现的呢？  解析 回到上一章节的的doGetBean()方法，关注Object sharedInstance = getSingleton(beanName); 方法，sharedInstance 见名知意(共享实例)，这个方法是从缓存中获取">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-09-03T13:26:59.233Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring系列(八)加载Bean之单例缓存中获取单例 Bean">
+<meta name="twitter:description" content="前言 平常开发中我们知道Spring的Bean默认是单例模式，也就是说此Bean只会创建一次，然后每次调用都是获取的同一个Bean，那么Spring是怎么实现的呢？  解析 回到上一章节的的doGetBean()方法，关注Object sharedInstance = getSingleton(beanName); 方法，sharedInstance 见名知意(共享实例)，这个方法是从缓存中获取">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring系列(八)加载Bean之单例缓存中获取单例 Bean</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring系列(八)加载Bean之单例缓存中获取单例 Bean</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-06-12T15:00:46.000Z" itemprop="datePublished" class="page-time">
+  2019-06-12
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/analysis/Spring系列(八)循环依赖" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring系列(八)加载Bean之单例缓存中获取单例 Bean</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-06-12 23:00:46" datetime="2019-06-12T15:00:46.000Z" itemprop="datePublished">2019-06-12</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>平常开发中我们知道<code>Spring</code>的<code>Bean</code>默认是单例模式，也就是说此<code>Bean</code>只会创建一次，然后每次调用都是获取的同一个<code>Bean</code>，那么<code>Spring</code>是怎么实现的呢？</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><ul>
+<li>回到上一章节的的<code>doGetBean()</code>方法，关注<code>Object sharedInstance = getSingleton(beanName);</code> 方法，<code>sharedInstance</code> 见名知意(共享实例)，这个方法是从缓存中获取 <code>Bean</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 检查缓存中或者实例工厂中是否有对应的实例，为什么首先会使用这段代码呢</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖</span></span><br><span class="line"><span class="comment"> * Spring创建bean的原则是不等bean创建完成就会创建bean的ObjectFactory提早曝光也就是</span></span><br><span class="line"><span class="comment"> * 将ObjectFactory加入缓存中，一旦下个bean创建的时候需要依赖上一个bean，则直接使用ObjectFactory</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// Eagerly check singleton cache for manually registered singletons.</span></span><br><span class="line">Object sharedInstance = getSingleton(beanName);</span><br><span class="line"><span class="comment">// 从缓存中获取 Bean 后，若其不为 null 且 args 为空</span></span><br><span class="line"><span class="keyword">if</span> (sharedInstance != <span class="keyword">null</span> &amp;&amp; args == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isSingletonCurrentlyInCreation(beanName)) &#123;</span><br><span class="line">            logger.debug(<span class="string">"Returning eagerly cached instance of singleton bean '"</span> + beanName +</span><br><span class="line">                    <span class="string">"' that is not fully initialized yet - a consequence of a circular reference"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            logger.debug(<span class="string">"Returning cached instance of singleton bean '"</span> + beanName + <span class="string">"'"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 为什么会有这么一段呢？因为我们从缓存中获取的 bean 是最原始的 Bean ，并不一定使我们最终想要的 Bean</span></span><br><span class="line"><span class="comment">     * 返回对应的实例，有时候存在诸如BeanFactory的情况并不是直接返回实例本身而是返回指定方法返回的实例 比如工厂bean中定义的factory-method方法中返回的bean</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    bean = getObjectForBeanInstance(sharedInstance, name, beanName, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>进入<code>org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#getSingleton(java.lang.String)</code>方法</p>
+</li>
+<li><p>这里涉及到<code>DefaultSingletonBeanRegistry</code>类，这个类是<code>Bean</code>的注册中心，<code>Bean</code>创建好之后会存放在这个类的<code>Map&lt;String, Object&gt; singletonObjects</code>对象中，下面是这个类的关键属性</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Cache of singleton objects: bean name --&gt; bean instance</span></span><br><span class="line"><span class="comment"> * 存放的是单例 bean 的映射 一级缓存</span></span><br><span class="line"><span class="comment"> * */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Object&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Cache of singleton factories: bean name --&gt; ObjectFactory</span></span><br><span class="line"><span class="comment"> * 存放的是 ObjectFactory 三级缓存</span></span><br><span class="line"><span class="comment"> * */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of early singleton objects: bean name --&gt; bean instance</span></span><br><span class="line"><span class="comment"> * 提前暴光的单例对象的Cache 二级缓存</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 1、它与 &#123;<span class="doctag">@link</span> #singletonFactories&#125; 区别在于 earlySingletonObjects 中存放的 bean 不一定是完整。</span></span><br><span class="line"><span class="comment"> * 2、从 &#123;<span class="doctag">@link</span> #getSingleton(String)&#125; 方法中，我们可以了解，bean 在创建过程中就已经加入到 earlySingletonObjects 中了。</span></span><br><span class="line"><span class="comment"> * 所以当在 bean 的创建过程中，就可以通过 getBean() 方法获取。</span></span><br><span class="line"><span class="comment"> * 3、这个 Map 也是【循环依赖】的关键所在。</span></span><br><span class="line"><span class="comment"> * */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> HashMap&lt;String, Object&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>这里为什么要设计这些缓存<code>map</code>了，因为在创建单例<code>bean</code>的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖，Spring创建bean的原则是不等bean创建完成就会创建bean的ObjectFactory提早曝光也就是，将ObjectFactory加入缓存中，一旦下个bean创建的时候需要依赖上一个bean，则直接使用ObjectFactory</p>
+</li>
+<li><p>这里为什么要设计三个缓存？</p>
+<ul>
+<li>可以看到一级缓存<code>singletonObjects</code>就是存的单例<code>bean</code>的最终结果，下次再次调用<code>getBean()</code>方法得到的结果就是从这里获取的</li>
+<li>上面那种是理想场景，下面这些场景如果出现就会有问题了<ul>
+<li>如果第一个<code>getBean</code>请求过来了，然后触发创建<code>Bean</code>的逻辑，在创建过程中如果第二个<code>getBean</code>请求来了，这样的话就会触发两次创建逻辑</li>
+<li>出现循环依赖的的场景<code>A类依赖B，B类又依赖A</code></li>
+</ul>
+</li>
+<li>针对上面这些问题场景，所以<code>Spring</code>设计了二、三级缓存<ul>
+<li>二级缓存<code>Map&lt;String, Object&gt; earlySingletonObjects</code>： 二级缓存存在的意义，就是缓存三级缓存中的 <code>ObjectFactory</code> 的 <code>#getObject()</code> 方法的执行结果，提早曝光的单例 <code>Bean</code> 对象。</li>
+<li>三级缓存<code>Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories</code>：三级缓存就是将创建<code>Bean</code>的工厂类存放起来，这个工厂类里面就一个方法<code>T getObject()</code></li>
+</ul>
+</li>
+<li>三个缓存的作用可以在生活中也找到映射，比如买商品的场景<ul>
+<li>在超市里买到的商品就是一级缓存，是已经制造好的成品了</li>
+<li>如果超市里面没有的话就是找商品厂家了，这里有两种情况<ul>
+<li>1、厂家那里有现货（二级缓存），工厂里已经做好了的，可以直接拿</li>
+<li>2、厂家那边没有现货，需要现场做，那么这里厂家就是（三级缓存了），只要锁定了厂家就可以拿到货</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>构造器的循环依赖问题⽆法解决，只能拋出 BeanCurrentlyInCreationException 异常，在解决属性循环依赖时，spring采⽤的是提前暴露对象的⽅法。</p>
+</li>
+<li><p>下面这种情况就是循环依赖的场景A类依赖B，B类又依赖A</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> B b;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> B <span class="title">getB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setB</span><span class="params">(B b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.b = b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> A a;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> A <span class="title">getA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setA</span><span class="params">(A a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.a = a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>getSingleton(java.lang.String)</code>这个方法的总体逻辑，就是根据 <code>beanNam</code> 依次检测这三个 <code>Map</code>，若为空，从下一个，否则返回，<code>singletonObjects</code> -&gt; <code>earlySingletonObjects</code> -&gt; <code>singletonFactories</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 根据 beanName 依次检测这三个 Map，若为空，检测下一个，否则返回</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#singletonObjects&#125;</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#earlySingletonObjects&#125;</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#singletonFactories&#125;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Return the (raw) singleton object registered under the given name.</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Checks already instantiated singletons and also allows for an early</span></span><br><span class="line"><span class="comment"> * reference to a currently created singleton (resolving a circular reference).</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> beanName the name of the bean to look for</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> allowEarlyReference whether early references should be created or not</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the registered singleton object, or &#123;<span class="doctag">@code</span> null&#125; if none found</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">getSingleton</span><span class="params">(String beanName, <span class="keyword">boolean</span> allowEarlyReference)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 从单例缓冲中加载 bean</span></span><br><span class="line">    Object singletonObject = <span class="keyword">this</span>.singletonObjects.get(beanName);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 缓存中的 bean 为空，且bean正在创建中</span></span><br><span class="line"><span class="comment">     * 1、isSingletonCurrentlyInCreation 判断该 beanName 对应的 Bean 是否在创建过程中</span></span><br><span class="line"><span class="comment">     *    查看private final Set&lt;String&gt; &#123;<span class="doctag">@link</span> singletonsCurrentlyInCreation) 是否有，该set记录了正在创建bean的beanName</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; isSingletonCurrentlyInCreation(beanName)) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">            <span class="comment">// 从 earlySingletonObjects 获取</span></span><br><span class="line">            singletonObject = <span class="keyword">this</span>.earlySingletonObjects.get(beanName);</span><br><span class="line">            <span class="comment">// earlySingletonObjects 中没有，且允许提前创建</span></span><br><span class="line">            <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; allowEarlyReference) &#123;</span><br><span class="line">                <span class="comment">// 从 singletonFactories 中获取对应的 ObjectFactory</span></span><br><span class="line">                ObjectFactory&lt;?&gt; singletonFactory = <span class="keyword">this</span>.singletonFactories.get(beanName);</span><br><span class="line">                <span class="keyword">if</span> (singletonFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    singletonObject = singletonFactory.getObject();</span><br><span class="line">                    <span class="keyword">this</span>.earlySingletonObjects.put(beanName, singletonObject);</span><br><span class="line">                    <span class="keyword">this</span>.singletonFactories.remove(beanName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (singletonObject != NULL_OBJECT ? singletonObject : <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行完<code>getSingleton</code>方法之后就是判断如果从缓存里获取到了<code>singletonObjects</code>且没有传入参数，那么就执行<code>getObjectForBeanInstance(sharedInstance, name, beanName, null);</code>方法了，该方法的定义为获取给定 <code>Bean</code> 实例的对象<ul>
+<li>该对象要么是 <code>Bean</code> 实例本身，经过<code>if (!(beanInstance instanceof FactoryBean) || BeanFactoryUtils.isFactoryDereference(name))</code>判断之后就是直接返回此对象，一般情况下都是从<code>singletonObjects.get(beanName);</code>获取到对象之后就返回了</li>
+<li>要么就是 <code>FactoryBean</code> 创建的 <code>Bean</code> 对象，下面的方法就是获取实现了<code>FactoryBean</code>接口的<code>Bean</code>实例了</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>* </p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/&title=《Spring系列(八)加载Bean之单例缓存中获取单例 Bean》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/&title=《Spring系列(八)加载Bean之单例缓存中获取单例 Bean》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(八)加载Bean之单例缓存中获取单例 Bean》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/06/12/backend/framework/spring/analysis/Spring系列(八)加载Bean之单例缓存中获取单例 Bean/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring系列(八)加载Bean之单例缓存中获取单例 Bean</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/06/12/backend/framework/spring/analysis/Spring系列(七)加载Bean之doGetBean方法/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring系列(七)加载Bean之doGetBean方法</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/&title=《Spring系列(八)加载Bean之单例缓存中获取单例 Bean》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/&title=《Spring系列(八)加载Bean之单例缓存中获取单例 Bean》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(八)加载Bean之单例缓存中获取单例 Bean》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/06/12/backend/framework/spring/analysis/Spring系列(八)循环依赖/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADEklEQVR42u3aQW7rWAwEwNz/0pkDfNjTTSpAzJRWASLLqucFwSa/vuLr+5/r1X9nz8y/69Vzvn7iwsbGxv4Q9vfba39PcjTtwW3eExsbG/sq+31hSACv7t8Up7x85hZsbGxs7LbwJMUs/2/yZGxsbGzshP2+AUjinj0eGxsbG7sNjPJQPg+V8hLYRlePZWnY2NjYv56dxzq//+8fmW9jY2Nj/2L2d3m1DUA+WmjfZ6XAxsbGPsTOC0D+xbMWoi2fbQHDxsbGvsoeBuvlGs3mmcmT6/EGNjY29iF2i2kHvfkz8/KWt0ZFmcTGxsb+cPaswXhqlJsPmPOGJ/p2bGxs7HPsdoGmjZn20X/y/KKtwsbGxj7Efio82rQc7cFtAiZsbGzsS+x9xN+GUG2ZmY11o0EvNjY29iF2W2baV2lXc2ZNS1FQsbGxsf8AO3lEgtmHPk+FStjY2Ni32cNBabkDkyNnxa8YdWBjY2MfYreD2zxdz9d62qFCG0gVQwJsbGzsD2fPhqk5u21s2mPN78fGxsa+xJ7FQ5vRbBv0z0rX//w82NjY2OfYmyWbttnIhwFtKc0bG2xsbOxL7LaMtQFTfpSzJ+TDgJcdGDY2NvYJdrs0M1t8bKOo2TPbYTM2Njb2PfZTjHZDZjYk2LdD2NjY2JfYsygnOcV2Eed9AdtHY9jY2NiX2PnYdfOi+RLPcHAb/4TY2NjY99ibYD1ftWmL3GbFpyix2NjY2IfYmyKRf3a2xNM2M/mQAxsbG/svsJPCkH/ZLCraDHSHkxBsbGzsD2RvYPtBb3JYbWmMjgAbGxv7NHsV0Dwa6Celq70fGxsb+yp7ViRmrcX+U/nRR4s72NjY2B/L/i6vWVjfvtymzYhKJjY2NvYh9qwA5MF9G+u3q5+bQoiNjY19id0WrXz9MR/9bsKp2UFjY2Nj32PPwv19TJ+Xrtlo+eX92NjY2H+YnZeTn85w2rfFxsbGxk5ajnbp5+FFnOAosbGxsa+y27LRBk+bCOk9cvgO2NjY2IfY+2Wa2djg2XZlcyc2Njb2x7L/A2XGr1uyjoGnAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

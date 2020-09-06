@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>并发多线程(五)ThreadPoolExecutor线程异常 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Java并发">
+    <meta name="description" content="概述 在使用线程池的时候发现如果没有做特殊处理，如果线程池的线程抛出异常了，线程池是不会打印错误日志的，这个时候就感觉被吞了，这个时候就需要注意下了  我们来看下探究线程池的异常处理，进入线程池的提交任务方法，可以看到里面是封装了一个RunnableFuture对象   1234567891011121314/** * @throws RejectedExecutionException &amp;#12">
+<meta name="keywords" content="Java,Java并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发多线程(五)ThreadPoolExecutor线程异常">
+<meta property="og:url" content="http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="概述 在使用线程池的时候发现如果没有做特殊处理，如果线程池的线程抛出异常了，线程池是不会打印错误日志的，这个时候就感觉被吞了，这个时候就需要注意下了  我们来看下探究线程池的异常处理，进入线程池的提交任务方法，可以看到里面是封装了一个RunnableFuture对象   1234567891011121314/** * @throws RejectedExecutionException &amp;#12">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.812Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发多线程(五)ThreadPoolExecutor线程异常">
+<meta name="twitter:description" content="概述 在使用线程池的时候发现如果没有做特殊处理，如果线程池的线程抛出异常了，线程池是不会打印错误日志的，这个时候就感觉被吞了，这个时候就需要注意下了  我们来看下探究线程池的异常处理，进入线程池的提交任务方法，可以看到里面是封装了一个RunnableFuture对象   1234567891011121314/** * @throws RejectedExecutionException &amp;#12">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">并发多线程(五)ThreadPoolExecutor线程异常</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">并发多线程(五)ThreadPoolExecutor线程异常</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-05T14:00:02.000Z" itemprop="datePublished" class="page-time">
+  2019-04-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实战"><span class="post-toc-number">2.</span> <span class="post-toc-text">实战</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考转载</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">并发多线程(五)ThreadPoolExecutor线程异常</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-05 22:00:02" datetime="2019-04-05T14:00:02.000Z" itemprop="datePublished">2019-04-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li><p>在使用线程池的时候发现如果没有做特殊处理，如果线程池的线程抛出异常了，线程池是不会打印错误日志的，这个时候就感觉被吞了，这个时候就需要注意下了</p>
+</li>
+<li><p>我们来看下探究线程池的异常处理，进入线程池的提交任务方法，可以看到里面是封装了一个<code>RunnableFuture</code>对象</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> RejectedExecutionException &#123;<span class="doctag">@inheritDoc</span>&#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException       &#123;<span class="doctag">@inheritDoc</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> Future&lt;?&gt; submit(Runnable task) &#123;</span><br><span class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    RunnableFuture&lt;Void&gt; ftask = newTaskFor(task, <span class="keyword">null</span>);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    <span class="keyword">return</span> ftask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> &lt;T&gt; <span class="function">RunnableFuture&lt;T&gt; <span class="title">newTaskFor</span><span class="params">(Runnable runnable, T value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FutureTask&lt;T&gt;(runnable, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>从上面可以看到<code>RunnableFuture</code>构造的是<code>FutureTask</code>对象，我们关心的是<code>run()</code>方法，可以看到就是直接<code>catch</code>然后在<code>setException(ex);</code> 方法中，抛出的异常会被放到 <code>outcome</code> 对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (state != NEW ||</span><br><span class="line">        !UNSAFE.compareAndSwapObject(<span class="keyword">this</span>, runnerOffset,</span><br><span class="line">                                     <span class="keyword">null</span>, Thread.currentThread()))</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Callable&lt;V&gt; c = callable;</span><br><span class="line">        <span class="keyword">if</span> (c != <span class="keyword">null</span> &amp;&amp; state == NEW) &#123;</span><br><span class="line">            V result;</span><br><span class="line">            <span class="keyword">boolean</span> ran;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                result = c.call();</span><br><span class="line">                ran = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">                result = <span class="keyword">null</span>;</span><br><span class="line">                ran = <span class="keyword">false</span>;</span><br><span class="line">                setException(ex);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (ran)</span><br><span class="line">                set(result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// runner must be non-null until state is settled to</span></span><br><span class="line">        <span class="comment">// prevent concurrent calls to run()</span></span><br><span class="line">        runner = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// state must be re-read after nulling runner to prevent</span></span><br><span class="line">        <span class="comment">// leaked interrupts</span></span><br><span class="line">        <span class="keyword">int</span> s = state;</span><br><span class="line">        <span class="keyword">if</span> (s &gt;= INTERRUPTING)</span><br><span class="line">            handlePossibleCancellationInterrupt(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setException</span><span class="params">(Throwable t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (UNSAFE.compareAndSwapInt(<span class="keyword">this</span>, stateOffset, NEW, COMPLETING)) &#123;</span><br><span class="line">        outcome = t;</span><br><span class="line">        UNSAFE.putOrderedInt(<span class="keyword">this</span>, stateOffset, EXCEPTIONAL); <span class="comment">// final state</span></span><br><span class="line">        finishCompletion();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><ul>
+<li>在<code>SpringBoot</code>环境下使用<code>@Async</code>开启异步执行，使用下面的配置可以自定义线程池，重写<code>getAsyncUncaughtExceptionHandler</code>方法可以自定义异常处理类，这里是将异常打印到日志中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncThreadPoolConfiguration</span> <span class="keyword">implements</span> <span class="title">AsyncConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(AsyncThreadPoolConfiguration.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Executor <span class="title">getAsyncExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ThreadPoolTaskExecutor threadPool = <span class="keyword">new</span> ThreadPoolTaskExecutor();</span><br><span class="line">        threadPool.setCorePoolSize(<span class="number">10</span>);<span class="comment">//当前线程数</span></span><br><span class="line">        threadPool.setMaxPoolSize(<span class="number">500</span>);<span class="comment">// 最大线程数</span></span><br><span class="line">        threadPool.setQueueCapacity(<span class="number">5000</span>);<span class="comment">//线程池所使用的缓冲队列容量</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁</span></span><br><span class="line">        threadPool.setKeepAliveSeconds(<span class="number">60</span>);</span><br><span class="line">        <span class="comment">// 配置线程池中的线程的名称前缀</span></span><br><span class="line">        threadPool.setThreadNamePrefix(<span class="string">"AsyncPoolTask-"</span>);</span><br><span class="line">        <span class="comment">// 线程池对拒绝任务的处理策略：此处采用了CallerRunsPolicy策略，当线程池没有处理能力的时候，该策略会直接在execute方法的调用线程中运行被拒绝的任务；如果执行程序已被关闭，则会丢弃该任务</span></span><br><span class="line">        threadPool.setRejectedExecutionHandler(<span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line">        <span class="comment">// 设置线程池关闭的时候等待所有任务都完成再继续销毁其他的Bean</span></span><br><span class="line">        threadPool.setWaitForTasksToCompleteOnShutdown(<span class="keyword">true</span>);</span><br><span class="line">        <span class="comment">// 设置线程池中任务的等待时间，如果超过这个时候还没有销毁就强制销毁，以确保应用最后能够被关闭，而不是阻塞住</span></span><br><span class="line">        threadPool.setAwaitTerminationSeconds(<span class="number">60</span> * <span class="number">2</span>);</span><br><span class="line">        <span class="comment">// 线程池初始化</span></span><br><span class="line">        threadPool.initialize();</span><br><span class="line">        <span class="keyword">return</span> threadPool;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 自定义线程池异常处理类</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> AsyncUncaughtExceptionHandler <span class="title">getAsyncUncaughtExceptionHandler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AsyncThreadPoolConfiguration.PoolAsyncExceptionHandler();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">PoolAsyncExceptionHandler</span> <span class="keyword">implements</span> <span class="title">AsyncUncaughtExceptionHandler</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleUncaughtException</span><span class="params">(Throwable throwable, Method method, Object... obj)</span> </span>&#123;</span><br><span class="line">            log.info(<span class="string">"====&gt;&gt;&gt;&gt; 捕获线程池异常信息"</span>);</span><br><span class="line">            log.error(<span class="string">"Exception message - "</span> + throwable.getMessage() + <span class="string">" Method name - "</span> + method.getName());</span><br><span class="line">            log.error(<span class="string">"Exception stack"</span>, throwable);</span><br><span class="line">            <span class="keyword">for</span> (Object param : obj) &#123;</span><br><span class="line">                log.error(<span class="string">"Parameter value - "</span> + param);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>在使用线程池的时候要特别注意这个异常处理，建议还是在线程执行方法里将异常自行处理，不要不做<code>try catch</code>操作 </li>
+</ul>
+<h2 id="参考转载"><a href="#参考转载" class="headerlink" title="参考转载"></a>参考转载</h2>
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java并发/">Java并发</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/&title=《并发多线程(五)ThreadPoolExecutor线程异常》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/&title=《并发多线程(五)ThreadPoolExecutor线程异常》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(五)ThreadPoolExecutor线程异常》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor参数设置/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">并发多线程(五)ThreadPoolExecutor参数设置</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor4种拒绝策略/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">并发多线程(五)ThreadPoolExecutor4种拒绝策略</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/&title=《并发多线程(五)ThreadPoolExecutor线程异常》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/&title=《并发多线程(五)ThreadPoolExecutor线程异常》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《并发多线程(五)ThreadPoolExecutor线程异常》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2019/04/05/backend/java/concurrent/并发多线程(五)ThreadPoolExecutor线程异常/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD7UlEQVR42u3cy24qQQwEUP7/pxPprm4EDFV2g1gcVhGPoftMpIrdVm63+PHz73H9/LOf/3/m/j3JFe7fef/89dUOP3DgwIEDR7DVzaWvt5rQ5MT5avPP4sCBAweOd3Dsl5W8mofubCVJhL/YOw4cOHDg+CBHUhQl78y3sSnYcODAgQPH93O05dBZ0LwRiQMHDhw4voGjLcxmBVveQNw0Ij/UK8WBAwcOHN331oML3/zzG+c7cODAgQNHHLGz6G3beUnBlt+kdgDiz6dw4MCBA8eao23b7WO4bQ62wxCb4QYcOHDgwLHn2DT72uvsb0A+xDAjw4EDBw4ce47ZSMHZMqwN/jxEj60KBw4cOHCcWVX9jwDyxV0vsd1kHpmryMeBAwcOHCVH21DLgzBZUL7oFjR/Pw4cOHDg2HPkQwlJCdc28pIgfF9h9vQ3AgcOHDhwrDlOFU7t8FxbdM3KxWJsAgcOHDhwrDlOtQI34ZcvfXY01f6JgAMHDhw4znLMip9NIZcvMX+1bUG+KOdw4MCBA0fJkW/m+kL5qEEb6knrcDZOMSzecODAgQPHiKMtgdrWYRKN+XVmt3BVU+LAgQMHjiCiZqMDs+0liHkxufqNwIEDBw4chzg2H2uLpfYxK+Fm13/QHMSBAwcOHAuO5BAoibRZYLfbbo+aZgMTOHDgwIFjxpGbbZbSFmx527G95gtiHDhw4MBxiCMJyDY4N8XebKxhNujwIGhx4MCBA8chjlnz7mxDsG1WJsddRTMRBw4cOHCsOa4vOhs727/athHzMb6owMOBAwcOHAuOU827PDjb8GtDNw/UB5Q4cODAgWPNkRzJzAYRZmF5alihDXscOHDgwHGWo23b5XxnB+zyyMzLuVUrEwcOHDhwPInYZJObY6fNUN1moKEtTXHgwIEDx55jMxzQFkLtxhK4zQgdDhw4cOB4H8e+/ssPqPItJXztbYiGNnDgwIEDx5rj1GBBO0Bwjb4Zjzs2loEDBw4cONYcm0vkAZY3/mZl5OZ4DAcOHDhwbDiSSNvE7SYIZ0MVeel4m/0tgAMHDhw44kCdXbSdwktKxLy1d+rADAcOHDhwnOJoG4LtIlqsNqpnAw0v1oYDBw4cOBYcP+XjHQVbPirRQteNQhw4cODAseZoY6kt/PJozGM+b/zNvgsHDhw4cOw5NkvfFFRJ+bc5shoGOQ4cOHDgOMSRh+s+MlumvLDc3wYcOHDgwPF5jg1i3pIbtu3ita0+jAMHDhw4DnFcl0mzwqyN5/aIq76pOHDgwIHjEMepo508RJNYbUci2oG/uoLEgQMHDhzzOqgufmZLT8IvCdc9JQ4cOHDgWHP8AjHWKlyeuWeIAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

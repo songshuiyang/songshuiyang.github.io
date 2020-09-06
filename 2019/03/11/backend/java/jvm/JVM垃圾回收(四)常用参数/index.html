@@ -29,10 +29,13 @@
 <meta property="og:site_name" content="宋水阳个人博客">
 <meta property="og:description" content="JVM参数的含义     参数名称 含义 默认值 备注     -Xms 初始堆大小starting 物理内存的1/64(&amp;lt;1GB) 默认(MinHeapFreeRatio参数可以调整)空余堆内存小于40%时，JVM就会增大堆直到-Xmx的最大限制.   -Xmx 最大堆大小max 物理内存的1/4(&amp;lt;1GB) 默认(MaxHeapFreeRatio参数可以调整)空余堆内存大于70%">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-19T12:25:24.470Z">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/jvmgc1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/java/JVM/jvmgc2.png">
+<meta property="og:updated_time" content="2020-09-05T08:58:50.576Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM垃圾回收(四)常用参数">
 <meta name="twitter:description" content="JVM参数的含义     参数名称 含义 默认值 备注     -Xms 初始堆大小starting 物理内存的1/64(&amp;lt;1GB) 默认(MinHeapFreeRatio参数可以调整)空余堆内存小于40%时，JVM就会增大堆直到-Xmx的最大限制.   -Xmx 最大堆大小max 物理内存的1/4(&amp;lt;1GB) 默认(MaxHeapFreeRatio参数可以调整)空余堆内存大于70%">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/java/JVM/jvmgc1.png">
     
         <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
     
@@ -710,6 +713,23 @@ var _hmt = _hmt || [];
 </tbody>
 </table>
 <blockquote>
+<p>垃圾回收器相关参数</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/JVM/jvmgc1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/java/JVM/jvmgc2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<blockquote>
 <p>备注</p>
 <ul>
 <li><code>-X</code> 开头参数的是非标准，不是所有虚拟机都支持，<code>-XX</code>更流氓，不保证其稳定性</li>
@@ -804,9 +824,9 @@ var _hmt = _hmt || [];
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(三)内存分配及回收策略/" id="post-next" class="post-nav-link">
+      <a href="/2019/03/10/backend/java/jvm/JVM垃圾回收(三)GC种类/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">JVM垃圾回收(三)内存分配及回收策略</h4>
+        <h4 class="title">JVM垃圾回收(三)GC种类</h4>
       </a>
     </div>
   
@@ -870,7 +890,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">

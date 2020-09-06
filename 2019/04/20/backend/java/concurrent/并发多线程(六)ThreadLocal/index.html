@@ -30,7 +30,7 @@
 <meta property="og:description" content="ThreadLocal 作用在并发编程中时常有这样一种需求：每条线程都需要存取一个同名变量，但每条线程中该变量的值均不相同。 如果是你，该如何实现上述功能？常规的思路如下：使用一个线程共享的Map，Map中的key为线程对象，value即为需要存储的值。那么，我们只需要通过map.get(Thread.currentThread())即可获取本线程中该变量的值。 这种方式确实可以实现我们的需求，但">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/三高/threadLocal.jpg">
-<meta property="og:updated_time" content="2020-03-16T11:43:55.463Z">
+<meta property="og:updated_time" content="2020-08-16T04:24:18.053Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发多线程(六)ThreadLocal">
 <meta name="twitter:description" content="ThreadLocal 作用在并发编程中时常有这样一种需求：每条线程都需要存取一个同名变量，但每条线程中该变量的值均不相同。 如果是你，该如何实现上述功能？常规的思路如下：使用一个线程共享的Map，Map中的key为线程对象，value即为需要存储的值。那么，我们只需要通过map.get(Thread.currentThread())即可获取本线程中该变量的值。 这种方式确实可以实现我们的需求，但">
@@ -412,7 +412,7 @@ var _hmt = _hmt || [];
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Session&gt; threadLocal = <span class="keyword">new</span> ThreadLocal&lt;Session&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取Session</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Session <span class="title">getCurrentSession</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Session session =  threadLocal.get();</span><br><span class="line">    <span class="comment">// 判断Session是否为空，如果为空，将创建一个session，并设置到本地线程变量中</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(session == <span class="keyword">null</span> &amp;&amp; !session.isOpen())&#123;</span><br><span class="line">            <span class="keyword">if</span>(sessionFactory == <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="comment">// 创建Hibernate的SessionFactory</span></span><br><span class="line">                rbuildSessionFactory();</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                session = sessionFactory.openSession();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        threadLocal.set(session);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> handle exception</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> session;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><ul>
 <li>每个ThreadLocal只能保存一个变量副本，如果想要上线一个线程能够保存多个副本以上，就需要创建多个ThreadLocal。</li>
-<li>ThreadLocal内部的ThreadLocalMap键为弱引用，会有内存泄漏的风险。</li>
+<li>ThreadLocal内部的ThreadLocalMap键为弱引用，如果创建ThreadLocal的线程一直持续运行，那么这个Entry对象中的value就有可能一直得不到回收，会有内存泄漏的风险。</li>
 <li>适用于无状态，副本变量独立后不影响业务逻辑的高并发场景。如果如果业务逻辑强依赖于副本变量，则不适合用ThreadLocal解决，需要另寻解决方案。</li>
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
@@ -496,18 +496,18 @@ var _hmt = _hmt || [];
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2019/04/29/backend/java/concurrent/并发多线程(七)AbstractQueuedSynchronizer/" id="post-prev" class="post-nav-link">
+      <a href="/2019/04/20/backend/java/concurrent/并发多线程(六)InheritableThreadLocal/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">并发多线程(七)AbstractQueuedSynchronizer</h4>
+        <h4 class="title">并发多线程(六)InheritableThreadLocal</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/04/15/backend/framework/mq/RabbitMQ-与Spring集成-问题记录/" id="post-next" class="post-nav-link">
+      <a href="/2019/04/17/backend/framework/mq/Kafka-为什么这么快/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">RabbitMQ-与Spring集成-问题记录</h4>
+        <h4 class="title">Kafka-为什么这么快</h4>
       </a>
     </div>
   
@@ -571,7 +571,7 @@ var _hmt = _hmt || [];
         <p><span>songshuiyang &copy; 2017 - 2020</span>
             <span>
                 
-                <a href="http://www.miitbeian.gov.cn/" target="_blank">赣ICP备18001541号</a><br>
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
                 
             </span>
             <span id="busuanzi_container_site_pv">
