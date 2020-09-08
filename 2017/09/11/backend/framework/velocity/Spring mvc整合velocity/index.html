@@ -1,4 +1,361 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>Spring mvc整合velocity | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="Spring,velocity,Spring Mvc"><meta name="description" content="添加Maven依赖:&amp;lt;!--springmvc集成 velocity--&amp;gt; &amp;lt;dependency&amp;gt;     &amp;lt;groupId&amp;gt;org.apache.velocity&amp;lt;/groupId&amp;gt;     &amp;lt;artifactId&amp;gt;velocity&amp;lt;/artifactId&amp;gt;     &amp;lt;version&amp;gt;1.7&amp;lt;/versi"><meta name="keywords" content="Spring,velocity,Spring Mvc"><meta property="og:type" content="article"><meta property="og:title" content="Spring mvc整合velocity"><meta property="og:url" content="http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="添加Maven依赖:&amp;lt;!--springmvc集成 velocity--&amp;gt; &amp;lt;dependency&amp;gt;     &amp;lt;groupId&amp;gt;org.apache.velocity&amp;lt;/groupId&amp;gt;     &amp;lt;artifactId&amp;gt;velocity&amp;lt;/artifactId&amp;gt;     &amp;lt;version&amp;gt;1.7&amp;lt;/versi"><meta property="og:locale" content="default"><meta property="og:image" content="http://www.songshuiyang.com/images/server/velocity-layout.png"><meta property="og:image" content="http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring%20mvc整合velocity/$info.imgs"><meta property="og:image" content="http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring%20mvc整合velocity/noPhoto.jpg"><meta property="og:updated_time" content="2020-03-16T11:43:55.409Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Spring mvc整合velocity"><meta name="twitter:description" content="添加Maven依赖:&amp;lt;!--springmvc集成 velocity--&amp;gt; &amp;lt;dependency&amp;gt;     &amp;lt;groupId&amp;gt;org.apache.velocity&amp;lt;/groupId&amp;gt;     &amp;lt;artifactId&amp;gt;velocity&amp;lt;/artifactId&amp;gt;     &amp;lt;version&amp;gt;1.7&amp;lt;/versi"><meta name="twitter:image" content="http://www.songshuiyang.com/images/server/velocity-layout.png"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="/tags/Java基础"><i class="icon icon-lg icon-bookmark"></i> Java基础</a></li><li class="waves-block waves-effect"><a href="/tags/Java集合"><i class="icon icon-lg icon-camera"></i> Java集合</a></li><li class="waves-block waves-effect"><a href="/tags/Java并发"><i class="icon icon-lg icon-fire"></i> Java并发</a></li><li class="waves-block waves-effect"><a href="/tags/Io"><i class="icon icon-lg icon-film"></i> Java IO</a></li><li class="waves-block waves-effect"><a href="/categories/JVM"><i class="icon icon-lg icon-gift"></i> JVM</a></li><li class="waves-block waves-effect"><a href="/categories/Spring"><i class="icon icon-lg icon-money"></i> Spring</a></li><li class="waves-block waves-effect"><a href="/categories/SpringMvc"><i class="icon icon-lg icon-bullhorn"></i> SpringMvc</a></li><li class="waves-block waves-effect"><a href="/categories/SpringBoot"><i class="icon icon-lg icon-bolt"></i> SpringBoot</a></li><li class="waves-block waves-effect"><a href="/categories/SpringCloud"><i class="icon icon-lg icon-cogs"></i> SpringCloud</a></li><li class="waves-block waves-effect"><a href="/categories/Mybatis"><i class="icon icon-lg icon-tasks"></i> Mybatis</a></li><li class="waves-block waves-effect"><a href="/categories/设计模式"><i class="icon icon-lg icon-calendar"></i> 设计模式</a></li><li class="waves-block waves-effect"><a href="/categories/数据库"><i class="icon icon-lg icon-compass"></i> 数据库</a></li><li class="waves-block waves-effect"><a href="/categories/缓存"><i class="icon icon-lg icon-comment"></i> 缓存</a></li><li class="waves-block waves-effect"><a href="/categories/消息队列"><i class="icon icon-lg icon-coffee"></i> 消息队列</a></li><li class="waves-block waves-effect"><a href="/categories/分布式"><i class="icon icon-lg icon-code"></i> 分布式</a></li><li class="waves-block waves-effect"><a href="/categories/计算机网络"><i class="icon icon-lg icon-umbrella"></i> 计算机网络</a></li><li class="waves-block waves-effect"><a href="/categories/数据结构"><i class="icon icon-lg icon-spinner"></i> 数据结构</a></li><li class="waves-block waves-effect"><a href="/categories/Linux"><i class="icon icon-lg icon-magic"></i> Linux</a></li><li class="waves-block waves-effect"><a href="/categories/前端"><i class="icon icon-lg icon-twitter"></i> 前端</a></li><li class="waves-block waves-effect"><a href="/categories/笔记"><i class="icon icon-lg icon-bell"></i> 笔记</a></li><li class="waves-block waves-effect"><a href="/categories/开发工具"><i class="icon icon-lg icon-strikethrough"></i> 开发工具</a></li><li class="waves-block waves-effect"><a href="/categories/业务"><i class="icon icon-lg icon-pinterest"></i> 业务</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">Spring mvc整合velocity</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">Spring mvc整合velocity</h1><h5 class="subtitle"> <time datetime="2017-09-11T08:12:12.000Z" itemprop="datePublished" class="page-time">2017-09-11</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#添加Maven依赖"><span class="post-toc-number">1.</span> <span class="post-toc-text">添加Maven依赖:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#applicationContext-mvc配置文件"><span class="post-toc-number">2.</span> <span class="post-toc-text">applicationContext-mvc配置文件:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#velocity-properties-配置文件"><span class="post-toc-number">3.</span> <span class="post-toc-text">velocity.properties 配置文件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#显示文件目录结构"><span class="post-toc-number">4.</span> <span class="post-toc-text">显示文件目录结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#header-mv"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">header.mv</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#layout-mv"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">layout.mv</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#velocity-mv"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">velocity.mv</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#velocity-基本语法"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">velocity 基本语法</span></a></li></ol></li></ol></nav></aside><article id="post-backend/framework/velocity/Spring mvc整合velocity" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">Spring mvc整合velocity</h1><div class="post-meta"> <time class="post-time" title="2017-09-11 16:12:12" datetime="2017-09-11T08:12:12.000Z" itemprop="datePublished">2017-09-11</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h1 id="添加Maven依赖"><a href="#添加Maven依赖" class="headerlink" title="添加Maven依赖:"></a>添加Maven依赖:</h1><pre><code>&lt;!--springmvc集成 velocity--&gt;
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring mvc整合velocity | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring,velocity,Spring Mvc">
+    <meta name="description" content="添加Maven依赖:&amp;lt;!--springmvc集成 velocity--&amp;gt; &amp;lt;dependency&amp;gt;     &amp;lt;groupId&amp;gt;org.apache.velocity&amp;lt;/groupId&amp;gt;     &amp;lt;artifactId&amp;gt;velocity&amp;lt;/artifactId&amp;gt;     &amp;lt;version&amp;gt;1.7&amp;lt;/versi">
+<meta name="keywords" content="Spring,velocity,Spring Mvc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring mvc整合velocity">
+<meta property="og:url" content="http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="添加Maven依赖:&amp;lt;!--springmvc集成 velocity--&amp;gt; &amp;lt;dependency&amp;gt;     &amp;lt;groupId&amp;gt;org.apache.velocity&amp;lt;/groupId&amp;gt;     &amp;lt;artifactId&amp;gt;velocity&amp;lt;/artifactId&amp;gt;     &amp;lt;version&amp;gt;1.7&amp;lt;/versi">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/velocity-layout.png">
+<meta property="og:image" content="http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring%20mvc整合velocity/$info.imgs">
+<meta property="og:image" content="http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring%20mvc整合velocity/noPhoto.jpg">
+<meta property="og:updated_time" content="2020-03-16T11:43:55.409Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring mvc整合velocity">
+<meta name="twitter:description" content="添加Maven依赖:&amp;lt;!--springmvc集成 velocity--&amp;gt; &amp;lt;dependency&amp;gt;     &amp;lt;groupId&amp;gt;org.apache.velocity&amp;lt;/groupId&amp;gt;     &amp;lt;artifactId&amp;gt;velocity&amp;lt;/artifactId&amp;gt;     &amp;lt;version&amp;gt;1.7&amp;lt;/versi">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/velocity-layout.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring mvc整合velocity</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring mvc整合velocity</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-09-11T08:12:12.000Z" itemprop="datePublished" class="page-time">
+  2017-09-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#添加Maven依赖"><span class="post-toc-number">1.</span> <span class="post-toc-text">添加Maven依赖:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#applicationContext-mvc配置文件"><span class="post-toc-number">2.</span> <span class="post-toc-text">applicationContext-mvc配置文件:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#velocity-properties-配置文件"><span class="post-toc-number">3.</span> <span class="post-toc-text">velocity.properties 配置文件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#显示文件目录结构"><span class="post-toc-number">4.</span> <span class="post-toc-text">显示文件目录结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#header-mv"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">header.mv</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#layout-mv"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">layout.mv</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#velocity-mv"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">velocity.mv</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#velocity-基本语法"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">velocity 基本语法</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/velocity/Spring mvc整合velocity" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring mvc整合velocity</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-09-11 16:12:12" datetime="2017-09-11T08:12:12.000Z" itemprop="datePublished">2017-09-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="添加Maven依赖"><a href="#添加Maven依赖" class="headerlink" title="添加Maven依赖:"></a>添加Maven依赖:</h1><pre><code>&lt;!--springmvc集成 velocity--&gt;
 &lt;dependency&gt;
     &lt;groupId&gt;org.apache.velocity&lt;/groupId&gt;
     &lt;artifactId&gt;velocity&lt;/artifactId&gt;
@@ -14,7 +371,8 @@
     &lt;artifactId&gt;spring-context-support&lt;/artifactId&gt;
     &lt;version&gt;${spring.version}&lt;/version&gt;
 &lt;/dependency&gt;
-</code></pre><a id="more"></a><h1 id="applicationContext-mvc配置文件"><a href="#applicationContext-mvc配置文件" class="headerlink" title="applicationContext-mvc配置文件:"></a>applicationContext-mvc配置文件:</h1><pre><code>&lt;!--》》》》》》》》》》》》》》》   添加velocity显示技术 》》》》》》》》》》》》》》》》》--&gt;
+</code></pre><a id="more"></a>
+<h1 id="applicationContext-mvc配置文件"><a href="#applicationContext-mvc配置文件" class="headerlink" title="applicationContext-mvc配置文件:"></a>applicationContext-mvc配置文件:</h1><pre><code>&lt;!--》》》》》》》》》》》》》》》   添加velocity显示技术 》》》》》》》》》》》》》》》》》--&gt;
 &lt;!-- velocity环境配置 --&gt;
 &lt;bean id=&quot;velocityConfig&quot; class=&quot;org.springframework.web.servlet.view.velocity.VelocityConfigurer&quot;&gt;
     &lt;!-- velocity配置文件路径  或者直接用velocityProperties属性 --&gt;
@@ -35,7 +393,8 @@
     &lt;property name=&quot;dateToolAttribute&quot; value=&quot;dateTool&quot;/&gt;
     &lt;property name=&quot;numberToolAttribute&quot; value=&quot;numberTool&quot;/&gt;
 &lt;/bean&gt;
-</code></pre><h1 id="velocity-properties-配置文件"><a href="#velocity-properties-配置文件" class="headerlink" title="velocity.properties 配置文件"></a>velocity.properties 配置文件</h1><p>该文件velocity.properties 在下面的包路径可以找到 org.apache.velocity.runtime.defaults.velocity.properties</p><pre><code>#设置字符集
+</code></pre><h1 id="velocity-properties-配置文件"><a href="#velocity-properties-配置文件" class="headerlink" title="velocity.properties 配置文件"></a>velocity.properties 配置文件</h1><p>该文件velocity.properties 在下面的包路径可以找到 org.apache.velocity.runtime.defaults.velocity.properties</p>
+<pre><code>#设置字符集
 #encoding
 input.encoding  =UTF-8
 output.encoding=UTF-8
@@ -46,7 +405,14 @@ contentType=text/html;charset=UTF-8
 file.resource.loader.cache=false
 file.resource.loader.modificationCheckInterval  =1
 velocimacro.library.autoreload=false
-</code></pre><h1 id="显示文件目录结构"><a href="#显示文件目录结构" class="headerlink" title="显示文件目录结构"></a>显示文件目录结构</h1><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/velocity-layout.png" alt="" title=""></div><div class="image-caption"></div></figure><h2 id="header-mv"><a href="#header-mv" class="headerlink" title="header.mv"></a>header.mv</h2><pre><code>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html;charset=UTF-8&quot;&gt;
+</code></pre><h1 id="显示文件目录结构"><a href="#显示文件目录结构" class="headerlink" title="显示文件目录结构"></a>显示文件目录结构</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/velocity-layout.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="header-mv"><a href="#header-mv" class="headerlink" title="header.mv"></a>header.mv</h2><pre><code>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html;charset=UTF-8&quot;&gt;
 &lt;meta http-equiv=&quot;Cache-Control&quot; content=&quot;no-store&quot;/&gt;
 &lt;meta http-equiv=&quot;Pragma&quot; content=&quot;no-cache&quot;/&gt;
 &lt;meta http-equiv=&quot;Expires&quot; content=&quot;3600&quot;/&gt;
@@ -80,8 +446,302 @@ $screen_content
 Copyright &amp;copy 2014 lm
 &lt;/body&gt;
 &lt;/html&gt;
-</code></pre><h2 id="velocity-基本语法"><a href="#velocity-基本语法" class="headerlink" title="velocity 基本语法"></a>velocity 基本语法</h2><p>Velocity的基本语法：<br>1、”#”用来标识Velocity的脚本语句，包括#set、#if 、#else、#end、#foreach、#end、#iinclude、#parse、#macro等；<br>如:</p><p>#if($info.imgs)<br><img src="$info.imgs" border="0"></p><p>#else<br><img src="noPhoto.jpg"></p><p>#end</p><p>2、”$”用来标识一个对象(或理解为变量)；如<br>如：$i、$msg、$TagUtil.options(…)等。</p><p>3、”{}”用来明确标识Velocity变量；<br>比如在页面中，页面中有一个$someonename，此时，Velocity将把someonename作为变量名，若我们程序是想在someone这 个变量的后面紧接着显示name字符，则上面的标签应该改成${someone}name。</p><p>4、”!”用来强制把不存在的变量显示为空白。<br>如当页面中包含$msg，如果msg对象有值，将显示msg的值，如果不存在msg对象同，则在页面中将显示$msg字符。这是我们不希望的，为了把不存 在的变量或变量值为null的对象显示为空白，则只需要在变量名前加一个“!”号即可。<br>如：$!msg</p><p>5、循#foreach( $info in $list) $info.someList #end，环读取集合list中的对象</p><p>#foreach( $info in $hotL包含文件#inclue(“模板文件名”)或#parse(“模板文件名”)st1)<br><a href="/blog/list?&cid=$!info.cid" target="_blank">$!info.title</a><br></p><p>#end<br>上面的脚本表示循环遍历hotList1集合中的对象，并输出对象的相关内容。</p><p>6、包含文件#inclue(“模板文件名”)或#parse(“模板文件名”)<br>主要用于处理具有相同内容的页面，比如每个网站的顶部或尾部内容。<br>使用方法，可以参考EasyJF开源Blog及EasyJF开源论坛中的应用！<br>如：#parse(“/blog/top.html”)或#include(“/blog/top.html”)<br>parse与include的区别在于，若包含的文件中有Velocity脚本标签，将会进一步解析，而include将原样显示。</p></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Mvc/">Spring Mvc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/velocity/">velocity</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&source=添加Maven依赖:&lt;!--springmvc集成 velocity--&gt;
+</code></pre><h2 id="velocity-基本语法"><a href="#velocity-基本语法" class="headerlink" title="velocity 基本语法"></a>velocity 基本语法</h2><p>Velocity的基本语法：<br>1、”#”用来标识Velocity的脚本语句，包括#set、#if 、#else、#end、#foreach、#end、#iinclude、#parse、#macro等；<br>如:</p>
+<p>#if($info.imgs)<br><img src="$info.imgs" border="0"></p>
+<p>#else<br><img src="noPhoto.jpg"></p>
+<p>#end</p>
+<p>2、”$”用来标识一个对象(或理解为变量)；如<br>如：$i、$msg、$TagUtil.options(…)等。</p>
+<p>3、”{}”用来明确标识Velocity变量；<br>比如在页面中，页面中有一个$someonename，此时，Velocity将把someonename作为变量名，若我们程序是想在someone这 个变量的后面紧接着显示name字符，则上面的标签应该改成${someone}name。</p>
+<p>4、”!”用来强制把不存在的变量显示为空白。<br>如当页面中包含$msg，如果msg对象有值，将显示msg的值，如果不存在msg对象同，则在页面中将显示$msg字符。这是我们不希望的，为了把不存 在的变量或变量值为null的对象显示为空白，则只需要在变量名前加一个“!”号即可。<br>如：$!msg</p>
+<p>5、循#foreach( $info in $list) $info.someList #end，环读取集合list中的对象</p>
+<p>#foreach( $info in $hotL包含文件#inclue(“模板文件名”)或#parse(“模板文件名”)st1)<br><a href="/blog/list?&cid=$!info.cid" target="_blank">$!info.title</a><br></p>
+<p>#end<br>上面的脚本表示循环遍历hotList1集合中的对象，并输出对象的相关内容。</p>
+<p>6、包含文件#inclue(“模板文件名”)或#parse(“模板文件名”)<br>主要用于处理具有相同内容的页面，比如每个网站的顶部或尾部内容。<br>使用方法，可以参考EasyJF开源Blog及EasyJF开源论坛中的应用！<br>如：#parse(“/blog/top.html”)或#include(“/blog/top.html”)<br>parse与include的区别在于，若包含的文件中有Velocity脚本标签，将会进一步解析，而include将原样显示。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Mvc/">Spring Mvc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/velocity/">velocity</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&source=添加Maven依赖:&lt;!--springmvc集成 velocity--&gt;
 &lt;dependency&gt;
-    &lt;groupI..." data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring mvc整合velocity》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2017/09/14/backend/java/servlet/Servlet-JSP脚本中的九个内置对象/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">Servlet-JSP脚本中的九个内置对象</h4></a></div><div class="waves-block waves-effect next"><a href="/2017/09/10/backend/server/JavaEE服务器/常用的JavaEE服务器/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">常用的JavaEE服务器</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2020</span> <span><a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&source=添加Maven依赖:&lt;!--springmvc集成 velocity--&gt;
+    &lt;groupI..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring mvc整合velocity》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/09/14/backend/java/servlet/Servlet-JSP脚本中的九个内置对象/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Servlet-JSP脚本中的九个内置对象</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/09/10/backend/server/JavaEE服务器/常用的JavaEE服务器/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">常用的JavaEE服务器</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
+            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&title=《Spring mvc整合velocity》 — 宋水阳个人博客&source=添加Maven依赖:&lt;!--springmvc集成 velocity--&gt;
 &lt;dependency&gt;
-    &lt;groupI..." data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring mvc整合velocity》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADQ0lEQVR42u3aSXLjMBAEQP3/05rrOGxRVQ0qgoQSJ4cWgAkfWr08HvF6/rd+v558/vlrHe/w+93jsx6fWNjY2Ng3YT8P1zHj1cHHryTXkTxnstvLnbGxsbG3Y+fBIwlas6CSAJIwGQU5bGxsbOzDFCUJkPmj59eBjY2Njd0mD3lASt5NrqO9MmxsbOzvYeeBIb+C5JN5CMzLWyfX0rCxsbEvz56Ve67590f629jY2NgXZj/LNUsA2oD36YWNjY29EzsPALMift4kmIXPlefHxsbG3oP9iTbtrDHQjum0l/XjFWxsbOzt2McHJ0lFe3Ez8Ep7ILoPbGxs7NuyV5KKtlQ0C5BtU/mNBRsbG3s79kpJqE0M2hA4GwZ68y1sbGzsL2Pnm86KUHlreb1cVc8fYWNjY1+eXRfWS9is3D9LkOr+NjY2NvZG7FmToE0t2rJRG+Ty3bCxsbF3YucFnfbgvBnwKFeePr3JwLCxsbG3YM+2bks/+QXlA0D5kxeXi42NjX1zdtt2zYtHxTDNqKiUn/syD8PGxsa+LXulxLP+QHkbeKVt8MdZ2NjY2Bux2x/x+Q/9HNYO/ayMCg1zF2xsbOwLs1dGamaN4baotFL0f/MfxsbGxt6InRwwK8e31JVAlfwzfmRg2NjY2FuwZ6WcNlVor6NtM+dJUfFY2NjY2Ddht1/OQ8us6JMEvFngHFatsLGxsS/PbgNYHiTWv7WSIEWNXmxsbOyt2W0pJy/ozMaA2qp+lCZhY2Njb8FuS/lte7UtPOWFpPaCoq4INjY29m3Zyc/9Wckpbznk+7RNhT9OxMbGxt6InXy5DR55GDurVZC3DYo7w8bGxr4hu002VoZmEtKsIFWETGxsbOxN2bPhmJVBnzbgnTZ1g42Njb01e72E1IaTlbGednAHGxsbeyf2s1zrhf6zwtgs4NXzRNjY2NiXZ88CQB5CVpoEyZ5JKrUS9rCxsbHvwm6DVo6cha42QRpeKDY2NvZ27JYxG51J9jkrzXjzeWxsbOyvZ+et1vWEZ9bifXPp2NjY2Nhx+zZJctrW70qzARsbG3tXdv5wbaJyVoFpPWXCxsbG3pU9CwbJI7bvnttyXh/ZxMbGxr48+x+mp8RwjK8XJAAAAABJRU5ErkJggg==" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+    &lt;groupI..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring mvc整合velocity》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADQ0lEQVR42u3aSXLjMBAEQP3/05rrOGxRVQ0qgoQSJ4cWgAkfWr08HvF6/rd+v558/vlrHe/w+93jsx6fWNjY2Ng3YT8P1zHj1cHHryTXkTxnstvLnbGxsbG3Y+fBIwlas6CSAJIwGQU5bGxsbOzDFCUJkPmj59eBjY2Njd0mD3lASt5NrqO9MmxsbOzvYeeBIb+C5JN5CMzLWyfX0rCxsbEvz56Ve67590f629jY2NgXZj/LNUsA2oD36YWNjY29EzsPALMift4kmIXPlefHxsbG3oP9iTbtrDHQjum0l/XjFWxsbOzt2McHJ0lFe3Ez8Ep7ILoPbGxs7NuyV5KKtlQ0C5BtU/mNBRsbG3s79kpJqE0M2hA4GwZ68y1sbGzsL2Pnm86KUHlreb1cVc8fYWNjY1+eXRfWS9is3D9LkOr+NjY2NvZG7FmToE0t2rJRG+Ty3bCxsbF3YucFnfbgvBnwKFeePr3JwLCxsbG3YM+2bks/+QXlA0D5kxeXi42NjX1zdtt2zYtHxTDNqKiUn/syD8PGxsa+LXulxLP+QHkbeKVt8MdZ2NjY2Bux2x/x+Q/9HNYO/ayMCg1zF2xsbOwLs1dGamaN4baotFL0f/MfxsbGxt6InRwwK8e31JVAlfwzfmRg2NjY2FuwZ6WcNlVor6NtM+dJUfFY2NjY2Ddht1/OQ8us6JMEvFngHFatsLGxsS/PbgNYHiTWv7WSIEWNXmxsbOyt2W0pJy/ozMaA2qp+lCZhY2Njb8FuS/lte7UtPOWFpPaCoq4INjY29m3Zyc/9Wckpbznk+7RNhT9OxMbGxt6InXy5DR55GDurVZC3DYo7w8bGxr4hu002VoZmEtKsIFWETGxsbOxN2bPhmJVBnzbgnTZ1g42Njb01e72E1IaTlbGednAHGxsbeyf2s1zrhf6zwtgs4NXzRNjY2NiXZ88CQB5CVpoEyZ5JKrUS9rCxsbHvwm6DVo6cha42QRpeKDY2NvZ27JYxG51J9jkrzXjzeWxsbOyvZ+et1vWEZ9bifXPp2NjY2Nhx+zZJctrW70qzARsbG3tXdv5wbaJyVoFpPWXCxsbG3pU9CwbJI7bvnttyXh/ZxMbGxr48+x+mp8RwjK8XJAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
