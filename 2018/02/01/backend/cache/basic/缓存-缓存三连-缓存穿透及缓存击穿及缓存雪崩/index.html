@@ -1,1 +1,817 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩 | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="缓存"><meta name="description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从"><meta name="keywords" content="缓存"><meta property="og:type" content="article"><meta property="og:title" content="缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩"><meta property="og:url" content="http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从"><meta property="og:locale" content="default"><meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/cache1.png"><meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/cache.png"><meta property="og:updated_time" content="2020-08-16T04:24:17.912Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩"><meta name="twitter:description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从"><meta name="twitter:image" content="http://www.songshuiyang.com/images/server/cache/cache1.png"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="/tags/Java基础"><i class="icon icon-lg icon-bookmark"></i> Java基础</a></li><li class="waves-block waves-effect"><a href="/tags/Java集合"><i class="icon icon-lg icon-camera"></i> Java集合</a></li><li class="waves-block waves-effect"><a href="/tags/Java并发"><i class="icon icon-lg icon-fire"></i> Java并发</a></li><li class="waves-block waves-effect"><a href="/tags/Io"><i class="icon icon-lg icon-film"></i> Java IO</a></li><li class="waves-block waves-effect"><a href="/categories/JVM"><i class="icon icon-lg icon-gift"></i> JVM</a></li><li class="waves-block waves-effect"><a href="/categories/Spring"><i class="icon icon-lg icon-money"></i> Spring</a></li><li class="waves-block waves-effect"><a href="/categories/SpringMvc"><i class="icon icon-lg icon-bullhorn"></i> SpringMvc</a></li><li class="waves-block waves-effect"><a href="/categories/SpringBoot"><i class="icon icon-lg icon-bolt"></i> SpringBoot</a></li><li class="waves-block waves-effect"><a href="/categories/SpringCloud"><i class="icon icon-lg icon-cogs"></i> SpringCloud</a></li><li class="waves-block waves-effect"><a href="/categories/Mybatis"><i class="icon icon-lg icon-tasks"></i> Mybatis</a></li><li class="waves-block waves-effect"><a href="/categories/设计模式"><i class="icon icon-lg icon-calendar"></i> 设计模式</a></li><li class="waves-block waves-effect"><a href="/categories/数据库"><i class="icon icon-lg icon-compass"></i> 数据库</a></li><li class="waves-block waves-effect"><a href="/categories/缓存"><i class="icon icon-lg icon-comment"></i> 缓存</a></li><li class="waves-block waves-effect"><a href="/categories/消息队列"><i class="icon icon-lg icon-coffee"></i> 消息队列</a></li><li class="waves-block waves-effect"><a href="/categories/分布式"><i class="icon icon-lg icon-code"></i> 分布式</a></li><li class="waves-block waves-effect"><a href="/categories/计算机网络"><i class="icon icon-lg icon-umbrella"></i> 计算机网络</a></li><li class="waves-block waves-effect"><a href="/categories/数据结构"><i class="icon icon-lg icon-spinner"></i> 数据结构</a></li><li class="waves-block waves-effect"><a href="/categories/Linux"><i class="icon icon-lg icon-magic"></i> Linux</a></li><li class="waves-block waves-effect"><a href="/categories/前端"><i class="icon icon-lg icon-twitter"></i> 前端</a></li><li class="waves-block waves-effect"><a href="/categories/笔记"><i class="icon icon-lg icon-bell"></i> 笔记</a></li><li class="waves-block waves-effect"><a href="/categories/开发工具"><i class="icon icon-lg icon-strikethrough"></i> 开发工具</a></li><li class="waves-block waves-effect"><a href="/categories/业务"><i class="icon icon-lg icon-pinterest"></i> 业务</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</h1><h5 class="subtitle"> <time datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished" class="page-time">2018-02-01</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、缓存穿透"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、缓存穿透</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#什么是缓存穿透"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">什么是缓存穿透</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存穿透的问题"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">如何避免缓存穿透的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、缓存雪崩"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、缓存雪崩</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存雪崩"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">什么是缓存雪崩</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存雪崩的问题"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">如何避免缓存雪崩的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、缓存击穿"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">3、缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存击穿"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">什么是缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何避免缓存击穿的问题"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">如何避免缓存击穿的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解决数据一致性问题"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">解决数据一致性问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol></nav></aside><article id="post-backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</h1><div class="post-meta"> <time class="post-time" title="2018-02-01 00:00:01" datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished">2018-02-01</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul><li><p>用了缓存之后，有哪些常见问题？</p></li><li><p>常见的问题，可列举如下：</p></li><li><p>写入问题</p><ul><li>缓存何时写入？并且写时如何避免并发重复写入？</li><li>缓存如何失效？</li><li>缓存和 DB 的一致性如何保证？</li></ul></li><li><p>经典三连问</p><ul><li>如何避免缓存穿透的问题？</li><li>如何避免缓存击穿的问题？</li><li>如果避免缓存雪崩的问题？</li></ul></li></ul><h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h3><h4 id="什么是缓存穿透"><a href="#什么是缓存穿透" class="headerlink" title="什么是缓存穿透"></a>什么是缓存穿透</h4><ul><li><p>缓存穿透，是指查询一个<code>一定不存在</code>的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从 DB 查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到 DB 去查询，失去了缓存的意义。</p></li><li><p>在流量大时，可能 DB 就挂掉了，要是有人利用不存在的 key 频繁攻击我们的应用，这就是漏洞。如下图：</p></li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/cache/cache1.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li>上一章节我们已经看到，MySQL 的性能是远不如 Redis 的，如果大量的请求直接打到 MySQL ，则会直接打挂 MySQL 。</li><li>当然，缓存穿透不一定是攻击，也可能是我们自己程序写的问题，疯狂读取不存在的数据，又或者“无脑”的爬虫，顺序爬取数据。</li><li>另外，一定要注意，缓存穿透，指的是查询一个不存在的数据，很容易和我们要讲到的缓存击穿搞混淆。</li></ul><h4 id="如何避免缓存穿透的问题"><a href="#如何避免缓存穿透的问题" class="headerlink" title="如何避免缓存穿透的问题"></a>如何避免缓存穿透的问题</h4><ul><li><p>最基本的就是首先做好参数校验，一些不合法的参数请求直接抛出异常信息返回给客户端。比如查询的数据库 id 不能小于 0、传入的邮箱格式不对的时候直接返回错误消息给客户端等等。</p></li><li><p>1）方案一，缓存空对象。</p><ul><li>当从 DB 查询数据为空，我们仍然将这个空结果进行缓存，具体的值需要使用特殊的标识，能和真正缓存的数据区分开。</li><li>空值做了缓存，意味着缓存层中存了更多的键，需要更多的内存空间 ( 如果是攻击，问题更严重 )，比较有效的方法是针对这类数据设置一个较短的过期时间，让其自动剔除。</li></ul></li><li>2）方案二，使用BloomFilter 布隆过滤器。<ul><li>在缓存服务的基础上，构建 BloomFilter 数据结构，在 BloomFilter 中存储对应的 KEY 是否存在，如果存在，说明该 KEY 对应的值不为空。那么整个逻辑的如下：<ul><li>1、根据 KEY 查询【BloomFilter 缓存】。如果不存在对应的值，直接返回；如果存在，继续向下执行。【后续的流程，就是标准的流程】</li><li>2、根据 KEY 查询在【数据缓存】的值。如果存在值，直接返回；如果不存在值，继续向下执行。</li><li>3、查询 DB 对应的值，如果存在，则更新到缓存，并返回该值。</li></ul></li><li>原理介绍<ul><li>当一个元素加入布隆过滤器中的时候，会进行如下操作：<ul><li>使用布隆过滤器中的哈希函数对元素值进行计算，得到哈希值（有几个哈希函数得到几个哈希值）。</li><li>根据得到的哈希值，在位数组中把对应下标的值置为 1。</li></ul></li><li>当我们需要判断一个元素是否存在于布隆过滤器的时候，会进行如下操作：<ul><li>对给定元素再次进行相同的哈希计算；</li><li>得到值之后判断位数组中的每个元素是否都为 1，如果值都为 1，那么说明这个值在布隆过滤器中，如果存在一个值不为 1，说明该元素不在布隆过滤器中。</li></ul></li><li>这不和<code>HashMap</code>差不多原理吗</li></ul></li><li>BloomFilter 布隆过滤器特性<ul><li>使用 BloomFilter 布隆过滤器的话，需要提前将已存在的 KEY ，初始化存储到【BloomFilter 缓存】中，BloomFilter 不存储 KEY 是不存在的情况</li><li>BloomFilter 存在误判。简单来说，存在的不一定存在，不存在的一定不存在。这样就会导致，一个存在的 KEY 被误判成不存在。</li><li>同时，BloomFilter 不允许删除。例如说，一个 KEY 一开始是不存在的，后来数据新增了，但是 BloomFilter 不允许删除的特点，就会导致一直会被判断成不存在。</li></ul></li></ul></li></ul><h3 id="2、缓存雪崩"><a href="#2、缓存雪崩" class="headerlink" title="2、缓存雪崩"></a>2、缓存雪崩</h3><h3 id="什么是缓存雪崩"><a href="#什么是缓存雪崩" class="headerlink" title="什么是缓存雪崩"></a>什么是缓存雪崩</h3><ul><li>缓存雪崩，是指缓存由于某些原因无法提供服务( 例如，缓存挂掉了 )，所有请求全部达到 DB 中，导致 DB 负荷大增，最终挂掉的情况。</li></ul><h4 id="如何避免缓存雪崩的问题"><a href="#如何避免缓存雪崩的问题" class="headerlink" title="如何避免缓存雪崩的问题"></a>如何避免缓存雪崩的问题</h4><ul><li><p>预防和解决缓存雪崩的问题，可以从以下多个方面进行共同着手。</p></li><li><p>1）缓存高可用</p><ul><li>通过搭建缓存的高可用，避免缓存挂掉导致无法提供服务的情况，从而降低出现缓存雪崩的情况。</li><li>假设我们使用 Redis 作为缓存，则可以使用 Redis Sentinel 或 Redis Cluster 实现高可用。</li></ul></li><li>2）本地缓存<ul><li>如果使用本地缓存时，即使分布式缓存挂了，也可以将 DB 查询到的结果缓存到本地，避免后续请求全部到达 DB 中。</li></ul></li><li>3）请求 DB 限流<ul><li>通过限制 DB 的每秒请求数，避免把 DB 也打挂了。这样至少能有两个好处：<ul><li>1、可能有一部分用户，还可以使用，系统还没死透。</li><li>2、未来缓存服务恢复后，系统立即就已经恢复，无需再处理 DB 也挂掉的情况。</li></ul></li><li>当然，被限流的请求，我们最好也要有相应的处理，走【服务降级】，提供一些默认的值，或者友情提示，甚至空白的值也行。<ul><li>如果我们使用 Java ，则可以使用 Guava RateLimiter、Sentinel、Hystrix 实现限流的功能。</li></ul></li></ul></li></ul><h3 id="3、缓存击穿"><a href="#3、缓存击穿" class="headerlink" title="3、缓存击穿"></a>3、缓存击穿</h3><h3 id="什么是缓存击穿"><a href="#什么是缓存击穿" class="headerlink" title="什么是缓存击穿"></a>什么是缓存击穿</h3><ul><li><p>缓存击穿，是指某个<code>极度</code>、<code>热点</code>数据在某个时间点过期时，恰好在这个时间点对这个 KEY 有大量的并发请求过来，这些请求发现缓存过期一般都会从 DB 加载数据并回设到缓存，但是这个时候大并发的请求可能会瞬间 DB 压垮。</p></li><li><p>开发人员使用缓存 + 过期时间的策略既可以加速数据读写，又保证数据的定期更新，这种模式基本能够满足绝大部分需求。但是有两个问题如果同时出现，可能就会对应用造成致命的危害：</p><ul><li>当前 key 是一个热点 key( 例如一个热门的娱乐新闻），并发量非常大。</li><li>重建缓存不能在短时间完成，可能是一个复杂计算，例如复杂的 SQL、多次 IO、多个依赖等。</li></ul></li><li><p>在缓存失效的瞬间，有大量线程来重建缓存 ( 如下图)，造成后端负载加大，甚至可能会让应用崩溃。</p></li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/cache/cache.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li>击穿就是冲拳出击，雪崩的话是直接摧毁了</li></ul><h3 id="如何避免缓存击穿的问题"><a href="#如何避免缓存击穿的问题" class="headerlink" title="如何避免缓存击穿的问题"></a>如何避免缓存击穿的问题</h3><ul><li><p>要解决这个问题最大的目标就是减少重建缓存的次数</p></li><li><p>1）方案一，使用互斥锁。</p><ul><li>请求发现缓存不存在后，去查询 DB 前，使用分布式锁，保证有且只有一个线程去查询 DB ，并更新到缓存。流程如下：<ul><li>1、获取分布式锁，直到成功或超时。如果超时，则抛出异常，返回。如果成功，继续向下执行。</li><li>2、获取缓存。如果存在值，则直接返回；如果不存在，则继续往下执行。获得到锁，可能已经被“那个”线程去查询过 DB ，并更新到缓存中了。</li><li>3、查询 DB ，并更新到缓存中，返回值。</li></ul></li></ul></li><li><p>2）方案二，手动过期。</p><ul><li>缓存上从不设置过期时间，功能上将过期时间存在 KEY 对应的 VALUE 里。流程如下：<ul><li>1、获取缓存。通过 VALUE 的过期时间，判断是否过期。如果未过期，则直接返回；如果已过期，继续往下执行。</li><li>2、通过一个后台的异步线程进行缓存的构建，也就是“手动”过期。通过后台的异步线程，保证有且只有一个线程去查询 DB。</li><li>3、同时，虽然 VALUE 已经过期，还是直接返回。通过这样的方式，保证服务的可用性，虽然损失了一定的时效性。</li></ul></li></ul></li></ul><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="解决数据一致性问题"><a href="#解决数据一致性问题" class="headerlink" title="解决数据一致性问题"></a>解决数据一致性问题</h3><ul><li><p>方案一的思路是扫描数据库的数据变化记录，比如数据表里面的数据更新时间戳，或者订阅数据库的binlog记录。当扫描到数据变化时，删除对应的缓存数据。</p></li><li><p>方案二的思路是借助于携程的消息通知平台服务。在订单处理流转的各个重要环节，会有消息事件产生。通过订阅这些消息，能够感知到订单数据的变化，并且通过对不同消息的影响数据范围可以精准地配置缓存数据更新。</p></li></ul><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul><li><p>一般避免以上情况发生我们从三个时间段去分析下：</p><ul><li>事前：Redis 高可用、主从+哨兵、Redis cluster，避免全盘崩溃。</li><li>事中：本地 ehcache 缓存 + Hystrix 限流+降级，避免MySQL 被打死。</li><li>事后：Redis 持久化 RDB+AOF，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。</li></ul></li><li><p>使用限流组件，可以设置每秒的请求，有多少能通过组件，剩余的未通过的请求，怎么办？走降级！可以返回一些默认的值，或者友情提示，或者空白的值</p></li><li><p>生活中举个例子就是可以遇到某明星爆出什么事情，你发现你去微博怎么刷都空白界面，但是有的人又直接进了，你多刷几次也出来了，那是做了降级，牺牲部分用户的体验换来服务器的稳定</p></li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li><li><a href="https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug</a></li><li><a href="https://blog.csdn.net/qq_35190492/article/details/102889333" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/102889333</a></li><li><a href="https://mp.weixin.qq.com/s/0ls1QYKAIiZdXhKPQ62OrQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/0ls1QYKAIiZdXhKPQ62OrQ</a></li></ul></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">缓存-缓存与DB的一致性处理</h4></a></div><div class="waves-block waves-effect next"><a href="/2018/02/01/backend/dataStructure/数据结构-二叉树/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">数据结构-二叉树</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2020</span> <span><a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD50lEQVR42u3aO3LjQAwFQN//0rupq2SR7wFDy0ErUskyiWkGED5fX/Hr37fX6+fJ+9f/ff1rcpfrT97FcPiFAwcOHDjio74L6/rza4IEIvnrNdb1N5Mz4sCBAweOsxzvArp+P0vPSYgbpjzp4sCBAweOv8CRk50tzBKmTfw4cODAgeOzHLNmX9uw2/Q7ceDAgQPHZznyY1wnvAQobzjOWo2/1CvFgQMHDhzdKepG4V9+/8h+Bw4cOHDgGA1+8qTbprFTSxLJokMUJw4cOHDgWHPkCWk/Opql9nbg1JZnOHDgwIHjLMcmXbVhXV+5rafaVBrdFwcOHDhwrDk2jcKkPGvft4Vfvaxw9KcADhw4cOC4/maePts0PCur9qXj5vo4cODAgWNz/XxZbZZKzxaKSVRJtNHmIA4cOHDgKDnadYG8kZeTJY9kFlsbOQ4cOHDgeIKjTU5JQHmIOegjbUEcOHDgwPErHO14abO+0CbItrys9ztw4MCBA8f8XEURdd3Oy1fc6hDL9F9P3nDgwIEDx5pjn0rbYmxW1H2NXnXkOHDgwIHjKMesMReNc+K1iTzBbxYyokSLAwcOHDjWJVyertpVhrbka1Ns3kY8kMJx4MCBA0fJ0ZrNmnrtlTdLeO2VceDAgQPHhiMfNeW3nK04tDHkkRQFGw4cOHDgWHO0YbVJLm/zzcq/tskYNQpx4MCBA8eCY9b4y+vCdtmuHWjNEvlbOBw4cODA8QBH21ybJbZ9JfXI9XHgwIEDx5nrDxNbQpM39U4tQLQP6WZ/EAcOHDhwLNqCM8tZAXaKe7NC8cNJceDAgQPHIY48sbVLcvm4KL/+rBGZZFIcOHDgwPEEx6m02hZpeZsvH1y1d8eBAwcOHHuONt22iXZTXM0akfl9b8ZOOHDgwIFjwdEuJcxuuV9f2KThPAHjwIEDB44NR5Js9oeZhZuvJuTp/CZOHDhw4MBxiCM5fLt2sBkateOlfGx288hx4MCBA8eao01Op4ZS7QCpXnpbNA1x4MCBA8eGY7bK1tK0o6k2lbY/CG72O3DgwIEDx5ojb/m1BVI7rGobkW1b8IYMBw4cOHCsOTYNu3b5YJZu80bkZvEi8saBAwcOHAHHPonmCWy2BrfpdNZlJA4cOHDgWHNs0t5mWSE5dgvXNhk3PwJw4MCBA8ds+NQmvydGU3lhOUu0OHDgwIHjOY6nj1cvrsWP6lQVhgMHDhw4PsWRjH/2dWTbWDwwf8OBAwcOHB/iaIu9tp2Xl1v70dcPUeHAgQMHjkMc+3WEdjFilnrbxb4WFAcOHDhw7DnasmfW/psFkT+SvPjMv4MDBw4cOEqO/1uaw6ZpdhEhAAAAAElFTkSuQmCC" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="缓存">
+    <meta name="description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从">
+<meta name="keywords" content="缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/cache1.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/cache.png">
+<meta property="og:updated_time" content="2020-08-16T04:24:17.912Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩">
+<meta name="twitter:description" content="前言 用了缓存之后，有哪些常见问题？  常见的问题，可列举如下：  写入问题  缓存何时写入？并且写时如何避免并发重复写入？ 缓存如何失效？ 缓存和 DB 的一致性如何保证？   经典三连问  如何避免缓存穿透的问题？ 如何避免缓存击穿的问题？ 如果避免缓存雪崩的问题？    解析1、缓存穿透什么是缓存穿透 缓存穿透，是指查询一个一定不存在的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/cache/cache1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished" class="page-time">
+  2018-02-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、缓存穿透"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1、缓存穿透</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#什么是缓存穿透"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">什么是缓存穿透</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存穿透的问题"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">如何避免缓存穿透的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、缓存雪崩"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2、缓存雪崩</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存雪崩"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">什么是缓存雪崩</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#如何避免缓存雪崩的问题"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">如何避免缓存雪崩的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、缓存击穿"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">3、缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存击穿"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">什么是缓存击穿</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何避免缓存击穿的问题"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">如何避免缓存击穿的问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解决数据一致性问题"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">解决数据一致性问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-01 00:00:01" datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished">2018-02-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>用了缓存之后，有哪些常见问题？</p>
+</li>
+<li><p>常见的问题，可列举如下：</p>
+</li>
+<li><p>写入问题</p>
+<ul>
+<li>缓存何时写入？并且写时如何避免并发重复写入？</li>
+<li>缓存如何失效？</li>
+<li>缓存和 DB 的一致性如何保证？</li>
+</ul>
+</li>
+<li><p>经典三连问</p>
+<ul>
+<li>如何避免缓存穿透的问题？</li>
+<li>如何避免缓存击穿的问题？</li>
+<li>如果避免缓存雪崩的问题？</li>
+</ul>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h3><h4 id="什么是缓存穿透"><a href="#什么是缓存穿透" class="headerlink" title="什么是缓存穿透"></a>什么是缓存穿透</h4><ul>
+<li><p>缓存穿透，是指查询一个<code>一定不存在</code>的数据，由于缓存是不命中时被动写，并且处于容错考虑，如果从 DB 查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到 DB 去查询，失去了缓存的意义。</p>
+</li>
+<li><p>在流量大时，可能 DB 就挂掉了，要是有人利用不存在的 key 频繁攻击我们的应用，这就是漏洞。如下图：</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/cache/cache1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>上一章节我们已经看到，MySQL 的性能是远不如 Redis 的，如果大量的请求直接打到 MySQL ，则会直接打挂 MySQL 。</li>
+<li>当然，缓存穿透不一定是攻击，也可能是我们自己程序写的问题，疯狂读取不存在的数据，又或者“无脑”的爬虫，顺序爬取数据。</li>
+<li>另外，一定要注意，缓存穿透，指的是查询一个不存在的数据，很容易和我们要讲到的缓存击穿搞混淆。</li>
+</ul>
+<h4 id="如何避免缓存穿透的问题"><a href="#如何避免缓存穿透的问题" class="headerlink" title="如何避免缓存穿透的问题"></a>如何避免缓存穿透的问题</h4><ul>
+<li><p>最基本的就是首先做好参数校验，一些不合法的参数请求直接抛出异常信息返回给客户端。比如查询的数据库 id 不能小于 0、传入的邮箱格式不对的时候直接返回错误消息给客户端等等。</p>
+</li>
+<li><p>1）方案一，缓存空对象。</p>
+<ul>
+<li>当从 DB 查询数据为空，我们仍然将这个空结果进行缓存，具体的值需要使用特殊的标识，能和真正缓存的数据区分开。</li>
+<li>空值做了缓存，意味着缓存层中存了更多的键，需要更多的内存空间 ( 如果是攻击，问题更严重 )，比较有效的方法是针对这类数据设置一个较短的过期时间，让其自动剔除。</li>
+</ul>
+</li>
+<li>2）方案二，使用BloomFilter 布隆过滤器。<ul>
+<li>在缓存服务的基础上，构建 BloomFilter 数据结构，在 BloomFilter 中存储对应的 KEY 是否存在，如果存在，说明该 KEY 对应的值不为空。那么整个逻辑的如下：<ul>
+<li>1、根据 KEY 查询【BloomFilter 缓存】。如果不存在对应的值，直接返回；如果存在，继续向下执行。【后续的流程，就是标准的流程】</li>
+<li>2、根据 KEY 查询在【数据缓存】的值。如果存在值，直接返回；如果不存在值，继续向下执行。</li>
+<li>3、查询 DB 对应的值，如果存在，则更新到缓存，并返回该值。</li>
+</ul>
+</li>
+<li>原理介绍<ul>
+<li>当一个元素加入布隆过滤器中的时候，会进行如下操作：<ul>
+<li>使用布隆过滤器中的哈希函数对元素值进行计算，得到哈希值（有几个哈希函数得到几个哈希值）。</li>
+<li>根据得到的哈希值，在位数组中把对应下标的值置为 1。</li>
+</ul>
+</li>
+<li>当我们需要判断一个元素是否存在于布隆过滤器的时候，会进行如下操作：<ul>
+<li>对给定元素再次进行相同的哈希计算；</li>
+<li>得到值之后判断位数组中的每个元素是否都为 1，如果值都为 1，那么说明这个值在布隆过滤器中，如果存在一个值不为 1，说明该元素不在布隆过滤器中。</li>
+</ul>
+</li>
+<li>这不和<code>HashMap</code>差不多原理吗</li>
+</ul>
+</li>
+<li>BloomFilter 布隆过滤器特性<ul>
+<li>使用 BloomFilter 布隆过滤器的话，需要提前将已存在的 KEY ，初始化存储到【BloomFilter 缓存】中，BloomFilter 不存储 KEY 是不存在的情况</li>
+<li>BloomFilter 存在误判。简单来说，存在的不一定存在，不存在的一定不存在。这样就会导致，一个存在的 KEY 被误判成不存在。</li>
+<li>同时，BloomFilter 不允许删除。例如说，一个 KEY 一开始是不存在的，后来数据新增了，但是 BloomFilter 不允许删除的特点，就会导致一直会被判断成不存在。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2、缓存雪崩"><a href="#2、缓存雪崩" class="headerlink" title="2、缓存雪崩"></a>2、缓存雪崩</h3><h3 id="什么是缓存雪崩"><a href="#什么是缓存雪崩" class="headerlink" title="什么是缓存雪崩"></a>什么是缓存雪崩</h3><ul>
+<li>缓存雪崩，是指缓存由于某些原因无法提供服务( 例如，缓存挂掉了 )，所有请求全部达到 DB 中，导致 DB 负荷大增，最终挂掉的情况。</li>
+</ul>
+<h4 id="如何避免缓存雪崩的问题"><a href="#如何避免缓存雪崩的问题" class="headerlink" title="如何避免缓存雪崩的问题"></a>如何避免缓存雪崩的问题</h4><ul>
+<li><p>预防和解决缓存雪崩的问题，可以从以下多个方面进行共同着手。</p>
+</li>
+<li><p>1）缓存高可用</p>
+<ul>
+<li>通过搭建缓存的高可用，避免缓存挂掉导致无法提供服务的情况，从而降低出现缓存雪崩的情况。</li>
+<li>假设我们使用 Redis 作为缓存，则可以使用 Redis Sentinel 或 Redis Cluster 实现高可用。</li>
+</ul>
+</li>
+<li>2）本地缓存<ul>
+<li>如果使用本地缓存时，即使分布式缓存挂了，也可以将 DB 查询到的结果缓存到本地，避免后续请求全部到达 DB 中。</li>
+</ul>
+</li>
+<li>3）请求 DB 限流<ul>
+<li>通过限制 DB 的每秒请求数，避免把 DB 也打挂了。这样至少能有两个好处：<ul>
+<li>1、可能有一部分用户，还可以使用，系统还没死透。</li>
+<li>2、未来缓存服务恢复后，系统立即就已经恢复，无需再处理 DB 也挂掉的情况。</li>
+</ul>
+</li>
+<li>当然，被限流的请求，我们最好也要有相应的处理，走【服务降级】，提供一些默认的值，或者友情提示，甚至空白的值也行。<ul>
+<li>如果我们使用 Java ，则可以使用 Guava RateLimiter、Sentinel、Hystrix 实现限流的功能。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3、缓存击穿"><a href="#3、缓存击穿" class="headerlink" title="3、缓存击穿"></a>3、缓存击穿</h3><h3 id="什么是缓存击穿"><a href="#什么是缓存击穿" class="headerlink" title="什么是缓存击穿"></a>什么是缓存击穿</h3><ul>
+<li><p>缓存击穿，是指某个<code>极度</code>、<code>热点</code>数据在某个时间点过期时，恰好在这个时间点对这个 KEY 有大量的并发请求过来，这些请求发现缓存过期一般都会从 DB 加载数据并回设到缓存，但是这个时候大并发的请求可能会瞬间 DB 压垮。</p>
+</li>
+<li><p>开发人员使用缓存 + 过期时间的策略既可以加速数据读写，又保证数据的定期更新，这种模式基本能够满足绝大部分需求。但是有两个问题如果同时出现，可能就会对应用造成致命的危害：</p>
+<ul>
+<li>当前 key 是一个热点 key( 例如一个热门的娱乐新闻），并发量非常大。</li>
+<li>重建缓存不能在短时间完成，可能是一个复杂计算，例如复杂的 SQL、多次 IO、多个依赖等。</li>
+</ul>
+</li>
+<li><p>在缓存失效的瞬间，有大量线程来重建缓存 ( 如下图)，造成后端负载加大，甚至可能会让应用崩溃。</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/cache/cache.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>击穿就是冲拳出击，雪崩的话是直接摧毁了</li>
+</ul>
+<h3 id="如何避免缓存击穿的问题"><a href="#如何避免缓存击穿的问题" class="headerlink" title="如何避免缓存击穿的问题"></a>如何避免缓存击穿的问题</h3><ul>
+<li><p>要解决这个问题最大的目标就是减少重建缓存的次数</p>
+</li>
+<li><p>1）方案一，使用互斥锁。</p>
+<ul>
+<li>请求发现缓存不存在后，去查询 DB 前，使用分布式锁，保证有且只有一个线程去查询 DB ，并更新到缓存。流程如下：<ul>
+<li>1、获取分布式锁，直到成功或超时。如果超时，则抛出异常，返回。如果成功，继续向下执行。</li>
+<li>2、获取缓存。如果存在值，则直接返回；如果不存在，则继续往下执行。获得到锁，可能已经被“那个”线程去查询过 DB ，并更新到缓存中了。</li>
+<li>3、查询 DB ，并更新到缓存中，返回值。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>2）方案二，手动过期。</p>
+<ul>
+<li>缓存上从不设置过期时间，功能上将过期时间存在 KEY 对应的 VALUE 里。流程如下：<ul>
+<li>1、获取缓存。通过 VALUE 的过期时间，判断是否过期。如果未过期，则直接返回；如果已过期，继续往下执行。</li>
+<li>2、通过一个后台的异步线程进行缓存的构建，也就是“手动”过期。通过后台的异步线程，保证有且只有一个线程去查询 DB。</li>
+<li>3、同时，虽然 VALUE 已经过期，还是直接返回。通过这样的方式，保证服务的可用性，虽然损失了一定的时效性。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="解决数据一致性问题"><a href="#解决数据一致性问题" class="headerlink" title="解决数据一致性问题"></a>解决数据一致性问题</h3><ul>
+<li><p>方案一的思路是扫描数据库的数据变化记录，比如数据表里面的数据更新时间戳，或者订阅数据库的binlog记录。当扫描到数据变化时，删除对应的缓存数据。</p>
+</li>
+<li><p>方案二的思路是借助于携程的消息通知平台服务。在订单处理流转的各个重要环节，会有消息事件产生。通过订阅这些消息，能够感知到订单数据的变化，并且通过对不同消息的影响数据范围可以精准地配置缓存数据更新。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>一般避免以上情况发生我们从三个时间段去分析下：</p>
+<ul>
+<li>事前：Redis 高可用、主从+哨兵、Redis cluster，避免全盘崩溃。</li>
+<li>事中：本地 ehcache 缓存 + Hystrix 限流+降级，避免MySQL 被打死。</li>
+<li>事后：Redis 持久化 RDB+AOF，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。</li>
+</ul>
+</li>
+<li><p>使用限流组件，可以设置每秒的请求，有多少能通过组件，剩余的未通过的请求，怎么办？走降级！可以返回一些默认的值，或者友情提示，或者空白的值</p>
+</li>
+<li><p>生活中举个例子就是可以遇到某明星爆出什么事情，你发现你去微博怎么刷都空白界面，但是有的人又直接进了，你多刷几次也出来了，那是做了降级，牺牲部分用户的体验换来服务器的稳定</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+<li><a href="https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug</a></li>
+<li><a href="https://blog.csdn.net/qq_35190492/article/details/102889333" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/102889333</a></li>
+<li><a href="https://mp.weixin.qq.com/s/0ls1QYKAIiZdXhKPQ62OrQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/0ls1QYKAIiZdXhKPQ62OrQ</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/02/01/backend/cache/basic/缓存-缓存穿透-布隆过滤器/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">缓存-缓存穿透-布隆过滤器</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">缓存-缓存与DB的一致性处理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&title=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD50lEQVR42u3aO3LjQAwFQN//0rupq2SR7wFDy0ErUskyiWkGED5fX/Hr37fX6+fJ+9f/ff1rcpfrT97FcPiFAwcOHDjio74L6/rza4IEIvnrNdb1N5Mz4sCBAweOsxzvArp+P0vPSYgbpjzp4sCBAweOv8CRk50tzBKmTfw4cODAgeOzHLNmX9uw2/Q7ceDAgQPHZznyY1wnvAQobzjOWo2/1CvFgQMHDhzdKepG4V9+/8h+Bw4cOHDgGA1+8qTbprFTSxLJokMUJw4cOHDgWHPkCWk/Opql9nbg1JZnOHDgwIHjLMcmXbVhXV+5rafaVBrdFwcOHDhwrDk2jcKkPGvft4Vfvaxw9KcADhw4cOC4/maePts0PCur9qXj5vo4cODAgWNz/XxZbZZKzxaKSVRJtNHmIA4cOHDgKDnadYG8kZeTJY9kFlsbOQ4cOHDgeIKjTU5JQHmIOegjbUEcOHDgwPErHO14abO+0CbItrys9ztw4MCBA8f8XEURdd3Oy1fc6hDL9F9P3nDgwIEDx5pjn0rbYmxW1H2NXnXkOHDgwIHjKMesMReNc+K1iTzBbxYyokSLAwcOHDjWJVyertpVhrbka1Ns3kY8kMJx4MCBA0fJ0ZrNmnrtlTdLeO2VceDAgQPHhiMfNeW3nK04tDHkkRQFGw4cOHDgWHO0YbVJLm/zzcq/tskYNQpx4MCBA8eCY9b4y+vCdtmuHWjNEvlbOBw4cODA8QBH21ybJbZ9JfXI9XHgwIEDx5nrDxNbQpM39U4tQLQP6WZ/EAcOHDhwLNqCM8tZAXaKe7NC8cNJceDAgQPHIY48sbVLcvm4KL/+rBGZZFIcOHDgwPEEx6m02hZpeZsvH1y1d8eBAwcOHHuONt22iXZTXM0akfl9b8ZOOHDgwIFjwdEuJcxuuV9f2KThPAHjwIEDB44NR5Js9oeZhZuvJuTp/CZOHDhw4MBxiCM5fLt2sBkateOlfGx288hx4MCBA8eao01Op4ZS7QCpXnpbNA1x4MCBA8eGY7bK1tK0o6k2lbY/CG72O3DgwIEDx5ojb/m1BVI7rGobkW1b8IYMBw4cOHCsOTYNu3b5YJZu80bkZvEi8saBAwcOHAHHPonmCWy2BrfpdNZlJA4cOHDgWHNs0t5mWSE5dgvXNhk3PwJw4MCBA8ds+NQmvydGU3lhOUu0OHDgwIHjOY6nj1cvrsWP6lQVhgMHDhw4PsWRjH/2dWTbWDwwf8OBAwcOHB/iaIu9tp2Xl1v70dcPUeHAgQMHjkMc+3WEdjFilnrbxb4WFAcOHDhw7DnasmfW/psFkT+SvPjMv4MDBw4cOEqO/1uaw6ZpdhEhAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

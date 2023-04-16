@@ -1,1 +1,647 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>Druid Monitor | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="druid"><meta name="description" content="Druid Monitor监控JavaSE和JavaWeb效果图:                                                                                             logo               http://blog.csdn.net/binglovezi/article/details/5061026"><meta name="keywords" content="druid"><meta property="og:type" content="article"><meta property="og:title" content="Druid Monitor"><meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="Druid Monitor监控JavaSE和JavaWeb效果图:                                                                                             logo               http://blog.csdn.net/binglovezi/article/details/5061026"><meta property="og:locale" content="default"><meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/druidMonitor.png"><meta property="og:updated_time" content="2019-11-10T02:08:41.589Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Druid Monitor"><meta name="twitter:description" content="Druid Monitor监控JavaSE和JavaWeb效果图:                                                                                             logo               http://blog.csdn.net/binglovezi/article/details/5061026"><meta name="twitter:image" content="http://www.songshuiyang.com/images/server/数据库/druidMonitor.png"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="/tags/Java基础"><i class="icon icon-lg icon-bookmark"></i> Java基础</a></li><li class="waves-block waves-effect"><a href="/tags/Java集合"><i class="icon icon-lg icon-camera"></i> Java集合</a></li><li class="waves-block waves-effect"><a href="/tags/Java并发"><i class="icon icon-lg icon-fire"></i> Java并发</a></li><li class="waves-block waves-effect"><a href="/tags/Io"><i class="icon icon-lg icon-film"></i> Java IO</a></li><li class="waves-block waves-effect"><a href="/categories/JVM"><i class="icon icon-lg icon-gift"></i> JVM</a></li><li class="waves-block waves-effect"><a href="/categories/Spring"><i class="icon icon-lg icon-money"></i> Spring</a></li><li class="waves-block waves-effect"><a href="/categories/SpringMvc"><i class="icon icon-lg icon-bullhorn"></i> SpringMvc</a></li><li class="waves-block waves-effect"><a href="/categories/SpringBoot"><i class="icon icon-lg icon-bolt"></i> SpringBoot</a></li><li class="waves-block waves-effect"><a href="/categories/SpringCloud"><i class="icon icon-lg icon-cogs"></i> SpringCloud</a></li><li class="waves-block waves-effect"><a href="/categories/Mybatis"><i class="icon icon-lg icon-tasks"></i> Mybatis</a></li><li class="waves-block waves-effect"><a href="/categories/设计模式"><i class="icon icon-lg icon-calendar"></i> 设计模式</a></li><li class="waves-block waves-effect"><a href="/categories/数据库"><i class="icon icon-lg icon-compass"></i> 数据库</a></li><li class="waves-block waves-effect"><a href="/categories/缓存"><i class="icon icon-lg icon-comment"></i> 缓存</a></li><li class="waves-block waves-effect"><a href="/categories/消息队列"><i class="icon icon-lg icon-coffee"></i> 消息队列</a></li><li class="waves-block waves-effect"><a href="/categories/分布式"><i class="icon icon-lg icon-code"></i> 分布式</a></li><li class="waves-block waves-effect"><a href="/categories/计算机网络"><i class="icon icon-lg icon-umbrella"></i> 计算机网络</a></li><li class="waves-block waves-effect"><a href="/categories/数据结构"><i class="icon icon-lg icon-spinner"></i> 数据结构</a></li><li class="waves-block waves-effect"><a href="/categories/Linux"><i class="icon icon-lg icon-magic"></i> Linux</a></li><li class="waves-block waves-effect"><a href="/categories/前端"><i class="icon icon-lg icon-twitter"></i> 前端</a></li><li class="waves-block waves-effect"><a href="/categories/笔记"><i class="icon icon-lg icon-bell"></i> 笔记</a></li><li class="waves-block waves-effect"><a href="/categories/开发工具"><i class="icon icon-lg icon-strikethrough"></i> 开发工具</a></li><li class="waves-block waves-effect"><a href="/categories/业务"><i class="icon icon-lg icon-pinterest"></i> 业务</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">Druid Monitor</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">Druid Monitor</h1><h5 class="subtitle"> <time datetime="2018-03-02T16:00:00.000Z" itemprop="datePublished" class="page-time">2018-03-03</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Druid-Monitor监控JavaSE和JavaWeb"><span class="post-toc-number">1.</span> <span class="post-toc-text">Druid Monitor监控JavaSE和JavaWeb</span></a></li></ol></nav></aside><article id="post-backend/database/Druid Monitor" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">Druid Monitor</h1><div class="post-meta"> <time class="post-time" title="2018-03-03 00:00:00" datetime="2018-03-02T16:00:00.000Z" itemprop="datePublished">2018-03-03</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="Druid-Monitor监控JavaSE和JavaWeb"><a href="#Druid-Monitor监控JavaSE和JavaWeb" class="headerlink" title="Druid Monitor监控JavaSE和JavaWeb"></a>Druid Monitor监控JavaSE和JavaWeb</h2><p>效果图:<br></p><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/数据库/druidMonitor.png" alt="logo" title=""></div><div class="image-caption">logo</div></figure><p></p><p><a href="http://blog.csdn.net/binglovezi/article/details/50610269" target="_blank" rel="noopener">http://blog.csdn.net/binglovezi/article/details/50610269</a></p></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid/">druid</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Druid Monitor》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2018/03/03/backend/distributed/dobbo/分布式-Dubbo-概念介绍/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">分布式-Dubbo-概念介绍</h4></a></div><div class="waves-block waves-effect next"><a href="/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">分布式-Zookeeper-基本命令</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2020</span> <span><a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Druid Monitor》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACwUlEQVR42u3a0WrrMBAE0Pz/T7dwnwrF9sxKSsrl6CkUx9FxIavM7usVr69/6/71z7/8vub3urpb/lnbFh4eHt5o6/kmZh+W8/J33e8ZDw8P7zQvKQYJ8n4TSaloi9ODBQ8PD++jvOSDZ/fEw8PD+195yboPJu6P2uuPGw8PD++dvCSMSDA57P7Y/YGsBQ8PDy/m7WqAvfP1B/p7eHh4eOVBOf/Sb4cJ2si42C0eHh7eAd4shE1aXDPYrIX2UDbw8PDwDvNmccBKAcjjjLxEXRYGPDw8vE28PHTIg91ZpJs33obxMR4eHt4xXtsMy0cB2ge0Hnzg4eHhneC1Dad8K/kd8lJxpHeHh4eHt8BrD7L5wFN7hyJimKXUeHh4eCNevrn2mLu+9ZXyczkZgYeHh7eJlze6VhpUs8C3vX+RB+Ph4eEt85KwYG9LrH3dHvTx8PDwzvHyr+NZc2sWy+btsfoXAB4eHt4Cb9YAWx84yPeQfGKRUuPh4eEt89rwdHZl+yiTA31ExcPDwzvAS75F2wKwMjjVttaKCQE8PDy8Tby9gFkE3AYfeWiCh4eHd4KXxwErMW4bSSQtrvqfgYeHh7eVNxuWSvBtYchjiyL2xcPDw9vKawPT2fPLhw/aR/aAx8PDw3sjL3pzeXReGZ9qA5FXe2s8PDy8kpeHEXlz6ytY+WhCPrhwORmBh4eHt4m3YeKgHMzaOzpQx7h4eHh4y7xdYcSsGKwftd+UteDh4eFd8IpKEhyj27+0W48KGB4eHt4B3iwRba+ZbbGIG9YXHh4eXslrb73SoLovMLPRrofCgIeHh3eM1w4NtNfk4cWsID38bsDDw8P7EC85IreM5M6zYzoeHh7e3+HlgezssJ6HF0cKAx4eHl7MSzaRtJpmh+w8gMgDCzw8PLxzvLYBlg8HrIS2s1GDDf09PDw8vLv1DY0niL2NO1clAAAAAElFTkSuQmCC" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Druid Monitor | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="druid">
+    <meta name="description" content="Druid Monitor监控JavaSE和JavaWeb效果图:                                                                                             logo               http://blog.csdn.net/binglovezi/article/details/5061026">
+<meta name="keywords" content="druid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Druid Monitor">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="Druid Monitor监控JavaSE和JavaWeb效果图:                                                                                             logo               http://blog.csdn.net/binglovezi/article/details/5061026">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/数据库/druidMonitor.png">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.589Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Druid Monitor">
+<meta name="twitter:description" content="Druid Monitor监控JavaSE和JavaWeb效果图:                                                                                             logo               http://blog.csdn.net/binglovezi/article/details/5061026">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/数据库/druidMonitor.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Druid Monitor</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Druid Monitor</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-02T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Druid-Monitor监控JavaSE和JavaWeb"><span class="post-toc-number">1.</span> <span class="post-toc-text">Druid Monitor监控JavaSE和JavaWeb</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/database/Druid Monitor" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Druid Monitor</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-03 00:00:00" datetime="2018-03-02T16:00:00.000Z" itemprop="datePublished">2018-03-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Druid-Monitor监控JavaSE和JavaWeb"><a href="#Druid-Monitor监控JavaSE和JavaWeb" class="headerlink" title="Druid Monitor监控JavaSE和JavaWeb"></a>Druid Monitor监控JavaSE和JavaWeb</h2><p>效果图:<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/数据库/druidMonitor.png" alt="logo" title="">
+                </div>
+                <div class="image-caption">logo</div>
+            </figure> </p>
+<p><a href="http://blog.csdn.net/binglovezi/article/details/50610269" target="_blank" rel="noopener">http://blog.csdn.net/binglovezi/article/details/50610269</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid/">druid</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Druid Monitor》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/03/backend/distributed/dobbo/分布式-Dubbo-概念介绍/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">分布式-Dubbo-概念介绍</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/02/backend/distributed/zookeeper/分布式-Zookeeper-基本命令/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">分布式-Zookeeper-基本命令</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&title=《Druid Monitor》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Druid Monitor》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/03/03/backend/database/Druid Monitor/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACwUlEQVR42u3a0WrrMBAE0Pz/T7dwnwrF9sxKSsrl6CkUx9FxIavM7usVr69/6/71z7/8vub3urpb/lnbFh4eHt5o6/kmZh+W8/J33e8ZDw8P7zQvKQYJ8n4TSaloi9ODBQ8PD++jvOSDZ/fEw8PD+195yboPJu6P2uuPGw8PD++dvCSMSDA57P7Y/YGsBQ8PDy/m7WqAvfP1B/p7eHh4eOVBOf/Sb4cJ2si42C0eHh7eAd4shE1aXDPYrIX2UDbw8PDwDvNmccBKAcjjjLxEXRYGPDw8vE28PHTIg91ZpJs33obxMR4eHt4xXtsMy0cB2ge0Hnzg4eHhneC1Dad8K/kd8lJxpHeHh4eHt8BrD7L5wFN7hyJimKXUeHh4eCNevrn2mLu+9ZXyczkZgYeHh7eJlze6VhpUs8C3vX+RB+Ph4eEt85KwYG9LrH3dHvTx8PDwzvHyr+NZc2sWy+btsfoXAB4eHt4Cb9YAWx84yPeQfGKRUuPh4eEt89rwdHZl+yiTA31ExcPDwzvAS75F2wKwMjjVttaKCQE8PDy8Tby9gFkE3AYfeWiCh4eHd4KXxwErMW4bSSQtrvqfgYeHh7eVNxuWSvBtYchjiyL2xcPDw9vKawPT2fPLhw/aR/aAx8PDw3sjL3pzeXReGZ9qA5FXe2s8PDy8kpeHEXlz6ytY+WhCPrhwORmBh4eHt4m3YeKgHMzaOzpQx7h4eHh4y7xdYcSsGKwftd+UteDh4eFd8IpKEhyj27+0W48KGB4eHt4B3iwRba+ZbbGIG9YXHh4eXslrb73SoLovMLPRrofCgIeHh3eM1w4NtNfk4cWsID38bsDDw8P7EC85IreM5M6zYzoeHh7e3+HlgezssJ6HF0cKAx4eHl7MSzaRtJpmh+w8gMgDCzw8PLxzvLYBlg8HrIS2s1GDDf09PDw8vLv1DY0niL2NO1clAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

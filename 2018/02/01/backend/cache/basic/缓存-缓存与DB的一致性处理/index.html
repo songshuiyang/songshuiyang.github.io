@@ -1,1 +1,690 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>缓存-缓存与DB的一致性处理 | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="缓存"><meta name="description" content="前言 主要有两种情况，会导致缓存和 DB 的一致性问题： 并发的场景下，导致读取老的 DB 数据，更新到缓存中。 这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求 我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中"><meta name="keywords" content="缓存"><meta property="og:type" content="article"><meta property="og:title" content="缓存-缓存与DB的一致性处理"><meta property="og:url" content="http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="前言 主要有两种情况，会导致缓存和 DB 的一致性问题： 并发的场景下，导致读取老的 DB 数据，更新到缓存中。 这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求 我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中"><meta property="og:locale" content="default"><meta property="og:updated_time" content="2020-01-04T12:21:51.983Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="缓存-缓存与DB的一致性处理"><meta name="twitter:description" content="前言 主要有两种情况，会导致缓存和 DB 的一致性问题： 并发的场景下，导致读取老的 DB 数据，更新到缓存中。 这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求 我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="/tags/Java基础"><i class="icon icon-lg icon-bookmark"></i> Java基础</a></li><li class="waves-block waves-effect"><a href="/tags/Java集合"><i class="icon icon-lg icon-camera"></i> Java集合</a></li><li class="waves-block waves-effect"><a href="/tags/Java并发"><i class="icon icon-lg icon-fire"></i> Java并发</a></li><li class="waves-block waves-effect"><a href="/tags/Io"><i class="icon icon-lg icon-film"></i> Java IO</a></li><li class="waves-block waves-effect"><a href="/categories/JVM"><i class="icon icon-lg icon-gift"></i> JVM</a></li><li class="waves-block waves-effect"><a href="/categories/Spring"><i class="icon icon-lg icon-money"></i> Spring</a></li><li class="waves-block waves-effect"><a href="/categories/SpringMvc"><i class="icon icon-lg icon-bullhorn"></i> SpringMvc</a></li><li class="waves-block waves-effect"><a href="/categories/SpringBoot"><i class="icon icon-lg icon-bolt"></i> SpringBoot</a></li><li class="waves-block waves-effect"><a href="/categories/SpringCloud"><i class="icon icon-lg icon-cogs"></i> SpringCloud</a></li><li class="waves-block waves-effect"><a href="/categories/Mybatis"><i class="icon icon-lg icon-tasks"></i> Mybatis</a></li><li class="waves-block waves-effect"><a href="/categories/设计模式"><i class="icon icon-lg icon-calendar"></i> 设计模式</a></li><li class="waves-block waves-effect"><a href="/categories/数据库"><i class="icon icon-lg icon-compass"></i> 数据库</a></li><li class="waves-block waves-effect"><a href="/categories/缓存"><i class="icon icon-lg icon-comment"></i> 缓存</a></li><li class="waves-block waves-effect"><a href="/categories/消息队列"><i class="icon icon-lg icon-coffee"></i> 消息队列</a></li><li class="waves-block waves-effect"><a href="/categories/分布式"><i class="icon icon-lg icon-code"></i> 分布式</a></li><li class="waves-block waves-effect"><a href="/categories/计算机网络"><i class="icon icon-lg icon-umbrella"></i> 计算机网络</a></li><li class="waves-block waves-effect"><a href="/categories/数据结构"><i class="icon icon-lg icon-spinner"></i> 数据结构</a></li><li class="waves-block waves-effect"><a href="/categories/Linux"><i class="icon icon-lg icon-magic"></i> Linux</a></li><li class="waves-block waves-effect"><a href="/categories/前端"><i class="icon icon-lg icon-twitter"></i> 前端</a></li><li class="waves-block waves-effect"><a href="/categories/笔记"><i class="icon icon-lg icon-bell"></i> 笔记</a></li><li class="waves-block waves-effect"><a href="/categories/开发工具"><i class="icon icon-lg icon-strikethrough"></i> 开发工具</a></li><li class="waves-block waves-effect"><a href="/categories/业务"><i class="icon icon-lg icon-pinterest"></i> 业务</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">缓存-缓存与DB的一致性处理</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">缓存-缓存与DB的一致性处理</h1><h5 class="subtitle"> <time datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished" class="page-time">2018-02-01</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解决方案"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">解决方案</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></nav></aside><article id="post-backend/cache/basic/缓存-缓存与DB的一致性处理" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">缓存-缓存与DB的一致性处理</h1><div class="post-meta"> <time class="post-time" title="2018-02-01 00:00:01" datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished">2018-02-01</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul><li>主要有两种情况，会导致缓存和 DB 的一致性问题：<ul><li>并发的场景下，导致读取老的 DB 数据，更新到缓存中。<ul><li>这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求</li><li>我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中。</li></ul></li><li>缓存和 DB 的操作，不在一个事务中，可能只有一个 DB 操作成功，而另一个 Cache 操作失败，导致不一致。</li></ul></li></ul><ul><li><p>当然，有一点我们要注意，缓存和 DB 的一致性，我们指的更多的是最终一致性。我们使用缓存只要是提高读操作的性能，真正在写操作的业务逻辑，还是以数据库为准。</p></li><li><p>例如说，我们可能缓存用户钱包的余额在缓存中，在前端查询钱包余额时，读取缓存，在使用钱包余额时，读取数据库。</p></li></ul><h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ul><li><p>要解决这个问题，目标是</p><ul><li>1、将缓存可能存在的并行写，实现串行写。</li><li>2、实现数据的最终一致性。</li></ul></li><li><p>1）先淘汰缓存，再写数据库 及 先写数据库，再更新缓存</p><ul><li>我们要保证 DB 和缓存的操作，能够在“同一个事务”中，从而实现最终一致性。</li></ul></li><li>2）基于定时任务来实现<ul><li>首先，写入数据库。</li><li>然后，在写入数据库所在的事务中，插入一条记录到任务表。该记录会存储需要更新的缓存 KEY 和 VALUE 。</li><li>【异步】最后，定时任务每秒扫描任务表，更新到缓存中，之后删除该记录。</li></ul></li><li>3）基于消息队列来实现<ul><li>首先，写入数据库。</li><li>然后，发送带有缓存 KEY 和 VALUE 的事务消息。此时，需要有支持事务消息特性的消息队列，或者我们自己封装消息队列，支持事务消息。</li><li>【异步】最后，消费者消费该消息，更新到缓存中。</li></ul></li></ul><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul><li><p>一般来说，如果允许缓存可以稍微的跟数据库偶尔有不一致的情况，也就是说如果你的系统<code>不是严格要求</code> “缓存+数据库” 必须保持一致性的话，最好不要做这个方案，即：<code>读请求和写请求串行化</code>，串到一个<code>内存队列</code>里去。</p></li><li><p>串行化可以保证一定不会出现不一致的情况，但是它也会导致系统的吞吐量大幅度降低，用比正常情况下多几倍的机器去支撑线上的一个请求。</p></li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li><li><a href="https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug</a></li><li><a href="https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/redis-consistence.md" target="_blank" rel="noopener">https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/redis-consistence.md</a></li></ul></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2018/02/01/backend/cache/basic/缓存-缓存穿透-布隆过滤器/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">缓存-缓存穿透-布隆过滤器</h4></a></div><div class="waves-block waves-effect next"><a href="/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2020</span> <span><a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKklEQVR42u3ayXLCQAwFQP7/p8k1h9h5kkyVLdonyniZHg5Cy+sVH++D4/e35/eePzM5c/6c1ycObGxs7Iew36fH+YJ6y00Y5/cenUks2NjY2FvZ54FhssRkU/KtyX+Mf4zY2NjY2K1U4fzKarDExsbGxu6x80QiSSGq6U3+BGxsbOxvY88DQ7UsVQ1p1bdcVkvDxsbGvj0774re//NH+tvY2NjYN2a/i0dS9E+WlZeoJuHq8F5sbGzsRew8APT+9Febu9VUZLJ+bGxs7B3sZMimF67yIlHy9uTeQhDFxsbGXseetEuTxfVGf/JGcp4sYWNjY38DOwF8oolbTWaSLT78FhsbG3s1Oy/o9xZXKN/HAa8caLGxsbGXspPQ0gs/yYZeFTijlgM2Njb2Uva8KN9rJ1THgMrIJG5jY2NjP5adD8dUE5UJtZrS5MM95ZkgbGxs7NuzJwGsNzrTKzBNilx/XIONjY29jl1ddB4CewX9/PMogGFjY2OvZvfat3mrtVpsqjYbopEdbGxs7EXsajk+OZ8P0/SeMCpCYWNjY38BOy8Dnb+4VzDKB4Z6qQ42Njb2PnaeQhSGYIqlq2RzJwlP9GJsbGzsB7InozCTMHNVoMpTqcL4DjY2NvYD2VVwL8zkaUyVkf8M2NjY2FvZSRu1t9Bq4Ok1kvOghY2Njb2VXS3cJOGkuhG9rU+OqKKGjY2N/XB2/oJ8oGe+Nb2gNeqQYGNjYz+W3UsPJhuUb3rePMjLUtjY2Ni72ZM/+lE/OU8SiulQefAIGxsbexG7Fzby8lO1FNVrCfcCJzY2NvYOdrW52yv9XNt+qLYTDuM2NjY29jp2PmTTC369lvC8bfBPEoKNjY29gj0v8eSwHnUyvoONjY29ld0r7iSjOdUA00tFeo1qbGxs7E3sagDIyzfzDZq0BPKWMDY2NvYOdh60ekuvFph6TYjkLc3+AzY2NvZD2PlMS06atIfz5kQ+hISNjY2NXS3W967pgQstXmxsbGzscWKQF/d7W5m0nLGxsbH3sSejNr2yVD4SlLSEy0/GxsbGXsTuFWhy9lVFoigsxWvGxsbGXsH+Acmpkc2ngpDFAAAAAElFTkSuQmCC" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>缓存-缓存与DB的一致性处理 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="缓存">
+    <meta name="description" content="前言 主要有两种情况，会导致缓存和 DB 的一致性问题： 并发的场景下，导致读取老的 DB 数据，更新到缓存中。 这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求 我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中">
+<meta name="keywords" content="缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存-缓存与DB的一致性处理">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 主要有两种情况，会导致缓存和 DB 的一致性问题： 并发的场景下，导致读取老的 DB 数据，更新到缓存中。 这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求 我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-01-04T12:21:51.983Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓存-缓存与DB的一致性处理">
+<meta name="twitter:description" content="前言 主要有两种情况，会导致缓存和 DB 的一致性问题： 并发的场景下，导致读取老的 DB 数据，更新到缓存中。 这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求 我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">缓存-缓存与DB的一致性处理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">缓存-缓存与DB的一致性处理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished" class="page-time">
+  2018-02-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解决方案"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">解决方案</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/cache/basic/缓存-缓存与DB的一致性处理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">缓存-缓存与DB的一致性处理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-01 00:00:01" datetime="2018-01-31T16:00:01.000Z" itemprop="datePublished">2018-02-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>主要有两种情况，会导致缓存和 DB 的一致性问题：<ul>
+<li>并发的场景下，导致读取老的 DB 数据，更新到缓存中。<ul>
+<li>这里，主要指的是，更新 DB 数据之前，先删除 Cache 的数据。在低并发量下没什么问题，但是在高并发下，就会存在问题。在(删除 Cache 的数据, 和更新 DB 数据)时间之间，恰好有一个请求</li>
+<li>我们如果使用被动读，因为此时 DB 数据还是老的，又会将老的数据写入到 Cache 中。</li>
+</ul>
+</li>
+<li>缓存和 DB 的操作，不在一个事务中，可能只有一个 DB 操作成功，而另一个 Cache 操作失败，导致不一致。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>当然，有一点我们要注意，缓存和 DB 的一致性，我们指的更多的是最终一致性。我们使用缓存只要是提高读操作的性能，真正在写操作的业务逻辑，还是以数据库为准。</p>
+</li>
+<li><p>例如说，我们可能缓存用户钱包的余额在缓存中，在前端查询钱包余额时，读取缓存，在使用钱包余额时，读取数据库。</p>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ul>
+<li><p>要解决这个问题，目标是</p>
+<ul>
+<li>1、将缓存可能存在的并行写，实现串行写。</li>
+<li>2、实现数据的最终一致性。</li>
+</ul>
+</li>
+<li><p>1）先淘汰缓存，再写数据库 及 先写数据库，再更新缓存</p>
+<ul>
+<li>我们要保证 DB 和缓存的操作，能够在“同一个事务”中，从而实现最终一致性。</li>
+</ul>
+</li>
+<li>2）基于定时任务来实现<ul>
+<li>首先，写入数据库。</li>
+<li>然后，在写入数据库所在的事务中，插入一条记录到任务表。该记录会存储需要更新的缓存 KEY 和 VALUE 。</li>
+<li>【异步】最后，定时任务每秒扫描任务表，更新到缓存中，之后删除该记录。</li>
+</ul>
+</li>
+<li>3）基于消息队列来实现<ul>
+<li>首先，写入数据库。</li>
+<li>然后，发送带有缓存 KEY 和 VALUE 的事务消息。此时，需要有支持事务消息特性的消息队列，或者我们自己封装消息队列，支持事务消息。</li>
+<li>【异步】最后，消费者消费该消息，更新到缓存中。</li>
+</ul>
+</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>一般来说，如果允许缓存可以稍微的跟数据库偶尔有不一致的情况，也就是说如果你的系统<code>不是严格要求</code> “缓存+数据库” 必须保持一致性的话，最好不要做这个方案，即：<code>读请求和写请求串行化</code>，串到一个<code>内存队列</code>里去。</p>
+</li>
+<li><p>串行化可以保证一定不会出现不一致的情况，但是它也会导致系统的吞吐量大幅度降低，用比正常情况下多几倍的机器去支撑线上的一个请求。</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+<li><a href="https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/TBCEwLVAXdsTszRVpXhVug</a></li>
+<li><a href="https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/redis-consistence.md" target="_blank" rel="noopener">https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/redis-consistence.md</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/02/01/backend/cache/basic/缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">缓存-缓存三连-缓存穿透及缓存击穿及缓存雪崩</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/02/01/backend/dataStructure/数据结构-二叉树/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">数据结构-二叉树</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&title=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-缓存与DB的一致性处理》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-缓存与DB的一致性处理/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKklEQVR42u3ayXLCQAwFQP7/p8k1h9h5kkyVLdonyniZHg5Cy+sVH++D4/e35/eePzM5c/6c1ycObGxs7Iew36fH+YJ6y00Y5/cenUks2NjY2FvZ54FhssRkU/KtyX+Mf4zY2NjY2K1U4fzKarDExsbGxu6x80QiSSGq6U3+BGxsbOxvY88DQ7UsVQ1p1bdcVkvDxsbGvj0774re//NH+tvY2NjYN2a/i0dS9E+WlZeoJuHq8F5sbGzsRew8APT+9Febu9VUZLJ+bGxs7B3sZMimF67yIlHy9uTeQhDFxsbGXseetEuTxfVGf/JGcp4sYWNjY38DOwF8oolbTWaSLT78FhsbG3s1Oy/o9xZXKN/HAa8caLGxsbGXspPQ0gs/yYZeFTijlgM2Njb2Uva8KN9rJ1THgMrIJG5jY2NjP5adD8dUE5UJtZrS5MM95ZkgbGxs7NuzJwGsNzrTKzBNilx/XIONjY29jl1ddB4CewX9/PMogGFjY2OvZvfat3mrtVpsqjYbopEdbGxs7EXsajk+OZ8P0/SeMCpCYWNjY38BOy8Dnb+4VzDKB4Z6qQ42Njb2PnaeQhSGYIqlq2RzJwlP9GJsbGzsB7InozCTMHNVoMpTqcL4DjY2NvYD2VVwL8zkaUyVkf8M2NjY2FvZSRu1t9Bq4Ok1kvOghY2Njb2VXS3cJOGkuhG9rU+OqKKGjY2N/XB2/oJ8oGe+Nb2gNeqQYGNjYz+W3UsPJhuUb3rePMjLUtjY2Ni72ZM/+lE/OU8SiulQefAIGxsbexG7Fzby8lO1FNVrCfcCJzY2NvYOdrW52yv9XNt+qLYTDuM2NjY29jp2PmTTC369lvC8bfBPEoKNjY29gj0v8eSwHnUyvoONjY29ld0r7iSjOdUA00tFeo1qbGxs7E3sagDIyzfzDZq0BPKWMDY2NvYOdh60ekuvFph6TYjkLc3+AzY2NvZD2PlMS06atIfz5kQ+hISNjY2NXS3W967pgQstXmxsbGzscWKQF/d7W5m0nLGxsbH3sSejNr2yVD4SlLSEy0/GxsbGXsTuFWhy9lVFoigsxWvGxsbGXsH+Acmpkc2ngpDFAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

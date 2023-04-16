@@ -1,1 +1,760 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>缓存-基础概念 | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="缓存"><meta name="description" content="前言什么是缓存？ 缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。  目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：  CPU 高速缓存 ：高速缓存的读写速度远高于内存。 CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存 CPU 写数据时，先写到高速缓存，再回写到内存。   磁盘缓存：磁盘缓"><meta name="keywords" content="缓存"><meta property="og:type" content="article"><meta property="og:title" content="缓存-基础概念"><meta property="og:url" content="http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="前言什么是缓存？ 缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。  目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：  CPU 高速缓存 ：高速缓存的读写速度远高于内存。 CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存 CPU 写数据时，先写到高速缓存，再回写到内存。   磁盘缓存：磁盘缓"><meta property="og:locale" content="default"><meta property="og:updated_time" content="2019-11-10T02:08:41.441Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="缓存-基础概念"><meta name="twitter:description" content="前言什么是缓存？ 缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。  目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：  CPU 高速缓存 ：高速缓存的读写速度远高于内存。 CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存 CPU 写数据时，先写到高速缓存，再回写到内存。   磁盘缓存：磁盘缓"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="/tags/Java基础"><i class="icon icon-lg icon-bookmark"></i> Java基础</a></li><li class="waves-block waves-effect"><a href="/tags/Java集合"><i class="icon icon-lg icon-camera"></i> Java集合</a></li><li class="waves-block waves-effect"><a href="/tags/Java并发"><i class="icon icon-lg icon-fire"></i> Java并发</a></li><li class="waves-block waves-effect"><a href="/tags/Io"><i class="icon icon-lg icon-film"></i> Java IO</a></li><li class="waves-block waves-effect"><a href="/categories/JVM"><i class="icon icon-lg icon-gift"></i> JVM</a></li><li class="waves-block waves-effect"><a href="/categories/Spring"><i class="icon icon-lg icon-money"></i> Spring</a></li><li class="waves-block waves-effect"><a href="/categories/SpringMvc"><i class="icon icon-lg icon-bullhorn"></i> SpringMvc</a></li><li class="waves-block waves-effect"><a href="/categories/SpringBoot"><i class="icon icon-lg icon-bolt"></i> SpringBoot</a></li><li class="waves-block waves-effect"><a href="/categories/SpringCloud"><i class="icon icon-lg icon-cogs"></i> SpringCloud</a></li><li class="waves-block waves-effect"><a href="/categories/Mybatis"><i class="icon icon-lg icon-tasks"></i> Mybatis</a></li><li class="waves-block waves-effect"><a href="/categories/设计模式"><i class="icon icon-lg icon-calendar"></i> 设计模式</a></li><li class="waves-block waves-effect"><a href="/categories/数据库"><i class="icon icon-lg icon-compass"></i> 数据库</a></li><li class="waves-block waves-effect"><a href="/categories/缓存"><i class="icon icon-lg icon-comment"></i> 缓存</a></li><li class="waves-block waves-effect"><a href="/categories/消息队列"><i class="icon icon-lg icon-coffee"></i> 消息队列</a></li><li class="waves-block waves-effect"><a href="/categories/分布式"><i class="icon icon-lg icon-code"></i> 分布式</a></li><li class="waves-block waves-effect"><a href="/categories/计算机网络"><i class="icon icon-lg icon-umbrella"></i> 计算机网络</a></li><li class="waves-block waves-effect"><a href="/categories/数据结构"><i class="icon icon-lg icon-spinner"></i> 数据结构</a></li><li class="waves-block waves-effect"><a href="/categories/Linux"><i class="icon icon-lg icon-magic"></i> Linux</a></li><li class="waves-block waves-effect"><a href="/categories/前端"><i class="icon icon-lg icon-twitter"></i> 前端</a></li><li class="waves-block waves-effect"><a href="/categories/笔记"><i class="icon icon-lg icon-bell"></i> 笔记</a></li><li class="waves-block waves-effect"><a href="/categories/开发工具"><i class="icon icon-lg icon-strikethrough"></i> 开发工具</a></li><li class="waves-block waves-effect"><a href="/categories/业务"><i class="icon icon-lg icon-pinterest"></i> 业务</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">缓存-基础概念</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">缓存-基础概念</h1><h5 class="subtitle"> <time datetime="2018-01-31T16:00:00.000Z" itemprop="datePublished" class="page-time">2018-02-01</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">什么是缓存？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么要用缓存？"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">为什么要用缓存？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#缓存算法"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">缓存算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#FIFO（first-in-first-out-先进先出"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">FIFO（first in first out ) 先进先出</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LRU（least-recently-used-最近最少使用"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">LRU（least recently used) 最近最少使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LFU（Least-Frequently-used-最不经常使用"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">LFU（Least Frequently used ) 最不经常使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#OPT（Belady’s-Algorithm）最佳页面置换算法"><span class="post-toc-number">2.1.4.</span> <span class="post-toc-text">OPT（Bélády’s Algorithm）最佳页面置换算法</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#常见的常见的缓存工具和框架有哪些？"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">常见的常见的缓存工具和框架有哪些？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol></nav></aside><article id="post-backend/cache/basic/缓存-基础概念" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">缓存-基础概念</h1><div class="post-meta"> <time class="post-time" title="2018-02-01 00:00:00" datetime="2018-01-31T16:00:00.000Z" itemprop="datePublished">2018-02-01</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="什么是缓存？"><a href="#什么是缓存？" class="headerlink" title="什么是缓存？"></a>什么是缓存？</h3><ul><li><p>缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。</p></li><li><p>目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：</p><ul><li>CPU 高速缓存 ：高速缓存的读写速度远高于内存。<ul><li>CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存</li><li>CPU 写数据时，先写到高速缓存，再回写到内存。</li></ul></li><li>磁盘缓存：磁盘缓存其实就把常用的磁盘数据保存在内存中，内存读写速度也是远高于磁盘的。<ul><li>读数据，时从内存读取。</li><li>写数据时，可先写到内存，定时或定量回写到磁盘，或者是同步回写。</li></ul></li></ul></li></ul><h3 id="为什么要用缓存？"><a href="#为什么要用缓存？" class="headerlink" title="为什么要用缓存？"></a>为什么要用缓存？</h3><ul><li><p>使用缓存的目的，就是提升读写性能。而实际业务场景下，更多的是为了提升读性能，带来更好的性能，更高的并发量。</p></li><li><p>日常业务中，我们使用比较多的数据库是 <code>MySQL</code> ，缓存是 <code>Redis</code> 。一起来看看，阿里云提供的性能规格：</p><ul><li>Redis 性能规格，<a href="https://help.aliyun.com/document_detail/26350.html" target="_blank" rel="noopener">https://help.aliyun.com/document_detail/26350.html</a> 。打底 8W QPS ，最高可达千万 QPS 。</li><li>MySQL 性能规格 <a href="https://help.aliyun.com/document_detail/53637.html" target="_blank" rel="noopener">https://help.aliyun.com/document_detail/53637.html</a> 。打底 1.4K QPS ，最高 7W QPS 。</li></ul></li><li><p>如此一比较，Redis 比 MySQL 的读写性能好很多。那么，我们将 MySQL 的热点数据，缓存到 Redis 中，提升读取性能，也减小 MySQL 的读取压力。例如说：</p><ul><li>论坛帖子的访问频率比较高，且要实时更新阅读量，使用 Redis 记录帖子的阅读量，可以提升性能和并发。</li><li>商品信息，数据更新的频率不高，但是读取的频率很高，特别是热门商品。</li></ul></li></ul><h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="缓存算法"><a href="#缓存算法" class="headerlink" title="缓存算法"></a>缓存算法</h3><h4 id="FIFO（first-in-first-out-先进先出"><a href="#FIFO（first-in-first-out-先进先出" class="headerlink" title="FIFO（first in first out ) 先进先出"></a>FIFO（first in first out ) 先进先出</h4><ul><li><p>FIFO 算法是一种比较容易实现的算法。它的思想是先进先出（FIFO，队列），这是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉。</p></li><li><p>FIFO 算法的描述：设计一种缓存结构，该结构在构造时确定大小，假设大小为 K，并有两个功能：</p><ul><li>set(key,value)：将记录(key,value)插入该结构。当缓存满时，将最先进入缓存的数据置换掉。</li><li>get(key)：返回key对应的value值。</li></ul></li><li><p>实现：</p><ul><li>维护一个FIFO队列，按照时间顺序将各数据（已分配页面）链接起来组成队列，并将置换指针指向队列的队首。</li><li>再进行置换时，只需把置换指针所指的数据（页面）顺次换出，并把新加入的数据插到队尾即可。</li></ul></li></ul><h4 id="LRU（least-recently-used-最近最少使用"><a href="#LRU（least-recently-used-最近最少使用" class="headerlink" title="LRU（least recently used) 最近最少使用"></a>LRU（least recently used) 最近最少使用</h4><ul><li><p>是一种常见的缓存算法，在很多分布式缓存系统（如Redis, Memcached）中都有广泛使用。</p></li><li><p>LRU算法的思想是：</p><ul><li>不断将最近使用的对象放到列表的顶部，这样最近最少使用的对象就会慢慢沉到底部</li><li>当容量不足的时候，可以将底部的对象去除，以留出空间给新的对象</li></ul></li><li><p>LRU算法的描述： 设计一种缓存结构，该结构在构造时确定大小，假设大小为 K，并有两个功能：</p><ul><li>set(key,value)：将记录(key,value)插入该结构。当缓存满时，将最久未使用的数据置换掉。</li><li>get(key)：返回key对应的value值。</li></ul></li><li><p>实现：</p><ul><li>最朴素的思想就是用数组+时间戳的方式，不过这样做效率较低。因此，我们可以用双向链表（LinkedList）+哈希表（HashMap）实现（链表用来表示位置，哈希表用来存储和查找）</li><li>在Java里有对应的数据结构LinkedHashMap。</li></ul></li><li><p>手写 LRU 代码的实现，有多种方式。其中，最简单的是基于 LinkedHashMap 来实现，代码如下：</p></li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">LinkedHashMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> CACHE_SIZE;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 传递进来最多能缓存多少数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cacheSize 缓存大小</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> cacheSize)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// true 表示让 LinkedHashMap 按照访问顺序来进行排序，最近访问的放在头部，最老访问的放在尾部。</span></span><br><span class="line">        <span class="keyword">super</span>((<span class="keyword">int</span>) Math.ceil(cacheSize / <span class="number">0.75</span>) + <span class="number">1</span>, <span class="number">0.75f</span>, <span class="keyword">true</span>);</span><br><span class="line">        CACHE_SIZE = cacheSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Map.Entry&lt;K, V&gt; eldest)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 当 map 中的数据量大于指定的缓存个数的时候，就自动删除最老的数据。</span></span><br><span class="line">        <span class="keyword">return</span> size() &gt; CACHE_SIZE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="LFU（Least-Frequently-used-最不经常使用"><a href="#LFU（Least-Frequently-used-最不经常使用" class="headerlink" title="LFU（Least Frequently used ) 最不经常使用"></a>LFU（Least Frequently used ) 最不经常使用</h4><ul><li><p>也是一种常见的缓存算法。</p></li><li><p>顾名思义，LFU算法的思想是：如果一个数据在最近一段时间很少被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最小频率访问的数据最先被淘汰。</p></li><li><p>设计一种缓存结构，该结构在构造时确定大小，假设大小为 K，并有两个功能：</p><ul><li>set(key,value)：将记录(key,value)插入该结构。当缓存满时，将访问频率最低的数据置换掉。</li><li>get(key)：返回key对应的value值。</li></ul></li><li><p>算法实现策略：</p><ul><li>考虑到 LFU 会淘汰访问频率最小的数据，我们需要一种合适的方法按大小顺序维护数据访问的频率。</li><li>LFU 算法本质上可以看做是一个 top K 问题(K = 1)，即选出频率最小的元素，因此我们很容易想到可以用二项堆来选择频率最小的元素，这样的实现比较高效。最终实现策略为小顶堆+哈希表。</li></ul></li></ul><h4 id="OPT（Belady’s-Algorithm）最佳页面置换算法"><a href="#OPT（Belady’s-Algorithm）最佳页面置换算法" class="headerlink" title="OPT（Bélády’s Algorithm）最佳页面置换算法"></a>OPT（Bélády’s Algorithm）最佳页面置换算法</h4><ul><li><p>是一种理论上最佳的页面置换算法，唯一的缺点是无法实现。</p></li><li><p>它的思想是，试图淘汰掉以后永远也用不到的页面，如果没有则淘汰最久以后再用到的页面。因为这种算法必须知道进程访问页面的序列，而这是无法实现的，因此仅有理论意义。</p></li></ul><h3 id="常见的常见的缓存工具和框架有哪些？"><a href="#常见的常见的缓存工具和框架有哪些？" class="headerlink" title="常见的常见的缓存工具和框架有哪些？"></a>常见的常见的缓存工具和框架有哪些？</h3><ul><li>在 Java 后端开发中，常见的缓存工具和框架列举如下：<ul><li>本地缓存：Guava LocalCache、Ehcache、Caffeine 。<ul><li>Ehcache 的功能更加丰富，Caffeine 的性能要比 Guava LocalCache 好</li></ul></li><li>分布式缓存：Redis、MemCache、Tair 。<ul><li>Redis 最为主流和常用</li></ul></li></ul></li></ul><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul><li>LRU和LFU的区别<ul><li>LFU算法是根据在一段时间里数据项被使用的次数选择出最少使用的数据项，即根据使用次数的差异来决定</li><li>而LRU是根据使用时间的差异来决定的</li></ul></li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li><li><a href="https://www.sczyh30.com/posts/Algorithm/algorithm-cache/" target="_blank" rel="noopener">https://www.sczyh30.com/posts/Algorithm/algorithm-cache/</a></li></ul></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-基础概念》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2018/02/01/backend/dataStructure/数据结构-二叉树/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">数据结构-二叉树</h4></a></div><div class="waves-block waves-effect next"><a href="/2018/01/29/backend/other/生成二维码图片(base64格式)/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">生成二维码图片(base64格式)</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2020</span> <span><a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-基础概念》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtElEQVR42u3a225qMQwEUP7/p3uk81oBM3ZSWmntp4pyydpIiRn78Yivr//Xs8e/X6+fmbzz9/++fubqwsPDwxst/fVC26W37Pw98zXj4eHh3ea1m/Jr/Gy7z9+zuFl4eHh4H+XlW/+z27EpuPHw8PD+Om9WUuclcvI4Hh4e3md57VKObdyLg+Fw1oKHh4cX89oG2G/4+2J/Dw8PD2/RVW9bYqut+cJq8fDw8G7w8lAgjwZOleNJEByFFHh4eHhHeS3mdViQjx20RXz+yCP5NvDw8PAO8ZItOC+d2wNgNljw5jl4eHh4F3jJJr4PINpSeHYgFWEEHh4e3oKXF7unxgvyaGMWeTz93vDw8PAu8PLFnYpfZ8V6fmjh4eHh3eC1wW4b1+b/zWPl5Fbi4eHh3eNtItSzo1qzxtibv/Hw8PAu8JINerZxbxppOT5qoeHh4eFd5uXBQR7FbsLZfOjq6Y3Aw8PDO8pLPv7nhwA2IwtvUmo8PDy8o7xZ2NqOF8z27VkUgoeHh3eDt98/28J3E1LMxhHw8PDw7vHabTovc2cDCpvjofgdgIeHh7fgtU36WdQ74+XFOh4eHt5P8vbNqtkjyXBVfswU1TceHh7egpe37TchRdvi2hf3eHh4eDd4bcDaLms2XpAfFcPRATw8PLwzfathuVzEqetXJfExHh4e3m1e+4L94vKYuG22vfmVgIeHh3eIV4eh6/bYqaGrehwBDw8P7xDvq7zaSGLTjWoPiadZCx4eHt5RXrvt5s2qNqJtx7mST8fDw8O7x0sOg5bUVvR5A6we5MLDw8O7xts0qw7ErOsTDA8PD+/389obMQtz87L7zQABHh4e3od4+/J60/RKPvdpGIGHh4d3gbcJI2bBQdvQyke7ii4fHh4e3oi3+anfDhnsFzoMc/Hw8PDO8P4Ba1BzqGeXuUYAAAAASUVORK5CYII=" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>缓存-基础概念 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="缓存">
+    <meta name="description" content="前言什么是缓存？ 缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。  目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：  CPU 高速缓存 ：高速缓存的读写速度远高于内存。 CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存 CPU 写数据时，先写到高速缓存，再回写到内存。   磁盘缓存：磁盘缓">
+<meta name="keywords" content="缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存-基础概念">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言什么是缓存？ 缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。  目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：  CPU 高速缓存 ：高速缓存的读写速度远高于内存。 CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存 CPU 写数据时，先写到高速缓存，再回写到内存。   磁盘缓存：磁盘缓">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-10T02:08:41.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓存-基础概念">
+<meta name="twitter:description" content="前言什么是缓存？ 缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。  目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：  CPU 高速缓存 ：高速缓存的读写速度远高于内存。 CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存 CPU 写数据时，先写到高速缓存，再回写到内存。   磁盘缓存：磁盘缓">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">缓存-基础概念</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">缓存-基础概念</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-31T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2018-02-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#什么是缓存？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">什么是缓存？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么要用缓存？"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">为什么要用缓存？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#缓存算法"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">缓存算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#FIFO（first-in-first-out-先进先出"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">FIFO（first in first out ) 先进先出</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LRU（least-recently-used-最近最少使用"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">LRU（least recently used) 最近最少使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LFU（Least-Frequently-used-最不经常使用"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">LFU（Least Frequently used ) 最不经常使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#OPT（Belady’s-Algorithm）最佳页面置换算法"><span class="post-toc-number">2.1.4.</span> <span class="post-toc-text">OPT（Bélády’s Algorithm）最佳页面置换算法</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#常见的常见的缓存工具和框架有哪些？"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">常见的常见的缓存工具和框架有哪些？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/cache/basic/缓存-基础概念" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">缓存-基础概念</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-01 00:00:00" datetime="2018-01-31T16:00:00.000Z" itemprop="datePublished">2018-02-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="什么是缓存？"><a href="#什么是缓存？" class="headerlink" title="什么是缓存？"></a>什么是缓存？</h3><ul>
+<li><p>缓存，就是数据交换的缓冲区，针对服务对象的不同（本质就是不同的硬件）都可以构建缓存。</p>
+</li>
+<li><p>目的是，把读写速度【慢】的介质的数据保存在读写速度【快】的介质中，从而提高读写速度，减少时间消耗。例如：</p>
+<ul>
+<li>CPU 高速缓存 ：高速缓存的读写速度远高于内存。<ul>
+<li>CPU 读数据时，如果在高速缓存中找到所需数据，就不需要读内存</li>
+<li>CPU 写数据时，先写到高速缓存，再回写到内存。</li>
+</ul>
+</li>
+<li>磁盘缓存：磁盘缓存其实就把常用的磁盘数据保存在内存中，内存读写速度也是远高于磁盘的。<ul>
+<li>读数据，时从内存读取。</li>
+<li>写数据时，可先写到内存，定时或定量回写到磁盘，或者是同步回写。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么要用缓存？"><a href="#为什么要用缓存？" class="headerlink" title="为什么要用缓存？"></a>为什么要用缓存？</h3><ul>
+<li><p>使用缓存的目的，就是提升读写性能。而实际业务场景下，更多的是为了提升读性能，带来更好的性能，更高的并发量。</p>
+</li>
+<li><p>日常业务中，我们使用比较多的数据库是 <code>MySQL</code> ，缓存是 <code>Redis</code> 。一起来看看，阿里云提供的性能规格：</p>
+<ul>
+<li>Redis 性能规格，<a href="https://help.aliyun.com/document_detail/26350.html" target="_blank" rel="noopener">https://help.aliyun.com/document_detail/26350.html</a> 。打底 8W QPS ，最高可达千万 QPS 。</li>
+<li>MySQL 性能规格 <a href="https://help.aliyun.com/document_detail/53637.html" target="_blank" rel="noopener">https://help.aliyun.com/document_detail/53637.html</a> 。打底 1.4K QPS ，最高 7W QPS 。</li>
+</ul>
+</li>
+<li><p>如此一比较，Redis 比 MySQL 的读写性能好很多。那么，我们将 MySQL 的热点数据，缓存到 Redis 中，提升读取性能，也减小 MySQL 的读取压力。例如说：</p>
+<ul>
+<li>论坛帖子的访问频率比较高，且要实时更新阅读量，使用 Redis 记录帖子的阅读量，可以提升性能和并发。</li>
+<li>商品信息，数据更新的频率不高，但是读取的频率很高，特别是热门商品。</li>
+</ul>
+</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="缓存算法"><a href="#缓存算法" class="headerlink" title="缓存算法"></a>缓存算法</h3><h4 id="FIFO（first-in-first-out-先进先出"><a href="#FIFO（first-in-first-out-先进先出" class="headerlink" title="FIFO（first in first out ) 先进先出"></a>FIFO（first in first out ) 先进先出</h4><ul>
+<li><p>FIFO 算法是一种比较容易实现的算法。它的思想是先进先出（FIFO，队列），这是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉。</p>
+</li>
+<li><p>FIFO 算法的描述：设计一种缓存结构，该结构在构造时确定大小，假设大小为 K，并有两个功能：</p>
+<ul>
+<li>set(key,value)：将记录(key,value)插入该结构。当缓存满时，将最先进入缓存的数据置换掉。</li>
+<li>get(key)：返回key对应的value值。</li>
+</ul>
+</li>
+<li><p>实现：</p>
+<ul>
+<li>维护一个FIFO队列，按照时间顺序将各数据（已分配页面）链接起来组成队列，并将置换指针指向队列的队首。</li>
+<li>再进行置换时，只需把置换指针所指的数据（页面）顺次换出，并把新加入的数据插到队尾即可。</li>
+</ul>
+</li>
+</ul>
+<h4 id="LRU（least-recently-used-最近最少使用"><a href="#LRU（least-recently-used-最近最少使用" class="headerlink" title="LRU（least recently used) 最近最少使用"></a>LRU（least recently used) 最近最少使用</h4><ul>
+<li><p>是一种常见的缓存算法，在很多分布式缓存系统（如Redis, Memcached）中都有广泛使用。</p>
+</li>
+<li><p>LRU算法的思想是：</p>
+<ul>
+<li>不断将最近使用的对象放到列表的顶部，这样最近最少使用的对象就会慢慢沉到底部</li>
+<li>当容量不足的时候，可以将底部的对象去除，以留出空间给新的对象</li>
+</ul>
+</li>
+<li><p>LRU算法的描述： 设计一种缓存结构，该结构在构造时确定大小，假设大小为 K，并有两个功能：</p>
+<ul>
+<li>set(key,value)：将记录(key,value)插入该结构。当缓存满时，将最久未使用的数据置换掉。</li>
+<li>get(key)：返回key对应的value值。</li>
+</ul>
+</li>
+<li><p>实现：</p>
+<ul>
+<li>最朴素的思想就是用数组+时间戳的方式，不过这样做效率较低。因此，我们可以用双向链表（LinkedList）+哈希表（HashMap）实现（链表用来表示位置，哈希表用来存储和查找）</li>
+<li>在Java里有对应的数据结构LinkedHashMap。</li>
+</ul>
+</li>
+<li><p>手写 LRU 代码的实现，有多种方式。其中，最简单的是基于 LinkedHashMap 来实现，代码如下：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">LinkedHashMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> CACHE_SIZE;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 传递进来最多能缓存多少数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cacheSize 缓存大小</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> cacheSize)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// true 表示让 LinkedHashMap 按照访问顺序来进行排序，最近访问的放在头部，最老访问的放在尾部。</span></span><br><span class="line">        <span class="keyword">super</span>((<span class="keyword">int</span>) Math.ceil(cacheSize / <span class="number">0.75</span>) + <span class="number">1</span>, <span class="number">0.75f</span>, <span class="keyword">true</span>);</span><br><span class="line">        CACHE_SIZE = cacheSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Map.Entry&lt;K, V&gt; eldest)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 当 map 中的数据量大于指定的缓存个数的时候，就自动删除最老的数据。</span></span><br><span class="line">        <span class="keyword">return</span> size() &gt; CACHE_SIZE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="LFU（Least-Frequently-used-最不经常使用"><a href="#LFU（Least-Frequently-used-最不经常使用" class="headerlink" title="LFU（Least Frequently used ) 最不经常使用"></a>LFU（Least Frequently used ) 最不经常使用</h4><ul>
+<li><p>也是一种常见的缓存算法。</p>
+</li>
+<li><p>顾名思义，LFU算法的思想是：如果一个数据在最近一段时间很少被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最小频率访问的数据最先被淘汰。</p>
+</li>
+<li><p>设计一种缓存结构，该结构在构造时确定大小，假设大小为 K，并有两个功能：</p>
+<ul>
+<li>set(key,value)：将记录(key,value)插入该结构。当缓存满时，将访问频率最低的数据置换掉。</li>
+<li>get(key)：返回key对应的value值。</li>
+</ul>
+</li>
+<li><p>算法实现策略：</p>
+<ul>
+<li>考虑到 LFU 会淘汰访问频率最小的数据，我们需要一种合适的方法按大小顺序维护数据访问的频率。</li>
+<li>LFU 算法本质上可以看做是一个 top K 问题(K = 1)，即选出频率最小的元素，因此我们很容易想到可以用二项堆来选择频率最小的元素，这样的实现比较高效。最终实现策略为小顶堆+哈希表。</li>
+</ul>
+</li>
+</ul>
+<h4 id="OPT（Belady’s-Algorithm）最佳页面置换算法"><a href="#OPT（Belady’s-Algorithm）最佳页面置换算法" class="headerlink" title="OPT（Bélády’s Algorithm）最佳页面置换算法"></a>OPT（Bélády’s Algorithm）最佳页面置换算法</h4><ul>
+<li><p>是一种理论上最佳的页面置换算法，唯一的缺点是无法实现。</p>
+</li>
+<li><p>它的思想是，试图淘汰掉以后永远也用不到的页面，如果没有则淘汰最久以后再用到的页面。因为这种算法必须知道进程访问页面的序列，而这是无法实现的，因此仅有理论意义。</p>
+</li>
+</ul>
+<h3 id="常见的常见的缓存工具和框架有哪些？"><a href="#常见的常见的缓存工具和框架有哪些？" class="headerlink" title="常见的常见的缓存工具和框架有哪些？"></a>常见的常见的缓存工具和框架有哪些？</h3><ul>
+<li>在 Java 后端开发中，常见的缓存工具和框架列举如下：<ul>
+<li>本地缓存：Guava LocalCache、Ehcache、Caffeine 。<ul>
+<li>Ehcache 的功能更加丰富，Caffeine 的性能要比 Guava LocalCache 好</li>
+</ul>
+</li>
+<li>分布式缓存：Redis、MemCache、Tair 。<ul>
+<li>Redis 最为主流和常用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>LRU和LFU的区别<ul>
+<li>LFU算法是根据在一段时间里数据项被使用的次数选择出最少使用的数据项，即根据使用次数的差异来决定</li>
+<li>而LRU是根据使用时间的差异来决定的</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+<li><a href="https://www.sczyh30.com/posts/Algorithm/algorithm-cache/" target="_blank" rel="noopener">https://www.sczyh30.com/posts/Algorithm/algorithm-cache/</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-基础概念》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/02/01/backend/dataStructure/数据结构-二叉树/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">数据结构-二叉树</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/01/29/backend/other/生成二维码图片(base64格式)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">生成二维码图片(base64格式)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&title=《缓存-基础概念》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《缓存-基础概念》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/01/backend/cache/basic/缓存-基础概念/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtElEQVR42u3a225qMQwEUP7/p3uk81oBM3ZSWmntp4pyydpIiRn78Yivr//Xs8e/X6+fmbzz9/++fubqwsPDwxst/fVC26W37Pw98zXj4eHh3ea1m/Jr/Gy7z9+zuFl4eHh4H+XlW/+z27EpuPHw8PD+Om9WUuclcvI4Hh4e3md57VKObdyLg+Fw1oKHh4cX89oG2G/4+2J/Dw8PD2/RVW9bYqut+cJq8fDw8G7w8lAgjwZOleNJEByFFHh4eHhHeS3mdViQjx20RXz+yCP5NvDw8PAO8ZItOC+d2wNgNljw5jl4eHh4F3jJJr4PINpSeHYgFWEEHh4e3oKXF7unxgvyaGMWeTz93vDw8PAu8PLFnYpfZ8V6fmjh4eHh3eC1wW4b1+b/zWPl5Fbi4eHh3eNtItSzo1qzxtibv/Hw8PAu8JINerZxbxppOT5qoeHh4eFd5uXBQR7FbsLZfOjq6Y3Aw8PDO8pLPv7nhwA2IwtvUmo8PDy8o7xZ2NqOF8z27VkUgoeHh3eDt98/28J3E1LMxhHw8PDw7vHabTovc2cDCpvjofgdgIeHh7fgtU36WdQ74+XFOh4eHt5P8vbNqtkjyXBVfswU1TceHh7egpe37TchRdvi2hf3eHh4eDd4bcDaLms2XpAfFcPRATw8PLwzfathuVzEqetXJfExHh4e3m1e+4L94vKYuG22vfmVgIeHh3eIV4eh6/bYqaGrehwBDw8P7xDvq7zaSGLTjWoPiadZCx4eHt5RXrvt5s2qNqJtx7mST8fDw8O7x0sOg5bUVvR5A6we5MLDw8O7xts0qw7ErOsTDA8PD+/389obMQtz87L7zQABHh4e3od4+/J60/RKPvdpGIGHh4d3gbcJI2bBQdvQyke7ii4fHh4e3oi3+anfDhnsFzoMc/Hw8PDO8P4Ba1BzqGeXuUYAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

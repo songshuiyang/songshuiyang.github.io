@@ -1,1 +1,816 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><title>Redis-高可用集群 | 宋水阳个人博客</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#3F51B5"><meta name="keywords" content="缓存,Redis"><meta name="description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master"><meta name="keywords" content="缓存,Redis"><meta property="og:type" content="article"><meta property="og:title" content="Redis-高可用集群"><meta property="og:url" content="http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/index.html"><meta property="og:site_name" content="宋水阳个人博客"><meta property="og:description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master"><meta property="og:locale" content="default"><meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis4.png"><meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis5.png"><meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis2.png"><meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/reids3.png"><meta property="og:updated_time" content="2020-07-14T12:46:56.372Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Redis-高可用集群"><meta name="twitter:description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master"><meta name="twitter:image" content="http://www.songshuiyang.com/images/server/cache/redis4.png"><link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/style.css?v=1.7.2"><script>window.lazyScripts=[]</script></head><body><div id="loading" class="active"></div><aside id="menu"><div class="inner flex-row-vertical"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off"><i class="icon icon-lg icon-close"></i></a><div class="brand-wrap" style="background-image:url(/img/brand.jpg)"><div class="brand"> <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a><hgroup class="introduce"><h5 class="nickname">songshuiyang</h5> <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a></hgroup></div></div><div class="scroll-wrap flex-col"><ul class="nav"><li class="waves-block waves-effect"><a href="/"><i class="icon icon-lg icon-home"></i> 主页</a></li><li class="waves-block waves-effect"><a href="/archives"><i class="icon icon-lg icon-archives"></i> 归档</a></li><li class="waves-block waves-effect"><a href="/categories"><i class="icon icon-lg icon-th-list"></i> 分类</a></li><li class="waves-block waves-effect"><a href="/tags"><i class="icon icon-lg icon-tags"></i> 标签</a></li><li class="waves-block waves-effect"><a href="/tags/Java基础"><i class="icon icon-lg icon-bookmark"></i> Java基础</a></li><li class="waves-block waves-effect"><a href="/tags/Java集合"><i class="icon icon-lg icon-camera"></i> Java集合</a></li><li class="waves-block waves-effect"><a href="/tags/Java并发"><i class="icon icon-lg icon-fire"></i> Java并发</a></li><li class="waves-block waves-effect"><a href="/tags/Io"><i class="icon icon-lg icon-film"></i> Java IO</a></li><li class="waves-block waves-effect"><a href="/categories/JVM"><i class="icon icon-lg icon-gift"></i> JVM</a></li><li class="waves-block waves-effect"><a href="/categories/Spring"><i class="icon icon-lg icon-money"></i> Spring</a></li><li class="waves-block waves-effect"><a href="/categories/SpringMvc"><i class="icon icon-lg icon-bullhorn"></i> SpringMvc</a></li><li class="waves-block waves-effect"><a href="/categories/SpringBoot"><i class="icon icon-lg icon-bolt"></i> SpringBoot</a></li><li class="waves-block waves-effect"><a href="/categories/SpringCloud"><i class="icon icon-lg icon-cogs"></i> SpringCloud</a></li><li class="waves-block waves-effect"><a href="/categories/Mybatis"><i class="icon icon-lg icon-tasks"></i> Mybatis</a></li><li class="waves-block waves-effect"><a href="/categories/设计模式"><i class="icon icon-lg icon-calendar"></i> 设计模式</a></li><li class="waves-block waves-effect"><a href="/categories/数据库"><i class="icon icon-lg icon-compass"></i> 数据库</a></li><li class="waves-block waves-effect"><a href="/categories/缓存"><i class="icon icon-lg icon-comment"></i> 缓存</a></li><li class="waves-block waves-effect"><a href="/categories/消息队列"><i class="icon icon-lg icon-coffee"></i> 消息队列</a></li><li class="waves-block waves-effect"><a href="/categories/分布式"><i class="icon icon-lg icon-code"></i> 分布式</a></li><li class="waves-block waves-effect"><a href="/categories/计算机网络"><i class="icon icon-lg icon-umbrella"></i> 计算机网络</a></li><li class="waves-block waves-effect"><a href="/categories/数据结构"><i class="icon icon-lg icon-spinner"></i> 数据结构</a></li><li class="waves-block waves-effect"><a href="/categories/Linux"><i class="icon icon-lg icon-magic"></i> Linux</a></li><li class="waves-block waves-effect"><a href="/categories/前端"><i class="icon icon-lg icon-twitter"></i> 前端</a></li><li class="waves-block waves-effect"><a href="/categories/笔记"><i class="icon icon-lg icon-bell"></i> 笔记</a></li><li class="waves-block waves-effect"><a href="/categories/开发工具"><i class="icon icon-lg icon-strikethrough"></i> 开发工具</a></li><li class="waves-block waves-effect"><a href="/categories/业务"><i class="icon icon-lg icon-pinterest"></i> 业务</a></li><li class="waves-block waves-effect"><a href="https://github.com/songshuiyang" target="_blank"><i class="icon icon-lg icon-github"></i> Github</a></li></ul></div></div></aside><main id="main"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><header class="top-header" id="header"><div class="flex-row"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"><i class="icon icon-lg icon-navicon"></i></a><div class="flex-col header-title ellipsis">Redis-高可用集群</div><div class="search-wrap" id="search-wrap"><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back"><i class="icon icon-lg icon-chevron-left"></i></a> <input type="text" id="key" class="search-input" autocomplete="off" placeholder=""><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search"><i class="icon icon-lg icon-search"></i></a></div><a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare"><i class="icon icon-lg icon-share-alt"></i></a></div></header><header class="content-header post-header"><div class="container fade-scale"><h1 class="title">Redis-高可用集群</h1><h5 class="subtitle"> <time datetime="2018-02-03T16:00:06.000Z" itemprop="datePublished" class="page-time">2018-02-04</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul></h5></div></header><div class="container body-wrap"><aside class="post-widget"><nav class="post-toc-wrap post-toc-shrink" id="post-toc"><h4>TOC</h4><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-集群方案"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">Redis 集群方案</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-主从同步"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">Redis 主从同步</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-Sentinel-哨兵"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">Redis Sentinel 哨兵</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#配置Sentinel"><span class="post-toc-number">2.0.2.1.</span> <span class="post-toc-text">配置Sentinel</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#启动Sentinel"><span class="post-toc-number">2.0.2.2.</span> <span class="post-toc-text">启动Sentinel</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-Cluster"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">Redis Cluster</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#设计原则和初衷"><span class="post-toc-number">2.0.3.1.</span> <span class="post-toc-text">设计原则和初衷</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Twemproxy"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">Twemproxy</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Codis"><span class="post-toc-number">2.0.5.</span> <span class="post-toc-text">Codis</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li></nav></aside><article id="post-backend/cache/redis/Redis-高可用集群" class="post-article article-type-post fade" itemprop="blogPost"><div class="post-card"><h1 class="post-card-title">Redis-高可用集群</h1><div class="post-meta"> <time class="post-time" title="2018-02-04 00:00:06" datetime="2018-02-03T16:00:06.000Z" itemprop="datePublished">2018-02-04</time><ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul><span id="busuanzi_container_site_pv"><i class="icon icon-eye icon-pr"></i> 本页总访问量<span id="busuanzi_value_page_pv"></span>次</span></div><div class="post-content" id="post-content" itemprop="postContent"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h4 id="Redis-集群方案"><a href="#Redis-集群方案" class="headerlink" title="Redis 集群方案"></a>Redis 集群方案</h4><ul><li>1、<code>Redis Sentinel</code></li><li>2、<code>Redis Cluster</code></li><li>3、<code>Twemproxy</code></li><li>4、<code>Codis</code></li><li>5、客户端分片</li></ul><h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="Redis-主从同步"><a href="#Redis-主从同步" class="headerlink" title="Redis 主从同步"></a>Redis 主从同步</h4><ul><li><p><code>Redis</code> 主从同步，是很多 <code>Redis</code> 集群方案的基础，例如 <code>Redis Sentinel</code>、<code>Redis Cluster</code> 等等，所以我们先来了解<code>Redis</code>的主从同步功能</p></li><li><p><code>Redis</code>的主从同步机制允许<code>slave</code>从<code>master</code>那里通过网络传输拷贝到完整的数据备份，从而达到主从机制。为了实现主从复制，我们准备三个<code>redis</code>服务，依次命名为<code>master，slave1，slave2</code>。</p></li><li><p>配置主服务器</p><ul><li>为了测试效果，我们先修改<code>master</code>主服务器的配置文件<code>redis.conf</code>的端口信息<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">port 6300</span><br></pre></td></tr></table></figure></li></ul></li><li><p>配置从服务器</p><ul><li><p>先修改<code>slave1</code>从服务器的配置文件<code>redis.conf</code>的端口信息和从服务器配置</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 6301</span><br><span class="line">slaveof 127.0.0.1 6300</span><br></pre></td></tr></table></figure></li><li><p>再修改<code>slave2</code>从服务器的配置文件<code>redis.conf</code>的端口信息和从服务器配置</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 6302</span><br><span class="line">slaveof 127.0.0.1 6300</span><br></pre></td></tr></table></figure></li><li><p>值得注意的是，从<code>redis2.6</code>版本开始，<code>slave</code>支持只读模式，而且是默认的。可以通过配置项<code>slave-read-only</code>来进行配置。</p></li><li>此外，如果<code>master</code>通过<code>requirepass</code>配置项设置了密码，<code>slave</code>每次同步操作都需要验证密码，可以通过在<code>slave</code>的配置文件中添加以下配置项<code>masterauth &lt;password&gt;</code></li></ul></li><li><p>数据怎么同步的？</p><ul><li>你启动一台<code>slave</code> 的时候，他会发送一个<code>psync</code>命令给<code>master</code>，如果是这个<code>slave</code>第一次连接到<code>master</code>，他会触发一个全量复制</li><li><code>master</code>就会启动一个线程，生成<code>RDB</code>快照，还会把新的写请求都缓存在内存中</li><li><code>RDB</code>文件生成后，<code>master</code>会将这个<code>RDB</code>发送给<code>slave</code>的，<code>slave</code>拿到之后做的第一件事情就是写进本地的磁盘，然后加载进内存，然后<code>master</code>会把内存里面缓存的那些新命名都发给<code>slave</code></li></ul></li></ul><h4 id="Redis-Sentinel-哨兵"><a href="#Redis-Sentinel-哨兵" class="headerlink" title="Redis Sentinel 哨兵"></a><code>Redis Sentinel</code> 哨兵</h4><ul><li><p><a href="http://redis.cn/topics/sentinel.html" target="_blank" rel="noopener">官方中文文档</a></p></li><li><p>上面的主从机制方案中主服务器可能存在单点故障，万一主服务器宕机，这是个麻烦事情，所以<code>Redis</code>提供了<code>Redis-Sentinel</code>，以此来实现主从切换的功能，类似与<code>zookeeper</code>。</p></li><li><p><code>Redis-Sentinel</code>是<code>Redis</code>官方推荐的高可用性<code>(HA)</code>解决方案，当用<code>Redis</code>做<code>master-slave</code>的高可用方案时，假如<code>master</code>宕机了，<code>Redis</code>本身(包括它的很多客户端)都没有实现自动进行主备切换。</p></li><li><p>而<code>Redis-Sentinel</code>本身也是一个独立运行的进程，它能监控多个<code>master-slave</code>集群，发现<code>master</code>宕机后能进行自动切换。</p></li><li><p>它的主要功能有以下几点</p><ul><li>监控<code>（Monitoring）</code>：不断地检查<code>redis</code>的主服务器和从服务器是否运作正常。</li><li>提醒<code>（Notification）</code>：如果发现某个<code>redis</code>服务器运行出现状况，可以通过 <code>API</code> 向管理员或者其他应用程序发送通知。</li><li>自动故障迁移<code>（Automatic failover）</code>：能够进行自动切换。当一个主服务器不能正常工作时，会将失效主服务器的其中一个从服务器升级为新的主服务器，并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。</li></ul></li></ul><h5 id="配置Sentinel"><a href="#配置Sentinel" class="headerlink" title="配置Sentinel"></a>配置Sentinel</h5><ul><li><p><code>Redis Sentinel</code> 兼容 <code>Redis 2.4.16</code> 或以上版本， 推荐使用 <code>Redis 2.8.0</code> 或以上的版本。</p></li><li><p>必须指定一个<code>sentinel</code>的配置文件<code>sentinel.conf</code>，如果不指定将无法启动<code>Sentinel</code>。首先，我们先创建一个配置文件<code>sentinel.conf</code></p></li></ul><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 26379</span><br><span class="line">sentinel monitor master 127.0.0.1 6300 2</span><br></pre></td></tr></table></figure><ul><li>官方典型的配置如下</li></ul><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2 # 这行配置指示 Sentinel 去监视一个名为 mymaster 的主服务器， 这个主服务器的 IP 地址为 127.0.0.1 ， 端口号为 6300， 而将这个主服务器判断为失效至少需要 2 个 Sentinel 同意，只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行。</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000 # 指定了 Sentinel 认为服务器已经断线所需的毫秒数。</span><br><span class="line">sentinel failover-timeout mymaster 180000 </span><br><span class="line">sentinel parallel-syncs mymaster 1 # 指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同步， 这个数字越小， 完成故障转移所需的时间就越长。</span><br><span class="line"> </span><br><span class="line">sentinel monitor resque 192.168.1.3 6380 4</span><br><span class="line">sentinel down-after-milliseconds resque 10000</span><br><span class="line">sentinel failover-timeout resque 180000</span><br><span class="line">sentinel parallel-syncs resque 5</span><br></pre></td></tr></table></figure><ul><li>配置文件介绍<ul><li>配置文件只需要配置<code>master</code>的信息就好啦，不用配置<code>slave</code>的信息，因为<code>slave</code>能够被自动检测到(<code>master</code>节点会有关于<code>slave</code>的消息)。</li><li>需要注意的是，配置文件在<code>sentinel</code>运行期间是会被动态修改的，例如当发生主备切换时候，配置文件中的<code>master</code>会被修改为另外一个<code>slave</code>。这样，之后<code>sentinel</code>如果重启时，就可以根据这个配置来恢复其之前所监控的<code>redis</code>集群的状态。</li></ul></li></ul><h5 id="启动Sentinel"><a href="#启动Sentinel" class="headerlink" title="启动Sentinel"></a>启动Sentinel</h5><ul><li>下面两种方式都必须指定一个<code>sentinel</code>的配置文件<code>sentinel.conf</code>， 如果不指定将无法启动<code>sentinel</code>，<code>sentinel</code>默认监听26379端口，所以运行前必须确定该端口没有被别的进程占用。<ul><li>对于 <code>redis-sentinel</code> 程序， 你可以用<code>redis-sentinel sentinel.conf</code>命令来启动 <code>Sentinel</code> 系统</li><li>对于 <code>redis-server</code> 程序， 你可以用<code>redis-server sentinel.conf --sentinel</code>命令来启动一个运行在 <code>Sentinel</code> 模式下的 <code>Redis</code> 服务器</li></ul></li></ul><h4 id="Redis-Cluster"><a href="#Redis-Cluster" class="headerlink" title="Redis Cluster"></a><code>Redis Cluster</code></h4><h5 id="设计原则和初衷"><a href="#设计原则和初衷" class="headerlink" title="设计原则和初衷"></a>设计原则和初衷</h5><ul><li><p>在<a href="https://www.csdn.net/link?target_url=http%3A%2F%2Fredis.io%2Ftopics%2Fcluster-spec&amp;id=48552531&amp;token=9583a21be9272c16c36e63419d039d1d" target="_blank" rel="noopener">官方文档Cluster Spec</a>中，作者详细介绍了Redis集群为什么要设计成现在的样子</p></li><li><p>最核心的目标有三个：</p><ul><li>性能：这是<code>Redis</code>赖以生存的看家本领，增加集群功能后当然不能对性能产生太大影响，所以<code>Redis</code>采取了<code>P2P</code>模式完全去中心化而非<code>Proxy</code>方式、异步复制、客户端重定向等设计，而牺牲了部分的一致性、使用性。</li><li>水平扩展：集群的最重要能力当然是扩展，文档中称可以线性扩展到<code>1000</code>结点。</li><li>可用性：在<code>Cluster</code>推出之前，可用性要靠<code>Sentinel</code>保证。有了集群之后也自动具有了<code>Sentinel</code>的监控和自动<code>Failover</code>能力。</li></ul></li></ul><ul><li><p>它采用了<code>P2P</code>的模式，完全去中心化。支持多节点数据集自动分片，提供一定程度的分区可用性，部分节点挂掉或者无法连接其他节点后，服务可以正常运行。<code>Redis 3.0</code>集群采用<code>Hash Slot</code>方案，而不是一致性哈希。<code>Redis</code>把所有的<code>Key</code>分成了<code>16384</code>个<code>slot</code>，每个<code>Redis</code>实例负责其中一部分<code>slot</code>。集群中的所有信息（节点、端口、<code>slot</code>等），都通过节点之间定期的数据交换而更新。</p></li><li><p><code>Redis</code>客户端在任意一个<code>Redis</code>实例发出请求，如果所需数据不在该实例中，通过重定向命令引导客户端访问所需的实例。</p></li><li><p><code>Redis 3.0</code>集群，目前支持的<code>cluster</code>特性</p><ul><li>节点自动发现</li><li><code>slave-&gt;master</code> 选举,集群容错</li><li><code>Hot resharding</code>:在线分片</li><li>集群管理:<code>cluster xxx</code></li><li>基于配置(<code>nodes-port.conf</code>)的集群管理</li><li><code>ASK</code> 转向<code>/MOVED</code> 转向机制</li></ul></li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/cache/redis4.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li>如上图所示，所有的<code>redis</code>节点彼此互联(<code>PING-PONG</code>机制),内部使用二进制协议优化传输速度和带宽。节点的<code>fail</code>是通过集群中超过半数的节点检测失效时才生效。客户端与<code>redis</code>节点直连，不需要中间<code>proxy</code>层。客户端不需要连接集群所有节点，连接集群中任何一个可用节点即可。<code>redis-cluster</code>把所有的物理节点映射到<code>[0-16383]slot上cluster</code>负责维护<code>node&lt;-&gt;slot&lt;-&gt;value</code>。</li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/cache/redis5.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li><p>选举过程是集群中所有<code>master</code>参与，如果半数以上<code>master</code>节点与<code>master</code>节点通信超时，认为当前<code>master</code>节点挂掉。</p></li><li><p>当集群不可用时，所有对集群的操作做都不可用，收到<code>((error) CLUSTERDOWN The cluster is down)</code>错误。如果集群任意<code>master</code>挂掉，且当前<code>master</code>没有<code>slave</code>，集群进入<code>fail</code>状态，也可以理解成进群的<code>slot</code>映射<code>[0-16383]</code>不完成时进入<code>fail</code>状态。如果进群超过半数以上<code>master</code>挂掉，无论是否有<code>slave</code>集群进入<code>fail</code>状态。</p></li></ul><h4 id="Twemproxy"><a href="#Twemproxy" class="headerlink" title="Twemproxy"></a><code>Twemproxy</code></h4><ul><li><p><code>Twemproxy</code>是由<code>Twitter</code>开源的<code>Redis</code>代理， <code>Redis</code>客户端把请求发送到<code>Twemproxy</code>，<code>Twemproxy</code>根据路由规则发送到正确的<code>Redis</code>实例，最后<code>Twemproxy</code>把结果汇集返回给客户端。</p></li><li><p><code>Twemproxy</code>通过引入一个代理层，将多个<code>Redis</code>实例进行统一管理，使<code>Redis</code>客户端只需要在<code>Twemproxy</code>上进行操作，而不需要关心后面有多少个<code>Redis</code>实例，从而实现了<code>Redis</code>集群。</p></li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/cache/redis2.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li><p><code>Twemproxy</code>本身也是单点，需要用<code>Keepalived</code>做高可用方案。</p></li><li><p>这么些年来，<code>Twenproxy</code>作为应用范围最广、稳定性最高、最久经考验的分布式中间件，在业界广泛使用。</p></li><li><p>但是<code>Twemproxy</code>存在诸多不方便之处，最主要的是，<code>Twemproxy</code>无法平滑地增加<code>Redis</code>实例，业务量突增，需增加<code>Redis</code>服务器；业务量萎缩，需要减少<code>Redis</code>服务器。但对<code>Twemproxy</code>而言，基本上都很难操作。其次，没有友好的监控管理后台界面，不利于运维监控。</p></li></ul><h4 id="Codis"><a href="#Codis" class="headerlink" title="Codis"></a><code>Codis</code></h4><ul><li><code>Codis</code>解决了<code>Twemproxy</code>的这两大痛点，由豌豆荚于2014年11月开源，基于<code>Go</code>和<code>C</code>开发、现已广泛用于豌豆荚的各种<code>Redis</code>业务场景。</li></ul><figure class="image-bubble"><div class="img-lightbox"><div class="overlay"></div> <img src="/images/server/cache/reids3.png" alt="" title=""></div><div class="image-caption"></div></figure><ul><li><p><code>Codis</code>引入了<code>Group</code>的概念，每个<code>Group</code>包括1个<code>Redis Master</code>及一个或多个<code>Redis Slave</code>，这是和<code>Twemproxy</code>的区别之一，实现了<code>Redis</code>集群的高可用。当1个<code>Redis Master</code>挂掉时，<code>Codis</code>不会自动把一个<code>Slave</code>提升为<code>Master</code>，这涉及数据的一致性问题，<code>Redis</code>本身的数据同步是采用主从异步复制，当数据在<code>Maste</code>写入成功时，<code>Slave</code>是否已读入这个数据是没法保证的，需要管理员在管理界面上手动把<code>Slave</code>提升为<code>Master</code>。</p></li><li><p><code>Codis</code>使用，可以参考官方文档<a href="https://github.com/CodisLabs/codis/blob/release3.0/doc/tutorial_zh.md" target="_blank" rel="noopener">https://github.com/CodisLabs/codis/blob/release3.0/doc/tutorial_zh.md</a></p></li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li><li><a href="http://blog.720ui.com/2016/redis_action_04_cluster/" target="_blank" rel="noopener">http://blog.720ui.com/2016/redis_action_04_cluster/</a></li><li><a href="https://blog.csdn.net/dc_726/article/details/48552531" target="_blank" rel="noopener">https://blog.csdn.net/dc_726/article/details/48552531</a></li><li><a href="https://blog.csdn.net/qq_35190492/article/details/102958250" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/102958250</a></li></ul></div><blockquote class="post-copyright"><footer> <a href="http://www.songshuiyang.com"><img src="/img/avatar.jpg" alt="songshuiyang"> songshuiyang</a></footer></blockquote><div class="post-footer"><ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul><div class="page-share-wrap"><div class="page-share" id="pageShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis-高可用集群》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle"><i class="icon icon-share-alt icon-lg"></i></a></div></div></div><nav class="post-nav flex-row flex-justify-between"><div class="waves-block waves-effect prev"><a href="/2018/02/10/frontend/CSS和JS文件的客户端缓存问题/" id="post-prev" class="post-nav-link"><div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div><h4 class="title">解决CSS和JS文件的客户端缓存问题</h4></a></div><div class="waves-block waves-effect next"><a href="/2018/02/04/backend/cache/redis/Redis-数据淘汰策略/" id="post-next" class="post-nav-link"><div class="tips">Next<i class="icon icon-angle-right icon-lg icon-pl"></i></div><h4 class="title">Redis-数据淘汰策略</h4></a></div></nav><div class="comments vcomment" id="comments"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var GUEST_INFO=["nick","mail","link"],guest_info="nick,mail,link".split(",").filter(function(e){return-1<GUEST_INFO.indexOf(e)});new Valine({el:"#comments",notify:!1,verify:!1,appId:"tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",appKey:"wDUxU3I7OcPPuDDwMSe5Ochu",avatar:"robohash",placeholder:"少侠不吐槽吐槽?",guest_info:0==guest_info.length?GUEST_INFO:guest_info,pageSize:"10"})</script></article></div><footer class="footer"><div class="bottom"><p><span>songshuiyang &copy; 2017 - 2020</span> <span><a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br></span> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人次</span></p></div></footer></main><div class="mask" id="mask"></div><a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a><div class="global-share" id="globalShare"><ul class="reset share-icons"><li><a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博"><i class="icon icon-weibo"></i></a></li><li><a class="weixin share-sns wxFab" href="javascript:;" data-title="微信"><i class="icon icon-weixin"></i></a></li><li><a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&source=" data-title=" QQ"><i class="icon icon-qq"></i></a></li><li><a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Facebook"><i class="icon icon-facebook"></i></a></li><li><a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis-高可用集群》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&via=http://www.songshuiyang.com" data-title=" Twitter"><i class="icon icon-twitter"></i></a></li><li><a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Google+"><i class="icon icon-google-plus"></i></a></li></ul></div><div class="page-modal wx-share" id="wxShare"><a class="close" href="javascript:;"><i class="icon icon-close"></i></a><p>扫一扫，分享到微信</p> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACxklEQVR42u3ay27jQAxFwfz/T2e2AwSyD/sReDClVWDLskoBuulLfn3l4/vH8fr1n+8+vfL360/XfPrUsQMPDw9v+9bLbXXq0229PvPYI8DDw8O7xnv6+vLFfdF/fYXC6PeMh4eH98m8UjSnW8nn4+Hh4f2LvB4WrBXf04IbDw8P7/d5JYyYLvQ9wJ1e/0rWgoeHh3ehi/Q5f1/p7+Hh4eFtd9V74bsWMfSm2uLd4uHh4V3gTcvlPl5QivJBoLB0n3h4eHg3eDvxa1nK++I+DSDSsAIeHh7eBV5Z+sti3b+4xL79s4N4Ag8PD+8Qb9rCL02s6UDA2tBAGUTAw8PDu8GblqrlU+UK03GBrc4eHh4e3jVeKXP7Q5nGEzvvDhpgeHh4eId402V9bcnuRfnauFUKJvDw8PC2eT1W2B/J2g81po8MDw8P7wZv53f9qXN6bLGzbeDh4eGd5a21//tgQY85ypYzjj/w8PDwLvCmq2gPFNYex+vodmdDwsPDw9vn9WZVH3Jaa1DtBxBvZsrw8PDwDvGmi35Zpqdnnh29evM/xMPDw9s+cy1y7UFD3zB2wojHa+Lh4eFd4PVythfK5eunD6sEE+PoFg8PD2+JNw0jeqm9Fjr0+0kbGB4eHt5lXi+Lp9HANFOdtsQeHyseHh7eBV5vdPWIYQ25A8PDw8P7fV7S55veKZ13YpFBDo2Hh4d3lFeC2h7sTiPassH0QS48PDy827xTxfQ09u1bUTmu/1bAw8P773nfw6O3/NcSkR5PpAgDDw8P7wJvuuD2ltVagX5qMGtxP8HDw8PLvOlmMF3c1xj9EbzB4+Hh4V3jlVbTtH11YFjqVNaCh4eH9wG86QBB3zZ6MFEUeHh4eJ/Amy7Npfg+NaaAh4eH95u8tZh1OlhQWlZ9M0gRMx4eHt4F3uKP/Nzu6gV3X9W/zh54eHh4lfcHI0TuA+A9qqoAAAAASUVORK5CYII=" alt="微信分享二维码"></div><script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script><script>var BLOG={ROOT:"/",SHARE:!0,REWARD:!1};lazyScripts.push("//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015")</script><script src="/js/main.min.js?v=1.7.2"></script><div class="search-panel" id="search-panel"><ul class="search-result" id="search-result"></ul></div><template id="search-tpl"><li class="item"><a href="{path}" class="waves-block waves-effect"><div class="title ellipsis" title="{title}">{title}</div><div class="flex-row flex-middle"><div class="tags ellipsis"> {tags}</div> <time class="flex-col time">{date}</time></div></a></li></template><script src="/js/search.min.js?v=1.7.2" async></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>!function(){var t,e=document.title;document.addEventListener("visibilitychange",function(){document.hidden?(document.title="老铁为何离开了",clearTimeout(t)):(document.title="欢迎回来",t=setTimeout(function(){document.title=e},2e3))})}()</script></body></html><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Redis-高可用集群 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="缓存,Redis">
+    <meta name="description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master">
+<meta name="keywords" content="缓存,Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-高可用集群">
+<meta property="og:url" content="http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis4.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis5.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/redis2.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/cache/reids3.png">
+<meta property="og:updated_time" content="2020-07-14T12:46:56.372Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis-高可用集群">
+<meta name="twitter:description" content="前言Redis 集群方案 1、Redis Sentinel 2、Redis Cluster 3、Twemproxy 4、Codis 5、客户端分片  解析Redis 主从同步 Redis 主从同步，是很多 Redis 集群方案的基础，例如 Redis Sentinel、Redis Cluster 等等，所以我们先来了解Redis的主从同步功能  Redis的主从同步机制允许slave从master">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/cache/redis4.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Redis-高可用集群</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Redis-高可用集群</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-03T16:00:06.000Z" itemprop="datePublished" class="page-time">
+  2018-02-04
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-集群方案"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">Redis 集群方案</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析"><span class="post-toc-number">2.</span> <span class="post-toc-text">解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-主从同步"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">Redis 主从同步</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-Sentinel-哨兵"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">Redis Sentinel 哨兵</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#配置Sentinel"><span class="post-toc-number">2.0.2.1.</span> <span class="post-toc-text">配置Sentinel</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#启动Sentinel"><span class="post-toc-number">2.0.2.2.</span> <span class="post-toc-text">启动Sentinel</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Redis-Cluster"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">Redis Cluster</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#设计原则和初衷"><span class="post-toc-number">2.0.3.1.</span> <span class="post-toc-text">设计原则和初衷</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Twemproxy"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">Twemproxy</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Codis"><span class="post-toc-number">2.0.5.</span> <span class="post-toc-text">Codis</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考</span></a></li>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/cache/redis/Redis-高可用集群" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Redis-高可用集群</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-04 00:00:06" datetime="2018-02-03T16:00:06.000Z" itemprop="datePublished">2018-02-04</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/缓存/">缓存</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h4 id="Redis-集群方案"><a href="#Redis-集群方案" class="headerlink" title="Redis 集群方案"></a>Redis 集群方案</h4><ul>
+<li>1、<code>Redis Sentinel</code></li>
+<li>2、<code>Redis Cluster</code></li>
+<li>3、<code>Twemproxy</code></li>
+<li>4、<code>Codis</code></li>
+<li>5、客户端分片</li>
+</ul>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h4 id="Redis-主从同步"><a href="#Redis-主从同步" class="headerlink" title="Redis 主从同步"></a>Redis 主从同步</h4><ul>
+<li><p><code>Redis</code> 主从同步，是很多 <code>Redis</code> 集群方案的基础，例如 <code>Redis Sentinel</code>、<code>Redis Cluster</code> 等等，所以我们先来了解<code>Redis</code>的主从同步功能</p>
+</li>
+<li><p><code>Redis</code>的主从同步机制允许<code>slave</code>从<code>master</code>那里通过网络传输拷贝到完整的数据备份，从而达到主从机制。为了实现主从复制，我们准备三个<code>redis</code>服务，依次命名为<code>master，slave1，slave2</code>。</p>
+</li>
+<li><p>配置主服务器</p>
+<ul>
+<li>为了测试效果，我们先修改<code>master</code>主服务器的配置文件<code>redis.conf</code>的端口信息   <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">port 6300</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>配置从服务器</p>
+<ul>
+<li><p>先修改<code>slave1</code>从服务器的配置文件<code>redis.conf</code>的端口信息和从服务器配置</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 6301</span><br><span class="line">slaveof 127.0.0.1 6300</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再修改<code>slave2</code>从服务器的配置文件<code>redis.conf</code>的端口信息和从服务器配置</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 6302</span><br><span class="line">slaveof 127.0.0.1 6300</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>值得注意的是，从<code>redis2.6</code>版本开始，<code>slave</code>支持只读模式，而且是默认的。可以通过配置项<code>slave-read-only</code>来进行配置。</p>
+</li>
+<li>此外，如果<code>master</code>通过<code>requirepass</code>配置项设置了密码，<code>slave</code>每次同步操作都需要验证密码，可以通过在<code>slave</code>的配置文件中添加以下配置项<code>masterauth &lt;password&gt;</code></li>
+</ul>
+</li>
+<li><p>数据怎么同步的？</p>
+<ul>
+<li>你启动一台<code>slave</code> 的时候，他会发送一个<code>psync</code>命令给<code>master</code>，如果是这个<code>slave</code>第一次连接到<code>master</code>，他会触发一个全量复制</li>
+<li><code>master</code>就会启动一个线程，生成<code>RDB</code>快照，还会把新的写请求都缓存在内存中</li>
+<li><code>RDB</code>文件生成后，<code>master</code>会将这个<code>RDB</code>发送给<code>slave</code>的，<code>slave</code>拿到之后做的第一件事情就是写进本地的磁盘，然后加载进内存，然后<code>master</code>会把内存里面缓存的那些新命名都发给<code>slave</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="Redis-Sentinel-哨兵"><a href="#Redis-Sentinel-哨兵" class="headerlink" title="Redis Sentinel 哨兵"></a><code>Redis Sentinel</code> 哨兵</h4><ul>
+<li><p><a href="http://redis.cn/topics/sentinel.html" target="_blank" rel="noopener">官方中文文档</a></p>
+</li>
+<li><p>上面的主从机制方案中主服务器可能存在单点故障，万一主服务器宕机，这是个麻烦事情，所以<code>Redis</code>提供了<code>Redis-Sentinel</code>，以此来实现主从切换的功能，类似与<code>zookeeper</code>。</p>
+</li>
+<li><p><code>Redis-Sentinel</code>是<code>Redis</code>官方推荐的高可用性<code>(HA)</code>解决方案，当用<code>Redis</code>做<code>master-slave</code>的高可用方案时，假如<code>master</code>宕机了，<code>Redis</code>本身(包括它的很多客户端)都没有实现自动进行主备切换。</p>
+</li>
+<li><p>而<code>Redis-Sentinel</code>本身也是一个独立运行的进程，它能监控多个<code>master-slave</code>集群，发现<code>master</code>宕机后能进行自动切换。</p>
+</li>
+<li><p>它的主要功能有以下几点</p>
+<ul>
+<li>监控<code>（Monitoring）</code>：不断地检查<code>redis</code>的主服务器和从服务器是否运作正常。</li>
+<li>提醒<code>（Notification）</code>：如果发现某个<code>redis</code>服务器运行出现状况，可以通过 <code>API</code> 向管理员或者其他应用程序发送通知。</li>
+<li>自动故障迁移<code>（Automatic failover）</code>：能够进行自动切换。当一个主服务器不能正常工作时，会将失效主服务器的其中一个从服务器升级为新的主服务器，并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。</li>
+</ul>
+</li>
+</ul>
+<h5 id="配置Sentinel"><a href="#配置Sentinel" class="headerlink" title="配置Sentinel"></a>配置Sentinel</h5><ul>
+<li><p><code>Redis Sentinel</code> 兼容 <code>Redis 2.4.16</code> 或以上版本， 推荐使用 <code>Redis 2.8.0</code> 或以上的版本。</p>
+</li>
+<li><p>必须指定一个<code>sentinel</code>的配置文件<code>sentinel.conf</code>，如果不指定将无法启动<code>Sentinel</code>。首先，我们先创建一个配置文件<code>sentinel.conf</code></p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 26379</span><br><span class="line">sentinel monitor master 127.0.0.1 6300 2</span><br></pre></td></tr></table></figure>
+<ul>
+<li>官方典型的配置如下</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2 # 这行配置指示 Sentinel 去监视一个名为 mymaster 的主服务器， 这个主服务器的 IP 地址为 127.0.0.1 ， 端口号为 6300， 而将这个主服务器判断为失效至少需要 2 个 Sentinel 同意，只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行。</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000 # 指定了 Sentinel 认为服务器已经断线所需的毫秒数。</span><br><span class="line">sentinel failover-timeout mymaster 180000 </span><br><span class="line">sentinel parallel-syncs mymaster 1 # 指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同步， 这个数字越小， 完成故障转移所需的时间就越长。</span><br><span class="line"> </span><br><span class="line">sentinel monitor resque 192.168.1.3 6380 4</span><br><span class="line">sentinel down-after-milliseconds resque 10000</span><br><span class="line">sentinel failover-timeout resque 180000</span><br><span class="line">sentinel parallel-syncs resque 5</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置文件介绍<ul>
+<li>配置文件只需要配置<code>master</code>的信息就好啦，不用配置<code>slave</code>的信息，因为<code>slave</code>能够被自动检测到(<code>master</code>节点会有关于<code>slave</code>的消息)。</li>
+<li>需要注意的是，配置文件在<code>sentinel</code>运行期间是会被动态修改的，例如当发生主备切换时候，配置文件中的<code>master</code>会被修改为另外一个<code>slave</code>。这样，之后<code>sentinel</code>如果重启时，就可以根据这个配置来恢复其之前所监控的<code>redis</code>集群的状态。</li>
+</ul>
+</li>
+</ul>
+<h5 id="启动Sentinel"><a href="#启动Sentinel" class="headerlink" title="启动Sentinel"></a>启动Sentinel</h5><ul>
+<li>下面两种方式都必须指定一个<code>sentinel</code>的配置文件<code>sentinel.conf</code>， 如果不指定将无法启动<code>sentinel</code>，<code>sentinel</code>默认监听26379端口，所以运行前必须确定该端口没有被别的进程占用。<ul>
+<li>对于 <code>redis-sentinel</code> 程序， 你可以用<code>redis-sentinel sentinel.conf</code>命令来启动 <code>Sentinel</code> 系统</li>
+<li>对于 <code>redis-server</code> 程序， 你可以用<code>redis-server sentinel.conf --sentinel</code>命令来启动一个运行在 <code>Sentinel</code> 模式下的 <code>Redis</code> 服务器</li>
+</ul>
+</li>
+</ul>
+<h4 id="Redis-Cluster"><a href="#Redis-Cluster" class="headerlink" title="Redis Cluster"></a><code>Redis Cluster</code></h4><h5 id="设计原则和初衷"><a href="#设计原则和初衷" class="headerlink" title="设计原则和初衷"></a>设计原则和初衷</h5><ul>
+<li><p>在<a href="https://www.csdn.net/link?target_url=http%3A%2F%2Fredis.io%2Ftopics%2Fcluster-spec&amp;id=48552531&amp;token=9583a21be9272c16c36e63419d039d1d" target="_blank" rel="noopener">官方文档Cluster Spec</a>中，作者详细介绍了Redis集群为什么要设计成现在的样子</p>
+</li>
+<li><p>最核心的目标有三个：</p>
+<ul>
+<li>性能：这是<code>Redis</code>赖以生存的看家本领，增加集群功能后当然不能对性能产生太大影响，所以<code>Redis</code>采取了<code>P2P</code>模式完全去中心化而非<code>Proxy</code>方式、异步复制、客户端重定向等设计，而牺牲了部分的一致性、使用性。</li>
+<li>水平扩展：集群的最重要能力当然是扩展，文档中称可以线性扩展到<code>1000</code>结点。</li>
+<li>可用性：在<code>Cluster</code>推出之前，可用性要靠<code>Sentinel</code>保证。有了集群之后也自动具有了<code>Sentinel</code>的监控和自动<code>Failover</code>能力。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>它采用了<code>P2P</code>的模式，完全去中心化。支持多节点数据集自动分片，提供一定程度的分区可用性，部分节点挂掉或者无法连接其他节点后，服务可以正常运行。<code>Redis 3.0</code>集群采用<code>Hash Slot</code>方案，而不是一致性哈希。<code>Redis</code>把所有的<code>Key</code>分成了<code>16384</code>个<code>slot</code>，每个<code>Redis</code>实例负责其中一部分<code>slot</code>。集群中的所有信息（节点、端口、<code>slot</code>等），都通过节点之间定期的数据交换而更新。</p>
+</li>
+<li><p><code>Redis</code>客户端在任意一个<code>Redis</code>实例发出请求，如果所需数据不在该实例中，通过重定向命令引导客户端访问所需的实例。</p>
+</li>
+<li><p><code>Redis 3.0</code>集群，目前支持的<code>cluster</code>特性</p>
+<ul>
+<li>节点自动发现</li>
+<li><code>slave-&gt;master</code> 选举,集群容错</li>
+<li><code>Hot resharding</code>:在线分片</li>
+<li>集群管理:<code>cluster xxx</code></li>
+<li>基于配置(<code>nodes-port.conf</code>)的集群管理</li>
+<li><code>ASK</code> 转向<code>/MOVED</code> 转向机制</li>
+</ul>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/cache/redis4.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>如上图所示，所有的<code>redis</code>节点彼此互联(<code>PING-PONG</code>机制),内部使用二进制协议优化传输速度和带宽。节点的<code>fail</code>是通过集群中超过半数的节点检测失效时才生效。客户端与<code>redis</code>节点直连，不需要中间<code>proxy</code>层。客户端不需要连接集群所有节点，连接集群中任何一个可用节点即可。<code>redis-cluster</code>把所有的物理节点映射到<code>[0-16383]slot上cluster</code>负责维护<code>node&lt;-&gt;slot&lt;-&gt;value</code>。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/cache/redis5.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>选举过程是集群中所有<code>master</code>参与，如果半数以上<code>master</code>节点与<code>master</code>节点通信超时，认为当前<code>master</code>节点挂掉。</p>
+</li>
+<li><p>当集群不可用时，所有对集群的操作做都不可用，收到<code>((error) CLUSTERDOWN The cluster is down)</code>错误。如果集群任意<code>master</code>挂掉，且当前<code>master</code>没有<code>slave</code>，集群进入<code>fail</code>状态，也可以理解成进群的<code>slot</code>映射<code>[0-16383]</code>不完成时进入<code>fail</code>状态。如果进群超过半数以上<code>master</code>挂掉，无论是否有<code>slave</code>集群进入<code>fail</code>状态。</p>
+</li>
+</ul>
+<h4 id="Twemproxy"><a href="#Twemproxy" class="headerlink" title="Twemproxy"></a><code>Twemproxy</code></h4><ul>
+<li><p><code>Twemproxy</code>是由<code>Twitter</code>开源的<code>Redis</code>代理， <code>Redis</code>客户端把请求发送到<code>Twemproxy</code>，<code>Twemproxy</code>根据路由规则发送到正确的<code>Redis</code>实例，最后<code>Twemproxy</code>把结果汇集返回给客户端。</p>
+</li>
+<li><p><code>Twemproxy</code>通过引入一个代理层，将多个<code>Redis</code>实例进行统一管理，使<code>Redis</code>客户端只需要在<code>Twemproxy</code>上进行操作，而不需要关心后面有多少个<code>Redis</code>实例，从而实现了<code>Redis</code>集群。</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/cache/redis2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>Twemproxy</code>本身也是单点，需要用<code>Keepalived</code>做高可用方案。</p>
+</li>
+<li><p>这么些年来，<code>Twenproxy</code>作为应用范围最广、稳定性最高、最久经考验的分布式中间件，在业界广泛使用。</p>
+</li>
+<li><p>但是<code>Twemproxy</code>存在诸多不方便之处，最主要的是，<code>Twemproxy</code>无法平滑地增加<code>Redis</code>实例，业务量突增，需增加<code>Redis</code>服务器；业务量萎缩，需要减少<code>Redis</code>服务器。但对<code>Twemproxy</code>而言，基本上都很难操作。其次，没有友好的监控管理后台界面，不利于运维监控。</p>
+</li>
+</ul>
+<h4 id="Codis"><a href="#Codis" class="headerlink" title="Codis"></a><code>Codis</code></h4><ul>
+<li><code>Codis</code>解决了<code>Twemproxy</code>的这两大痛点，由豌豆荚于2014年11月开源，基于<code>Go</code>和<code>C</code>开发、现已广泛用于豌豆荚的各种<code>Redis</code>业务场景。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/cache/reids3.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p><code>Codis</code>引入了<code>Group</code>的概念，每个<code>Group</code>包括1个<code>Redis Master</code>及一个或多个<code>Redis Slave</code>，这是和<code>Twemproxy</code>的区别之一，实现了<code>Redis</code>集群的高可用。当1个<code>Redis Master</code>挂掉时，<code>Codis</code>不会自动把一个<code>Slave</code>提升为<code>Master</code>，这涉及数据的一致性问题，<code>Redis</code>本身的数据同步是采用主从异步复制，当数据在<code>Maste</code>写入成功时，<code>Slave</code>是否已读入这个数据是没法保证的，需要管理员在管理界面上手动把<code>Slave</code>提升为<code>Master</code>。</p>
+</li>
+<li><p><code>Codis</code>使用，可以参考官方文档<a href="https://github.com/CodisLabs/codis/blob/release3.0/doc/tutorial_zh.md" target="_blank" rel="noopener">https://github.com/CodisLabs/codis/blob/release3.0/doc/tutorial_zh.md</a></p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.iocoder.cn" target="_blank" rel="noopener">http://www.iocoder.cn</a></li>
+<li><a href="http://blog.720ui.com/2016/redis_action_04_cluster/" target="_blank" rel="noopener">http://blog.720ui.com/2016/redis_action_04_cluster/</a></li>
+<li><a href="https://blog.csdn.net/dc_726/article/details/48552531" target="_blank" rel="noopener">https://blog.csdn.net/dc_726/article/details/48552531</a></li>
+<li><a href="https://blog.csdn.net/qq_35190492/article/details/102958250" target="_blank" rel="noopener">https://blog.csdn.net/qq_35190492/article/details/102958250</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis-高可用集群》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/02/10/frontend/CSS和JS文件的客户端缓存问题/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">解决CSS和JS文件的客户端缓存问题</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/02/04/backend/cache/redis/Redis-数据淘汰策略/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Redis-数据淘汰策略</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&title=《Redis-高可用集群》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis-高可用集群》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2018/02/04/backend/cache/redis/Redis-高可用集群/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACxklEQVR42u3ay27jQAxFwfz/T2e2AwSyD/sReDClVWDLskoBuulLfn3l4/vH8fr1n+8+vfL360/XfPrUsQMPDw9v+9bLbXXq0229PvPYI8DDw8O7xnv6+vLFfdF/fYXC6PeMh4eH98m8UjSnW8nn4+Hh4f2LvB4WrBXf04IbDw8P7/d5JYyYLvQ9wJ1e/0rWgoeHh3ehi/Q5f1/p7+Hh4eFtd9V74bsWMfSm2uLd4uHh4V3gTcvlPl5QivJBoLB0n3h4eHg3eDvxa1nK++I+DSDSsAIeHh7eBV5Z+sti3b+4xL79s4N4Ag8PD+8Qb9rCL02s6UDA2tBAGUTAw8PDu8GblqrlU+UK03GBrc4eHh4e3jVeKXP7Q5nGEzvvDhpgeHh4eId402V9bcnuRfnauFUKJvDw8PC2eT1W2B/J2g81po8MDw8P7wZv53f9qXN6bLGzbeDh4eGd5a21//tgQY85ypYzjj/w8PDwLvCmq2gPFNYex+vodmdDwsPDw9vn9WZVH3Jaa1DtBxBvZsrw8PDwDvGmi35Zpqdnnh29evM/xMPDw9s+cy1y7UFD3zB2wojHa+Lh4eFd4PVythfK5eunD6sEE+PoFg8PD2+JNw0jeqm9Fjr0+0kbGB4eHt5lXi+Lp9HANFOdtsQeHyseHh7eBV5vdPWIYQ25A8PDw8P7fV7S55veKZ13YpFBDo2Hh4d3lFeC2h7sTiPassH0QS48PDy827xTxfQ09u1bUTmu/1bAw8P773nfw6O3/NcSkR5PpAgDDw8P7wJvuuD2ltVagX5qMGtxP8HDw8PLvOlmMF3c1xj9EbzB4+Hh4V3jlVbTtH11YFjqVNaCh4eH9wG86QBB3zZ6MFEUeHh4eJ/Amy7Npfg+NaaAh4eH95u8tZh1OlhQWlZ9M0gRMx4eHt4F3uKP/Nzu6gV3X9W/zh54eHh4lfcHI0TuA+A9qqoAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

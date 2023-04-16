@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>阿里QLExpress动态脚本引擎解析工具 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="java,阿里,QLExpress">
+    <meta name="description" content="QLExpress基本语法一、背景介绍由阿里的电商业务规则、表达式（布尔组合）、特殊数学公式计算（高精度）、语法分析、脚本二次定制等强需求而设计的一门动态脚本引擎解析工具。在阿里集团有很强的影响力，同时为了自身不断优化、发扬开源贡献精神，于2012年开源。 QLExpress脚本引擎被广泛应用在阿里的电商业务场景，具有以下的一些特性:  1、线程安全，引擎运算过程中的产生的临时变量都是thread">
+<meta name="keywords" content="java,阿里,QLExpress">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里QLExpress动态脚本引擎解析工具">
+<meta property="og:url" content="http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="QLExpress基本语法一、背景介绍由阿里的电商业务规则、表达式（布尔组合）、特殊数学公式计算（高精度）、语法分析、脚本二次定制等强需求而设计的一门动态脚本引擎解析工具。在阿里集团有很强的影响力，同时为了自身不断优化、发扬开源贡献精神，于2012年开源。 QLExpress脚本引擎被广泛应用在阿里的电商业务场景，具有以下的一些特性:  1、线程安全，引擎运算过程中的产生的临时变量都是thread">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2023-04-16T09:31:13.928Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里QLExpress动态脚本引擎解析工具">
+<meta name="twitter:description" content="QLExpress基本语法一、背景介绍由阿里的电商业务规则、表达式（布尔组合）、特殊数学公式计算（高精度）、语法分析、脚本二次定制等强需求而设计的一门动态脚本引擎解析工具。在阿里集团有很强的影响力，同时为了自身不断优化、发扬开源贡献精神，于2012年开源。 QLExpress脚本引擎被广泛应用在阿里的电商业务场景，具有以下的一些特性:  1、线程安全，引擎运算过程中的产生的临时变量都是thread">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">阿里QLExpress动态脚本引擎解析工具</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">阿里QLExpress动态脚本引擎解析工具</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2022-01-16T13:30:44.000Z" itemprop="datePublished" class="page-time">
+  2022-01-16
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#QLExpress基本语法"><span class="post-toc-number">1.</span> <span class="post-toc-text">QLExpress基本语法</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、背景介绍"><span class="post-toc-number">2.</span> <span class="post-toc-text">一、背景介绍</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、依赖和调用说明"><span class="post-toc-number">3.</span> <span class="post-toc-text">二、依赖和调用说明</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、项目使用"><span class="post-toc-number">4.</span> <span class="post-toc-text">三、项目使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ExpressService"><span class="post-toc-number">4.0.0.1.</span> <span class="post-toc-text">ExpressService</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#测试类"><span class="post-toc-number">4.0.0.2.</span> <span class="post-toc-text">测试类</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/tools/阿里QLExpress动态脚本引擎解析工具" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">阿里QLExpress动态脚本引擎解析工具</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2022-01-16 21:30:44" datetime="2022-01-16T13:30:44.000Z" itemprop="datePublished">2022-01-16</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="QLExpress基本语法"><a href="#QLExpress基本语法" class="headerlink" title="QLExpress基本语法"></a>QLExpress基本语法</h1><h1 id="一、背景介绍"><a href="#一、背景介绍" class="headerlink" title="一、背景介绍"></a>一、背景介绍</h1><p>由阿里的电商业务规则、表达式（布尔组合）、特殊数学公式计算（高精度）、语法分析、脚本二次定制等强需求而设计的一门动态脚本引擎解析工具。<br>在阿里集团有很强的影响力，同时为了自身不断优化、发扬开源贡献精神，于2012年开源。</p>
+<p>QLExpress脚本引擎被广泛应用在阿里的电商业务场景，具有以下的一些特性:</p>
+<ul>
+<li>1、线程安全，引擎运算过程中的产生的临时变量都是threadlocal类型。</li>
+<li>2、高效执行，比较耗时的脚本编译过程可以缓存在本地机器，运行时的临时变量创建采用了缓冲池的技术，和groovy性能相当。</li>
+<li>3、弱类型脚本语言，和groovy，javascript语法类似，虽然比强类型脚本语言要慢一些，但是使业务的灵活度大大增强。</li>
+<li>4、安全控制,可以通过设置相关运行参数，预防死循环、高危系统api调用等情况。</li>
+<li>5、代码精简，依赖最小，250k的jar包适合所有java的运行环境，在android系统的低端pos机也得到广泛运用。</li>
+</ul>
+<h1 id="二、依赖和调用说明"><a href="#二、依赖和调用说明" class="headerlink" title="二、依赖和调用说明"></a>二、依赖和调用说明</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>QLExpress<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>Valine</span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ExpressRunner runner = <span class="keyword">new</span> ExpressRunner();</span><br><span class="line">DefaultContext&lt;String, Object&gt; context = <span class="keyword">new</span> DefaultContext&lt;String, Object&gt;();</span><br><span class="line">context.put(<span class="string">"a"</span>, <span class="number">1</span>);</span><br><span class="line">context.put(<span class="string">"b"</span>, <span class="number">2</span>);</span><br><span class="line">context.put(<span class="string">"c"</span>, <span class="number">3</span>);</span><br><span class="line">String express = <span class="string">"a + b * c"</span>;</span><br><span class="line">Object r = runner.execute(express, context, <span class="keyword">null</span>, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line">System.out.println(r);</span><br></pre></td></tr></table></figure>
+<h1 id="三、项目使用"><a href="#三、项目使用" class="headerlink" title="三、项目使用"></a>三、项目使用</h1><h4 id="ExpressService"><a href="#ExpressService" class="headerlink" title="ExpressService"></a>ExpressService</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ExpressService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 执行表达式计算</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> expressString 表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> context 计算上下文</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 计算结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Object <span class="title">execute</span><span class="params">(String expressString, Map&lt;String, Object&gt; context)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 执行表达式计算</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> expressString 表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> valueParam 用以填充的值对象,只支持对象,不能是集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 计算结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Object <span class="title">execute</span><span class="params">(String expressString, Object valueParam)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExpressServiceImpl</span> <span class="keyword">implements</span> <span class="title">ExpressService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Logger LOGGER = LoggerFactory.getLogger(ExpressServiceImpl.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> ExpressRunner expressRunner;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        DynamicParamsUtil.supportDynamicParams = <span class="keyword">true</span>;</span><br><span class="line">        ExpressRunner runner = <span class="keyword">new</span> ExpressRunner(<span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"><span class="comment">//        Class[] cls = new Class[]&#123;String.class,Integer.class,Integer.class&#125;;</span></span><br><span class="line"><span class="comment">//        runner.addFunctionOfClassMethod(ExpressOperationConstants.SUB_STRING,</span></span><br><span class="line"><span class="comment">//                ExpressStringUtils.class.getName(),</span></span><br><span class="line"><span class="comment">//                ExpressOperationConstants.CUSTOM_SUB_STRING,</span></span><br><span class="line"><span class="comment">//                cls,"substring method error");</span></span><br><span class="line">        expressRunner =  runner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 执行表达式计算</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> expressString 表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> context 计算上下文</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 计算结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">execute</span><span class="params">(String expressString, Map&lt;String, Object&gt; context)</span> </span>&#123;</span><br><span class="line">        Assert.notNull(context,<span class="string">"method execute param context is null"</span>);</span><br><span class="line">        Object value = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span>(StringUtils.isNotBlank(expressString))&#123;</span><br><span class="line">            DefaultContext&lt;String, Object&gt; contextMap = <span class="keyword">new</span> DefaultContext&lt;String, Object&gt;();</span><br><span class="line">            <span class="keyword">for</span>(Map.Entry&lt;String,Object&gt; entry : context.entrySet())&#123;</span><br><span class="line">                contextMap.put(entry.getKey(), entry.getValue());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                value = expressRunner.execute(expressString, contextMap, <span class="keyword">null</span>, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line">            &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                LOGGER.error(<span class="string">"call expressRunner error expressString is : &#123;&#125;, context :&#123;&#125;"</span>, expressString, context, e);</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(String.format(<span class="string">"表达式&#123;%s&#125;计算错误"</span>, expressString));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>  value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 执行表达式计算</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> expressString 表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> valueParam 用以填充的值对象,只支持对象,不能是集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 计算结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">execute</span><span class="params">(String expressString, Object valueParam)</span> </span>&#123;</span><br><span class="line">        Assert.notNull(valueParam,<span class="string">"method execute context valueParam is null"</span>);</span><br><span class="line"></span><br><span class="line">        Map&lt;String, Object&gt; map = <span class="keyword">new</span> ObjectMapper().convertValue(valueParam, <span class="keyword">new</span> TypeReference&lt;Map&lt;String, Object&gt;&gt;() &#123;&#125;);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.execute(expressString,map);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExpressServiceTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Logger LOGGER = LoggerFactory.getLogger(ExpressServiceTest.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ExpressService expressService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testExecute0</span><span class="params">()</span></span>&#123;</span><br><span class="line">        String express = <span class="string">"3452"</span>;</span><br><span class="line"></span><br><span class="line">        Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">4</span>);</span><br><span class="line">        map.put(<span class="string">"amount1"</span>,<span class="number">0.01</span>);</span><br><span class="line">        map.put(<span class="string">"amount2"</span>,<span class="number">1.10</span>);</span><br><span class="line"></span><br><span class="line">        Object value = <span class="keyword">this</span>.expressService.execute(express, map);</span><br><span class="line"></span><br><span class="line">        LOGGER.info(<span class="string">"输出类型:&#123;&#125; 结果:&#123;&#125;"</span>, value.getClass(), value);</span><br><span class="line"></span><br><span class="line">        value = <span class="keyword">this</span>.expressService.execute(express, map);</span><br><span class="line"></span><br><span class="line">        LOGGER.info(<span class="string">"输出类型:&#123;&#125; 结果:&#123;&#125;"</span>, value.getClass(), value);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testExecute1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        String express = <span class="string">"(amount1+amount2)*100"</span>;</span><br><span class="line"></span><br><span class="line">        Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">4</span>);</span><br><span class="line">        map.put(<span class="string">"amount1"</span>,<span class="number">0.01</span>);</span><br><span class="line">        map.put(<span class="string">"amount2"</span>,<span class="number">1.10</span>);</span><br><span class="line"></span><br><span class="line">        Object value = <span class="keyword">this</span>.expressService.execute(express, map);</span><br><span class="line"></span><br><span class="line">        LOGGER.info(<span class="string">"输出类型:&#123;&#125; 结果:&#123;&#125;"</span>, value.getClass(), value);</span><br><span class="line"></span><br><span class="line">        Assert.assertEquals(<span class="keyword">new</span> BigDecimal(<span class="string">"111.00"</span>), value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>详情查看<a href="https://github.com/alibaba/QLExpress#readme" target="_blank" rel="noopener">官网</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/QLExpress/">QLExpress</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/阿里/">阿里</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/&title=《阿里QLExpress动态脚本引擎解析工具》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/&title=《阿里QLExpress动态脚本引擎解析工具》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《阿里QLExpress动态脚本引擎解析工具》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/03/01/backend/database/mysql/45chapter/Mysql-章节/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql-章节</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/&title=《阿里QLExpress动态脚本引擎解析工具》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/&title=《阿里QLExpress动态脚本引擎解析工具》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《阿里QLExpress动态脚本引擎解析工具》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD3UlEQVR42u3ayWpbQRAFUP3/TzuQTQLC8r1V3Yog562MJfVw3qKo4fGIn6/fz99/Pz/Pnz6v8Pz/777z3Qqvv/98kseNBwcOHDhwBFfNl24vlhx9s0LySpJf4cCBAweOsxxJcH29WRIykzVfh9jkV3nQxYEDBw4c/5YjT6LyUN2i5CETBw4cOHB8Pse+npYX7NqUb3Z+HDhw4MBxjyO/TJue5e2rs+nc9VopDhw4cOCYRKvoEJ//9/X5Dhw4cODAEZfb2gC2GblLEstN0P3hRjhw4MCBY80xK9u14a0Nfglx23wqzoADBw4cOBYc7dhBvnRymTastq+wDuo4cODAgeMQRz5AcLbttAmZeXFwONmBAwcOHDhGHK8zl3z7GVCba27aS3mChwMHDhw4NhyR1iKdyxO8vCCYlyDbkIwDBw4cON7D0ZbYZo2iPCTPBiAiGhw4cODAseZoC3+z8NaGxtm4w+a0j/zt4cCBAweOkmM2NJBf/tRgxL1RDBw4cODAcYNj1iKalefupYir4TwcOHDgwLHgOLXBPb42wVuNUODAgQMHjgVH2wrafLNtI7XjFJuUDwcOHDhwnOI4FTLzNCkJt7Oz5Sv/wIoDBw4cOBYcs5GCBGuzcl5YfBx6cODAgQPHKY42ILXFxFmTaVYc3BQWceDAgQPHPY48uZolS2fX37Sghl04HDhw4MARc7SBMAm3s0DYNqVmQxI4cODAgeMGx2bjvDW1v9Lm9eQvDAcOHDhwnOXYh6t2QK0ddNuUBaOT4MCBAweOoxz7C8/SsLyAeKoQ+e33ceDAgQPHIY59/pIHzlmpMUdsQ2xUWcSBAwcOHGuO2WjavnSYv4z8JPkrwYEDBw4cZznaYHYq+LXJYdu4KlJBHDhw4MBxgaMF2hQE26ZRXhwcYuHAgQMHjjVHHjjbpGgzEjdrSuUr/HBaHDhw4MCx4JhB5CF5tks7uPB6r/xTHDhw4MBxiiNJojbBr204bZKx1WvGgQMHDhwXOPLSWz700Bbp2n33Iw6PNobjwIEDB46yGjYbaJg1e/I2VfvNvN11Zb4DBw4cOP5LjrwU2F5p1ojaB939Ljhw4MCBY7PLV/nk+U6bBOalyXvfwYEDBw4ce45NApaHxvzTPNC2L6wYa8CBAwcOHGuOZIMkcWoD82YwogUtRh9w4MCBA8chjiQBm8XqtmW1KTjO1seBAwcOHJ/AscoIg/JcnsLlJ49eKg4cOHDgeCNHG1w3IwjJldqGGQ4cOHDgeCdHstBsdCA/Vj4el/yqDc84cODAgeMUx77Alzei9kN4Z8caDozK4cCBAweOP88vyQloOuvXByMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

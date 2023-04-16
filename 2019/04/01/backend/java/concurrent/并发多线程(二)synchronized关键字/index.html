@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://images.gitbook.cn/7d407bf0-d21e-11e8-b2d6-1188c7e0dd7e">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/markword.png">
 <meta property="og:image" content="http://www.songshuiyang.com/images/server/java/Concurrent/Synchronized.png">
-<meta property="og:updated_time" content="2020-09-06T04:45:52.950Z">
+<meta property="og:updated_time" content="2022-02-17T13:08:52.415Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发多线程(二)synchronized关键字">
 <meta name="twitter:description" content="synchronized 关键字简介 synchronized关键字解决的是多个线程之间访问资源的同步性，synchronized关键字可以保证被它修饰的方法或者代码块在任意时刻只能有一个线程执行。  另外，在 Java 早期版本中，synchronized属于重量级锁，效率低下，因为监视器锁（monitor）是依赖于底层的操作系统的 Mutex Lock 来实现的，Java的线程是映射到操作系统">
@@ -330,7 +330,7 @@ var _hmt = _hmt || [];
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized-关键字简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">synchronized 关键字简介</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized关键字最主要的三种使用方式"><span class="post-toc-number">2.</span> <span class="post-toc-text">synchronized关键字最主要的三种使用方式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized-关键字底层原理"><span class="post-toc-number">3.</span> <span class="post-toc-text">synchronized 关键字底层原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#JDK-1-6锁优化"><span class="post-toc-number">4.</span> <span class="post-toc-text">JDK 1.6锁优化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、自旋锁"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1、自旋锁</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、锁消除"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2、锁消除</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、锁粗化"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">3、锁粗化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、锁升级"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">4、锁升级</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1-偏向锁"><span class="post-toc-number">4.4.1.</span> <span class="post-toc-text">4.1 偏向锁</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1-轻量级锁"><span class="post-toc-number">4.4.2.</span> <span class="post-toc-text">4.1 轻量级锁</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1-重量级锁"><span class="post-toc-number">4.4.3.</span> <span class="post-toc-text">4.1 重量级锁</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1"><span class="post-toc-number">4.4.4.</span> <span class="post-toc-text">4.1</span></a></li></ol></li></ol></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number"></span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number"></span> <span class="post-toc-text">参考转载</span></a>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized-关键字简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">synchronized 关键字简介</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized关键字最主要的三种使用方式"><span class="post-toc-number">2.</span> <span class="post-toc-text">synchronized关键字最主要的三种使用方式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized-关键字底层原理"><span class="post-toc-number">3.</span> <span class="post-toc-text">synchronized 关键字底层原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#JDK-1-6锁优化"><span class="post-toc-number">4.</span> <span class="post-toc-text">JDK 1.6锁优化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、自旋锁"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1、自旋锁</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、锁消除"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2、锁消除</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、锁粗化"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">3、锁粗化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、锁升级"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">4、锁升级</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1-偏向锁"><span class="post-toc-number">4.4.1.</span> <span class="post-toc-text">4.1 偏向锁</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1-轻量级锁"><span class="post-toc-number">4.4.2.</span> <span class="post-toc-text">4.1 轻量级锁</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1-重量级锁"><span class="post-toc-number">4.4.3.</span> <span class="post-toc-text">4.1 重量级锁</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-1"><span class="post-toc-number">4.4.4.</span> <span class="post-toc-text">4.1</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#补充"><span class="post-toc-number">5.</span> <span class="post-toc-text">补充</span></a></li></ol><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number"></span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考转载"><span class="post-toc-number"></span> <span class="post-toc-text">参考转载</span></a>
         </li></nav>
     </aside>
 
@@ -528,7 +528,10 @@ var _hmt = _hmt || [];
 <li><p>其中，Monitor 的本质是，依赖于底层操作系统的 Mutex Lock 实现。操作系统实现线程之间的切换，需要从用户态到内核态的切换，切换成本非常高。</p>
 </li>
 </ul>
-<h5 id="4-1"><a href="#4-1" class="headerlink" title="4.1"></a>4.1</h5><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><figure class="image-bubble">
+<h5 id="4-1"><a href="#4-1" class="headerlink" title="4.1"></a>4.1</h5><h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><ul>
+<li>synchronized 是非公平锁，可以重入</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
                     <img src="/images/server/java/Concurrent/Synchronized.png" alt="Synchronized 关键字使用、底层原理、JDK1.6 之后的底层优化以及 和ReenTrantLock 的对比" title="">
@@ -660,8 +663,8 @@ var _hmt = _hmt || [];
             el: '#comments',
             notify: 'false' == 'true',
             verify: 'false' == 'true',
-            appId: "tFSCtBMsjdDCJmCEKGvMlHLh-gzGzoHsz",
-            appKey: "wDUxU3I7OcPPuDDwMSe5Ochu",
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
             avatar: "robohash",
             placeholder: "少侠不吐槽吐槽?",
             guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
@@ -687,7 +690,7 @@ var _hmt = _hmt || [];
 
         <footer class="footer">
     <div class="bottom">
-        <p><span>songshuiyang &copy; 2017 - 2020</span>
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
             <span>
                 
                 <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
