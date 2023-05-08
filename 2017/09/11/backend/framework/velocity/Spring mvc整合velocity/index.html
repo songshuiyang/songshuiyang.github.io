@@ -447,8 +447,8 @@ Copyright &amp;copy 2014 lm
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre><h2 id="velocity-基本语法"><a href="#velocity-基本语法" class="headerlink" title="velocity 基本语法"></a>velocity 基本语法</h2><p>Velocity的基本语法：<br>1、”#”用来标识Velocity的脚本语句，包括#set、#if 、#else、#end、#foreach、#end、#iinclude、#parse、#macro等；<br>如:</p>
-<p>#if($info.imgs)<br><img src="$info.imgs" border="0"></p>
-<p>#else<br><img src="noPhoto.jpg"></p>
+<p>#if($info.imgs)<br><img src="/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/$info.imgs" border="0"></p>
+<p>#else<br><img src="/2017/09/11/backend/framework/velocity/Spring mvc整合velocity/noPhoto.jpg"></p>
 <p>#end</p>
 <p>2、”$”用来标识一个对象(或理解为变量)；如<br>如：$i、$msg、$TagUtil.options(…)等。</p>
 <p>3、”{}”用来明确标识Velocity变量；<br>比如在页面中，页面中有一个$someonename，此时，Velocity将把someonename作为变量名，若我们程序是想在someone这 个变量的后面紧接着显示name字符，则上面的标签应该改成${someone}name。</p>

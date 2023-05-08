@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Spring系列(七五)Spring事务之注册执行后处理逻辑 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="前言 在实际项目开发过程中经常会遇到需要事务提交后处理逻辑，比如保存后执行发消息逻辑，或者通知下游，针对此类情况Spring提供了TransactionSynchronizationManager来帮我们实现这个功能  正文场景使用 1、下面可以可以看到TransactionSynchronizationManager提供了注册同步代码逻辑方法，重写afterCommit即可完成方法逻辑的实现">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring系列(七五)Spring事务之注册执行后处理逻辑">
+<meta property="og:url" content="http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="前言 在实际项目开发过程中经常会遇到需要事务提交后处理逻辑，比如保存后执行发消息逻辑，或者通知下游，针对此类情况Spring提供了TransactionSynchronizationManager来帮我们实现这个功能  正文场景使用 1、下面可以可以看到TransactionSynchronizationManager提供了注册同步代码逻辑方法，重写afterCommit即可完成方法逻辑的实现">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/tx/TransactionSynchronization.png">
+<meta property="og:image" content="http://www.songshuiyang.com/images/server/spring/analysis/tx/Ts2.png">
+<meta property="og:updated_time" content="2023-04-29T10:30:13.227Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring系列(七五)Spring事务之注册执行后处理逻辑">
+<meta name="twitter:description" content="前言 在实际项目开发过程中经常会遇到需要事务提交后处理逻辑，比如保存后执行发消息逻辑，或者通知下游，针对此类情况Spring提供了TransactionSynchronizationManager来帮我们实现这个功能  正文场景使用 1、下面可以可以看到TransactionSynchronizationManager提供了注册同步代码逻辑方法，重写afterCommit即可完成方法逻辑的实现">
+<meta name="twitter:image" content="http://www.songshuiyang.com/images/server/spring/analysis/tx/TransactionSynchronization.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring系列(七五)Spring事务之注册执行后处理逻辑</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Spring系列(七五)Spring事务之注册执行后处理逻辑</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2022-01-02T07:04:00.000Z" itemprop="datePublished" class="page-time">
+  2022-01-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#正文"><span class="post-toc-number">2.</span> <span class="post-toc-text">正文</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#场景使用"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">场景使用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#原理解析"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">原理解析</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#异常场景"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">异常场景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#在实际项目中还会遇到这样一种场景就是事务提交后触发额外逻辑，但这个额外逻辑又开启了一个新事务，新事务里面再次registerSynchronization会无效"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">在实际项目中还会遇到这样一种场景就是事务提交后触发额外逻辑，但这个额外逻辑又开启了一个新事务，新事务里面再次registerSynchronization会无效</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#问题总结"><span class="post-toc-number">2.3.2.</span> <span class="post-toc-text">问题总结</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解决方案"><span class="post-toc-number">2.3.3.</span> <span class="post-toc-text">解决方案</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring系列(七五)Spring事务之注册执行后处理逻辑</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2022-01-02 15:04:00" datetime="2022-01-02T07:04:00.000Z" itemprop="datePublished">2022-01-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>在实际项目开发过程中经常会遇到需要事务提交后处理逻辑，比如保存后执行发消息逻辑，或者通知下游，针对此类情况<code>Spring</code>提供了<code>TransactionSynchronizationManager</code>来帮我们实现这个功能</li>
+</ul>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="场景使用"><a href="#场景使用" class="headerlink" title="场景使用"></a>场景使用</h3><blockquote>
+<p>1、下面可以可以看到<code>TransactionSynchronizationManager</code>提供了注册同步代码逻辑方法，重写afterCommit即可完成方法逻辑的实现</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TransactionSynchronizationManager.registerSynchronization(<span class="keyword">new</span> TransactionSynchronization() &#123;</span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCommit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         LOGGER.warn(<span class="string">"事务后执行逻辑"</span>);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>2、既然知道怎么用了，我们也可以举一反三，如果是事务提交前要额外处理某些事呢，我们来看看这个<code>TransactionSynchronization</code>对象的接口定义，可以看到也提供了很多方法定义，从方法名可以看出来如果你想在事务执行周期节点上做一些自己的额外逻辑，只要实现对应方法即可</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/tx/TransactionSynchronization.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h3><ul>
+<li><p>上面是知道怎么用，那具体逻辑是怎么实现的呢，通过对<code>spring</code>源码的通用套路，我们可以猜测其实就是在事务的各个节点中进行埋雷，当程序执行到某个逻辑就会触发想要的逻辑</p>
+</li>
+<li><p>我们进入到<code>TransactionSynchronizationManager.registerSynchronization</code>，可以看到其实就是内部类立马定义了一个线程本地变量，里面有个<code>Set</code>集合来存放我们的额外逻辑</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Set&lt;TransactionSynchronization&gt;&gt; synchronizations =</span><br><span class="line">        <span class="keyword">new</span> NamedThreadLocal&lt;Set&lt;TransactionSynchronization&gt;&gt;(<span class="string">"Transaction synchronizations"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Register a new transaction synchronization for the current thread.</span></span><br><span class="line"><span class="comment"> * Typically called by resource management code.</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Note that synchronizations can implement the</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> org.springframework.core.Ordered&#125; interface.</span></span><br><span class="line"><span class="comment"> * They will be executed in an order according to their order value (if any).</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> synchronization the synchronization object to register</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IllegalStateException if transaction synchronization is not active</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> org.springframework.core.Ordered</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerSynchronization</span><span class="params">(TransactionSynchronization synchronization)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IllegalStateException </span>&#123;</span><br><span class="line"></span><br><span class="line">    Assert.notNull(synchronization, <span class="string">"TransactionSynchronization must not be null"</span>);</span><br><span class="line">    <span class="keyword">if</span> (!isSynchronizationActive()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Transaction synchronization is not active"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    synchronizations.get().add(synchronization);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>对这个<code>synchronizations</code>变量进行方法调用引用，可以看到再包装了一下<code>Collections.unmodifiableList</code>，哈哈防止被别人替换了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Return an unmodifiable snapshot list of all registered synchronizations</span></span><br><span class="line"><span class="comment"> * for the current thread.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> unmodifiable List of TransactionSynchronization instances</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IllegalStateException if synchronization is not active</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> TransactionSynchronization</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;TransactionSynchronization&gt; <span class="title">getSynchronizations</span><span class="params">()</span> <span class="keyword">throws</span> IllegalStateException </span>&#123;</span><br><span class="line">    Set&lt;TransactionSynchronization&gt; synchs = synchronizations.get();</span><br><span class="line">    <span class="keyword">if</span> (synchs == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Transaction synchronization is not active"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Return unmodifiable snapshot, to avoid ConcurrentModificationExceptions</span></span><br><span class="line">    <span class="comment">// while iterating and invoking synchronization callbacks that in turn</span></span><br><span class="line">    <span class="comment">// might register further synchronizations.</span></span><br><span class="line">    <span class="keyword">if</span> (synchs.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Sort lazily here, not in registerSynchronization.</span></span><br><span class="line">        List&lt;TransactionSynchronization&gt; sortedSynchs = <span class="keyword">new</span> ArrayList&lt;TransactionSynchronization&gt;(synchs);</span><br><span class="line">        AnnotationAwareOrderComparator.sort(sortedSynchs);</span><br><span class="line">        <span class="keyword">return</span> Collections.unmodifiableList(sortedSynchs);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>getSynchronizations()</code> 调用引用可以看到<code>trigger</code>雷的节点</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/server/spring/analysis/tx/Ts2.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><code>org.springframework.transaction.support.TransactionSynchronizationUtils#invokeAfterCommit</code>，逻辑很简单就是拿到雷后依次踩一下</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Actually invoke the &#123;<span class="doctag">@code</span> afterCommit&#125; methods of the</span></span><br><span class="line"><span class="comment"> * given Spring TransactionSynchronization objects.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> synchronizations List of TransactionSynchronization objects</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> TransactionSynchronization#afterCommit()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">invokeAfterCommit</span><span class="params">(List&lt;TransactionSynchronization&gt; synchronizations)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (synchronizations != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (TransactionSynchronization synchronization : synchronizations) &#123;</span><br><span class="line">            synchronization.afterCommit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面是<code>org.springframework.transaction.support.AbstractPlatformTransactionManager#processCommit</code>执行事务的过程，注意<code>trigger</code>方法开头的方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Process an actual commit.</span></span><br><span class="line"><span class="comment"> * Rollback-only flags have already been checked and applied.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> status object representing the transaction</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> TransactionException in case of commit failure</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">processCommit</span><span class="params">(DefaultTransactionStatus status)</span> <span class="keyword">throws</span> TransactionException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">boolean</span> beforeCompletionInvoked = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            prepareForCommit(status);</span><br><span class="line">            triggerBeforeCommit(status);</span><br><span class="line">            triggerBeforeCompletion(status);</span><br><span class="line">            beforeCompletionInvoked = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">boolean</span> globalRollbackOnly = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (status.isNewTransaction() || isFailEarlyOnGlobalRollbackOnly()) &#123;</span><br><span class="line">                globalRollbackOnly = status.isGlobalRollbackOnly();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (status.hasSavepoint()) &#123;</span><br><span class="line">                <span class="keyword">if</span> (status.isDebug()) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Releasing transaction savepoint"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                status.releaseHeldSavepoint();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (status.isNewTransaction()) &#123;</span><br><span class="line">                <span class="keyword">if</span> (status.isDebug()) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Initiating transaction commit"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                doCommit(status);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Throw UnexpectedRollbackException if we have a global rollback-only</span></span><br><span class="line">            <span class="comment">// marker but still didn't get a corresponding exception from commit.</span></span><br><span class="line">            <span class="keyword">if</span> (globalRollbackOnly) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> UnexpectedRollbackException(</span><br><span class="line">                        <span class="string">"Transaction silently rolled back because it has been marked as rollback-only"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (UnexpectedRollbackException ex) &#123;</span><br><span class="line">            <span class="comment">// can only be caused by doCommit</span></span><br><span class="line">            triggerAfterCompletion(status, TransactionSynchronization.STATUS_ROLLED_BACK);</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (TransactionException ex) &#123;</span><br><span class="line">            <span class="comment">// can only be caused by doCommit</span></span><br><span class="line">            <span class="keyword">if</span> (isRollbackOnCommitFailure()) &#123;</span><br><span class="line">                doRollbackOnCommitException(status, ex);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                triggerAfterCompletion(status, TransactionSynchronization.STATUS_UNKNOWN);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!beforeCompletionInvoked) &#123;</span><br><span class="line">                triggerBeforeCompletion(status);</span><br><span class="line">            &#125;</span><br><span class="line">            doRollbackOnCommitException(status, ex);</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Error err) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!beforeCompletionInvoked) &#123;</span><br><span class="line">                triggerBeforeCompletion(status);</span><br><span class="line">            &#125;</span><br><span class="line">            doRollbackOnCommitException(status, err);</span><br><span class="line">            <span class="keyword">throw</span> err;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Trigger afterCommit callbacks, with an exception thrown there</span></span><br><span class="line">        <span class="comment">// propagated to callers but the transaction still considered as committed.</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 事务执行后</span></span><br><span class="line">            triggerAfterCommit(status);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">finally</span> &#123;</span><br><span class="line">            triggerAfterCompletion(status, TransactionSynchronization.STATUS_COMMITTED);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span> &#123;</span><br><span class="line">        cleanupAfterCompletion(status);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="异常场景"><a href="#异常场景" class="headerlink" title="异常场景"></a>异常场景</h3><h4 id="在实际项目中还会遇到这样一种场景就是事务提交后触发额外逻辑，但这个额外逻辑又开启了一个新事务，新事务里面再次registerSynchronization会无效"><a href="#在实际项目中还会遇到这样一种场景就是事务提交后触发额外逻辑，但这个额外逻辑又开启了一个新事务，新事务里面再次registerSynchronization会无效" class="headerlink" title="在实际项目中还会遇到这样一种场景就是事务提交后触发额外逻辑，但这个额外逻辑又开启了一个新事务，新事务里面再次registerSynchronization会无效"></a>在实际项目中还会遇到这样一种场景就是事务提交后触发额外逻辑，但这个额外逻辑又开启了一个新事务，新事务里面再次<code>registerSynchronization</code>会无效</h4><ul>
+<li>我们来看看里面的代码逻辑，里面有这样一个判断<code>status.isNewSynchronization()</code>，里面有个逻辑是就是判断一个<code>boolean</code>值，是否是新的同步</li>
+</ul>
+<blockquote>
+<p>org.springframework.transaction.support.AbstractPlatformTransactionManager#triggerAfterCommit</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> newSynchronization;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Return if a new transaction synchronization has been opened</span></span><br><span class="line"><span class="comment">* for this transaction.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isNewSynchronization</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.newSynchronization;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Trigger &#123;<span class="doctag">@code</span> afterCommit&#125; callbacks.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> status object representing the transaction</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">triggerAfterCommit</span><span class="params">(DefaultTransactionStatus status)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (status.isNewSynchronization()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (status.isDebug()) &#123;</span><br><span class="line">            logger.trace(<span class="string">"Triggering afterCommit synchronization"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        TransactionSynchronizationUtils.triggerAfterCommit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续跟踪这个变量的取值，这里第一个事务进来的时候<code>synchronizations.get()</code>是为空的，那么<code>newSynchronization</code>则为<code>true</code>，当第二个事务进来的时候<code>synchronizations.get()</code>是不为空的，所以这里<code>isNewSynchronization</code>则为<code>false</code>，所以就不会执行<code>trigger</code>方法了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Create a TransactionStatus instance for the given arguments.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> DefaultTransactionStatus <span class="title">newTransactionStatus</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        TransactionDefinition definition, Object transaction, <span class="keyword">boolean</span> newTransaction,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> newSynchronization, <span class="keyword">boolean</span> debug, Object suspendedResources)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> actualNewSynchronization = newSynchronization &amp;&amp;</span><br><span class="line">            !TransactionSynchronizationManager.isSynchronizationActive();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DefaultTransactionStatus(</span><br><span class="line">            transaction, newTransaction, actualNewSynchronization,</span><br><span class="line">            definition.isReadOnly(), debug, suspendedResources);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Return if transaction synchronization is active for the current thread.</span></span><br><span class="line"><span class="comment"> * Can be called before register to avoid unnecessary instance creation.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #registerSynchronization</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSynchronizationActive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (synchronizations.get() != <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h4><ul>
+<li>虽然<code>synchronizations</code>集合会累加同一个线程不同事务的回调对象，但是当第一个事务未回调完成前，这里<code>synchronizations</code>集合还是没被清空的，开启第二个事务时<code>status.isNewSynchronization()</code>都是<code>false</code></li>
+</ul>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ul>
+<li>将当前的回调方法都添加到本地线程集合中，后续回调均按此集合顺序执行回调逻辑，<code>TransactionCommitExecutor</code>为单例<code>Bean</code>，这样不论注册多少次，均为一个实例对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 事务提交后逻辑</span></span><br><span class="line"><span class="comment"> * 1、关于在第一个事务的afterCommit回调方法中开启新事务并再次registerSynchronization无效原因</span></span><br><span class="line"><span class="comment"> * 2、old:</span></span><br><span class="line"><span class="comment"> * TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() &#123;</span></span><br><span class="line"><span class="comment"> *      <span class="doctag">@Override</span></span></span><br><span class="line"><span class="comment"> *      public void afterCommit() &#123;</span></span><br><span class="line"><span class="comment"> *          LOGGER.warn("doInsert.afterCommit回调完成");</span></span><br><span class="line"><span class="comment"> *      &#125;</span></span><br><span class="line"><span class="comment"> * &#125;);</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> songshuiyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022/12/16 11:08</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionCommitExecutor</span> <span class="keyword">extends</span> <span class="title">TransactionSynchronizationAdapter</span> <span class="keyword">implements</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(TransactionCommitExecutor.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;List&lt;Runnable&gt;&gt; THREAD_LOCAL_RUNNABLE = <span class="keyword">new</span> ThreadLocal&lt;List&lt;Runnable&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable runnable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!TransactionSynchronizationManager.isSynchronizationActive()) &#123;</span><br><span class="line">            runnable.run();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;Runnable&gt; threadRunnables = THREAD_LOCAL_RUNNABLE.get();</span><br><span class="line">        <span class="keyword">if</span> (threadRunnables == <span class="keyword">null</span>) &#123;</span><br><span class="line">            threadRunnables = <span class="keyword">new</span> ArrayList&lt;Runnable&gt;();</span><br><span class="line">            THREAD_LOCAL_RUNNABLE.set(threadRunnables);</span><br><span class="line">            TransactionSynchronizationManager.registerSynchronization(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        threadRunnables.add(runnable);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCommit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Runnable&gt; threadRunnables = THREAD_LOCAL_RUNNABLE.get();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; threadRunnables.size(); i++) &#123;</span><br><span class="line">            Runnable runnable = threadRunnables.get(i);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                runnable.run();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</span><br><span class="line">                LOGGER.error(<span class="string">"AfterCommit to execute runnable fail "</span> + runnable, e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCompletion</span><span class="params">(<span class="keyword">int</span> status)</span> </span>&#123;</span><br><span class="line">        THREAD_LOCAL_RUNNABLE.remove();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/&title=《Spring系列(七五)Spring事务之注册执行后处理逻辑》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/&title=《Spring系列(七五)Spring事务之注册执行后处理逻辑》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(七五)Spring事务之注册执行后处理逻辑》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">阿里QLExpress动态脚本引擎解析工具</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/03/01/backend/database/mysql/45chapter/Mysql-章节/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql-章节</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/&title=《Spring系列(七五)Spring事务之注册执行后处理逻辑》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/&title=《Spring系列(七五)Spring事务之注册执行后处理逻辑》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Spring系列(七五)Spring事务之注册执行后处理逻辑》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2022/01/02/backend/framework/spring/analysis/Spring系列(七五)Spring事务之注册执行后处理逻辑/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEkUlEQVR42u3a22ojSRAFQP//T8/Csg8LM9Kck1mCLjv6SVhSqSvakJWXr6/4+vXv9er1//+SfOv3z+TXV3n9/t3ZOpgwYcKE6V6m5Lbe/0y7sVfvvl/5/UPKN/9+hZerYcKECROmy5lmy73HSgj2wfv9yu27L/+OCRMmTJh+AFN+o8nmZxzJOu+PNZgwYcKECVOeZOapaUufHzVmRWRMmDBhwvTTmPJQ+oni71mI/DMfqYVjwoQJE6aHMe0Hd+59ffjChAkTJkwPY/rEeOjZoD5rRp7a73/rY8KECROma5nykZq8fZhvb7bJWfl43+DEhAkTJkw3MrWlz3bD+wGdvCjcJrr5+pgwYcKE6V6m9mtJuJ1tOx8Vmh1Z9iNKmDBhwoTpRqbNxtqhnDx53ifJs3S6/hAmTJgwYXo8UxuwZwXcGXrb7NwcU6KdYsKECROmC5nyVDDKnkuUTfL8CeKX6JgwYcKE6VqmTSp4ahAnD8wzgnydQgMTJkyYMF3FlCe6SSDPC7X5sSBfLUm8h/9HmDBhwoTpQqZZmzAp4CbNzvyT7T3kCfzhUxImTJgwYXoYU5uUJqG6TYxnLckZ7tlmJyZMmDBhej7Tpr23Ka3mCerZxuqw/YkJEyZMmK5lSgjOFlVnAzf5IaBNaIuRHUyYMGHCdC1Tu/kcdMPdPsi2Ndsm8JgwYcKE6XamNoGcRcz9yE6bBu8fPCZMmDBhup2pHVhpB2uGPdU4hB9IZZMWLCZMmDBhupapTS+TpTfN0U2bc5M2R48ZEyZMmDBdzpTfyqzsmwfj5OiQA7XEmDBhwoTpezDNBmtmaedsnHS2flIsLsrWmDBhwoTpGzHNCq9tcvtVXrNW5Wxff1gTEyZMmDBdy5RsNS+zvr8OtBIX7cy2GI0JEyZMmL4T09nBnRlTHvg34Tx/8HWpFxMmTJgwXcX0q7w2DcWcLwdt7yc6cGDChAkTpguZ8qHSWQm4DcxJwN6MwObpcdHXxYQJEyZMD2Y6Szbbdr6xvFXZ3lt9esKECRMmTFcx5eXRPIHcHy/ab51KhqN+LyZMmDBhupApR2kDfJ4wf/q32oGeqJ2JCRMmTJgezzQL4adKsUlaO0vLZ/cW1cUxYcKECdNVTG3zbzamkwzftIluPuIzS7DrcxMmTJgwYXow06mN7VuV7a9v7qp4SJgwYcKE6VqmvGza3tAmrd0j5seCqJ2JCRMmTJguZCrGVkZJ5ox1RrM5TPxlj5gwYcKE6VswnQrVbRjOg3pbtG2bl8VkEyZMmDBhuoSpDcybEu3m2JFzbx5Y8S1MmDBhwnQJ06/yaoukCW6e4m7Kx5tHhQkTJkyY7mVqk9LZoaHdapKmtseCzWtMmDBhwnQ7U14Y3YT/s5/ZjPLk6H+oiGPChAkTpmuZ8kNA3s5s25+fSK1Ppe6YMGHChOknMOVJ5izbzgdukmPEZpDoZeqLCRMmTJh+AFPbLMyLtnmamjc+2zT7LzNNmDBhwoTpWqY2GLcHgrbk+v6m21+cFayHtXBMmDBhwvQwplkquGkiztafcbcPdXVhwoQJE6ZnMf0DqejTBF7eILIAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>

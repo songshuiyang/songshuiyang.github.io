@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>进程级事件发布订阅工具类 | 宋水阳个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java">
+    <meta name="description" content="背景 Jdk1.8推出了函数式接口，函数式接口最大的特点是可以通过Lambda实例化它们，借助Lambda表达式可以将一个函数方法作为一个方法参数进行传递，所以我们可以将一个或多个逻辑放到一个集合里，然后通过调用调用接口暴露的方法来触发对应的逻辑  饭前小吃 函数式接口（Functional Interface）  一个接口有且只有一个未实现的方法 引入了一个新的注解：@FunctionalInt">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程级事件发布订阅工具类">
+<meta property="og:url" content="http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/index.html">
+<meta property="og:site_name" content="宋水阳个人博客">
+<meta property="og:description" content="背景 Jdk1.8推出了函数式接口，函数式接口最大的特点是可以通过Lambda实例化它们，借助Lambda表达式可以将一个函数方法作为一个方法参数进行传递，所以我们可以将一个或多个逻辑放到一个集合里，然后通过调用调用接口暴露的方法来触发对应的逻辑  饭前小吃 函数式接口（Functional Interface）  一个接口有且只有一个未实现的方法 引入了一个新的注解：@FunctionalInt">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2023-05-02T08:59:39.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进程级事件发布订阅工具类">
+<meta name="twitter:description" content="背景 Jdk1.8推出了函数式接口，函数式接口最大的特点是可以通过Lambda实例化它们，借助Lambda表达式可以将一个函数方法作为一个方法参数进行传递，所以我们可以将一个或多个逻辑放到一个集合里，然后通过调用调用接口暴露的方法来触发对应的逻辑  饭前小吃 函数式接口（Functional Interface）  一个接口有且只有一个未实现的方法 引入了一个新的注解：@FunctionalInt">
+    
+        <link rel="alternate" type="application/atom+xml" title="宋水阳个人博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">songshuiyang</h5>
+          <a href="mailto:songshuiyang@foxmail.com" title="songshuiyang@foxmail.com" class="mail">songshuiyang@foxmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java基础">
+                <i class="icon icon-lg icon-bookmark"></i>
+                Java基础
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java集合">
+                <i class="icon icon-lg icon-camera"></i>
+                Java集合
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Java并发">
+                <i class="icon icon-lg icon-fire"></i>
+                Java并发
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/Io">
+                <i class="icon icon-lg icon-film"></i>
+                Java IO
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/JVM">
+                <i class="icon icon-lg icon-gift"></i>
+                JVM
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Spring">
+                <i class="icon icon-lg icon-money"></i>
+                Spring
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringMvc">
+                <i class="icon icon-lg icon-bullhorn"></i>
+                SpringMvc
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringBoot">
+                <i class="icon icon-lg icon-bolt"></i>
+                SpringBoot
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/SpringCloud">
+                <i class="icon icon-lg icon-cogs"></i>
+                SpringCloud
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Mybatis">
+                <i class="icon icon-lg icon-tasks"></i>
+                Mybatis
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/设计模式">
+                <i class="icon icon-lg icon-calendar"></i>
+                设计模式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据库">
+                <i class="icon icon-lg icon-compass"></i>
+                数据库
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/缓存">
+                <i class="icon icon-lg icon-comment"></i>
+                缓存
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/消息队列">
+                <i class="icon icon-lg icon-coffee"></i>
+                消息队列
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/分布式">
+                <i class="icon icon-lg icon-code"></i>
+                分布式
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/计算机网络">
+                <i class="icon icon-lg icon-umbrella"></i>
+                计算机网络
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/数据结构">
+                <i class="icon icon-lg icon-spinner"></i>
+                数据结构
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/Linux">
+                <i class="icon icon-lg icon-magic"></i>
+                Linux
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/前端">
+                <i class="icon icon-lg icon-twitter"></i>
+                前端
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/笔记">
+                <i class="icon icon-lg icon-bell"></i>
+                笔记
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/开发工具">
+                <i class="icon icon-lg icon-strikethrough"></i>
+                开发工具
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/业务">
+                <i class="icon icon-lg icon-pinterest"></i>
+                业务
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/songshuiyang" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">进程级事件发布订阅工具类</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">进程级事件发布订阅工具类</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2022-02-16T13:30:44.000Z" itemprop="datePublished" class="page-time">
+  2022-02-16
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">背景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#饭前小吃"><span class="post-toc-number">2.</span> <span class="post-toc-text">饭前小吃</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代码实现"><span class="post-toc-number">3.</span> <span class="post-toc-text">代码实现</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试类"><span class="post-toc-number">4.</span> <span class="post-toc-text">测试类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-backend/framework/tools/进程级事件发布订阅工具类" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">进程级事件发布订阅工具类</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2022-02-16 21:30:44" datetime="2022-02-16T13:30:44.000Z" itemprop="datePublished">2022-02-16</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/开发工具/">开发工具</a></li></ul>
+
+
+
+            
+
+<span id="busuanzi_container_site_pv">
+   <i class="icon icon-eye icon-pr"></i>本页总访问量<span id="busuanzi_value_page_pv"></span>次
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li><code>Jdk1.8</code>推出了函数式接口，函数式接口最大的特点是可以通过<code>Lambda</code>实例化它们，借助<code>Lambda</code>表达式可以将一个函数方法作为一个方法参数进行传递，所以我们可以将一个或多个逻辑放到一个集合里，然后通过调用调用接口暴露的方法来触发对应的逻辑</li>
+</ul>
+<h2 id="饭前小吃"><a href="#饭前小吃" class="headerlink" title="饭前小吃"></a>饭前小吃</h2><ul>
+<li><p>函数式接口（<code>Functional Interface</code>）</p>
+<ul>
+<li>一个接口有且只有一个未实现的方法</li>
+<li>引入了一个新的注解：<code>@FunctionalInterface</code>，表明这个接口是一个函数式接口，编译器会检查是否只有一个未实现的方法，否则报错</li>
+</ul>
+</li>
+<li><p>常用函数式接口</p>
+<ul>
+<li><code>Function&lt;T, R&gt;</code>: 接受一个参数、返回<code>R apply(T t)</code></li>
+<li><code>Consumer</code> ：有输入无输出的<code>void accept(T t)</code>方法</li>
+<li><code>Supplier</code>：有输出无输入的<code>T get()</code>方法</li>
+<li><code>Predicate</code>：返回boolean值的 <code>boolean test(T t)</code> 方法</li>
+<li><code>BiFunction</code>：<code>R apply(T t, U u)</code>2个入参，最后也跟Function一样返回一个结果</li>
+<li><code>其它...</code>：使用基本数据类型（Int,Long,Double,Boolean)情况做了扩展：DoubleConsumer 只消费double数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
+<li>下面代码是利用函数式接口实现事件的发布订阅，从而达到业务解耦、关注点分离的目的</li>
+<li><p>使用场景：</p>
+<ul>
+<li>比如用户下完单后有一系列操作发优惠券，累加积分，常规操作是不是一个接一个方法的逻辑，这样的话我们是不是可以抓住两个地方：<ul>
+<li>1、用户下完单后有个通知操作，达到一个触发的目的</li>
+<li>2、下完单后做什么，我们需要在一个地方将这些逻辑存起来，利用函数式接口就可以将此逻辑存储起来</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>带着上面的思路，可以设计一个<code>Map&lt;Class&lt;?&gt;, LinkedList&lt;Consumer&lt;Object&gt;&gt;&gt; eventConsumers</code>集合，<code>key</code>是用于区分是那个事件类型，<code>LinkedList</code>用于存放具体的业务逻辑，我们先把要做的逻辑先put进去，然后再依次执行<code>accept</code>方法</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.songsy.springboot.test.service.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.songsy.springboot.test.service.SpringUtils;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executor;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Consumer;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义事件发布订阅回调工具类（业务解藕、关注点分离，避免互相依赖）</span></span><br><span class="line"><span class="comment"> * &lt;pre&gt;</span></span><br><span class="line"><span class="comment"> * 支持两种模式</span></span><br><span class="line"><span class="comment"> * 1.无返回值：订阅事件消费（register）+ 发布事件消息（publishEvent/publishEventAsync）</span></span><br><span class="line"><span class="comment"> * 2.有返回值：监听回调通知处理（listenCallback）+通知回调（notifyCallback）,通过notifyMessageType+MessageChannel 即可标识唯一的一组通知回调与监听回调处理</span></span><br><span class="line"><span class="comment"> * &lt;pre&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">EventPublishSubscribeUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(EventPublishSubscribeUtils.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 事件消费者</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, LinkedList&lt;Consumer&lt;Object&gt;&gt;&gt; eventConsumers = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 有返回值的事件消费者</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, ConcurrentHashMap&lt;MessageChannel, Function&lt;Object, Object&gt;&gt;&gt; callbackFunction = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EventPublishSubscribeUtils</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 注册事件回调消费者</span></span><br><span class="line"><span class="comment">     * 用法：EventSubscribeConsumeUtils.register(this::xxxx方法） 或lambda表达式</span></span><br><span class="line"><span class="comment">     * 注意：若回调方法添加了事务注解，则应指派其代理对象的方法来完成回调，如：</span></span><br><span class="line"><span class="comment">     * EventSubscribeConsumeUtils.register((xxxService)SpringUtils.getBean(this.class)::xxxx方法）</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> eventConsumer</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Class&lt;?&gt; eventMessageType, Consumer&lt;Object&gt; eventConsumer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (eventConsumer == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        LinkedList&lt;Consumer&lt;Object&gt;&gt; eventConsumerItems = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (!eventConsumers.containsKey(eventMessageType)) &#123;</span><br><span class="line">            eventConsumers.putIfAbsent(eventMessageType, <span class="keyword">new</span> LinkedList&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        eventConsumerItems = eventConsumers.get(eventMessageType);</span><br><span class="line"></span><br><span class="line">        eventConsumerItems.add(eventConsumer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消订阅回调</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> eventMessageType</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> eventConsumer</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unRegister</span><span class="params">(Class&lt;?&gt; eventMessageType, Consumer&lt;Object&gt; eventConsumer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!eventConsumers.containsKey(eventMessageType)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        LinkedList&lt;Consumer&lt;Object&gt;&gt; eventConsumerItems = eventConsumers.get(eventMessageType);</span><br><span class="line">        <span class="keyword">int</span> eventConsumerIndex = eventConsumerItems.indexOf(eventConsumer);</span><br><span class="line">        <span class="keyword">if</span> (eventConsumerIndex == -<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        eventConsumerItems.remove(eventConsumerIndex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发布事件，同步触发执行回调事件消费者方法（存在阻塞等待），即事件消息生产者</span></span><br><span class="line"><span class="comment">     * 用法：在需要触发事件消息回调时调用，如：publishEvent(eventMessage);</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> eventMessage</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">publishEvent</span><span class="params">(T eventMessage)</span> </span>&#123;</span><br><span class="line">        Class&lt;?&gt; eventMessageType = eventMessage.getClass();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!eventConsumers.containsKey(eventMessageType)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (Consumer&lt;Object&gt; eventConsumer : eventConsumers.get(eventMessageType)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                eventConsumer.accept(eventMessage);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">                <span class="comment">// 各个逻辑相互独立</span></span><br><span class="line">                LOGGER.error(<span class="string">"eventConsumer.accept error:&#123;&#125;,eventMessageType:&#123;&#125;,eventMessage:&#123;&#125;"</span>,</span><br><span class="line">                        ex, eventMessageType, eventMessage);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发布事件，异步触发执行回调事件消费者方法（异步非阻塞），即事件消息生产者</span></span><br><span class="line"><span class="comment">     * 用法：在需要触发事件消息回调时调用，如：publishEventAsync(eventMessage);</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> eventMessage</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">publishEventAsync</span><span class="params">(<span class="keyword">final</span> T eventMessage)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Executor asyncTaskExecutor = (Executor) SpringUtils.getBean(<span class="string">"asyncTaskExecutor"</span>);</span><br><span class="line">            asyncTaskExecutor.execute(() -&gt; &#123;</span><br><span class="line">                publishEvent(eventMessage);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 监听回调处理（需要有返回值），即有返回值的回调消费者</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> notifyMessageType</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> messageChannel</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> callbackFunc</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listenCallback</span><span class="params">(Class&lt;?&gt; notifyMessageType, MessageChannel messageChannel, Function&lt;Object, Object&gt; callbackFunc)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!callbackFunction.containsKey(notifyMessageType)) &#123;</span><br><span class="line">            callbackFunction.putIfAbsent(notifyMessageType, <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Map&lt;MessageChannel, Function&lt;Object, Object&gt;&gt; functionMap = callbackFunction.get(notifyMessageType);</span><br><span class="line">        <span class="keyword">if</span> (!functionMap.containsKey(messageChannel)) &#123;</span><br><span class="line">            functionMap.putIfAbsent(messageChannel, callbackFunc);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"该通知消息类型：&#123;&#125;+消息通道：&#123;&#125;，已被订阅监听，重复订阅监听无效！"</span>, notifyMessageType.getSimpleName(), messageChannel.getDescription());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通知回调（同步等待获取监听回调的处理结果），即生产者</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> notifyMessage</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> messageChannel</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> &lt;R&gt;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;R&gt; <span class="function">R <span class="title">notifyCallback</span><span class="params">(Object notifyMessage, MessageChannel messageChannel)</span> </span>&#123;</span><br><span class="line">        Class&lt;?&gt; notifyMessageType = notifyMessage.getClass();</span><br><span class="line"></span><br><span class="line">        Map&lt;MessageChannel, Function&lt;Object, Object&gt;&gt; functionMap = callbackFunction.getOrDefault(notifyMessageType, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (functionMap != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Function&lt;Object, Object&gt; callbackFunction = functionMap.getOrDefault(messageChannel, <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">if</span> (callbackFunction != <span class="keyword">null</span>) &#123;</span><br><span class="line">                LOGGER.info(<span class="string">"通知回调消息已发布，正在执行回调处理:&#123;&#125;,messageChannel:[&#123;&#125;]"</span>, notifyMessage, messageChannel.getDescription());</span><br><span class="line">                Object result = callbackFunction.apply(notifyMessage);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> (R) result;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassCastException castEx) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> ClassCastException(String.format(<span class="string">"监听回调处理后返回值实际类型与发布通知回调待接收的值预期类型不一致，导致类型转换失败：%s,"</span> +</span><br><span class="line">                                    <span class="string">"请确保notifyCallback与listenCallback针对通知消息类型：%s+消息通道：%s返回值类型必需一致。"</span>,</span><br><span class="line">                            castEx.getMessage(), notifyMessageType.getSimpleName(), messageChannel.getDescription()));</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义事件发布订阅回调工具类测试类</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">EventPublishSubscribeUtilsTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(EventPublishSubscribeUtilsTest.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 无返回值：订阅事件消费（register）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 注册事件回调消费者</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">// 下单完成了，给用户发优惠券</span></span><br><span class="line">        EventPublishSubscribeUtils.register(OrderEvent.class, (obj) -&gt; &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"给用户发优惠券"</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">// 下单完成了，给用户累加积分</span></span><br><span class="line">        EventPublishSubscribeUtils.register(OrderEvent.class, (obj) -&gt; &#123;</span><br><span class="line">            LOGGER.info(<span class="string">"给用户累加积分"</span>);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果在Spring容器中可以使用 @PostConstruct 注册</span></span><br><span class="line"><span class="comment">//        @PostConstruct</span></span><br><span class="line"><span class="comment">//        public void listerEvent()&#123;</span></span><br><span class="line"><span class="comment">//            EventPublishSubscribeUtils.register(OrderEvent.class, (obj) -&gt; &#123;</span></span><br><span class="line"><span class="comment">//                // 下单完成了，给用户累加积分</span></span><br><span class="line"><span class="comment">//            &#125;);</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 发布事件</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        EventPublishSubscribeUtils.publishEvent(<span class="keyword">new</span> OrderEvent(<span class="number">1L</span>, <span class="string">"下单已完成"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 注册事件回调消费者</span></span><br><span class="line">        EventPublishSubscribeUtils.listenCallback(OrderEvent.class,MessageChannel.ORDER, o -&gt; &#123;</span><br><span class="line">            OrderEvent msg=(OrderEvent)o;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 下单处理</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 回调处理</span></span><br><span class="line">        <span class="keyword">int</span> result = EventPublishSubscribeUtils.notifyCallback(<span class="keyword">new</span> OrderEvent(), MessageChannel.ORDER);</span><br><span class="line">        <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 下单成功</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>通过上面的测试类我们可以发现下单的后续逻辑单独提取处理了且相互独立，下单主流程只要发布一个事件<code>publishEvent</code>即可完成对应的后续业务操作</li>
+<li>备注：<ul>
+<li>上面的<code>event</code>的异常都被吃掉了，需注意在方法体内自己做补偿或者操作日志追踪</li>
+<li><code>MessageChannel</code>可以自定义消息通道，但只能定义一对一的消费模式，因为这种模式下它是有带返回值的</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://blog.csdn.net/liu_shi_jun/article/details/128562977" target="_blank" rel="noopener">https://blog.csdn.net/liu_shi_jun/article/details/128562977</a></li>
+<li><a href="https://www.cnblogs.com/zuowj/p/12810016.html" target="_blank" rel="noopener">https://www.cnblogs.com/zuowj/p/12810016.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <footer>
+        <a href="http://www.songshuiyang.com">
+            <img src="/img/avatar.jpg" alt="songshuiyang">
+            songshuiyang
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/&title=《进程级事件发布订阅工具类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/&title=《进程级事件发布订阅工具类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《进程级事件发布订阅工具类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2022/02/21/backend/framework/tools/动态获取代理对象及实例对象工具类/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">动态获取代理对象及实例对象工具类</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2022/01/16/backend/framework/tools/阿里QLExpress动态脚本引擎解析工具/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">阿里QLExpress动态脚本引擎解析工具</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "cOdgshzpM38eAScO4B50lpML-gzGzoHsz",
+            appKey: "yNmbxCmHmD0IXElWkbpImpzl",
+            avatar: "robohash",
+            placeholder: "少侠不吐槽吐槽?",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="bottom">
+        <p><span>songshuiyang &copy; 2017 - 2023</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn" target="_blank">赣ICP备18001541号</a><br>
+                
+            </span>
+            <span id="busuanzi_container_site_pv">
+                本站总访问量<span id="busuanzi_value_site_pv"></span>次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              本站访客数<span id="busuanzi_value_site_uv"></span>人次
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/&title=《进程级事件发布订阅工具类》 — 宋水阳个人博客&pic=http://www.songshuiyang.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/&title=《进程级事件发布订阅工具类》 — 宋水阳个人博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《进程级事件发布订阅工具类》 — 宋水阳个人博客&url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/&via=http://www.songshuiyang.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.songshuiyang.com/2022/02/16/backend/framework/tools/进程级事件发布订阅工具类/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADPklEQVR42u3ay07sQAwE0Pn/n+Zu2HEJVXaQJs3JKppHktMjYVzu1ys+Pr4c371+/W5+l/bZXr9xYGNjYz+E/XF5JJdOvjVblK+vX7+SWLCxsbFPZV/f8rsvtw9xXa6S8+Q5oyKHjY2N/YfZScNwjcwLXnKOjY2NjZ2z23zmhjIThE3Y2NjY2HlpScpSOxho75I0MzdnadjY2Nhvz26Hqe98/ivzbWxsbOw3Zn+MjrY5SR40L42bJ/+8DjY2NvZB7FkQPwtx8lFx2/zk7RM2Njb2qezfG+vOhgezEpgMEopMCxsbG/sh7Hbg2m6a2TcM7QAganiwsbGxD2K3D7cveHkrsml1ilAJGxsb++HsdoPLPmbK383HD3kRLfYoYWNjYz+Enf+738ZDszHAqrVoFxEbGxv7CHYe5cxCpdkAIGl78gL8w++MjY2NfRy7Ha/um5bkk3fdHRsbG/s8dhLf7KP8dvnaTw6vho2NjX0EOx8J5COE2fC4bUs2S4yNjY19EnuDnwVG+7Apb5Z+cGFjY2Mfx55tsplF9vmy5leoiy42Njb2Eey2GGxCoryk5cHWsNRhY2NjH8dOykAOyMOgvAWaNUXDES82Njb2A9lt2zAb0OYNTLvRpxgJYGNjYx/HnsVDmyBps6x57BWVQ2xsbOwj2DlyX8CShciL0Gx08Wp/W2xsbOwHsvNGZbOB5q5QqW2uvi1g2NjY2I9ltzFNXjByXsu4vkvyDNjY2Njnsdshbj4SnoVEd6VlUVuFjY2NfQS7+HNfbqPZn+fBVnt9bGxs7DPYm60wSbHZRD95dHXbVAQbGxv7gewNOB8Mt59sx7qzMoyNjY19BruNgdrGIN+m0zYnyfV/mIdgY2NjH8GeRfn5Y20ipByW/AyvGQ8bGxv77dmzQCdvAFpYO2Au5tjY2NjYh7LzI28q8kHCrLzlV2tLHTY2NvZz2flgdR9CtUPcuxalbkiwsbGxH8huw6O8nWjHA+2mnHb0i42Njf2X2e2WmvyVzTA439YzLGDY2NjYB7Hz8jMLntqFWw2DsbGxsY9j503FJui5qwTORgL/aUWwsbGxj2Bv/m/PN820ZWYWVN022cbGxsZ+BvsfhC21qTeIrLoAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+lazyScripts.push('//s95.cnzz.com/z_stat.php?id=1275444015&web_id=1275444015')
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '老铁为何离开了';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎回来';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?ac93934d9b847216e10a2f133187e535";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
